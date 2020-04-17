@@ -1,3 +1,5 @@
+[![Codemagic build status](https://api.codemagic.io/apps/5e9a2bf718efc220e89ca590/5e9a2bf718efc220e89ca58f/status_badge.svg)](https://codemagic.io/apps/5e9a2bf718efc220e89ca590/5e9a2bf718efc220e89ca58f/latest_build)
+
 # Volley34
 
 Application mobile pour le Volley34 
