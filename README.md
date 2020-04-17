@@ -1,4 +1,4 @@
-# volley34-flutter
+# volley34-mobile
 
 Application mobile pour le Volley34 
 
