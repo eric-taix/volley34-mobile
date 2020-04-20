@@ -21,7 +21,7 @@ class Club {
   String snapchat;
   bool active;
   bool ffvb;
-
+  bool favorite = false;
   Club();
   
   factory Club.fromJson(Map<String, dynamic> json) {
@@ -47,6 +47,11 @@ class Club {
       ..active = json["isActive"] != null && json["isActive"] == "true"
       ..ffvb = json["isFFVB"] != null && json["isFFVB"] == "true"
     ;
+  }
+
+  bool toggleFavorite() {
+    favorite = !favorite;
+    return favorite;
   }
 
   @override

@@ -15,6 +15,7 @@ dependencies:
   fluid_bottom_nav_bar: ^0.0.1
   flutter_svg: ^0.17.4
   flutter_staggered_animations: ^0.1.2
+  localstorage: ^3.0.2+5
 
 dev_dependencies:
   flutter_test:
@@ -31,6 +32,7 @@ flutter:
     - assets/map.svg
     - assets/map-filled.svg
     - assets/volleyball-filled.svg
+    - assets/circle_spritesheet.png
 
   fonts:
     - family: Raleway

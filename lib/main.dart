@@ -1,5 +1,6 @@
 import 'package:fluid_bottom_nav_bar/fluid_bottom_nav_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:v34/commons/env.dart';
 import 'package:v34/commons/tab_bar.dart';
 import 'package:v34/pages/competition/competition_page.dart';
 import 'package:v34/pages/dashboard/dashoard_page.dart';
@@ -12,6 +13,11 @@ void main() {
 class V34 extends StatefulWidget {
   @override
   _V34State createState() => _V34State();
+
+  static String _pkg = "mobile";
+
+  static String get pkg => Env.getPackage(_pkg);
+
 }
 
 class _V34State extends State<V34> {

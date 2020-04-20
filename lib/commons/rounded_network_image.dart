@@ -16,9 +16,12 @@ class RoundedNetworkImage extends StatelessWidget {
         height: _size + (2 * borderSize),
         decoration: new BoxDecoration(
           shape: BoxShape.circle,
+//          boxShadow: [
+//            const BoxShadow(color: Color(0x50FFFFFF), blurRadius: 1.0, spreadRadius: 0.0, offset: Offset(1.0, 1.0)),
+//          ],
           color: Theme.of(context).primaryColor,
           border: Border.all(color: Theme.of(context).cardTheme.color, width: borderSize),
-          image: new DecorationImage(fit: BoxFit.fill, image: new NetworkImage(_imageUrl)),
+          image: new DecorationImage(fit: BoxFit.fill, image: _imageUrl != null ? NetworkImage(_imageUrl) : SizedBox()),
         ));
   }
 }
