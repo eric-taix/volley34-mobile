@@ -6,7 +6,8 @@ import 'package:v34/commons/tab_bar.dart';
 class CompetitionPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return
+      Container(
         child: DefaultTabController(
             length: 3,
             child: TextTabBar(tabs: [

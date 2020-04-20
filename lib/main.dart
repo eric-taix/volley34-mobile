@@ -1,14 +1,11 @@
 import 'package:fluid_bottom_nav_bar/fluid_bottom_nav_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:v34/commons/tab_bar.dart';
 import 'package:v34/pages/competition/competition_page.dart';
 import 'package:v34/pages/dashboard/dashoard_page.dart';
 import 'package:v34/pages/find/find_page.dart';
 
 void main() {
-  WidgetsFlutterBinding.ensureInitialized();
-  SystemChrome.setEnabledSystemUIOverlays([]);
   runApp(V34());
 }
 
@@ -25,8 +22,17 @@ class _V34State extends State<V34> {
         theme: ThemeData(
           highlightColor: Colors.transparent,
           primarySwatch: Colors.blue,
+          accentColor: Color(0xFFF7FBFE),
           primaryColor: Color(0xFF262C41),
-          bottomAppBarColor: Color(0xFF313852),
+          bottomAppBarColor: Color(0xFFF7FBFE),
+          cardTheme: CardTheme(
+            color: Color(0xFF313852),
+            margin: EdgeInsets.all(8.0),
+            elevation: 2.0,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(18)),
+            ),
+          ),
           textTheme: TextTheme(
             body1: TextStyle(color: Color(0xFFF7FBFE), fontFamily: "Raleway"),
             body2: TextStyle(color: Color(0xFF979DB2), fontSize: 12),
@@ -77,9 +83,9 @@ class __MainPageState extends State<_MainPage> {
           FluidNavBarIcon(iconPath: "assets/map-filled.svg"),
         ],
         style: FluidNavBarStyle(
-            barBackgroundColor: Theme.of(context).bottomAppBarColor,
-            iconSelectedForegroundColor: Theme.of(context).tabBarTheme.labelColor,
-            iconUnselectedForegroundColor: Theme.of(context).tabBarTheme.unselectedLabelColor,
+          barBackgroundColor: Theme.of(context).bottomAppBarColor,
+          iconSelectedForegroundColor: Color(0xFF313852),
+          iconUnselectedForegroundColor: Theme.of(context).tabBarTheme.unselectedLabelColor,
         ),
         onChange: _handleNavigationChange,
       ),
@@ -87,24 +93,24 @@ class __MainPageState extends State<_MainPage> {
   }
 
   void _handleNavigationChange(int index) {
-    Widget widget;
-    switch (index) {
-      case 0:
-        widget = DashboardPage();
-        break;
-      case 1:
-        widget = CompetitionPage();
-        break;
-      case 2:
-        widget = FindPage();
-        break;
-    }
-    _child = AnimatedSwitcher(
-      switchInCurve: Curves.easeOut,
-      switchOutCurve: Curves.easeIn,
-      duration: Duration(milliseconds: 500),
-      child: widget,
-    );
-    setState(() {});
+    setState(() {
+      switch (index) {
+        case 0:
+          _child = DashboardPage();
+          break;
+        case 1:
+          _child = CompetitionPage();
+          break;
+        case 2:
+          _child = FindPage();
+          break;
+      }
+      _child = AnimatedSwitcher(
+        switchInCurve: Curves.easeOut,
+        switchOutCurve: Curves.easeIn,
+        duration: Duration(milliseconds: 500),
+        child: _child,
+      );
+    });
   }
 }
