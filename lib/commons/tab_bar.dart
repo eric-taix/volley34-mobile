@@ -16,7 +16,6 @@ class TextTabBar extends StatelessWidget {
           color: Theme.of(context).primaryColor,
           child: new SafeArea(
             child: Column(children: <Widget>[
-             // Expanded(child: new Container(color: Colors.redAccent,)),
               TabBar(
                 isScrollable: true,
                 indicatorPadding: EdgeInsets.symmetric(horizontal: 30.0),
@@ -62,7 +61,6 @@ class DashedUnderlineIndicator extends Decoration {
   @override
   BoxPainter createBoxPainter([onChanged]) {
     return _DashedUnderlinePainter(this, onChanged);
-    ;
   }
 }
 
