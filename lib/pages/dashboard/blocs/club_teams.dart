@@ -3,7 +3,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:v34/models/club.dart';
 import 'package:v34/models/team.dart';
 import 'package:v34/repositories/repository.dart';
 

@@ -2,11 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
-import 'package:v34/pages/dashboard/blocs/club_stats.dart';
-import 'package:v34/pages/dashboard/blocs/club_teams.dart';
 import 'package:v34/pages/dashboard/blocs/favorite_bloc.dart';
 import 'package:v34/commons/paragraph.dart';
-import 'package:v34/models/club.dart';
 import 'package:v34/pages/dashboard/fav_club_card.dart';
 import 'package:v34/repositories/repository.dart';
 
@@ -29,6 +26,7 @@ class _DashboardPageState extends State<DashboardPage> {
 
   @override
   void dispose() {
+    _favoriteBloc.close();
     _pageController.dispose();
     super.dispose();
   }
@@ -88,7 +86,7 @@ class _DashboardPageState extends State<DashboardPage> {
               );
       case 4:
         return Paragraph(title: "Votre agenda");
-      case 5:
+      default:
         return Container(
           height: 200,
           child: SizedBox(),
