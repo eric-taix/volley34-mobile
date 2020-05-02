@@ -6,8 +6,10 @@ import 'package:v34/commons/particle/particle_field_painter.dart';
 import 'package:v34/main.dart';
 import 'package:v34/models/club.dart';
 import 'package:v34/pages/find/club_card.dart';
+import 'package:v34/repositories/providers/agenda_provider.dart';
 import 'package:v34/repositories/providers/club_provider.dart';
 import 'package:v34/repositories/providers/favorite_provider.dart';
+import 'package:v34/repositories/providers/team_provider.dart';
 import 'package:v34/repositories/repository.dart';
 
 class ClubPage extends StatefulWidget {
@@ -16,7 +18,12 @@ class ClubPage extends StatefulWidget {
 }
 
 class _ClubPageState extends State<ClubPage> with SingleTickerProviderStateMixin {
-  final Repository _repository = Repository(clubProvider: ClubProvider(), favoriteProvider: FavoriteProvider());
+  final Repository _repository = Repository(
+    clubProvider: ClubProvider(),
+    favoriteProvider: FavoriteProvider(),
+    teamProvider: TeamProvider(),
+    agendaProvider: AgendaProvider(),
+  );
   List<Club> _clubs;
   bool _loading = false;
 

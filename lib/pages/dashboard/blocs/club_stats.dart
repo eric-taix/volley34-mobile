@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tuple/tuple.dart';
 import 'package:v34/models/match_result.dart';
@@ -6,7 +7,7 @@ import 'package:v34/models/team.dart';
 import 'package:v34/repositories/repository.dart';
 
 //---- STATES
-
+@immutable
 abstract class ClubStatsState extends Equatable {
   final int wonMatches;
   final int totalMatches;
@@ -27,6 +28,7 @@ class ClubStatsLoadedState extends ClubStatsState {
 
 //---- EVENTS
 
+@immutable
 abstract class ClubStatsEvent extends Equatable {
   const ClubStatsEvent();
 

@@ -9,6 +9,11 @@
 .history
 .svn/
 
+# IOS files which failed the build on CodeMagic !!!
+ios/Flutter/Debug.xcconfig
+ios/Flutter/Release.xcconfig
+ios/PodFile
+
 # IntelliJ related
 *.iml
 *.ipr
