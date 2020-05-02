@@ -7,7 +7,7 @@ import 'package:v34/models/club.dart';
 import 'package:v34/repositories/repository.dart';
 
 //--- States
-
+@immutable
 abstract class FavoriteState extends Equatable {
 
   final List<String> teamCodes;
@@ -36,7 +36,7 @@ class FavoriteLoadedState extends FavoriteState {
 
 
 //--- Events
-
+@immutable
 abstract class FavoriteEvent extends Equatable {
   const FavoriteEvent();
 

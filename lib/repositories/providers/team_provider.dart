@@ -1,6 +1,7 @@
 
 import 'package:dio/dio.dart';
 import 'package:dio_http_cache/dio_http_cache.dart';
+import 'package:v34/models/event.dart';
 import 'package:v34/models/match_result.dart';
 import 'package:v34/models/team.dart';
 
@@ -19,12 +20,21 @@ class TeamProvider {
     }
   }
 
-  Future<List<MatchResult>> lastTeamMatchResult(String teamCode) async {
+  Future<List<MatchResult>> lastTeamMatchesResult(String teamCode) async {
     Response response = await dio.get("/equipes/$teamCode/resultats", options: buildConfigurableCacheOptions());
     if (response.statusCode == 200) {
       return (response.data as List).map((json) => MatchResult.fromJson(json)).toList();
     } else {
-      throw Exception('Impossible de récupérer les clubs');
+      throw Exception("Impossible to retrieve matches result for team $teamCode");
+    }
+  }
+
+  Future<List<Event>> loadTeamMatches(String teamCode) async {
+    Response response = await dio.get("/equipes/$teamCode/matchs", options: buildConfigurableCacheOptions());
+    if (response.statusCode == 200) {
+      return (response.data as List).map((json) => Event.fromJson(json)).toList();
+    } else {
+      throw Exception("Impossible to retrieve matches for team  $teamCode");
     }
   }
 

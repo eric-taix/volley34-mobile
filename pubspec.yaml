@@ -10,6 +10,7 @@ dependencies:
   flutter:
     sdk: flutter
 
+  intl: ^0.16.1
   cupertino_icons: ^0.1.2
   dio: ^3.0.9
   fluid_bottom_nav_bar: ^0.0.1
@@ -23,6 +24,8 @@ dependencies:
   flutter_circular_chart: ^0.1.0
   tuple: ^1.0.3
   dio_http_cache: ^0.2.6
+  timeline_list: ^0.0.5
+  collection: ^1.14.11
 
 dev_dependencies:
   flutter_test:

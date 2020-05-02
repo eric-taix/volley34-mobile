@@ -3,12 +3,11 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:v34/models/club.dart';
 import 'package:v34/models/team.dart';
 import 'package:v34/repositories/repository.dart';
 
 //--- States
-
+@immutable
 abstract class ClubTeamsState extends Equatable {
 
   final List<Team> teams;
@@ -36,7 +35,7 @@ class ClubTeamsLoadedState extends ClubTeamsState {
 
 
 //--- Events
-
+@immutable
 abstract class ClubTeamsEvent extends Equatable {
   const ClubTeamsEvent();
 
