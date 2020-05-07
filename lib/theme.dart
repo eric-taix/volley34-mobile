@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 
-import 'commons/tab_bar.dart';
+import 'commons/text_tab_bar.dart';
 
 class AppTheme {
   static ThemeData theme()  {
@@ -18,6 +18,16 @@ class AppTheme {
         elevation: 2.0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(18)),
+        ),
+      ),
+      appBarTheme: AppBarTheme(
+        color: Color(0xFF262C41),
+        textTheme: TextTheme(
+          title: TextStyle(
+            color: Color(0xFFF7FBFE),
+            fontSize: 14.0,
+            fontFamily: "Raleway",
+          ),
         ),
       ),
       textTheme: TextTheme(
@@ -46,9 +56,9 @@ class AppTheme {
         labelColor: Color(0xFFF7FBFE),
         unselectedLabelColor: Color(0xFF7E88A2),
         labelPadding: const EdgeInsets.fromLTRB(18.0, 0.0, 18.0, 10.0),
-        labelStyle: TextStyle(fontSize: 20.0, fontFamily: "Raleway"),
+        labelStyle: TextStyle(fontSize: 16.0, fontFamily: "Raleway"),
         unselectedLabelStyle:
-        TextStyle(fontSize: 20.0, fontFamily: "Raleway"),
+        TextStyle(fontSize: 16.0, fontFamily: "Raleway"),
         indicatorSize: TabBarIndicatorSize.label,
         indicator: DashedUnderlineIndicator(
           width: 30.0,

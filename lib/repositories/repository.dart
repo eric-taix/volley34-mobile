@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:v34/models/club.dart';
 import 'package:v34/models/event.dart';
+import 'package:v34/commons/favorite/favorite.dart';
 import 'package:v34/models/match_result.dart';
 import 'package:v34/models/team.dart';
 import 'package:v34/repositories/providers/agenda_provider.dart';
@@ -28,7 +29,7 @@ class Repository {
         .toList();
   }
 
-  Future<List<Club>> loadFavoriteClubCodes() async {
+  Future<List<Club>> loadFavoriteClub() async {
     var clubs = await loadClubs();
     return clubs.where((club) => club.favorite).toList();
   }
@@ -54,11 +55,33 @@ class Repository {
   }
 
   Future<List<Event>> loadFavoriteTeamsMatches() async {
-   var results = await Future.wait([
+    var results = await Future.wait([
       teamProvider.loadTeamMatches("VCVX1"),
       teamProvider.loadTeamMatches("VCVX2"),
       teamProvider.loadTeamMatches("VCVX3"),
     ]);
-   return results.expand((i) => i).toList();
+    return results.expand((i) => i).toList();
+  }
+
+  Future updateFavorite(
+      String favoriteId, FavoriteType favoriteType, bool favorite) async {
+    print("Update fav $favoriteId of $favoriteType to value $favorite");
+    switch (favoriteType) {
+      case FavoriteType.Team:
+        List<String> favoriteTeams = await favoriteProvider.loadFavoriteTeams();
+        favoriteTeams.remove(favoriteId);
+        if (favorite) {
+          favoriteTeams.add(favoriteId);
+        }
+        await favoriteProvider.saveFavoriteTeams(favoriteTeams);
+        break;
+      case FavoriteType.Club:
+        List<String> favoriteClubs = await favoriteProvider.loadFavoriteClubs();
+        favoriteClubs.remove(favoriteId);
+        if (favorite) {
+          favoriteClubs.add(favoriteId);
+        }
+        await favoriteProvider.saveFavoriteClubs(favoriteClubs);
+    }
   }
 }
