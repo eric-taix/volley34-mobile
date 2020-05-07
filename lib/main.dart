@@ -32,17 +32,17 @@ class V34 extends StatefulWidget {
 class _V34State extends State<V34> {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Volley34',
-      theme: AppTheme.theme(),
-      home: RepositoryProvider(
-        create: (context) => Repository(
-          clubProvider: ClubProvider(),
-          favoriteProvider: FavoriteProvider(),
-          teamProvider: TeamProvider(),
-          agendaProvider: AgendaProvider(),
-        ),
-        child: _MainPage(),
+    return RepositoryProvider(
+      create: (context) => Repository(
+        clubProvider: ClubProvider(),
+        favoriteProvider: FavoriteProvider(),
+        teamProvider: TeamProvider(),
+        agendaProvider: AgendaProvider(),
+      ),
+      child: MaterialApp(
+        title: 'Volley34',
+        theme: AppTheme.theme(),
+        home: _MainPage(),
       ),
     );
   }

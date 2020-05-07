@@ -1,27 +1,26 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class TextTabBar extends StatelessWidget {
+class TextTabBar extends StatelessWidget with PreferredSizeWidget {
   final List<TextTab> tabs;
 
   TextTabBar({this.tabs});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Theme.of(context).primaryColor,
-      appBar: new PreferredSize(
-        preferredSize: Size.fromHeight(90.0),
-        child: new Container(
+    return Padding(
+      padding: const EdgeInsets.only(top: 18),
+      child: Container(
           color: Theme.of(context).primaryColor,
           child: new SafeArea(
+            top: true,
             child: Column(children: <Widget>[
               TabBar(
                 isScrollable: true,
-                indicatorPadding: EdgeInsets.symmetric(horizontal: 30.0),
+                indicatorPadding: EdgeInsets.symmetric(horizontal: 20.0),
                 tabs: tabs
                     .map((tab) => Container(
-                  height: 70,
+                  height: 20,
                           child: Align(alignment: Alignment.bottomCenter, child: Text(tab.title)),
                         ))
                     .toList(),
@@ -29,10 +28,11 @@ class TextTabBar extends StatelessWidget {
             ]),
           ),
         ),
-      ),
-      body: TabBarView(children: tabs.map((tab) => tab.child).toList()),
     );
   }
+
+  @override
+  Size get preferredSize => Size.fromHeight(100);
 }
 
 class TextTab {
