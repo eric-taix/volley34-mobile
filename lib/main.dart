@@ -73,14 +73,12 @@ class __MainPageState extends State<_MainPage> {
       _repository = RepositoryProvider.of<Repository>(context);
       _repository.loadFavoriteClubs().then((clubs) {
         if (clubs.isEmpty) {
-          //FeatureDiscovery.clearPreferences(context, ["dashboard_feature_id", "competition_feature_id", "clubs_feature_id"]).then((_) {
-            Future.delayed(Duration(seconds: 1)).then((_) {
-              FeatureDiscovery.discoverFeatures(
-                context,
-                const <String>{"dashboard_feature_id", "competition_feature_id", "clubs_feature_id"},
-              );
-            });
-          //});
+          Future.delayed(Duration(seconds: 1)).then((_) {
+            FeatureDiscovery.discoverFeatures(
+              context,
+              const <String>{"dashboard_feature_id", "competition_feature_id", "clubs_feature_id"},
+            );
+          });
         }
       });
     });

@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:v34/commons/paragraph.dart';
 import 'package:v34/models/club.dart';
-import 'package:v34/pages/find/club_card.dart';
+import 'package:v34/pages/club/club_card.dart';
 import 'package:v34/repositories/repository.dart';
 
 class ClubPage extends StatefulWidget {
