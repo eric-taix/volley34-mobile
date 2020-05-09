@@ -1,10 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:v34/commons/favorite/favorite_icon.dart';
 import 'package:v34/commons/rounded_network_image.dart';
+import 'package:v34/commons/router.dart';
 import 'package:v34/models/club.dart';
 import 'package:v34/commons/favorite/favorite.dart';
 import 'package:v34/pages/club-details/club_detail_page.dart';
+import 'package:v34/repositories/repository.dart';
 
 class ClubCard extends StatefulWidget {
   final Club club;
@@ -17,6 +20,22 @@ class ClubCard extends StatefulWidget {
 }
 
 class _ClubCardState extends State<ClubCard> {
+  Repository _repository;
+  bool _favorite = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _repository = RepositoryProvider.of<Repository>(context);
+    _loadFavorite();
+  }
+
+  void _loadFavorite() {
+    _repository.isClubFavorite(widget.club.code).then((favorite) {
+      setState(() => _favorite = favorite);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -27,7 +46,7 @@ class _ClubCardState extends State<ClubCard> {
             padding: const EdgeInsets.only(left: 14.0),
             child: Card(
               child: InkWell(
-                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ClubDetailPage(widget.club))),
+                onTap: () => Router.push(context: context, builder: (_) => ClubDetailPage(widget.club)).then((_) => _loadFavorite()),
                 child: Padding(
                   padding: const EdgeInsets.only(top: 18.0, right: 8.0, bottom: 12.0, left: 48.0),
                   child: Column(
@@ -55,7 +74,7 @@ class _ClubCardState extends State<ClubCard> {
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: <Widget>[
-            FavoriteIcon(widget.club.code, FavoriteType.Club, widget.club.favorite),
+            FavoriteIcon(widget.club.code, FavoriteType.Club, _favorite),
           ],
         ),
       ],

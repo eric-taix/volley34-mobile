@@ -61,7 +61,7 @@ class FavoriteBloc extends Bloc<FavoriteEvent, FavoriteState> {
   Stream<FavoriteState> mapEventToState(FavoriteEvent event) async* {
     if (event is FavoriteLoadEvent) {
       yield FavoriteLoadingState([], []);
-      var favClubs = await repository.loadFavoriteClub();
+      var favClubs = await repository.loadFavoriteClubs();
       yield FavoriteLoadedState([], favClubs);
     }
   }

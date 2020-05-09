@@ -46,9 +46,10 @@ class AppBarWithImage extends StatelessWidget {
                       : SizedBox(),
                 ),
                 flexibleSpace: FlexibleSpaceBar(
+
                   centerTitle: true,
                   title: PreferredSize(
-                    preferredSize: Size.fromHeight(100),
+                    preferredSize: Size.fromHeight(10),
                     child: Padding(
                       padding: const EdgeInsets.only(bottom: 4.0),
                       child: Row(
@@ -73,11 +74,14 @@ class AppBarWithImage extends StatelessWidget {
                                     .title),
                           ),
                           if (favorite != null)
-                            FavoriteIcon(
-                              favorite.id,
-                              favorite.type,
-                              favorite.value,
-                              padding: EdgeInsets.zero,
+                            ConstrainedBox(
+                              constraints: BoxConstraints(maxHeight: 40),
+                              child: FavoriteIcon(
+                                favorite.id,
+                                favorite.type,
+                                favorite.value,
+                                padding: EdgeInsets.zero,
+                              ),
                             ),
                         ],
                       ),

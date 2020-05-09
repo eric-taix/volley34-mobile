@@ -9,8 +9,8 @@ import 'package:v34/repositories/repository.dart';
 
 class FavoriteClubCard extends StatefulWidget {
   final Club club;
-
-  FavoriteClubCard(this.club);
+  final GestureTapCallback onTap;
+  FavoriteClubCard(this.club, this.onTap);
 
   @override
   _FavoriteClubCardState createState() => _FavoriteClubCardState();
@@ -72,7 +72,7 @@ class _FavoriteClubCardState extends State<FavoriteClubCard> {
           padding: const EdgeInsets.only(left: 14.0),
           child: Card(
             child: InkWell(
-              onTap: () => print("Tapped"),
+              onTap: widget.onTap,
               child: BlocListener(
                   listener: (context, state) {
                     if (state is ClubStatsLoadedState) {
@@ -108,7 +108,13 @@ class _FavoriteClubCardState extends State<FavoriteClubCard> {
           ),
         ),
       ),
-      Padding(padding: const EdgeInsets.only(left: 8.0, bottom: 140), child: RoundedNetworkImage(40, widget.club.logoUrl)),
+      Padding(
+        padding: const EdgeInsets.only(left: 8.0, bottom: 140),
+        child: Hero(
+          tag: "hero-logo-${widget.club.code}",
+          child: RoundedNetworkImage(40, widget.club.logoUrl),
+        ),
+      ),
     ]);
   }
 
@@ -127,7 +133,10 @@ class _FavoriteClubCardState extends State<FavoriteClubCard> {
               children: <Widget>[
                 Padding(
                   padding: const EdgeInsets.only(right: 8.0),
-                  child: Text("Matchs gagnés", style: Theme.of(context).textTheme.body1,),
+                  child: Text(
+                    "Matchs gagnés",
+                    style: Theme.of(context).textTheme.body1,
+                  ),
                 ),
                 Stack(alignment: Alignment.center, children: [
                   AnimatedCircularChart(
@@ -140,7 +149,7 @@ class _FavoriteClubCardState extends State<FavoriteClubCard> {
                   ),
                   (state is ClubStatsLoadedState)
                       ? RichText(
-                    textScaleFactor: 1.0,
+                          textScaleFactor: 1.0,
                           textAlign: TextAlign.center,
                           text: new TextSpan(
                             text: "${state.wonMatches}",
@@ -167,20 +176,13 @@ class _FavoriteClubCardState extends State<FavoriteClubCard> {
               children: <Widget>[
                 Expanded(
                   child: RichText(
-                    maxLines: 2,
-                    textAlign: TextAlign.right,
-                    textScaleFactor: 1.1,
-                    text: TextSpan(
-                      text: "X",
-                      style: TextStyle(
-                        fontSize: 24.0,
-                        fontWeight: FontWeight.bold
-                      ),
-                      children: [
-                        new TextSpan(text: " / y matchs à domicile", style: Theme.of(context).textTheme.body1)
-                      ]
-                    )
-                  ),
+                      maxLines: 2,
+                      textAlign: TextAlign.right,
+                      textScaleFactor: 1.1,
+                      text: TextSpan(
+                          text: "X",
+                          style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
+                          children: [new TextSpan(text: " / y matchs à domicile", style: Theme.of(context).textTheme.body1)])),
                 ),
               ],
             ),

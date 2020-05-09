@@ -13,7 +13,7 @@ class Paragraph extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(left: 18.0, right: 8.0, top: 34.0, bottom: 18.0),
+      padding: const EdgeInsets.only(left: 18.0, right: 8.0, top: 44.0, bottom: 28.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
