@@ -13,7 +13,7 @@ dependencies:
   intl: ^0.16.1
   cupertino_icons: ^0.1.2
   dio: ^3.0.9
-  fluid_bottom_nav_bar: ^0.0.1
+  fluid_bottom_nav_bar: ^1.0.1
   flutter_svg: ^0.17.4
   flutter_staggered_animations: ^0.1.2
   localstorage: ^3.0.2+5
@@ -27,6 +27,9 @@ dependencies:
   timeline_list: ^0.0.5
   collection: ^1.14.11
   like_button: ^0.2.0
+  smooth_page_indicator: ^0.1.5
+  feature_discovery: ^0.8.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

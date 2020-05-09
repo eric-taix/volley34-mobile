@@ -21,7 +21,7 @@ class Repository {
       @required this.favoriteProvider,
       @required this.agendaProvider});
 
-  Future<List<Club>> loadClubs() async {
+  Future<List<Club>> loadAllClubs() async {
     List<Club> clubs = await clubProvider.getAllClubs();
     var favoriteClubs = await favoriteProvider.loadFavoriteClubs();
     return clubs
@@ -29,14 +29,14 @@ class Repository {
         .toList();
   }
 
-  Future<List<Club>> loadFavoriteClub() async {
-    var clubs = await loadClubs();
-    return clubs.where((club) => club.favorite).toList();
-  }
-
-  Future<void> saveFavoriteClubs(List<Club> favoriteClubs) async {
-    return favoriteProvider
-        .saveFavoriteClubs(favoriteClubs.map((club) => club.code).toList());
+  Future<List<Club>> loadFavoriteClubs() async {
+    List<Club> clubs = await clubProvider.getAllClubs();
+    var favoriteClubs = await favoriteProvider.loadFavoriteClubs();
+    return favoriteClubs.expand((favoriteCode) {
+      var favoriteClub = clubs.firstWhere((club) => club.code == favoriteCode, orElse: null);
+      List<Club> c = favoriteClub != null ? [favoriteClub..favorite = true] : [];
+      return c;
+    }).toList();
   }
 
   Future<List<Team>> loadClubTeams(String clubCode) async {
@@ -69,19 +69,23 @@ class Repository {
     switch (favoriteType) {
       case FavoriteType.Team:
         List<String> favoriteTeams = await favoriteProvider.loadFavoriteTeams();
-        favoriteTeams.remove(favoriteId);
-        if (favorite) {
-          favoriteTeams.add(favoriteId);
+        var isCurrentlyFavorite = favoriteTeams.firstWhere((favId) => favId == favoriteId, orElse: () => null) ?? false;
+        if (isCurrentlyFavorite != favorite) {
+          favorite ? favoriteTeams.add(favoriteId) : favoriteTeams.remove(favoriteId);
         }
         await favoriteProvider.saveFavoriteTeams(favoriteTeams);
         break;
       case FavoriteType.Club:
         List<String> favoriteClubs = await favoriteProvider.loadFavoriteClubs();
-        favoriteClubs.remove(favoriteId);
-        if (favorite) {
-          favoriteClubs.add(favoriteId);
+        var isCurrentlyFavorite = favoriteClubs.firstWhere((favId) => favId == favoriteId, orElse: () => null) ?? false;
+        if (isCurrentlyFavorite != favorite) {
+          favorite ? favoriteClubs.add(favoriteId) : favoriteClubs.remove(favoriteId);
         }
         await favoriteProvider.saveFavoriteClubs(favoriteClubs);
     }
+  }
+
+  Future<bool> isClubFavorite(String code) async {
+    return favoriteProvider.loadFavoriteClubs().then((clubs) => clubs.contains(code));
   }
 }

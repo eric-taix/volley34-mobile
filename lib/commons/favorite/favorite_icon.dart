@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:like_button/like_button.dart';
 import 'package:v34/commons/favorite/favorite.dart';
 import 'package:v34/repositories/repository.dart';
 
@@ -22,40 +23,47 @@ class FavoriteIcon extends StatefulWidget {
   _FavoriteIconState createState() => _FavoriteIconState();
 }
 
-class _FavoriteIconState extends State<FavoriteIcon>
-    with SingleTickerProviderStateMixin {
+class _FavoriteIconState extends State<FavoriteIcon> with SingleTickerProviderStateMixin {
   Repository _repository;
-  bool _favorite;
 
   @override
   void initState() {
     super.initState();
     _repository = RepositoryProvider.of<Repository>(context);
-    _favorite = widget.favorite;
   }
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () => _performToggleFavorite(),
       child: Padding(
         padding: widget.padding,
-        child: Icon(
-          _favorite ? Icons.star : Icons.star_border,
-          size: 26,
-          color: _favorite
-              ? Colors.yellow
-              : Theme.of(context).textTheme.body2.color,
+        child: LikeButton(
+          onTap: (fav) => _performToggleFavorite(fav),
+          size: 35,
+          circleColor: CircleColor(start: Colors.yellowAccent, end: Colors.redAccent),
+          bubblesColor: BubblesColor(
+            dotPrimaryColor: Colors.redAccent,
+            dotSecondaryColor: Colors.yellowAccent,
+          ),
+          isLiked: widget.favorite,
+          likeBuilder: (bool isLiked) {
+            return Icon(
+              isLiked ? Icons.star : Icons.star_border,
+              color: isLiked ? Colors.yellow : Theme
+                  .of(context)
+                  .textTheme
+                  .body2
+                  .color,
+              size: 26,
+            );
+          },
         ),
       ),
     );
   }
 
-  void _performToggleFavorite() {
-    setState(() {
-      _favorite = !_favorite;
-      _repository.updateFavorite(
-          widget.favoriteId, widget.favoriteType, _favorite);
-    });
+  Future<bool> _performToggleFavorite(bool favorite) async {
+    await _repository.updateFavorite(widget.favoriteId, widget.favoriteType, !favorite);
+    return !favorite;
   }
 }
