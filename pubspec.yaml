@@ -46,6 +46,7 @@ flutter:
     - assets/map-filled.svg
     - assets/volleyball-filled.svg
     - assets/circle_spritesheet.png
+    - assets/shield.svg
 
   fonts:
     - family: Raleway

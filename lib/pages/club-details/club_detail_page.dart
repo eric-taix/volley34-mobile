@@ -1,12 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:v34/commons/app_bar_with_image.dart';
+import 'package:v34/commons/app_bar/app_bar_with_image.dart';
 import 'package:v34/commons/no_data.dart';
 import 'package:v34/commons/text_tab_bar.dart';
 import 'package:v34/models/club.dart';
 import 'package:v34/commons/favorite/favorite.dart';
 import 'package:v34/repositories/repository.dart';
+
+import 'club_informations.dart';
 
 class ClubDetailPage extends StatefulWidget {
   final Club club;
@@ -36,11 +38,11 @@ class _ClubDetailPageState extends State<ClubDetailPage> {
   Widget build(BuildContext context) {
     return AppBarWithImage(
       widget.club.shortName,
-      widget.club.code,
+      "hero-logo-${widget.club.code}",
       subTitle: widget.club.name,
       logoUrl: widget.club.logoUrl,
       tabs: [
-        TextTab("Informations", NoData("soon...")),
+        TextTab("Informations", ClubInformations(widget.club)),
         TextTab("Statistiques", NoData("soon...")),
         TextTab("Contact", NoData("soon...")),
       ],
