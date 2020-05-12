@@ -90,7 +90,7 @@ class _FavoriteClubCardState extends State<FavoriteClubCard> {
                           padding: const EdgeInsets.only(top: 18.0, right: 8.0, bottom: 10.0, left: 48.0),
                           child: Text(
                             widget.club.shortName,
-                            style: Theme.of(context).textTheme.body1.copyWith(fontWeight: FontWeight.bold),
+                            style: Theme.of(context).textTheme.bodyText2.copyWith(fontWeight: FontWeight.bold),
                           ),
                         ),
                         Expanded(
@@ -125,7 +125,7 @@ class _FavoriteClubCardState extends State<FavoriteClubCard> {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Text("Derniers matchs", style: Theme.of(context).textTheme.body2),
+          Text("Derniers matchs", style: Theme.of(context).textTheme.bodyText1),
           SizedBox(
             height: 50,
             child: Row(
@@ -135,7 +135,7 @@ class _FavoriteClubCardState extends State<FavoriteClubCard> {
                   padding: const EdgeInsets.only(right: 8.0),
                   child: Text(
                     "Matchs gagnés",
-                    style: Theme.of(context).textTheme.body1,
+                    style: Theme.of(context).textTheme.bodyText2,
                   ),
                 ),
                 Stack(alignment: Alignment.center, children: [
@@ -156,7 +156,7 @@ class _FavoriteClubCardState extends State<FavoriteClubCard> {
                             style: new TextStyle(
                               fontSize: 24.0,
                               fontWeight: FontWeight.bold,
-                              color: Theme.of(context).textTheme.body1.color,
+                              color: Theme.of(context).textTheme.bodyText2.color,
                             ),
                             children: <TextSpan>[
                               new TextSpan(text: ' / ${state.totalMatches}', style: TextStyle(fontSize: 12, fontWeight: FontWeight.normal)),
@@ -168,7 +168,7 @@ class _FavoriteClubCardState extends State<FavoriteClubCard> {
               ],
             ),
           ),
-          Text("Cette semaine", style: Theme.of(context).textTheme.body2),
+          Text("Cette semaine", style: Theme.of(context).textTheme.bodyText1),
           Padding(
             padding: const EdgeInsets.only(top: 8.0, right: 8.0),
             child: Row(
@@ -182,7 +182,7 @@ class _FavoriteClubCardState extends State<FavoriteClubCard> {
                       text: TextSpan(
                           text: "X",
                           style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
-                          children: [new TextSpan(text: " / y matchs à domicile", style: Theme.of(context).textTheme.body1)])),
+                          children: [new TextSpan(text: " / y matchs à domicile", style: Theme.of(context).textTheme.bodyText2)])),
                 ),
               ],
             ),

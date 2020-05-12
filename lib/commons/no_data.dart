@@ -24,7 +24,7 @@ class NoData extends StatelessWidget {
         ),
         Padding(
           padding: const EdgeInsets.only(top: 18.0),
-          child: Text(title, style: Theme.of(context).textTheme.body2),
+          child: Text(title, style: Theme.of(context).textTheme.bodyText1),
         ),
       ],
     );

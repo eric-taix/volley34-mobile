@@ -56,10 +56,10 @@ class _ClubCardState extends State<ClubCard> {
                         padding: const EdgeInsets.only(bottom: 8.0),
                         child: Text(
                           widget.club.shortName,
-                          style: Theme.of(context).textTheme.body1.copyWith(fontWeight: FontWeight.bold),
+                          style: Theme.of(context).textTheme.bodyText2.copyWith(fontWeight: FontWeight.bold),
                         ),
                       ),
-                      Text(widget.club.name, style: Theme.of(context).textTheme.body1.copyWith(fontSize: 12)),
+                      Text(widget.club.name, style: Theme.of(context).textTheme.bodyText2.copyWith(fontSize: 12)),
                     ],
                   ),
                 ),

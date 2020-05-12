@@ -49,7 +49,7 @@ class _TournamentTimelineItem extends TimelineItemWidget {
         Text(
           title,
           textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.body1.copyWith(
+          style: Theme.of(context).textTheme.bodyText2.copyWith(
                 fontWeight: FontWeight.bold,
               ),
         ),
@@ -78,7 +78,7 @@ class _MeetingTimelineItem extends TimelineItemWidget {
           child: Text(
             title,
             textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.body1.copyWith(
+            style: Theme.of(context).textTheme.bodyText2.copyWith(
                   fontWeight: FontWeight.bold,
                 ),
           ),
@@ -108,13 +108,13 @@ class _MatchTimelineItem extends TimelineItemWidget {
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
           textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.body1.copyWith(
+          style: Theme.of(context).textTheme.bodyText2.copyWith(
                 fontWeight: FontWeight.bold,
               ),
         ),
         Padding(
           padding: const EdgeInsets.all(4.0),
-          child: Text("reçoit", style: Theme.of(context).textTheme.body2),
+          child: Text("reçoit", style: Theme.of(context).textTheme.bodyText1),
         ),
         Padding(
           padding: const EdgeInsets.only(bottom: 8.0),
@@ -123,7 +123,7 @@ class _MatchTimelineItem extends TimelineItemWidget {
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
             textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.body1.copyWith(
+            style: Theme.of(context).textTheme.bodyText2.copyWith(
                   fontWeight: FontWeight.bold,
                 ),
           ),
@@ -175,7 +175,7 @@ class _Place extends StatelessWidget {
           Expanded(
             child: Text(
               "${_dateFormat.format(dateTime)} - $place",
-              style: Theme.of(context).textTheme.body2,
+              style: Theme.of(context).textTheme.bodyText1,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               textAlign: TextAlign.left,

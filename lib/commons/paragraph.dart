@@ -18,7 +18,7 @@ class Paragraph extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Text(title, style: Theme.of(context).textTheme.title),
+          Text(title, style: Theme.of(context).textTheme.headline6),
           child ?? SizedBox(),
         ],
       ),

@@ -28,8 +28,11 @@ class _AppBarHeaderDelegate extends SliverPersistentHeaderDelegate {
 
   static IconData _getIconData(TargetPlatform platform) {
     switch (platform) {
+      case TargetPlatform.windows:
+      case TargetPlatform.macOS:
       case TargetPlatform.android:
       case TargetPlatform.fuchsia:
+      case TargetPlatform.linux:
         return Icons.arrow_back;
       case TargetPlatform.iOS:
         return Icons.arrow_back_ios;
@@ -84,7 +87,7 @@ class _AppBarHeaderDelegate extends SliverPersistentHeaderDelegate {
               padding: const EdgeInsets.only(top: 18.0 + kSystemBarHeight, left: 18),
               child: Opacity(
                 opacity: compute(0.0, 1.0),
-                child: Text(subTitle, style: appBarTheme.textTheme.subtitle),
+                child: Text(subTitle, style: appBarTheme.textTheme.subtitle2),
               ),
             ),
           ),
@@ -99,7 +102,7 @@ class _AppBarHeaderDelegate extends SliverPersistentHeaderDelegate {
                 children: <Widget>[
                   Padding(
                     padding: EdgeInsets.only(left: 14.0, bottom: compute(0.0, 22.0)),
-                    child: Text(title, style: appBarTheme.textTheme.title),
+                    child: Text(title, style: appBarTheme.textTheme.headline6),
                   ),
                   FavoriteIcon(
                     favorite.id,
@@ -182,7 +185,7 @@ class _AppBarWithImageState extends State<AppBarWithImage> with SingleTickerProv
             return <Widget>[
               SliverOverlapAbsorber(
                 handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
-                child: SliverPersistentHeader(
+                sliver: SliverPersistentHeader(
                   pinned: true,
                   delegate: _AppBarHeaderDelegate(
                     imageUrl: widget.logoUrl,

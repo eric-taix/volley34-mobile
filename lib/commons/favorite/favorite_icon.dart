@@ -52,7 +52,7 @@ class _FavoriteIconState extends State<FavoriteIcon> with SingleTickerProviderSt
               color: isLiked ? Colors.yellow : Theme
                   .of(context)
                   .textTheme
-                  .body2
+                  .bodyText1
                   .color,
               size: 26,
             );
