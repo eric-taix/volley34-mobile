@@ -6,7 +6,6 @@ import 'package:flutter/widgets.dart';
 
 class Router {
 
-
   static Future<T> push<T extends Object>({BuildContext context, WidgetBuilder builder}) {
     return Navigator.push(
         context,

@@ -4,7 +4,7 @@ description: Mobile application for Volley34
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.3.0 <3.0.0"
+  sdk: ">=2.6.0 <3.0.0"
 
 dependencies:
   flutter:
@@ -29,6 +29,8 @@ dependencies:
   like_button: ^0.2.0
   smooth_page_indicator: ^0.1.5
   feature_discovery: ^0.8.0
+  font_awesome_flutter: ^8.8.1
+  url_launcher: ^5.4.7
 
 dev_dependencies:
   flutter_test:
@@ -46,6 +48,7 @@ flutter:
     - assets/map-filled.svg
     - assets/volleyball-filled.svg
     - assets/circle_spritesheet.png
+    - assets/shield.svg
 
   fonts:
     - family: Raleway

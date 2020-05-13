@@ -108,7 +108,7 @@ class __MainPageState extends State<_MainPage> {
               "L'ensemble des résultats, classements par catégorie, poule et type de compétition."
             ],
           }),
-          FluidNavBarIcon(iconPath: "assets/map-filled.svg", extras: {
+          FluidNavBarIcon(iconPath: "assets/shield.svg", extras: {
             "featureId": "clubs_feature_id",
             "title": "Liste des clubs",
             "paragraphs": [

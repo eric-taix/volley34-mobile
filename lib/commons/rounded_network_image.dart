@@ -6,20 +6,29 @@ class RoundedNetworkImage extends StatelessWidget {
   final double size;
   final String imageUrl;
   final double borderSize;
+  final Color circleColor;
 
-  RoundedNetworkImage(this.size, this.imageUrl , {this.borderSize = 7});
+  RoundedNetworkImage(this.size, this.imageUrl, {this.borderSize = 7, this.circleColor});
 
   @override
   Widget build(BuildContext context) {
-    return new Container(
-        width: size + (2 * borderSize),
-        height: size + (2 * borderSize),
-        decoration: new BoxDecoration(
+    return Container(
+      width: size + (2 * borderSize) - 1,
+      height: size + (2 * borderSize) - 1,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        border: Border.all(color: circleColor ?? Theme.of(context).appBarTheme.color, width: borderSize)
+      ),
+      child: Container(
+        decoration: BoxDecoration(
           shape: BoxShape.circle,
           color: Theme.of(context).bottomAppBarColor,
-          border: Border.all(color: Theme.of(context).cardTheme.color, width: borderSize),
         ),
-      child: CachedNetworkImage(fit: BoxFit.scaleDown, imageUrl: imageUrl),
+        child: Padding(
+          padding: const EdgeInsets.all(4.0),
+          child: CachedNetworkImage(fit: BoxFit.fill, imageUrl: imageUrl),
+        ),
+      ),
     );
   }
 }

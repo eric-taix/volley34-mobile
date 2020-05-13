@@ -32,7 +32,7 @@ class FeatureTour extends StatelessWidget {
         ],
       ),
       backgroundColor: Theme.of(context).cardTheme.color,
-      targetColor: Theme.of(context).textTheme.body1.color,
+      targetColor: Theme.of(context).textTheme.bodyText2.color,
       textColor: Colors.white,
       overflowMode: OverflowMode.extendBackground,
       child: child,

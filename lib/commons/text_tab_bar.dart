@@ -3,36 +3,45 @@ import 'package:flutter/material.dart';
 
 class TextTabBar extends StatelessWidget with PreferredSizeWidget {
   final List<TextTab> tabs;
+  final double height;
 
-  TextTabBar({this.tabs});
+  TextTabBar({this.tabs, this.height = 60});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(top: 18),
+      padding: const EdgeInsets.only(top: 0),
       child: Container(
-          color: Theme.of(context).primaryColor,
-          child: new SafeArea(
-            top: true,
-            child: Column(children: <Widget>[
+        //color: Theme.of(context).primaryColor,
+        child: new SafeArea(
+          top: true,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: <Widget>[
               TabBar(
                 isScrollable: true,
                 indicatorPadding: EdgeInsets.symmetric(horizontal: 20.0),
                 tabs: tabs
-                    .map((tab) => Container(
-                  height: 20,
-                          child: Align(alignment: Alignment.bottomCenter, child: Text(tab.title)),
-                        ))
+                    .map(
+                      (tab) => Container(
+                        height: 20,
+                        child: Align(
+                          alignment: Alignment.bottomCenter,
+                          child: Text(tab.title),
+                        ),
+                      ),
+                    )
                     .toList(),
               ),
-            ]),
+            ],
           ),
         ),
+      ),
     );
   }
 
   @override
-  Size get preferredSize => Size.fromHeight(100);
+  Size get preferredSize => Size.fromHeight(height);
 }
 
 class TextTab {
@@ -103,6 +112,7 @@ class _DashedUnderlinePainter extends BoxPainter {
 
     double startX = decoration.width != null ? (indicator.bottomLeft.dx + indicator.bottomRight.dx - decoration.width) / 2 : indicator.bottomLeft.dx;
     double endX = decoration.width != null ? (indicator.bottomLeft.dx + indicator.bottomRight.dx + decoration.width) / 2 : indicator.bottomRight.dx;
+
     while (startX < endX) {
       canvas.drawLine(Offset(startX, indicator.bottomLeft.dy), Offset(startX + decoration.dashWidth, indicator.bottomRight.dy), paint);
       startX += decoration.dashWidth + decoration.dashSpace;

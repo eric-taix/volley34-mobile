@@ -20,7 +20,7 @@ class EventDate extends StatelessWidget {
           child: Text(
             _dateFormat.format(date),
             textAlign: TextAlign.right,
-            style: Theme.of(context).textTheme.body2.copyWith(color: Theme.of(context).textTheme.body1.color),
+            style: Theme.of(context).textTheme.bodyText1.copyWith(color: Theme.of(context).textTheme.bodyText2.color),
           )),
     );
   }
