@@ -9,6 +9,7 @@ import 'package:v34/commons/favorite/favorite.dart';
 import 'package:v34/repositories/repository.dart';
 
 import 'club_informations.dart';
+import 'club_statistics.dart';
 
 class ClubDetailPage extends StatefulWidget {
   final Club club;
@@ -43,8 +44,8 @@ class _ClubDetailPageState extends State<ClubDetailPage> {
       logoUrl: widget.club.logoUrl,
       tabs: [
         TextTab("Informations", ClubInformations(widget.club)),
-        TextTab("Statistiques", NoData("soon...")),
-        TextTab("Contact", NoData("soon...")),
+        TextTab("Statistiques", ClubStatistics(widget.club)),
+        TextTab("Equipes", NoData("soon...")),
       ],
       favorite: Favorite(
         widget.club.favorite,
