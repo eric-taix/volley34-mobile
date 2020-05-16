@@ -131,11 +131,10 @@ class _FavoriteClubCardState extends State<FavoriteClubCard> {
                     key: _chartKey,
                     duration: Duration(milliseconds: 1000),
                     edgeStyle: SegmentEdgeStyle.round,
-                    size: const Size(100.0, 100.0),
+                    size: const Size(80.0, 80.0),
                     initialChartData: _data,
                     chartType: CircularChartType.Radial,
-                    holeRadius: 30,
-
+                    holeRadius: 26,
                   ),
                   (state is ClubStatsLoadedState)
                       ? RichText(
