@@ -1,7 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
 import 'package:v34/repositories/repository.dart';
 
 class GymnasiumSlot {
@@ -55,7 +54,6 @@ class ClubSlotsLoadEvent extends ClubSlotsEvent {
 //---- BLOC
 class ClubSlotsBloc extends Bloc<ClubSlotsEvent, ClubSlotsState> {
   final Repository repository;
-  final DateFormat _dateFormat = DateFormat('HH:mm', "FR");
 
   ClubSlotsBloc({this.repository});
 

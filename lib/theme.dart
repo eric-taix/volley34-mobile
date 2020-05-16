@@ -13,7 +13,7 @@ class AppTheme {
         cardTheme: CardTheme(
           color: Color(0xFF313852),
           margin: EdgeInsets.only(top: 30, left: 20, right: 20, bottom: 0),
-          elevation: 2.0,
+          elevation: 0.0,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(18)),
           ),
@@ -56,7 +56,6 @@ class AppTheme {
             fontSize: 14.0,
             fontFamily: "Raleway",
           ),
-
         ),
         tabBarTheme: TabBarTheme(
           labelColor: Color(0xFFF7FBFE),
@@ -75,6 +74,9 @@ class AppTheme {
             ),
           ),
         ),
-        buttonBarTheme: ButtonBarThemeData(buttonPadding: EdgeInsets.all(0.0)));
+        buttonBarTheme: ButtonBarThemeData(
+          buttonPadding: EdgeInsets.all(0.0),
+        ),
+    );
   }
 }

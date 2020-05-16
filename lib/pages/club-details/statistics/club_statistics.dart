@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:v34/commons/card/card.dart';
+import 'package:v34/commons/card/titled_card.dart';
 import 'package:v34/models/club.dart';
 import 'package:v34/pages/club-details/blocs/club_stats.bloc.dart';
 import 'package:v34/pages/club-details/statistics/club_sets_repartition_chart.dart';
@@ -25,10 +25,18 @@ class _ClubStatisticsState extends State<ClubStatistics> {
 
   @override
   void initState() {
+    super.initState();
     _clubStatsBloc = ClubStatsBloc(repository: RepositoryProvider.of<Repository>(context))
       ..add(ClubStatsLoadEvent(
         clubCode: widget.club.code,
       ));
+  }
+
+
+  @override
+  void dispose() {
+    super.dispose();
+    _clubStatsBloc.close();
   }
 
   @override
