@@ -2,12 +2,11 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:v34/commons/card/card.dart';
 import 'package:v34/models/club.dart';
 import 'package:v34/pages/club-details/blocs/club_stats.bloc.dart';
-import 'package:v34/pages/club-details/club_sets_repartition_chart.dart';
+import 'package:v34/pages/club-details/statistics/club_sets_repartition_chart.dart';
 import 'package:v34/repositories/repository.dart';
 import 'package:v34/utils/launch.dart';
 

@@ -16,6 +16,7 @@ import 'package:v34/pages/dashboard/dashoard_page.dart';
 import 'package:v34/repositories/providers/agenda_provider.dart';
 import 'package:v34/repositories/providers/club_provider.dart';
 import 'package:v34/repositories/providers/favorite_provider.dart';
+import 'package:v34/repositories/providers/gymnasium_provider.dart';
 import 'package:v34/repositories/providers/team_provider.dart';
 import 'package:v34/repositories/repository.dart';
 import 'package:v34/theme.dart';
@@ -43,6 +44,7 @@ class _V34State extends State<V34> {
         favoriteProvider: FavoriteProvider(),
         teamProvider: TeamProvider(),
         agendaProvider: AgendaProvider(),
+        gymnasiumProvider: GymnasiumProvider(),
       ),
       child: FeatureDiscovery(
         child: MaterialApp(

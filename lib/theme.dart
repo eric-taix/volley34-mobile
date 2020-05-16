@@ -45,6 +45,18 @@ class AppTheme {
           bodyText2: TextStyle(color: Color(0xFFF7FBFE), fontSize: 14, fontFamily: "Raleway", fontWeight: FontWeight.w400),
           bodyText1: TextStyle(color: Color(0xFF979DB2), fontSize: 12, fontFamily: "Raleway", fontWeight: FontWeight.w400),
           caption: TextStyle(color: Color(0xFF979DB2), fontSize: 16, fontFamily: "Raleway"),
+          headline4: TextStyle(
+            color: Color(0xFFF7FBFE),
+            fontSize: 20.0,
+            fontFamily: "Raleway",
+            fontWeight: FontWeight.bold,
+          ),
+          headline5: TextStyle(
+            color: Color(0xFF979DB2),
+            fontSize: 14.0,
+            fontFamily: "Raleway",
+          ),
+
         ),
         tabBarTheme: TabBarTheme(
           labelColor: Color(0xFFF7FBFE),

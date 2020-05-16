@@ -1,13 +1,16 @@
 import 'package:flutter/foundation.dart';
 import 'package:v34/commons/favorite/favorite.dart';
 import 'package:v34/models/club.dart';
+import 'package:v34/models/slot.dart';
 import 'package:v34/models/event.dart';
+import 'package:v34/models/gymnasium.dart';
 import 'package:v34/models/match_result.dart';
 import 'package:v34/models/team.dart';
 import 'package:v34/models/team_stats.dart';
 import 'package:v34/repositories/providers/agenda_provider.dart';
 import 'package:v34/repositories/providers/club_provider.dart';
 import 'package:v34/repositories/providers/favorite_provider.dart';
+import 'package:v34/repositories/providers/gymnasium_provider.dart';
 import 'package:v34/repositories/providers/team_provider.dart';
 
 class Repository {
@@ -15,19 +18,20 @@ class Repository {
   final TeamProvider teamProvider;
   final FavoriteProvider favoriteProvider;
   final AgendaProvider agendaProvider;
+  final GymnasiumProvider gymnasiumProvider;
 
-  Repository({@required this.clubProvider, @required this.teamProvider, @required this.favoriteProvider, @required this.agendaProvider});
+  Repository({@required this.clubProvider, @required this.teamProvider, @required this.favoriteProvider, @required this.agendaProvider, @required this.gymnasiumProvider});
 
   /// Load all clubs
   Future<List<Club>> loadAllClubs() async {
-    List<Club> clubs = await clubProvider.getAllClubs();
+    List<Club> clubs = await clubProvider.loadAllClubs();
     var favoriteClubs = await favoriteProvider.loadFavoriteClubs();
     return clubs.map((club) => club..favorite = favoriteClubs.contains(club.code)).toList();
   }
 
   /// Load all favorite clubs
   Future<List<Club>> loadFavoriteClubs() async {
-    List<Club> clubs = await clubProvider.getAllClubs();
+    List<Club> clubs = await clubProvider.loadAllClubs();
     var favoriteClubs = await favoriteProvider.loadFavoriteClubs();
     return favoriteClubs.expand((favoriteCode) {
       var favoriteClub = clubs.firstWhere((club) => club.code == favoriteCode, orElse: null);
@@ -91,6 +95,15 @@ class Repository {
   /// Load the club statistics by team
   Future<List<TeamStat>> loadClubStats(String clubCode) async {
     var teams = await loadClubTeams(clubCode);
-    return await clubProvider.loadStats(clubCode, teams.map((team) => team.code).toList());
+    return await clubProvider.loadClubStats(clubCode, teams.map((team) => team.code).toList());
   }
+
+  /// Load all available slots for a club
+ Future<List<Slot>> loadClubSlots(String clubCode) async {
+    return clubProvider.loadClubSlots(clubCode);
+ }
+ 
+ Future<List<Gymnasium>> loadAllGymnasiums() async {
+    return gymnasiumProvider.loadAllGymnasiums();
+ }
 }

@@ -1,3 +1,5 @@
+
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -7,14 +9,14 @@ import 'package:v34/models/club.dart';
 import 'package:v34/utils/extensions.dart';
 import 'package:v34/utils/launch.dart';
 
-class ClubInformations extends StatelessWidget {
+class ClubContact extends StatelessWidget {
+
   final Club club;
 
-  ClubInformations(this.club);
+  ClubContact({this.club});
 
   @override
   Widget build(BuildContext context) {
-    TextTheme textTheme = Theme.of(context).textTheme;
     return TitledCard(
         icon: Icon(Icons.person, color: Theme.of(context).textTheme.headline6.color),
         title: "Contact",
@@ -78,36 +80,5 @@ class ClubInformations extends StatelessWidget {
             ),
         ]);
   }
-}
 
-class Tile extends StatelessWidget {
-  final Widget leadingIcon;
-  final String title;
-  final url;
-
-  Tile({this.leadingIcon, this.title, this.url});
-
-  @override
-  Widget build(BuildContext context) {
-    TextTheme textTheme = Theme.of(context).textTheme;
-    return InkWell(
-      onTap: url != null ? () => launchURL(url) : null,
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Row(children: [
-          Padding(
-            padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-            child: leadingIcon,
-          ),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.only(left: 8.0),
-              child: Text(title.trim(), overflow: TextOverflow.ellipsis, style: textTheme.bodyText2.copyWith()),
-            ),
-          ),
-          if (url != null) FaIcon(FontAwesomeIcons.externalLinkAlt, size: 14, color: Theme.of(context).textTheme.bodyText2.color)
-        ]),
-      ),
-    );
-  }
 }

@@ -4,6 +4,7 @@ import 'package:circular_menu/circular_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:tinycolor/tinycolor.dart';
+import 'package:v34/commons/loading.dart';
 
 class TitledCard extends StatefulWidget {
   final Widget icon;
@@ -59,20 +60,14 @@ class _TitledCardState extends State<TitledCard> {
                     padding: const EdgeInsets.only(top: 18.0, right: 8.0, bottom: 18.0, left: 8.0),
                     child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
                       widget.body ??
-                          Padding(
-                            padding: const EdgeInsets.all(28.0),
-                            child: new SpinKitChasingDots(
-                              color: Theme.of(context).textTheme.headline6.color,
-                              size: 30,
-                            ),
-                          ),
+                          SizedBox(height: 100),
                     ]),
                   ),
                   if (mainActions != null && mainActions.isNotEmpty)
                     Container(
                       decoration: BoxDecoration(
                           color: TinyColor(Theme.of(context).cardTheme.color).lighten(3).color,
-                          border: Border(top: BorderSide(color: Theme.of(context).textTheme.headline6.color))),
+                          border: Border(top: BorderSide(color: TinyColor(Theme.of(context).textTheme.headline6.color).darken(30).color))),
                       child: Padding(
                         padding: EdgeInsets.only(right: buttonBarRightPadding),
                         child: ButtonBar(
