@@ -28,7 +28,7 @@ class _ClubDetailPageState extends State<ClubDetailPage> {
   void initState() {
     super.initState();
     _repository = RepositoryProvider.of<Repository>(context);
-    _repository.favoriteProvider.loadFavoriteClubs().then((favorites) {
+    _repository.loadFavoriteClubs().then((favorites) {
       setState(() {
         widget.club.favorite = favorites.contains(widget.club.code);
       });

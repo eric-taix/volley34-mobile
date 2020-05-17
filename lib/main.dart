@@ -40,11 +40,11 @@ class _V34State extends State<V34> {
   Widget build(BuildContext context) {
     return RepositoryProvider(
       create: (context) => Repository(
-        clubProvider: ClubProvider(),
-        favoriteProvider: FavoriteProvider(),
-        teamProvider: TeamProvider(),
-        agendaProvider: AgendaProvider(),
-        gymnasiumProvider: GymnasiumProvider(),
+        ClubProvider(),
+        TeamProvider(),
+        FavoriteProvider(),
+        AgendaProvider(),
+        GymnasiumProvider(),
       ),
       child: FeatureDiscovery(
         child: MaterialApp(

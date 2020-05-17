@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:like_button/like_button.dart';
 import 'package:v34/commons/favorite/favorite.dart';
+import 'package:v34/pages/club/blocs/club_favorite_bloc.dart';
 import 'package:v34/repositories/repository.dart';
 
 class FavoriteIcon extends StatefulWidget {
@@ -24,12 +25,18 @@ class FavoriteIcon extends StatefulWidget {
 }
 
 class _FavoriteIconState extends State<FavoriteIcon> with SingleTickerProviderStateMixin {
-  Repository _repository;
+  ClubFavoriteBloc _favoriteBloc;
 
   @override
   void initState() {
     super.initState();
-    _repository = RepositoryProvider.of<Repository>(context);
+    _favoriteBloc = ClubFavoriteBloc(RepositoryProvider.of<Repository>(context), widget.favoriteId)..add(ClubFavoriteLoadEvent());
+  }
+
+  @override
+  void dispose() {
+    _favoriteBloc.close();
+    super.dispose();
   }
 
   @override
@@ -49,11 +56,7 @@ class _FavoriteIconState extends State<FavoriteIcon> with SingleTickerProviderSt
           likeBuilder: (bool isLiked) {
             return Icon(
               isLiked ? Icons.star : Icons.star_border,
-              color: isLiked ? Colors.yellow : Theme
-                  .of(context)
-                  .textTheme
-                  .bodyText1
-                  .color,
+              color: isLiked ? Colors.yellow : Theme.of(context).textTheme.bodyText1.color,
               size: 26,
             );
           },
@@ -63,7 +66,7 @@ class _FavoriteIconState extends State<FavoriteIcon> with SingleTickerProviderSt
   }
 
   Future<bool> _performToggleFavorite(bool favorite) async {
-    await _repository.updateFavorite(widget.favoriteId, widget.favoriteType, !favorite);
+    _favoriteBloc.add(ClubFavoriteUpdateEvent(!favorite));
     return !favorite;
   }
 }
