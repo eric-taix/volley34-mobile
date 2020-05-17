@@ -2,12 +2,10 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:v34/commons/card/titled_card.dart';
+import 'package:v34/commons/cards/titled_card.dart';
 import 'package:v34/models/club.dart';
 import 'package:v34/utils/extensions.dart';
-import 'package:v34/utils/launch.dart';
 
 class ClubContact extends StatelessWidget {
 

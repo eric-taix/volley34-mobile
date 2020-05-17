@@ -22,17 +22,9 @@ class ClubDetailPage extends StatefulWidget {
 
 class _ClubDetailPageState extends State<ClubDetailPage> {
 
-  Repository _repository;
-
   @override
   void initState() {
     super.initState();
-    _repository = RepositoryProvider.of<Repository>(context);
-    _repository.loadFavoriteClubs().then((favorites) {
-      setState(() {
-        widget.club.favorite = favorites.contains(widget.club.code);
-      });
-    });
   }
 
   @override

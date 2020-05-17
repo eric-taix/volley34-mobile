@@ -110,7 +110,8 @@ class Repository {
  Future<List<Slot>> loadClubSlots(String clubCode) async {
     return _clubProvider.loadClubSlots(clubCode);
  }
- 
+
+ /// Load all gymnasiums
  Future<List<Gymnasium>> loadAllGymnasiums() async {
     return _gymnasiumProvider.loadAllGymnasiums();
  }
