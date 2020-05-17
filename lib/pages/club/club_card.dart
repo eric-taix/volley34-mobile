@@ -67,15 +67,15 @@ class _ClubCardState extends State<ClubCard> {
             ),
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.only(left: 8.0),
+        Positioned(
+          left: 5,
+          top: 5,
           child: Hero(tag: "hero-logo-${widget.club.code}", child: RoundedNetworkImage(40, widget.club.logoUrl)),
         ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: <Widget>[
-            FavoriteIcon(widget.club.code, FavoriteType.Club, _favorite),
-          ],
+        Positioned(
+          right: 0,
+          top: 20,
+          child: FavoriteIcon(widget.club.code, FavoriteType.Club, _favorite),
         ),
       ],
     );

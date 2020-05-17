@@ -31,6 +31,12 @@ dependencies:
   feature_discovery: ^0.8.0
   font_awesome_flutter: ^8.8.1
   url_launcher: ^5.4.7
+  fl_chart: ^0.9.4
+  flutter_spinkit: ^4.1.2
+  tinycolor: ^1.0.2
+  fab_circular_menu: ^1.0.0
+  circular_menu: ^0.1.1
+  radial_button: ^0.1.1
 
 dev_dependencies:
   flutter_test:

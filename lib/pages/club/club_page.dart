@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:v34/commons/loading.dart';
 import 'package:v34/commons/paragraph.dart';
 import 'package:v34/models/club.dart';
 import 'package:v34/pages/club/club_card.dart';
@@ -38,6 +39,7 @@ class _ClubPageState extends State<ClubPage> with SingleTickerProviderStateMixin
     _repository.loadAllClubs().then((clubs) {
       setState(() {
         _loading = false;
+        clubs.sort((c1, c2) => c1.shortName.toUpperCase().compareTo(c2.shortName.toUpperCase()));
         _clubs = clubs;
       });
     });
@@ -46,7 +48,7 @@ class _ClubPageState extends State<ClubPage> with SingleTickerProviderStateMixin
   @override
   Widget build(BuildContext context) {
     return _loading
-        ? Center(child: CircularProgressIndicator())
+        ? Center(child: Loading())
         : Stack(children: <Widget>[
             AnimationLimiter(
               child: ListView.builder(

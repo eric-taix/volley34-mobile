@@ -2,10 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:v34/commons/app_bar/animated_logo.dart';
 import 'package:v34/commons/app_bar/app_bar.dart';
+import 'package:v34/commons/favorite/favorite.dart';
 import 'package:v34/commons/favorite/favorite_icon.dart';
 import 'package:v34/commons/text_tab_bar.dart';
-import 'package:v34/commons/favorite/favorite.dart';
-
 
 class _AppBarHeaderDelegate extends SliverPersistentHeaderDelegate {
   final double expandedHeight;
@@ -115,7 +114,7 @@ class _AppBarHeaderDelegate extends SliverPersistentHeaderDelegate {
             ),
           ),
           AnimatedLogo(
-              expandedHeight: expandedHeight,
+            expandedHeight: expandedHeight,
             imageUrl: imageUrl,
             heroTag: heroTag,
             compute: computeLinear(shrinkOffset, minExtent, maxExtent),
@@ -171,9 +170,6 @@ class AppBarWithImage extends StatefulWidget {
 }
 
 class _AppBarWithImageState extends State<AppBarWithImage> with SingleTickerProviderStateMixin {
-
-
-
   @override
   Widget build(BuildContext context) {
     return Material(
@@ -193,7 +189,10 @@ class _AppBarWithImageState extends State<AppBarWithImage> with SingleTickerProv
                     subTitle: widget.subTitle,
                     heroTag: widget.heroTag,
                     favorite: widget.favorite,
-                    bottom: TextTabBar(tabs: widget.tabs),
+                    bottom: Container(
+                      color: Theme.of(context).primaryColor,
+                      child: TextTabBar(tabs: widget.tabs),
+                    ),
                   ),
                 ),
               ),
@@ -213,7 +212,7 @@ class _AppBarWithImageState extends State<AppBarWithImage> with SingleTickerProv
                           handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
                         ),
                         SliverPadding(
-                            padding: const EdgeInsets.all(8.0),
+                            padding: const EdgeInsets.only(bottom: 18.0),
                             sliver: SliverList(
                               delegate: SliverChildListDelegate([tab.child]),
                             )),

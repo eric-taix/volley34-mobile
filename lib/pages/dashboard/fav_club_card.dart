@@ -2,6 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_circular_chart/flutter_circular_chart.dart';
+import 'package:tinycolor/tinycolor.dart';
+import 'package:v34/commons/card/titled_card.dart';
+import 'package:v34/commons/loading.dart';
 import 'package:v34/commons/rounded_network_image.dart';
 import 'package:v34/models/club.dart';
 import 'package:v34/pages/dashboard/blocs/club_stats.dart';
@@ -10,6 +13,7 @@ import 'package:v34/repositories/repository.dart';
 class FavoriteClubCard extends StatefulWidget {
   final Club club;
   final GestureTapCallback onTap;
+
   FavoriteClubCard(this.club, this.onTap);
 
   @override
@@ -64,68 +68,52 @@ class _FavoriteClubCardState extends State<FavoriteClubCard> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(children: [
-      SizedBox(
-        height: 300,
-        width: double.infinity,
-        child: Padding(
-          padding: const EdgeInsets.only(left: 14.0),
-          child: Card(
-            child: InkWell(
-              onTap: widget.onTap,
-              child: BlocListener(
-                  listener: (context, state) {
-                    if (state is ClubStatsLoadedState) {
-                      _updateState(state.wonMatches, state.totalMatches);
-                    }
-                  },
-                  bloc: _clubStatsBloc,
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.only(top: 18.0, right: 8.0, bottom: 10.0, left: 48.0),
-                          child: Text(
-                            widget.club.shortName,
-                            style: Theme.of(context).textTheme.bodyText2.copyWith(fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                        Expanded(
-                          child: BlocBuilder(
-                            bloc: _clubStatsBloc,
-                            builder: (context, state) {
-                              return _buildCardContent(context, state);
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                  )),
+    return Stack(
+      children: <Widget>[
+        TitledCard(
+          icon: SizedBox(width: 10),
+          title: widget.club.shortName,
+          onTap: widget.onTap,
+          body: BlocListener(
+            listener: (context, state) {
+              if (state is ClubStatsLoadedState) {
+                _updateState(state.wonMatches, state.totalMatches);
+              }
+            },
+            bloc: _clubStatsBloc,
+            child: BlocBuilder(
+              bloc: _clubStatsBloc,
+              builder: (context, state) {
+                return _buildCardContent(context, state);
+              },
             ),
           ),
         ),
-      ),
-      Padding(
-        padding: const EdgeInsets.only(left: 8.0, bottom: 140),
-        child: Hero(
-          tag: "hero-logo-${widget.club.code}",
-          child: RoundedNetworkImage(40, widget.club.logoUrl),
-        ),
-      ),
-    ]);
+        Positioned(
+          top: 17,
+          child: Hero(
+            tag: "hero-logo-${widget.club.code}",
+            child: RoundedNetworkImage(
+              40,
+              widget.club.logoUrl,
+              circleColor: TinyColor(Theme.of(context).cardTheme.color).isDark()
+                  ? TinyColor(Theme.of(context).cardTheme.color).lighten().color
+                  : TinyColor(Theme.of(context).cardTheme.color).darken().color,
+            ),
+          ),
+        )
+      ],
+    );
   }
 
   Widget _buildCardContent(BuildContext context, ClubStatsState state) {
     return Padding(
-      padding: const EdgeInsets.only(left: 8.0, right: 6.0),
+      padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 8.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Text("Derniers matchs", style: Theme.of(context).textTheme.bodyText1),
+          Text("La semaine dernière", style: Theme.of(context).textTheme.bodyText1),
           SizedBox(
             height: 50,
             child: Row(
@@ -143,9 +131,10 @@ class _FavoriteClubCardState extends State<FavoriteClubCard> {
                     key: _chartKey,
                     duration: Duration(milliseconds: 1000),
                     edgeStyle: SegmentEdgeStyle.round,
-                    size: const Size(60.0, 60.0),
+                    size: const Size(80.0, 80.0),
                     initialChartData: _data,
                     chartType: CircularChartType.Radial,
+                    holeRadius: 26,
                   ),
                   (state is ClubStatsLoadedState)
                       ? RichText(
@@ -163,7 +152,7 @@ class _FavoriteClubCardState extends State<FavoriteClubCard> {
                             ],
                           ),
                         )
-                      : Text("?", style: TextStyle(fontSize: 12))
+                      : Loading.small()
                 ]),
               ],
             ),

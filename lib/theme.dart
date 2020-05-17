@@ -12,8 +12,8 @@ class AppTheme {
         bottomAppBarColor: Color(0xFFF7FBFE),
         cardTheme: CardTheme(
           color: Color(0xFF313852),
-          margin: EdgeInsets.all(8.0),
-          elevation: 2.0,
+          margin: EdgeInsets.only(top: 30, left: 20, right: 20, bottom: 0),
+          elevation: 0.0,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(18)),
           ),
@@ -44,7 +44,18 @@ class AppTheme {
           subtitle2: TextStyle(color: Color(0xFFF7FBFE), fontSize: 14, fontFamily: "Raleway", fontWeight: FontWeight.bold),
           bodyText2: TextStyle(color: Color(0xFFF7FBFE), fontSize: 14, fontFamily: "Raleway", fontWeight: FontWeight.w400),
           bodyText1: TextStyle(color: Color(0xFF979DB2), fontSize: 12, fontFamily: "Raleway", fontWeight: FontWeight.w400),
-          caption: TextStyle(color: Color(0xFFF7FBFE), fontSize: 14, fontFamily: "Raleway", fontWeight: FontWeight.bold),
+          caption: TextStyle(color: Color(0xFF979DB2), fontSize: 16, fontFamily: "Raleway"),
+          headline4: TextStyle(
+            color: Color(0xFFF7FBFE),
+            fontSize: 20.0,
+            fontFamily: "Raleway",
+            fontWeight: FontWeight.bold,
+          ),
+          headline5: TextStyle(
+            color: Color(0xFF979DB2),
+            fontSize: 14.0,
+            fontFamily: "Raleway",
+          ),
         ),
         tabBarTheme: TabBarTheme(
           labelColor: Color(0xFFF7FBFE),
@@ -63,6 +74,9 @@ class AppTheme {
             ),
           ),
         ),
-        buttonBarTheme: ButtonBarThemeData(buttonPadding: EdgeInsets.all(0.0)));
+        buttonBarTheme: ButtonBarThemeData(
+          buttonPadding: EdgeInsets.all(0.0),
+        ),
+    );
   }
 }

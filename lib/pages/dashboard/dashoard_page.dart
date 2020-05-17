@@ -2,6 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import 'package:v34/commons/loading.dart';
 import 'package:v34/commons/router.dart';
 import 'package:v34/pages/club-details/club_detail_page.dart';
 import 'package:v34/pages/dashboard/blocs/agenda_bloc.dart';
@@ -67,12 +68,12 @@ class _DashboardPageState extends State<DashboardPage> {
             ? Column(
                 children: <Widget>[
                   Container(
-                    height: 200,
+                    height: 250,
                     child: PageView.builder(
                       itemCount: state.clubs.length,
                       controller: _pageController,
                       itemBuilder: (context, index) => Padding(
-                        padding: const EdgeInsets.only(left: 8.0, right: 16),
+                        padding: const EdgeInsets.only(left: 8.0, right: 0),
                         child: FavoriteClubCard(
                           state.clubs[index],
                           () => Router.push(context: context, builder: (_) => ClubDetailPage(state.clubs[index])).then(
@@ -97,7 +98,7 @@ class _DashboardPageState extends State<DashboardPage> {
               )
             : Container(
                 constraints: BoxConstraints(minHeight: 100),
-                child: Center(child: CircularProgressIndicator()),
+                child: Center(child: Loading()),
               );
       case 2:
         return Paragraph(title: state.teamCodes.length > 1 ? "Vos équipes" : "Votre équipe");
@@ -127,7 +128,7 @@ class _DashboardPageState extends State<DashboardPage> {
                           ];
                         }),
                       ])
-                    : Center(child: CircularProgressIndicator()),
+                    : Center(child: Loading()),
               );
             });
       default:

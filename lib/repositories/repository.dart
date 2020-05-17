@@ -1,12 +1,16 @@
 import 'package:flutter/foundation.dart';
-import 'package:v34/models/club.dart';
-import 'package:v34/models/event.dart';
 import 'package:v34/commons/favorite/favorite.dart';
+import 'package:v34/models/club.dart';
+import 'package:v34/models/slot.dart';
+import 'package:v34/models/event.dart';
+import 'package:v34/models/gymnasium.dart';
 import 'package:v34/models/match_result.dart';
 import 'package:v34/models/team.dart';
+import 'package:v34/models/team_stats.dart';
 import 'package:v34/repositories/providers/agenda_provider.dart';
 import 'package:v34/repositories/providers/club_provider.dart';
 import 'package:v34/repositories/providers/favorite_provider.dart';
+import 'package:v34/repositories/providers/gymnasium_provider.dart';
 import 'package:v34/repositories/providers/team_provider.dart';
 
 class Repository {
@@ -14,23 +18,20 @@ class Repository {
   final TeamProvider teamProvider;
   final FavoriteProvider favoriteProvider;
   final AgendaProvider agendaProvider;
+  final GymnasiumProvider gymnasiumProvider;
 
-  Repository(
-      {@required this.clubProvider,
-      @required this.teamProvider,
-      @required this.favoriteProvider,
-      @required this.agendaProvider});
+  Repository({@required this.clubProvider, @required this.teamProvider, @required this.favoriteProvider, @required this.agendaProvider, @required this.gymnasiumProvider});
 
+  /// Load all clubs
   Future<List<Club>> loadAllClubs() async {
-    List<Club> clubs = await clubProvider.getAllClubs();
+    List<Club> clubs = await clubProvider.loadAllClubs();
     var favoriteClubs = await favoriteProvider.loadFavoriteClubs();
-    return clubs
-        .map((club) => club..favorite = favoriteClubs.contains(club.code))
-        .toList();
+    return clubs.map((club) => club..favorite = favoriteClubs.contains(club.code)).toList();
   }
 
+  /// Load all favorite clubs
   Future<List<Club>> loadFavoriteClubs() async {
-    List<Club> clubs = await clubProvider.getAllClubs();
+    List<Club> clubs = await clubProvider.loadAllClubs();
     var favoriteClubs = await favoriteProvider.loadFavoriteClubs();
     return favoriteClubs.expand((favoriteCode) {
       var favoriteClub = clubs.firstWhere((club) => club.code == favoriteCode, orElse: null);
@@ -39,21 +40,23 @@ class Repository {
     }).toList();
   }
 
+  /// Load a club's teams
   Future<List<Team>> loadClubTeams(String clubCode) async {
     return teamProvider.loadClubTeams(clubCode);
   }
 
-  Future<MatchResult> lastTeamMatchResult(
-      String teamCode, int nbLastMatches) async {
-    List<MatchResult> matches =
-        await teamProvider.lastTeamMatchesResult(teamCode);
+  /// Load the last match result of a team
+  Future<MatchResult> lastTeamMatchResult(String teamCode, int nbLastMatches) async {
+    List<MatchResult> matches = await teamProvider.lastTeamMatchesResult(teamCode);
     return matches.last;
   }
 
+  /// Load the general agenda for a week number
   Future<List<Event>> loadAgendaWeek(int week) async {
     return agendaProvider.listEvents();
   }
 
+  /// Load all favorite teams matches
   Future<List<Event>> loadFavoriteTeamsMatches() async {
     var results = await Future.wait([
       teamProvider.loadTeamMatches("VCVX1"),
@@ -63,9 +66,8 @@ class Repository {
     return results.expand((i) => i).toList();
   }
 
-  Future updateFavorite(
-      String favoriteId, FavoriteType favoriteType, bool favorite) async {
-    print("Update fav $favoriteId of $favoriteType to value $favorite");
+  /// Update a favorite by providing the [FavoriteType], a generic favoriteId and the flag (favorite or not)
+  Future updateFavorite(String favoriteId, FavoriteType favoriteType, bool favorite) async {
     switch (favoriteType) {
       case FavoriteType.Team:
         List<String> favoriteTeams = await favoriteProvider.loadFavoriteTeams();
@@ -85,7 +87,23 @@ class Repository {
     }
   }
 
-  Future<bool> isClubFavorite(String code) async {
-    return favoriteProvider.loadFavoriteClubs().then((clubs) => clubs.contains(code));
+  /// Return if a club is in favorites
+  Future<bool> isClubFavorite(String clubCode) async {
+    return favoriteProvider.loadFavoriteClubs().then((clubs) => clubs.contains(clubCode));
   }
+
+  /// Load the club statistics by team
+  Future<List<TeamStat>> loadClubStats(String clubCode) async {
+    var teams = await loadClubTeams(clubCode);
+    return await clubProvider.loadClubStats(clubCode, teams.map((team) => team.code).toList());
+  }
+
+  /// Load all available slots for a club
+ Future<List<Slot>> loadClubSlots(String clubCode) async {
+    return clubProvider.loadClubSlots(clubCode);
+ }
+ 
+ Future<List<Gymnasium>> loadAllGymnasiums() async {
+    return gymnasiumProvider.loadAllGymnasiums();
+ }
 }
