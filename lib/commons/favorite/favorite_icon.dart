@@ -12,6 +12,7 @@ class FavoriteIcon extends StatefulWidget {
   final FavoriteType favoriteType;
   final String favoriteId;
   final EdgeInsetsGeometry padding;
+  final bool reloadFavoriteWhenUpdate;
 
   FavoriteIcon(this.favoriteId, this.favoriteType, this.favorite,
       {this.padding = const EdgeInsets.only(
@@ -19,7 +20,7 @@ class FavoriteIcon extends StatefulWidget {
         left: 24.0,
         bottom: 12.0,
         right: 24.0,
-      )});
+      ), this.reloadFavoriteWhenUpdate = false});
 
   @override
   _FavoriteIconState createState() => _FavoriteIconState();
@@ -35,10 +36,9 @@ class _FavoriteIconState extends State<FavoriteIcon> with SingleTickerProviderSt
     _favoriteBloc.add(FavoriteLoadEvent());
   }
 
-
   @override
   void didUpdateWidget(FavoriteIcon oldWidget) {
-    _favoriteBloc.add(FavoriteLoadEvent());
+    if (widget.reloadFavoriteWhenUpdate) _favoriteBloc.add(FavoriteLoadEvent());
     super.didUpdateWidget(oldWidget);
   }
 

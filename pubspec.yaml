@@ -38,7 +38,8 @@ dependencies:
   circular_menu: ^0.1.1
   radial_button: ^0.1.1
   flushbar: ^1.10.4
-
+  simple_gravatar: ^1.0.5
+  
 dev_dependencies:
   flutter_test:
     sdk: flutter

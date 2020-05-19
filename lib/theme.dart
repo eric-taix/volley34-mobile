@@ -13,7 +13,7 @@ class AppTheme {
         cardTheme: CardTheme(
           color: Color(0xFF313852),
           margin: EdgeInsets.only(top: 30, left: 20, right: 20, bottom: 0),
-          elevation: 2.0,
+          elevation: 0.0,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(18)),
           ),
@@ -41,6 +41,7 @@ class AppTheme {
         ),
         textTheme: TextTheme(
           headline6: TextStyle(color: Color(0xFF979DB2), fontSize: 20, fontFamily: "Raleway", fontWeight: FontWeight.w300),
+          subtitle1: TextStyle(color: Color(0xFFF7FBFE), fontSize: 20, fontFamily: "Raleway", fontWeight: FontWeight.bold),
           subtitle2: TextStyle(color: Color(0xFFF7FBFE), fontSize: 14, fontFamily: "Raleway", fontWeight: FontWeight.bold),
           bodyText2: TextStyle(color: Color(0xFFF7FBFE), fontSize: 14, fontFamily: "Raleway", fontWeight: FontWeight.w400),
           bodyText1: TextStyle(color: Color(0xFF979DB2), fontSize: 12, fontFamily: "Raleway", fontWeight: FontWeight.w400),

@@ -6,6 +6,7 @@ import 'package:v34/commons/no_data.dart';
 import 'package:v34/commons/text_tab_bar.dart';
 import 'package:v34/models/club.dart';
 import 'package:v34/commons/favorite/favorite.dart';
+import 'package:v34/pages/club-details/teams/club_teams.dart';
 import 'package:v34/repositories/repository.dart';
 
 import 'informations/club_informations.dart';
@@ -35,9 +36,9 @@ class _ClubDetailPageState extends State<ClubDetailPage> {
       subTitle: widget.club.name,
       logoUrl: widget.club.logoUrl,
       tabs: [
-        TextTab("Informations", ClubInformations(widget.club)),
         TextTab("Statistiques", ClubStatistics(widget.club)),
-        TextTab("Equipes", NoData("soon...")),
+        TextTab("Equipes", ClubTeams(widget.club)),
+        TextTab("Informations", ClubInformations(widget.club)),
       ],
       favorite: Favorite(
         widget.club.favorite,

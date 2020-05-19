@@ -212,7 +212,7 @@ class _AppBarWithImageState extends State<AppBarWithImage> with SingleTickerProv
                           handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
                         ),
                         SliverPadding(
-                            padding: const EdgeInsets.only(bottom: 18.0),
+                            padding: const EdgeInsets.all(8.0),
                             sliver: SliverList(
                               delegate: SliverChildListDelegate([tab.child]),
                             )),

@@ -40,7 +40,7 @@ class _ClubCardState extends State<ClubCard> {
         })),
         buttonBar: ButtonBar(
           children: <Widget>[
-            FavoriteIcon(widget.club.code, FavoriteType.Club, _favorite, padding: EdgeInsets.zero,),
+            FavoriteIcon(widget.club.code, FavoriteType.Club, _favorite, padding: EdgeInsets.zero, reloadFavoriteWhenUpdate: true,),
           ],
         ),
       ),

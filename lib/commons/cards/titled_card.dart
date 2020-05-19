@@ -8,8 +8,9 @@ class TitledCard extends StatelessWidget {
   final List<CardAction> actions;
   final VoidCallback onTap;
   final ButtonBar buttonBar;
+  final EdgeInsetsGeometry bodyPadding;
 
-  TitledCard({this.icon, @required this.title, this.body, this.actions, this.onTap, this.buttonBar}) : assert(title != null);
+  TitledCard({this.icon, @required this.title, this.body, this.actions, this.onTap, this.buttonBar, this.bodyPadding}) : assert(title != null);
 
   @override
   Widget build(BuildContext context) {
@@ -44,11 +45,13 @@ class TitledCard extends StatelessWidget {
                     ),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 18.0, right: 8.0, bottom: 18.0, left: 8.0),
-                  child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
-                    body ?? SizedBox(height: 100),
-                  ]),
+                Expanded(
+                  child: Padding(
+                    padding: bodyPadding ?? const EdgeInsets.only(top: 18.0, right: 8.0, bottom: 18.0, left: 8.0),
+                    child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+                      body ?? SizedBox(height: 100),
+                    ]),
+                  ),
                 ),
                 if (actions != null && actions.isNotEmpty)
                   Container(

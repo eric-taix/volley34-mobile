@@ -59,7 +59,7 @@ class ClubStatsBloc extends Bloc<ClubStatsEvent, ClubStatsState> {
       List<Team> teams = await _repository.loadClubTeams(event.clubCode);
       List<MatchResult> teamsResults = await Future.wait(teams
           .map(
-            (team) => _repository.lastTeamMatchResult(team.code, 1).catchError((error) {
+            (team) => _repository.loadTeamLastMatchResult(team.code).catchError((error) {
               print("Error for match results for team ${team.code}");
             }),
           )

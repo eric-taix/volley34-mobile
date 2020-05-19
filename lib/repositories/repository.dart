@@ -51,15 +51,20 @@ class Repository {
     return _teamProvider.loadClubTeams(clubCode);
   }
 
-  /// Load the last match result of a team
-  Future<MatchResult> lastTeamMatchResult(
+  /// Load the last N matches result of a team
+  Future<List<MatchResult>> loadTeamLastMatchesResult(
       String teamCode, int nbLastMatches) async {
     List<MatchResult> matches =
         await _teamProvider.lastTeamMatchesResult(teamCode);
-    return matches.last;
+    return matches.sublist(matches.length > nbLastMatches ? matches.length - nbLastMatches : 0).toList();
   }
 
-  /// Load the general agenda for a week number
+  Future<MatchResult> loadTeamLastMatchResult(
+      String teamCode) async {
+    var matches = await loadTeamLastMatchesResult(teamCode, 1);
+    return matches.last;
+  }
+    /// Load the general agenda for a week number
   Future<List<Event>> loadAgendaWeek(int week) async {
     return _agendaProvider.listEvents();
   }
@@ -115,4 +120,5 @@ class Repository {
  Future<List<Gymnasium>> loadAllGymnasiums() async {
     return _gymnasiumProvider.loadAllGymnasiums();
  }
+
 }
