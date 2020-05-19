@@ -19,12 +19,10 @@ class ClubProvider {
     }
   }
 
-  Future<List<TeamStat>> loadClubStats(String clubCode, List<String> teamsCode) async {
+  Future<List<TeamStat>> loadClubStats(String clubCode) async {
     Response response = await dio.get("/clubs/$clubCode/stats", options: buildConfigurableCacheOptions());
     if (response.statusCode == 200) {
-      return teamsCode.map((teamCode) {
-        return TeamStat.fromJson(teamCode, (response.data as Map)["Statistiques"][teamCode]);
-      }).toList();
+      return (response.data as List<dynamic>).map((teamStatJson) => TeamStat.fromJson(teamStatJson)).toList();
     } else {
       throw Exception('Impossible de récupérer les stats du club $clubCode');
     }

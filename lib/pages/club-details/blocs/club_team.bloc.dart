@@ -58,7 +58,7 @@ class TeamBloc extends Bloc<TeamEvent, TeamState> {
       var sets = List.generate(event.count, (index) {
         double sum = 0;
         for(int i = index * event.count; i < (index + 1) * event.count; i++) {
-          sum += results[i];
+          if (i < results.length) sum += results[i];
         }
         return sum / event.count;
       }).toList();

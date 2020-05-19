@@ -88,7 +88,7 @@ class Repository {
         if (isCurrentlyFavorite != favorite) {
           favorite ? favoriteTeams.add(favoriteId) : favoriteTeams.remove(favoriteId);
         }
-        await _favoriteProvider.saveFavoriteTeams(favoriteTeams);
+        _favoriteProvider.saveFavoriteTeams(favoriteTeams);
         break;
       case FavoriteType.Club:
         List<String> favoriteClubs = await _favoriteProvider.loadFavoriteClubs();
@@ -96,7 +96,7 @@ class Repository {
         if (isCurrentlyFavorite != favorite) {
           favorite ? favoriteClubs.add(favoriteId) : favoriteClubs.remove(favoriteId);
         }
-        await _favoriteProvider.saveFavoriteClubs(favoriteClubs);
+        _favoriteProvider.saveFavoriteClubs(favoriteClubs);
     }
   }
 
@@ -107,8 +107,7 @@ class Repository {
 
   /// Load the club statistics by team
   Future<List<TeamStat>> loadClubStats(String clubCode) async {
-    var teams = await loadClubTeams(clubCode);
-    return await _clubProvider.loadClubStats(clubCode, teams.map((team) => team.code).toList());
+    return _clubProvider.loadClubStats(clubCode);
   }
 
   /// Load all available slots for a club

@@ -25,6 +25,7 @@ class SetsDistribution {
 @immutable
 class TeamStat {
   final String codeTeam;
+  final String teamName;
 
   final int matchs;
   final int matchsPlayed;
@@ -54,7 +55,7 @@ class TeamStat {
   final int pointsWon;
   final int pointsLost;
 
-  TeamStat(this.codeTeam,
+  TeamStat(this.codeTeam, this.teamName,
       {this.matchs,
         this.matchsPlayed,
         this.matchsPlayedHome,
@@ -78,9 +79,10 @@ class TeamStat {
         this.pointsWon,
         this.pointsLost});
 
-  factory TeamStat.fromJson(String codeTeam, Map<String, dynamic> json) {
+  factory TeamStat.fromJson(Map<String, dynamic> json) {
     return TeamStat(
-      codeTeam,
+      json["CodeEquipe"],
+      json["Equipe"],
       matchs: json["Matchs"],
       matchsPlayed: json["MatchsJoues"],
       matchsPlayedHome: json["MatchsDomicile"],
