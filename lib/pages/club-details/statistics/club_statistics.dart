@@ -41,32 +41,31 @@ class _ClubStatisticsState extends State<ClubStatistics> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
+    return SliverList(
+      delegate: SliverChildListDelegate([
         BlocBuilder(
-          bloc: _clubStatsBloc,
-          builder: (context, state) {
-            if (state is ClubStatsLoadedState || state is ClubStatsLoadingState) {
-              return TitledCard(
-                icon: FaIcon(FontAwesomeIcons.layerGroup, color: Theme
-                    .of(context)
-                    .textTheme
-                    .headline6
-                    .color),
-                title: "Matchs",
-                body: (state is ClubStatsLoadedState) ? SizedBox(
-                  height: 120,
-                  child: BarChart(
-                    setsReparitionData(),
-                    swapAnimationDuration: Duration(milliseconds: 2000),
-                  )
-                )  : null,
-              );
-            } else {
-              return SizedBox();
+            bloc: _clubStatsBloc,
+            builder: (context, state) {
+              if (state is ClubStatsLoadedState || state is ClubStatsLoadingState) {
+                return TitledCard(
+                  icon: FaIcon(FontAwesomeIcons.layerGroup, color: Theme
+                      .of(context)
+                      .textTheme
+                      .headline6
+                      .color),
+                  title: "Matchs",
+                  body: (state is ClubStatsLoadedState) ? SizedBox(
+                      height: 120,
+                      child: BarChart(
+                        setsReparitionData(),
+                        swapAnimationDuration: Duration(milliseconds: 2000),
+                      )
+                  )  : null,
+                );
+              } else {
+                return SizedBox();
+              }
             }
-          }
         ),
         TitledCard(
           icon: FaIcon(FontAwesomeIcons.layerGroup, color: Theme.of(context).textTheme.headline6.color),
@@ -76,7 +75,7 @@ class _ClubStatisticsState extends State<ClubStatistics> {
             child: ClubSetsReparitionData(),
           ),
         ),
-      ],
+      ]),
     );
   }
 

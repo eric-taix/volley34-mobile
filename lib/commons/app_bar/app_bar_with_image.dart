@@ -190,6 +190,7 @@ class _AppBarWithImageState extends State<AppBarWithImage> with SingleTickerProv
                     heroTag: widget.heroTag,
                     favorite: widget.favorite,
                     bottom: Container(
+                      width: double.infinity,
                       color: Theme.of(context).primaryColor,
                       child: TextTabBar(tabs: widget.tabs),
                     ),
@@ -212,10 +213,9 @@ class _AppBarWithImageState extends State<AppBarWithImage> with SingleTickerProv
                           handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
                         ),
                         SliverPadding(
-                            padding: const EdgeInsets.all(8.0),
-                            sliver: SliverList(
-                              delegate: SliverChildListDelegate([tab.child]),
-                            )),
+                          padding: const EdgeInsets.only(top: 0.0, right: 8.0, bottom: 48.0, left: 8.0),
+                          sliver: tab.child,
+                        ),
                       ],
                     );
                   },

@@ -35,15 +35,16 @@ class _ClubTeamsState extends State<ClubTeams> {
     return BlocBuilder(
         bloc: _clubTeamsBloc,
         builder: (context, state) {
-          return Column(
-            children: <Widget>[
-              if (state is ClubTeamsLoaded)
-                ...state.teams.map((team) {
-                  return ClubTeam(code: team.code, name: team.name);
-                })
-              else
-                Loading()
-            ],
+          return SliverList(
+            delegate: SliverChildBuilderDelegate((context, index) {
+              return (state is ClubTeamsLoaded)
+                  ? ClubTeam(
+                      code: state.teams[index].code,
+                      name: state.teams[index].name,
+                    )
+                  : Loading();
+            },
+            childCount: (state is ClubTeamsLoaded) ? state.teams.length : 0),
           );
         });
   }
