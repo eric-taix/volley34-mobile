@@ -62,7 +62,7 @@ class TeamBloc extends Bloc<TeamEvent, TeamState> {
         }
         return sum / event.count;
       }).toList();
-      yield TeamSlidingStatsLoaded(results: sets);
+      yield TeamSlidingStatsLoaded(results: sets..insert(0,0));
     }
   }
 

@@ -44,10 +44,33 @@ class _ClubTeamState extends State<ClubTeam> {
           if (state is TeamSlidingStatsLoaded) {
             return Column(
               children: <Widget>[
-                SizedBox(
-                  height: 40,
-                  width: 120, //double.infinity,
-                  child: LineGraph(state.results..insert(0, 0), thumbnail: true,),
+                Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 8, top: 8, right: 16, bottom: 8),
+                        child: SizedBox(
+                          height: 40,
+                          child: LineGraph(
+                            state.results,
+                            thumbnail: true,
+                          ),
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 16, top: 8, right: 8, bottom: 8),
+                        child: SizedBox(
+                          height: 40,
+                          child: LineGraph(
+                            state.results,
+                            thumbnail: true,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ],
             );
@@ -58,6 +81,4 @@ class _ClubTeamState extends State<ClubTeam> {
       ),
     );
   }
-
-
 }
