@@ -44,7 +44,7 @@ class AppTheme {
           subtitle1: TextStyle(color: Color(0xFFF7FBFE), fontSize: 20, fontFamily: "Raleway", fontWeight: FontWeight.bold),
           subtitle2: TextStyle(color: Color(0xFFF7FBFE), fontSize: 14, fontFamily: "Raleway", fontWeight: FontWeight.bold),
           bodyText2: TextStyle(color: Color(0xFFF7FBFE), fontSize: 14, fontFamily: "Raleway", fontWeight: FontWeight.w400),
-          bodyText1: TextStyle(color: Color(0xFF979DB2), fontSize: 12, fontFamily: "Raleway", fontWeight: FontWeight.w400),
+          bodyText1: TextStyle(color: Color(0xFF979DB2), fontSize: 14, fontFamily: "Raleway", fontWeight: FontWeight.w400),
           caption: TextStyle(color: Color(0xFF979DB2), fontSize: 16, fontFamily: "Raleway"),
           headline4: TextStyle(
             color: Color(0xFFF7FBFE),

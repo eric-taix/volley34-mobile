@@ -62,7 +62,7 @@ class Repository {
   Future<MatchResult> loadTeamLastMatchResult(
       String teamCode) async {
     var matches = await loadTeamLastMatchesResult(teamCode, 1);
-    return matches.last;
+    return matches.isNotEmpty ? matches.last : null;
   }
     /// Load the general agenda for a week number
   Future<List<Event>> loadAgendaWeek(int week) async {
