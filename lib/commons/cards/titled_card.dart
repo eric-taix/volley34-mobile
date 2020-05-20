@@ -40,7 +40,7 @@ class TitledCard extends StatelessWidget {
                             padding: const EdgeInsets.only(right: 18.0),
                             child: icon,
                           ),
-                        Text(title, style: Theme.of(context).textTheme.caption),
+                        Expanded(child: Text(title, style: Theme.of(context).textTheme.caption, overflow: TextOverflow.ellipsis,)),
                       ],
                     ),
                   ),

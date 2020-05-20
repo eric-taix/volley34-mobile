@@ -33,7 +33,7 @@ class LineGraph extends StatelessWidget {
       axisTitleData: FlAxisTitleData(
         leftTitle: AxisTitle(
           showTitle: true,
-          titleText: 'Points',
+          titleText: 'Sets',
           margin: 20,
           textStyle: Theme.of(context).textTheme.bodyText1,
           reservedSize: 0,

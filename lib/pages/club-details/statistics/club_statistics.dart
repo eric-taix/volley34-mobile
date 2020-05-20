@@ -54,9 +54,12 @@ class _ClubStatisticsState extends State<ClubStatistics> {
                             padding: const EdgeInsets.symmetric(horizontal: 18.0),
                             child: Stack(
                               children: [
-                                BarChart(
-                                  computeSetsRepartitionChartData(context, (state is ClubStatsLoadedState) ? state.setsDistribution : SetsDistribution()),
-                                  swapAnimationDuration: Duration(milliseconds: 2000),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 18.0),
+                                  child: BarChart(
+                                    computeSetsRepartitionChartData(context, (state is ClubStatsLoadedState) ? state.setsDistribution : SetsDistribution()),
+                                    swapAnimationDuration: Duration(milliseconds: 2000),
+                                  ),
                                 ),
                                 if (state is ClubStatsLoadingState) Loading(),
                               ],
