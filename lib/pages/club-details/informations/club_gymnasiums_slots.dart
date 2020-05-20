@@ -2,9 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:v34/commons/card/titled_card.dart';
+import 'package:v34/commons/cards/titled_card.dart';
 import 'package:v34/commons/loading.dart';
-import 'package:v34/pages/club-details/blocs/club_slots.dart';
+import 'package:v34/pages/club-details/blocs/club_slots.bloc.dart';
 import 'package:v34/repositories/repository.dart';
 
 class ClubGymnasiumsSlots extends StatefulWidget {
@@ -37,7 +37,7 @@ class _ClubGymnasiumsSlotsState extends State<ClubGymnasiumsSlots> {
         bloc: _slotsBloc,
         builder: (context, state) {
           return TitledCard(
-              icon: Icon(FontAwesomeIcons.hotel, size: 14, color: Theme.of(context).textTheme.headline6.color),
+              icon: Icon(Icons.date_range, color: Theme.of(context).textTheme.headline6.color),
               title: (state is ClubSlotsLoaded && state.slots.length > 1) ? "Créneaux" : "Créneau",
               body: (state is ClubSlotsLoaded)
                   ? Column(

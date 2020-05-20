@@ -1,6 +1,6 @@
 
 
-const double kToolbarMargin = 86.0;
+const double kToolbarMargin = 76.0;
 const double kSystemBarHeight = 28;
 
 computeLinear(double shrinkOffset, double minExtent, double maxExtent) {

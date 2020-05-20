@@ -58,16 +58,15 @@ class ClubStatsBloc extends Bloc<ClubStatsEvent, ClubStatsState> {
       yield ClubStatsLoadingState();
       List<Team> teams = await _repository.loadClubTeams(event.clubCode);
       List<MatchResult> teamsResults = await Future.wait(teams
-          .map(
-            (team) => _repository.lastTeamMatchResult(team.code, 1).catchError((error) {
-              print("Error for match results for team ${team.code}");
-            }),
-          )
-          .toList());
+          .expand((team) {
+            var lastMatch = _repository.loadTeamLastMatchResult(team.code);
+            if (lastMatch != null) return [lastMatch];
+            else return [];
+        }));
       var stats = teamsResults.fold(Tuple2<int, int>(0, 0), (acc, matchResult) {
         acc = acc.withItem2(acc.item2 + 1);
         bool hostedByClubTeam = (teams.firstWhere((team) => team.code == matchResult.hostTeamCode, orElse: () => null) != null);
-        if (hostedByClubTeam) {
+        if (hostedByClubTeam ?? false) {
           acc = matchResult.totalSetsHost > matchResult.totalSetsVisitor ? acc.withItem1(acc.item1 + 1) : acc;
         } else {
           acc = matchResult.totalSetsVisitor > matchResult.totalSetsHost ? acc.withItem1(acc.item1 + 1) : acc;

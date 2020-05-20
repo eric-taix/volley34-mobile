@@ -14,25 +14,31 @@ import 'package:v34/repositories/providers/gymnasium_provider.dart';
 import 'package:v34/repositories/providers/team_provider.dart';
 
 class Repository {
-  final ClubProvider clubProvider;
-  final TeamProvider teamProvider;
-  final FavoriteProvider favoriteProvider;
-  final AgendaProvider agendaProvider;
-  final GymnasiumProvider gymnasiumProvider;
+  final ClubProvider _clubProvider;
+  final TeamProvider _teamProvider;
+  final FavoriteProvider _favoriteProvider;
+  final AgendaProvider _agendaProvider;
+  final GymnasiumProvider _gymnasiumProvider;
 
-  Repository({@required this.clubProvider, @required this.teamProvider, @required this.favoriteProvider, @required this.agendaProvider, @required this.gymnasiumProvider});
+  Repository(this._clubProvider,
+      this._teamProvider,
+      this._favoriteProvider,
+      this._agendaProvider,
+      this._gymnasiumProvider);
 
   /// Load all clubs
   Future<List<Club>> loadAllClubs() async {
-    List<Club> clubs = await clubProvider.loadAllClubs();
-    var favoriteClubs = await favoriteProvider.loadFavoriteClubs();
-    return clubs.map((club) => club..favorite = favoriteClubs.contains(club.code)).toList();
+    List<Club> clubs = await _clubProvider.loadAllClubs();
+    var favoriteClubs = await _favoriteProvider.loadFavoriteClubs();
+    return clubs
+        .map((club) => club..favorite = favoriteClubs.contains(club.code))
+        .toList();
   }
 
   /// Load all favorite clubs
   Future<List<Club>> loadFavoriteClubs() async {
-    List<Club> clubs = await clubProvider.loadAllClubs();
-    var favoriteClubs = await favoriteProvider.loadFavoriteClubs();
+    List<Club> clubs = await _clubProvider.loadAllClubs();
+    var favoriteClubs = await _favoriteProvider.loadFavoriteClubs();
     return favoriteClubs.expand((favoriteCode) {
       var favoriteClub = clubs.firstWhere((club) => club.code == favoriteCode, orElse: null);
       List<Club> c = favoriteClub != null ? [favoriteClub..favorite = true] : [];
@@ -42,26 +48,33 @@ class Repository {
 
   /// Load a club's teams
   Future<List<Team>> loadClubTeams(String clubCode) async {
-    return teamProvider.loadClubTeams(clubCode);
+    return _teamProvider.loadClubTeams(clubCode);
   }
 
-  /// Load the last match result of a team
-  Future<MatchResult> lastTeamMatchResult(String teamCode, int nbLastMatches) async {
-    List<MatchResult> matches = await teamProvider.lastTeamMatchesResult(teamCode);
-    return matches.last;
+  /// Load the last N matches result of a team
+  Future<List<MatchResult>> loadTeamLastMatchesResult(
+      String teamCode, int nbLastMatches) async {
+    List<MatchResult> matches =
+        await _teamProvider.lastTeamMatchesResult(teamCode);
+    return matches.sublist(matches.length > nbLastMatches ? matches.length - nbLastMatches : 0).toList();
   }
 
-  /// Load the general agenda for a week number
+  Future<MatchResult> loadTeamLastMatchResult(
+      String teamCode) async {
+    var matches = await loadTeamLastMatchesResult(teamCode, 1);
+    return matches.isNotEmpty ? matches.last : null;
+  }
+    /// Load the general agenda for a week number
   Future<List<Event>> loadAgendaWeek(int week) async {
-    return agendaProvider.listEvents();
+    return _agendaProvider.listEvents();
   }
 
   /// Load all favorite teams matches
   Future<List<Event>> loadFavoriteTeamsMatches() async {
     var results = await Future.wait([
-      teamProvider.loadTeamMatches("VCVX1"),
-      teamProvider.loadTeamMatches("VCVX2"),
-      teamProvider.loadTeamMatches("VCVX3"),
+      _teamProvider.loadTeamMatches("VCVX1"),
+      _teamProvider.loadTeamMatches("VCVX2"),
+      _teamProvider.loadTeamMatches("VCVX3"),
     ]);
     return results.expand((i) => i).toList();
   }
@@ -70,40 +83,41 @@ class Repository {
   Future updateFavorite(String favoriteId, FavoriteType favoriteType, bool favorite) async {
     switch (favoriteType) {
       case FavoriteType.Team:
-        List<String> favoriteTeams = await favoriteProvider.loadFavoriteTeams();
+        List<String> favoriteTeams = await _favoriteProvider.loadFavoriteTeams();
         var isCurrentlyFavorite = favoriteTeams.firstWhere((favId) => favId == favoriteId, orElse: () => null) ?? false;
         if (isCurrentlyFavorite != favorite) {
           favorite ? favoriteTeams.add(favoriteId) : favoriteTeams.remove(favoriteId);
         }
-        await favoriteProvider.saveFavoriteTeams(favoriteTeams);
+        _favoriteProvider.saveFavoriteTeams(favoriteTeams);
         break;
       case FavoriteType.Club:
-        List<String> favoriteClubs = await favoriteProvider.loadFavoriteClubs();
+        List<String> favoriteClubs = await _favoriteProvider.loadFavoriteClubs();
         var isCurrentlyFavorite = favoriteClubs.firstWhere((favId) => favId == favoriteId, orElse: () => null) ?? false;
         if (isCurrentlyFavorite != favorite) {
           favorite ? favoriteClubs.add(favoriteId) : favoriteClubs.remove(favoriteId);
         }
-        await favoriteProvider.saveFavoriteClubs(favoriteClubs);
+        _favoriteProvider.saveFavoriteClubs(favoriteClubs);
     }
   }
 
   /// Return if a club is in favorites
-  Future<bool> isClubFavorite(String clubCode) async {
-    return favoriteProvider.loadFavoriteClubs().then((clubs) => clubs.contains(clubCode));
+  Future<bool> isClubFavorite(String code) async {
+    return _favoriteProvider.loadFavoriteClubs().then((clubs) => clubs.contains(code));
   }
 
   /// Load the club statistics by team
   Future<List<TeamStat>> loadClubStats(String clubCode) async {
-    var teams = await loadClubTeams(clubCode);
-    return await clubProvider.loadClubStats(clubCode, teams.map((team) => team.code).toList());
+    return _clubProvider.loadClubStats(clubCode);
   }
 
   /// Load all available slots for a club
  Future<List<Slot>> loadClubSlots(String clubCode) async {
-    return clubProvider.loadClubSlots(clubCode);
+    return _clubProvider.loadClubSlots(clubCode);
  }
- 
+
+ /// Load all gymnasiums
  Future<List<Gymnasium>> loadAllGymnasiums() async {
-    return gymnasiumProvider.loadAllGymnasiums();
+    return _gymnasiumProvider.loadAllGymnasiums();
  }
+
 }

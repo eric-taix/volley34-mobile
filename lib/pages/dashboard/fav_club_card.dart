@@ -2,10 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_circular_chart/flutter_circular_chart.dart';
-import 'package:tinycolor/tinycolor.dart';
-import 'package:v34/commons/card/titled_card.dart';
+import 'package:v34/commons/cards/rounded_title_card.dart';
 import 'package:v34/commons/loading.dart';
-import 'package:v34/commons/rounded_network_image.dart';
 import 'package:v34/models/club.dart';
 import 'package:v34/pages/dashboard/blocs/club_stats.dart';
 import 'package:v34/repositories/repository.dart';
@@ -68,11 +66,31 @@ class _FavoriteClubCardState extends State<FavoriteClubCard> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
+    return RoundedTitledCard(
+      title: widget.club.shortName,
+      heroTag: "hero-logo-${widget.club.code}",
+      logoUrl: widget.club.logoUrl,
+      onTap: widget.onTap,
+      body: BlocListener(
+          listener: (context, state) {
+            if (state is ClubStatsLoadedState) {
+              _updateState(state.wonMatches, state.totalMatches);
+            }
+          },
+          bloc: _clubStatsBloc,
+          child: BlocBuilder(
+            bloc: _clubStatsBloc,
+            builder: (context, state) {
+              return _buildCardContent(context, state);
+            },
+          ),
+      ),
+    );
+    /*Stack(
       children: <Widget>[
         TitledCard(
           icon: SizedBox(width: 10),
-          title: widget.club.shortName,
+          title:
           onTap: widget.onTap,
           body: BlocListener(
             listener: (context, state) {
@@ -103,7 +121,7 @@ class _FavoriteClubCardState extends State<FavoriteClubCard> {
           ),
         )
       ],
-    );
+    );*/
   }
 
   Widget _buildCardContent(BuildContext context, ClubStatsState state) {
