@@ -25,6 +25,13 @@ class Team {
     this.favorite = false,
   });
 
+
+  @override
+  bool operator ==(other) => this.code == other.code;
+
+  @override
+  int get hashCode => this.code.hashCode;
+
   factory Team.fromJson(Map<String, dynamic> json) {
     return Team(code: json["EquipeCode"],
         competition: json["CompetitionCode"],

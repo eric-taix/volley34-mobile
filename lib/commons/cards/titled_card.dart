@@ -9,13 +9,17 @@ class TitledCard extends StatelessWidget {
   final VoidCallback onTap;
   final ButtonBar buttonBar;
   final EdgeInsetsGeometry bodyPadding;
+  final double elevation;
+  final EdgeInsetsGeometry margin;
 
-  TitledCard({this.icon, @required this.title, this.body, this.actions, this.onTap, this.buttonBar, this.bodyPadding}) : assert(title != null);
+  TitledCard({this.icon, @required this.title, this.body, this.actions, this.onTap, this.buttonBar, this.bodyPadding, this.elevation = 0, this.margin}) : assert(title != null);
 
   @override
   Widget build(BuildContext context) {
     return Stack(children: [
       Card(
+        margin: margin,
+        elevation: elevation,
         clipBehavior: Clip.hardEdge,
         child: InkWell(
           onTap: onTap,
@@ -27,7 +31,6 @@ class TitledCard extends StatelessWidget {
                     color: TinyColor(Theme.of(context).cardTheme.color).isDark()
                         ? TinyColor(Theme.of(context).cardTheme.color).lighten(3).color
                         : TinyColor(Theme.of(context).cardTheme.color).darken(3).color,
-                    //  border: Border(bottom: BorderSide(color: TinyColor(Theme.of(context).textTheme.headline6.color).darken(30).color))
                   ),
                   height: 40,
                   child: Padding(

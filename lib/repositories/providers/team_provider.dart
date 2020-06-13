@@ -14,7 +14,7 @@ class TeamProvider {
       print("Error while getting teams for club $clubCode");
     });
     if (response?.statusCode == 200) {
-      return (response.data as List).map((json) => Team.fromJson(json)).toList();
+      return (response.data as List).map((json) => Team.fromJson(json)).toSet().toList()..sort((t1, t2) => t1.code.compareTo(t2.code));
     } else {
       return List();
     }
