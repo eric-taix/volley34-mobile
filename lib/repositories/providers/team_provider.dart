@@ -1,6 +1,7 @@
 
 import 'package:dio/dio.dart';
 import 'package:dio_http_cache/dio_http_cache.dart';
+import 'package:v34/models/classication.dart';
 import 'package:v34/models/event.dart';
 import 'package:v34/models/match_result.dart';
 import 'package:v34/models/team.dart';
@@ -35,6 +36,15 @@ class TeamProvider {
       return (response.data as List).map((json) => Event.fromJson(json)).toList();
     } else {
       throw Exception("Impossible to retrieve matches for team  $teamCode");
+    }
+  }
+
+  Future<List<ClassificationSynthesis>> loadClassificationSynthesis(String teamCode) async {
+    Response response = await dio.get("/Classements/equipes/$teamCode", options: buildConfigurableCacheOptions());
+    if (response.statusCode == 200) {
+      return (response.data as List).map((json) => ClassificationSynthesis.fromJson(json)).toList();
+    } else {
+      throw Exception("Impossible to retrieve classification synthesis for team  $teamCode");
     }
   }
 
