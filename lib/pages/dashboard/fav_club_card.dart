@@ -86,42 +86,6 @@ class _FavoriteClubCardState extends State<FavoriteClubCard> {
           ),
       ),
     );
-    /*Stack(
-      children: <Widget>[
-        TitledCard(
-          icon: SizedBox(width: 10),
-          title:
-          onTap: widget.onTap,
-          body: BlocListener(
-            listener: (context, state) {
-              if (state is ClubStatsLoadedState) {
-                _updateState(state.wonMatches, state.totalMatches);
-              }
-            },
-            bloc: _clubStatsBloc,
-            child: BlocBuilder(
-              bloc: _clubStatsBloc,
-              builder: (context, state) {
-                return _buildCardContent(context, state);
-              },
-            ),
-          ),
-        ),
-        Positioned(
-          top: 17,
-          child: Hero(
-            tag: "hero-logo-${widget.club.code}",
-            child: RoundedNetworkImage(
-              40,
-              widget.club.logoUrl,
-              circleColor: TinyColor(Theme.of(context).cardTheme.color).isDark()
-                  ? TinyColor(Theme.of(context).cardTheme.color).lighten().color
-                  : TinyColor(Theme.of(context).cardTheme.color).darken().color,
-            ),
-          ),
-        )
-      ],
-    );*/
   }
 
   Widget _buildCardContent(BuildContext context, ClubStatsState state) {

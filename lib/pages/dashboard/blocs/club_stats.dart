@@ -65,11 +65,11 @@ class ClubStatsBloc extends Bloc<ClubStatsEvent, ClubStatsState> {
         }));
       var stats = teamsResults.fold(Tuple2<int, int>(0, 0), (acc, matchResult) {
         acc = acc.withItem2(acc.item2 + 1);
-        bool hostedByClubTeam = (teams.firstWhere((team) => team.code == matchResult.hostTeamCode, orElse: () => null) != null);
+        bool hostedByClubTeam = (teams.firstWhere((team) => team.code == matchResult?.hostTeamCode, orElse: () => null) != null);
         if (hostedByClubTeam ?? false) {
           acc = matchResult.totalSetsHost > matchResult.totalSetsVisitor ? acc.withItem1(acc.item1 + 1) : acc;
         } else {
-          acc = matchResult.totalSetsVisitor > matchResult.totalSetsHost ? acc.withItem1(acc.item1 + 1) : acc;
+          acc = (matchResult?.totalSetsVisitor ?? 0) > (matchResult?.totalSetsHost ?? 0) ? acc.withItem1(acc.item1 + 1) : acc;
         }
         return acc;
       });

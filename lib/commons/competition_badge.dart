@@ -7,8 +7,12 @@ import 'dart:ui' as ui;
 class CompetitionBadge extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(
-        painter: _CompetitionBadgePainter(label: "4", leftColor: Colors.blue, rightColor: Colors.pinkAccent),
+    return Container(
+      width: 30,
+      height: 20,
+      child: CustomPaint(
+          painter: _CompetitionBadgePainter(label: "4", leftColor: Colors.blue, rightColor: Colors.pinkAccent),
+      ),
     );
   }
 }
@@ -23,11 +27,18 @@ class _CompetitionBadgePainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    double height = 2;
-    double radius = 8;
+
+    var space = 2.5;
+
+    double height = size.height;
     Paint left = new Paint()
       ..color = leftColor
       ..strokeCap = StrokeCap.round
+      ..style = PaintingStyle.fill
+      ..strokeWidth = height;
+    Paint leftSquare = new Paint()
+      ..color = leftColor
+      ..strokeCap = StrokeCap.butt
       ..style = PaintingStyle.fill
       ..strokeWidth = height;
     Paint right = new Paint()
@@ -35,13 +46,21 @@ class _CompetitionBadgePainter extends CustomPainter {
       ..strokeCap = StrokeCap.round
       ..style = PaintingStyle.fill
       ..strokeWidth = height;
+    Paint rightSquare = new Paint()
+      ..color = rightColor
+      ..strokeCap = StrokeCap.butt
+      ..style = PaintingStyle.fill
+      ..strokeWidth = height;
 
-    canvas.drawCircle(Offset(size.width/4-3, 0-0.0), radius, left);
-    canvas.drawCircle(Offset(3*size.width/4+3, 0-0.0), radius, right);
+    canvas.drawLine(Offset(0, 0), Offset(size.width/10, 0), left);
+    canvas.drawLine(Offset(size.width/10, 0), Offset((size.width/2)-space, 0), leftSquare);
+
+    canvas.drawLine(Offset((size.width/2)+space, 0), Offset(9*size.width/10, 0), rightSquare);
+    canvas.drawLine(Offset(9*size.width/10, 0), Offset(size.width, 0), right);
 
     final textStyle = ui.TextStyle(
       color: Colors.white,
-      fontSize: 12,
+      fontSize: 14,
     );
     final paragraphStyle = ui.ParagraphStyle(
       textDirection: TextDirection.ltr,
@@ -52,8 +71,8 @@ class _CompetitionBadgePainter extends CustomPainter {
     final constraints = ui.ParagraphConstraints(width: 300);
     final paragraph = paragraphBuilder.build();
     paragraph.layout(constraints);
-    canvas.drawParagraph(paragraph, Offset(0-2.0, -7.0));
-    canvas.drawParagraph(paragraph, Offset(3*size.width/4-1, -7.0));
+    canvas.drawParagraph(paragraph, Offset(0-2.0, -8.0));
+    canvas.drawParagraph(paragraph, Offset(size.width-6, -8.0));
   }
 
   @override

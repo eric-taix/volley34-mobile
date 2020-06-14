@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:v34/commons/favorite/favorite.dart';
+import 'package:v34/models/classication.dart';
 import 'package:v34/models/club.dart';
 import 'package:v34/models/slot.dart';
 import 'package:v34/models/event.dart';
@@ -46,6 +47,9 @@ class Repository {
     }).toList();
   }
 
+
+  //------ TEAM -------
+
   /// Load a club's teams
   Future<List<Team>> loadClubTeams(String clubCode) async {
     return _teamProvider.loadClubTeams(clubCode);
@@ -59,16 +63,6 @@ class Repository {
     return matches.sublist(matches.length > nbLastMatches ? matches.length - nbLastMatches : 0).toList();
   }
 
-  Future<MatchResult> loadTeamLastMatchResult(
-      String teamCode) async {
-    var matches = await loadTeamLastMatchesResult(teamCode, 1);
-    return matches.isNotEmpty ? matches.last : null;
-  }
-    /// Load the general agenda for a week number
-  Future<List<Event>> loadAgendaWeek(int week) async {
-    return _agendaProvider.listEvents();
-  }
-
   /// Load all favorite teams matches
   Future<List<Event>> loadFavoriteTeamsMatches() async {
     var results = await Future.wait([
@@ -77,6 +71,23 @@ class Repository {
       _teamProvider.loadTeamMatches("VCVX3"),
     ]);
     return results.expand((i) => i).toList();
+  }
+
+  /// Load classification synthesis
+  Future<List<ClassificationSynthesis>> loadTeamClassificationSynthesis(String teamCode) async {
+    return await _teamProvider.loadClassificationSynthesis(teamCode);
+  }
+
+  //-------------------------------
+
+  Future<MatchResult> loadTeamLastMatchResult(
+      String teamCode) async {
+    var matches = await loadTeamLastMatchesResult(teamCode, 1);
+    return matches.isNotEmpty ? matches.last : null;
+  }
+    /// Load the general agenda for a week number
+  Future<List<Event>> loadAgendaWeek(int week) async {
+    return _agendaProvider.listEvents();
   }
 
   /// Update a favorite by providing the [FavoriteType], a generic favoriteId and the flag (favorite or not)

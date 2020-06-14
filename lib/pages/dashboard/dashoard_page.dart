@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -5,9 +7,11 @@ import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:v34/commons/loading.dart';
 import 'package:v34/commons/router.dart';
 import 'package:v34/pages/club-details/club_detail_page.dart';
+import 'package:v34/pages/club-details/teams/club_teams.dart';
 import 'package:v34/pages/dashboard/blocs/agenda_bloc.dart';
 import 'package:v34/pages/dashboard/blocs/favorite_bloc.dart';
 import 'package:v34/commons/paragraph.dart';
+import 'package:v34/pages/dashboard/dashboard_club_teams.dart';
 import 'package:v34/pages/dashboard/fav_club_card.dart';
 import 'package:v34/pages/dashboard/widgets/timeline/timeline.dart';
 import 'package:v34/pages/dashboard/widgets/timeline/timeline_items.dart';
@@ -22,11 +26,19 @@ class _DashboardPageState extends State<DashboardPage> {
   FavoriteBloc _favoriteBloc;
   AgendaBloc _agendaBloc;
   PageController _pageController;
+  String _currentClubCode;
 
   @override
   void initState() {
     super.initState();
     _favoriteBloc = FavoriteBloc(repository: RepositoryProvider.of<Repository>(context))..add(FavoriteLoadEvent());
+    _favoriteBloc.skip(1).listen((state) {
+      if (state is FavoriteLoadedState) {
+        setState(() {
+          _currentClubCode = state.clubs[0].code;
+        });
+      }
+    });
     _agendaBloc = AgendaBloc(repository: RepositoryProvider.of<Repository>(context))..add(AgendaLoadWeek(week: 0));
     _pageController = PageController(initialPage: 0);
   }
@@ -41,8 +53,9 @@ class _DashboardPageState extends State<DashboardPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<FavoriteBloc, FavoriteState>(
-        bloc: _favoriteBloc,
+    return BlocProvider(
+      create: (context) => _favoriteBloc,
+      child: BlocBuilder<FavoriteBloc, FavoriteState>(
         builder: (context, state) {
           return (state is FavoriteLoadedState)
               ? ListView.builder(
@@ -56,7 +69,9 @@ class _DashboardPageState extends State<DashboardPage> {
                   },
                 )
               : SizedBox();
-        });
+        },
+      ),
+    );
   }
 
   Widget _buildDashboardItem(int index, FavoriteState state) {
@@ -72,6 +87,7 @@ class _DashboardPageState extends State<DashboardPage> {
                     child: PageView.builder(
                       itemCount: state.clubs.length,
                       controller: _pageController,
+                      onPageChanged: (pageIndex) => _updateClubTeams(state.clubs[pageIndex].code),
                       itemBuilder: (context, index) => Padding(
                         padding: const EdgeInsets.only(left: 8.0, right: 0),
                         child: FavoriteClubCard(
@@ -101,9 +117,9 @@ class _DashboardPageState extends State<DashboardPage> {
                 child: Center(child: Loading()),
               );
       case 2:
-        return Paragraph(title: state.teamCodes.length > 1 ? "Vos équipes" : "Votre équipe");
+        return Paragraph(title: state.teamCodes.length > 1 ? "Vos équipes" : "Vos équipes");
       case 3:
-        return Container(height: 120);
+        return DashboardClubTeams(clubCode: _currentClubCode);
       case 4:
         return Paragraph(title: "Votre agenda");
       case 5:
@@ -137,5 +153,11 @@ class _DashboardPageState extends State<DashboardPage> {
           child: SizedBox(),
         );
     }
+  }
+
+  _updateClubTeams(String clubCode) {
+    setState(() {
+      _currentClubCode = clubCode;
+    });
   }
 }
