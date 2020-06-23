@@ -37,8 +37,8 @@ class RoundedTitledCard extends StatelessWidget {
               40,
               logoUrl,
               circleColor: TinyColor(Theme.of(context).cardTheme.color).isDark()
-                  ? TinyColor(Theme.of(context).cardTheme.color).lighten().color
-                  : TinyColor(Theme.of(context).cardTheme.color).darken().color,
+                  ? TinyColor(Theme.of(context).cardTheme.color).lighten(3).color
+                  : TinyColor(Theme.of(context).cardTheme.color).darken(3).color,
             ),
           ),
         )
