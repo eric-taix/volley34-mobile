@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:v34/commons/cards/titled_card.dart';
 import 'package:v34/commons/podium.dart';
 import 'package:v34/models/classication.dart';
@@ -79,17 +80,35 @@ class _DashboardClubTeamsState extends State<DashboardClubTeams> with SingleTick
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: widget.cardHeight,
-      child: PageView.builder(
-        physics: const BouncingScrollPhysics(),
-        controller: _pageController,
-        itemCount: _teams.length,
-        itemBuilder: (context, index) {
-          var active = _currentIndex == index;
-          return _buildTeamCard(active, _teams[index], _pageController.page - index);
-        },
-      ),
+    return Column(
+      children: <Widget>[
+        Container(
+          height: widget.cardHeight,
+          child: PageView.builder(
+            physics: const BouncingScrollPhysics(),
+            controller: _pageController,
+            itemCount: _teams.length,
+            itemBuilder: (context, index) {
+              var active = _currentIndex == index;
+              return _buildTeamCard(active, _teams[index], _pageController.page - index);
+            },
+          )
+        ),
+        if (_teams.length > 1)
+          Padding(
+            padding: EdgeInsets.only(top: 16.0),
+            child: SmoothPageIndicator(
+              controller: _pageController,
+              count: _teams.length,
+              effect: WormEffect(
+                dotHeight: 8,
+                dotWidth: 8,
+                dotColor: Theme.of(context).cardTheme.color,
+                activeDotColor: Theme.of(context).accentColor,
+              )
+            ),
+          )
+      ]
     );
   }
 
