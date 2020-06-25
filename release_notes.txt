@@ -1,7 +1,1 @@
-- Correction d'un bug sur les clubs favoris
-- Les clubs favoris sont classés par ordre dans lequel ils ont été sélectionnés
-- Liste des clubs favoris en 1er dans le dashboard
-- Ajout d'une animation lors du clic sur favori
-- Accès au détail d'un club depuis le dashboard en cliquant sur le club
-- Paging des clubs favoris avec un indicateur
-- Tour des fonctionnalités la 1ère fois que l'on arrive sur la page principale
+- Correction d'un bug sur l'affichage des statistiques des équipes sur le dashboard.
