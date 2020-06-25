@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -7,7 +5,6 @@ import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:v34/commons/loading.dart';
 import 'package:v34/commons/router.dart';
 import 'package:v34/pages/club-details/club_detail_page.dart';
-import 'package:v34/pages/club-details/teams/club_teams.dart';
 import 'package:v34/pages/dashboard/blocs/agenda_bloc.dart';
 import 'package:v34/pages/dashboard/blocs/favorite_bloc.dart';
 import 'package:v34/commons/paragraph.dart';
@@ -18,6 +15,8 @@ import 'package:v34/pages/dashboard/widgets/timeline/timeline_items.dart';
 import 'package:v34/repositories/repository.dart';
 
 class DashboardPage extends StatefulWidget {
+  final double cardHeight = 250;
+
   @override
   _DashboardPageState createState() => _DashboardPageState();
 }
@@ -27,6 +26,7 @@ class _DashboardPageState extends State<DashboardPage> {
   AgendaBloc _agendaBloc;
   PageController _pageController;
   String _currentClubCode;
+  double currentFavoriteClubPage = 0;
 
   @override
   void initState() {
@@ -40,7 +40,9 @@ class _DashboardPageState extends State<DashboardPage> {
       }
     });
     _agendaBloc = AgendaBloc(repository: RepositoryProvider.of<Repository>(context))..add(AgendaLoadWeek(week: 0));
-    _pageController = PageController(initialPage: 0);
+    _pageController = PageController(initialPage: 0)..addListener(() {
+        setState(() {currentFavoriteClubPage = _pageController.page;});
+    });
   }
 
   @override
@@ -74,6 +76,19 @@ class _DashboardPageState extends State<DashboardPage> {
     );
   }
 
+  Widget _buildFavoriteClubCard(FavoriteState state, int index, double distance) {
+    var absDistance = distance.abs() > 1 ? 1 : distance.abs();
+    return Transform.scale(
+      scale: 1.0 - (absDistance > 0.15 ? 0.15 : absDistance),
+      child: FavoriteClubCard(
+        state.clubs[index],
+            () => Router.push(context: context, builder: (_) => ClubDetailPage(state.clubs[index])).then(
+              (_) => _favoriteBloc.add(FavoriteLoadEvent()),
+        ),
+      ),
+    );
+  }
+
   Widget _buildDashboardItem(int index, FavoriteState state) {
     switch (index) {
       case 0:
@@ -83,19 +98,15 @@ class _DashboardPageState extends State<DashboardPage> {
             ? Column(
                 children: <Widget>[
                   Container(
-                    height: 250,
+                    height: widget.cardHeight,
                     child: PageView.builder(
+                      physics: BouncingScrollPhysics(),
                       itemCount: state.clubs.length,
                       controller: _pageController,
                       onPageChanged: (pageIndex) => _updateClubTeams(state.clubs[pageIndex].code),
                       itemBuilder: (context, index) => Padding(
                         padding: const EdgeInsets.only(left: 8.0, right: 0),
-                        child: FavoriteClubCard(
-                          state.clubs[index],
-                          () => Router.push(context: context, builder: (_) => ClubDetailPage(state.clubs[index])).then(
-                            (_) => _favoriteBloc.add(FavoriteLoadEvent()),
-                          ),
-                        ),
+                        child: _buildFavoriteClubCard(state, index, currentFavoriteClubPage - index)
                       ),
                     ),
                   ),
