@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -28,7 +26,7 @@ class _DashboardPageState extends State<DashboardPage> {
   AgendaBloc _agendaBloc;
   PageController _pageController;
   String _currentClubCode;
-  double currentFavoritePage = 0;
+  double currentFavoriteClubPage = 0;
 
   @override
   void initState() {
@@ -43,7 +41,7 @@ class _DashboardPageState extends State<DashboardPage> {
     });
     _agendaBloc = AgendaBloc(repository: RepositoryProvider.of<Repository>(context))..add(AgendaLoadWeek(week: 0));
     _pageController = PageController(initialPage: 0)..addListener(() {
-        setState(() {currentFavoritePage = _pageController.page;});
+        setState(() {currentFavoriteClubPage = _pageController.page;});
     });
   }
 
@@ -108,7 +106,7 @@ class _DashboardPageState extends State<DashboardPage> {
                       onPageChanged: (pageIndex) => _updateClubTeams(state.clubs[pageIndex].code),
                       itemBuilder: (context, index) => Padding(
                         padding: const EdgeInsets.only(left: 8.0, right: 0),
-                        child: _buildFavoriteClubCard(state, index, currentFavoritePage - index)
+                        child: _buildFavoriteClubCard(state, index, currentFavoriteClubPage - index)
                       ),
                     ),
                   ),
