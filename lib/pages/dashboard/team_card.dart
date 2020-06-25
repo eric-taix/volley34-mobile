@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:v34/commons/cards/titled_card.dart';
+import 'package:v34/commons/loading.dart';
 import 'package:v34/commons/podium.dart';
 import 'package:v34/models/team.dart';
 import 'package:v34/pages/dashboard/blocs/team_classification_bloc.dart';
@@ -49,9 +50,18 @@ class _TeamCardState extends State<TeamCard> {
     _classificationBloc.close();
   }
 
+  Widget _noPodiumData() {
+    return Expanded(
+      child: Text(
+        'Aucunes données...',
+        textAlign: TextAlign.center
+      )
+    );
+  }
+
   List<Widget> _getPodiumWidget(state) {
     if (state is TeamClassificationLoadedState) {
-      return state.classifications.map((competitionClassificationSynthesis) {
+      List<Widget> result = state.classifications.map((competitionClassificationSynthesis) {
         var placeValues = competitionClassificationSynthesis.teamsClassifications.map((teamClassification) {
           return PlaceValue(teamClassification.teamCode, teamClassification.totalPoints.toDouble());
         }).toList();
@@ -67,6 +77,10 @@ class _TeamCardState extends State<TeamCard> {
           ),
         );
       }).toList();
+      if(result.isEmpty) result.add(_noPodiumData());
+      return result;
+    } else if (state is TeamClassificationLoadingState) {
+      return [Expanded(child: Loading())];
     } else {
       return [];
     }
