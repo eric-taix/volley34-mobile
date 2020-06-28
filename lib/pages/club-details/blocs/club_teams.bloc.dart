@@ -44,7 +44,7 @@ class ClubTeamsBloc extends Bloc<ClubTeamsEvent, ClubTeamsState> {
       yield ClubTeamsLoading();
       var teams  = await repository.loadClubTeams(event.clubCode);
       final seen = Set<String>();
-      teams.sort((team1, team2) => team1.code.compareTo(team2.code));
+      teams.sort((team1, team2) => team1.name.compareTo(team2.name));
       var uniqueTeams = teams.where((team) => seen.add(team.name)).toList();
       yield ClubTeamsLoaded(teams: uniqueTeams);
     }
