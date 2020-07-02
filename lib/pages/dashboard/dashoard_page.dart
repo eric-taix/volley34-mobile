@@ -92,7 +92,9 @@ class _DashboardPageState extends State<DashboardPage> {
   Widget _buildDashboardItem(int index, FavoriteState state) {
     switch (index) {
       case 0:
-        return Paragraph(title: state.clubs.length > 1 ? "Vos clubs" : "Votre club");
+        return Paragraph(
+          title: state.clubs.length > 1 ? "Vos clubs" : "Votre club",
+        );
       case 1:
         return (state is FavoriteLoadedState)
             ? Column(
@@ -128,11 +130,16 @@ class _DashboardPageState extends State<DashboardPage> {
                 child: Center(child: Loading()),
               );
       case 2:
-        return Paragraph(title: state.teamCodes.length > 1 ? "Vos équipes" : "Vos équipes");
+        return Paragraph(
+          title: state.teamCodes.length > 1 ? "Vos équipes" : "Vos équipes",
+          bottomPadding: 20.0,
+        );
       case 3:
         return DashboardClubTeams(clubCode: _currentClubCode);
       case 4:
-        return Paragraph(title: "Votre agenda");
+        return Paragraph(
+          title: "Votre agenda",
+        );
       case 5:
         return BlocBuilder(
             bloc: _agendaBloc,
