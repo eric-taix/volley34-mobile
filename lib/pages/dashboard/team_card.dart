@@ -80,7 +80,7 @@ class _TeamCardState extends State<TeamCard> {
       if(result.isEmpty) result.add(_noPodiumData());
       return result;
     } else if (state is TeamClassificationLoadingState) {
-      return [Expanded(child: Loading())];
+      return [Expanded(child: Loading(loaderType: LoaderType.THREE_BOUNCE))];
     } else {
       return [];
     }

@@ -1,1 +1,1 @@
-- Correction d'un bug sur l'affichage des statistiques des équipes sur le dashboard.
+- Modification de l'indicateur de chargement lors de la récupération des statistiques d'une équipe sur le dashboard.
