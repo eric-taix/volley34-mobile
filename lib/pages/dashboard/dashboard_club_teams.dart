@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import 'package:v34/commons/loading.dart';
 import 'package:v34/pages/club-details/blocs/club_teams.bloc.dart';
 import 'package:v34/pages/dashboard/team_card.dart';
 import 'package:v34/repositories/repository.dart';
@@ -96,8 +97,16 @@ class _DashboardClubTeamsState extends State<DashboardClubTeams> with SingleTick
                   )
               ]
           );
-        } else {
-          return Container(height: widget.cardHeight);
+        } else if(state is ClubTeamsLoading) {
+          return Container(
+            height: widget.cardHeight,
+            child: Loading(),
+          );
+        }
+        else {
+          return Container(
+            height: widget.cardHeight
+          );
         }
       },
     );
