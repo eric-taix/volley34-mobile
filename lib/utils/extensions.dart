@@ -1,7 +1,6 @@
-
-
 import 'dart:ui';
 
+import 'package:flutter/material.dart';
 import 'package:tinycolor/tinycolor.dart';
 
 extension Extension on String {
@@ -19,4 +18,12 @@ extension TinyColorExtension on Color {
   }
 
   Color smallTiny() => this.tiny(3);
+}
+
+extension CustomCardTheme on CardTheme {
+  Color titleBackgroundColor(BuildContext context) {
+    return TinyColor(Theme.of(context).cardTheme.color).isDark()
+        ? TinyColor(Theme.of(context).cardTheme.color).lighten(3).color
+        :	TinyColor(Theme.of(context).cardTheme.color).darken(3).color;
+  }
 }

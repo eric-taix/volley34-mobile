@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tinycolor/tinycolor.dart';
+import 'package:v34/utils/extensions.dart';
 
 class TitledCard extends StatelessWidget {
   final Widget icon;
@@ -28,9 +29,7 @@ class TitledCard extends StatelessWidget {
               children: [
                 Container(
                   decoration: BoxDecoration(
-                    color: TinyColor(Theme.of(context).cardTheme.color).isDark()
-                        ? TinyColor(Theme.of(context).cardTheme.color).lighten(3).color
-                        : TinyColor(Theme.of(context).cardTheme.color).darken(3).color,
+                    color: Theme.of(context).cardTheme.titleBackgroundColor(context)
                   ),
                   height: 40,
                   child: Padding(

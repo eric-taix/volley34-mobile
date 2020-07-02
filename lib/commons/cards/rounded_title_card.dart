@@ -1,11 +1,9 @@
-
-
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tinycolor/tinycolor.dart';
 import 'package:v34/commons/cards/titled_card.dart';
 import 'package:v34/commons/rounded_network_image.dart';
+import 'package:v34/utils/extensions.dart';
 
 class RoundedTitledCard extends StatelessWidget {
 
@@ -36,9 +34,7 @@ class RoundedTitledCard extends StatelessWidget {
             child: RoundedNetworkImage(
               40,
               logoUrl,
-              circleColor: TinyColor(Theme.of(context).cardTheme.color).isDark()
-                  ? TinyColor(Theme.of(context).cardTheme.color).lighten(3).color
-                  : TinyColor(Theme.of(context).cardTheme.color).darken(3).color,
+              circleColor: Theme.of(context).cardTheme.titleBackgroundColor(context)
             ),
           ),
         )

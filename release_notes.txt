@@ -1,1 +1,1 @@
-- Correction d'un bug sur le dashboard faisant que le club et l'équipe actuels n'étaient pas enregistrés quand on défilait vers l'agenda.
+
