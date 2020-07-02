@@ -10,7 +10,7 @@ class Paragraph extends StatelessWidget {
   final double topPadding;
   final double bottomPadding;
 
-  Paragraph({this.title, this.child, this.topPadding = 20.0, this.bottomPadding = 20.0});
+  Paragraph({this.title, this.child, this.topPadding = 20.0, this.bottomPadding = 0.0});
 
   @override
   Widget build(BuildContext context) {
