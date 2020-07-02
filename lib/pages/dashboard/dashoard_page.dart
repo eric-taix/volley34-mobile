@@ -34,9 +34,11 @@ class _DashboardPageState extends State<DashboardPage> {
     _favoriteBloc = FavoriteBloc(repository: RepositoryProvider.of<Repository>(context))..add(FavoriteLoadEvent());
     _favoriteBloc.skip(1).listen((state) {
       if (state is FavoriteLoadedState) {
-        setState(() {
-          _currentClubCode = state.clubs[0].code;
-        });
+        if(state.clubs.length > 0) {
+          setState(() {
+            _currentClubCode = state.clubs[0].code;
+          });
+        }
       }
     });
     _agendaBloc = AgendaBloc(repository: RepositoryProvider.of<Repository>(context))..add(AgendaLoadWeek(week: 0));
