@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-import 'package:v34/models/team.dart';
+import 'package:v34/commons/loading.dart';
+import 'package:v34/pages/club-details/blocs/club_teams.bloc.dart';
 import 'package:v34/pages/dashboard/team_card.dart';
 import 'package:v34/repositories/repository.dart';
 
@@ -22,13 +23,11 @@ class DashboardClubTeams extends StatefulWidget {
 
 class _DashboardClubTeamsState extends State<DashboardClubTeams> with SingleTickerProviderStateMixin {
   PageController _pageController;
-  Repository _repository;
-  List<Team> _teams = [];
   int _currentIndex = 0;
+  ClubTeamsBloc _clubTeamsBloc;
 
   @override
   void initState() {
-    _repository = RepositoryProvider.of<Repository>(context);
     _pageController = PageController(
       viewportFraction: 0.8,
     )..addListener(() {
@@ -38,59 +37,78 @@ class _DashboardClubTeamsState extends State<DashboardClubTeams> with SingleTick
         _currentIndex = nextIndex;
       }
     });
-    _loadTeams(widget.clubCode);
+    _clubTeamsBloc = ClubTeamsBloc(
+      repository: RepositoryProvider.of<Repository>(context),
+    );
+    _clubTeamsBloc.listen((state) {
+      if (state is ClubTeamsLoaded && _pageController.hasClients) {
+        _currentIndex = 0;
+        _pageController.jumpTo(0);
+      }
+    });
+    _clubTeamsBloc.add(ClubTeamsLoadEvent(clubCode: widget.clubCode));
     super.initState();
   }
 
   @override
   void didUpdateWidget(DashboardClubTeams oldWidget) {
     super.didUpdateWidget(oldWidget);
-    _loadTeams(widget.clubCode);
-  }
-
-  _loadTeams(String clubCode) {
-    _repository.loadClubTeams(clubCode).then((teams) {
-      setState(() {
-        _teams = teams;
-        _pageController.jumpTo(0);
-      });
-    });
+    if (widget.clubCode != oldWidget.clubCode) {
+      _clubTeamsBloc.add(ClubTeamsLoadEvent(clubCode: widget.clubCode));
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: <Widget>[
-        Container(
-          height: widget.cardHeight,
-          child: PageView.builder(
-            physics: const BouncingScrollPhysics(),
-            controller: _pageController,
-            itemCount: _teams.length,
-            itemBuilder: (context, index) {
-              return TeamCard(
-                currentlyDisplayed: _currentIndex == index,
-                team: _teams[index],
-                distance: _pageController.page - index,
-              );
-            },
-          )
-        ),
-        if (_teams.length > 1)
-          Padding(
-            padding: EdgeInsets.only(top: 16.0),
-            child: SmoothPageIndicator(
-              controller: _pageController,
-              count: _teams.length,
-              effect: WormEffect(
-                dotHeight: 8,
-                dotWidth: 8,
-                dotColor: Theme.of(context).cardTheme.color,
-                activeDotColor: Theme.of(context).accentColor,
-              )
-            ),
-          )
-      ]
+    return BlocBuilder<ClubTeamsBloc, ClubTeamsState>(
+      bloc: _clubTeamsBloc,
+      builder: (context, state) {
+        if (state is ClubTeamsLoaded) {
+          return Column(
+              children: <Widget>[
+                Container(
+                    height: widget.cardHeight,
+                    child: PageView.builder(
+                      physics: const BouncingScrollPhysics(),
+                      controller: _pageController,
+                      itemCount: state.teams.length,
+                      itemBuilder: (context, index) {
+                        return TeamCard(
+                          currentlyDisplayed: _currentIndex == index,
+                          team: state.teams[index],
+                          distance: (_currentIndex - index).toDouble(),
+                        );
+                      },
+                    )
+                ),
+                if (state.teams.length > 1)
+                  Padding(
+                    padding: EdgeInsets.only(top: 16.0),
+                    child: SmoothPageIndicator(
+                        controller: _pageController,
+                        count: state.teams.length,
+                        effect: WormEffect(
+                          dotHeight: 8,
+                          dotWidth: 8,
+                          dotColor: Theme.of(context).cardTheme.color,
+                          activeDotColor: Theme.of(context).accentColor,
+                        )
+                    ),
+                  )
+              ]
+          );
+        } else if(state is ClubTeamsLoading) {
+          return Container(
+            height: widget.cardHeight,
+            child: Loading(),
+          );
+        }
+        else {
+          return Container(
+            height: widget.cardHeight
+          );
+        }
+      },
     );
   }
 
