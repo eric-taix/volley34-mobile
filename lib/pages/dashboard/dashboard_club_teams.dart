@@ -21,7 +21,7 @@ class DashboardClubTeams extends StatefulWidget {
   _DashboardClubTeamsState createState() => _DashboardClubTeamsState();
 }
 
-class _DashboardClubTeamsState extends State<DashboardClubTeams> with SingleTickerProviderStateMixin {
+class _DashboardClubTeamsState extends State<DashboardClubTeams> with SingleTickerProviderStateMixin, AutomaticKeepAliveClientMixin {
   PageController _pageController;
   int _currentIndex = 0;
   double _currentTeamPage = 0;
@@ -112,5 +112,8 @@ class _DashboardClubTeamsState extends State<DashboardClubTeams> with SingleTick
       },
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 
 }
