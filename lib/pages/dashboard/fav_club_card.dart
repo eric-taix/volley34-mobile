@@ -18,7 +18,7 @@ class FavoriteClubCard extends StatefulWidget {
   _FavoriteClubCardState createState() => _FavoriteClubCardState();
 }
 
-class _FavoriteClubCardState extends State<FavoriteClubCard> {
+class _FavoriteClubCardState extends State<FavoriteClubCard> with AutomaticKeepAliveClientMixin {
   ClubStatsBloc _clubStatsBloc;
   List<CircularStackEntry> _data;
 
@@ -66,6 +66,7 @@ class _FavoriteClubCardState extends State<FavoriteClubCard> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return RoundedTitledCard(
       title: widget.club.shortName,
       heroTag: "hero-logo-${widget.club.code}",
@@ -162,4 +163,7 @@ class _FavoriteClubCardState extends State<FavoriteClubCard> {
       ),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
