@@ -24,6 +24,7 @@ class DashboardClubTeams extends StatefulWidget {
 class _DashboardClubTeamsState extends State<DashboardClubTeams> with SingleTickerProviderStateMixin {
   PageController _pageController;
   int _currentIndex = 0;
+  double _currentTeamPage = 0;
   ClubTeamsBloc _clubTeamsBloc;
 
   @override
@@ -32,7 +33,7 @@ class _DashboardClubTeamsState extends State<DashboardClubTeams> with SingleTick
       viewportFraction: 0.8,
     )..addListener(() {
       var nextIndex = _pageController.page.round();
-      setState(() => {});
+      setState(() => _currentTeamPage = _pageController.page);
       if (nextIndex != _currentIndex) {
         _currentIndex = nextIndex;
       }
@@ -76,7 +77,7 @@ class _DashboardClubTeamsState extends State<DashboardClubTeams> with SingleTick
                         return TeamCard(
                           currentlyDisplayed: _currentIndex == index,
                           team: state.teams[index],
-                          distance: (_currentIndex - index).toDouble(),
+                          distance: _currentTeamPage - index,
                         );
                       },
                     )
