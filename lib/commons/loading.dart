@@ -1,37 +1,38 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+
+enum LoaderType {
+  CHASING_DOTS,
+  THREE_BOUNCE
+}
 
 class Loading extends StatelessWidget {
 
   final double size;
-  final Widget loader;
+  final LoaderType loaderType;
 
-  Loading({this.size = 30, this.loader});
+  Loading({this.size = 30, this.loaderType});
 
   @override
   Widget build(BuildContext context) {
-    if(this.loader == null) {
+    switch (loaderType) {
+      case LoaderType.THREE_BOUNCE:
+        return new SpinKitThreeBounce(
+          color: Theme.of(context).textTheme.headline6.color,
+          size: size,
+        );
+        break;
+      case LoaderType.CHASING_DOTS:
+      default:
       return new SpinKitChasingDots(
         color: Theme.of(context).textTheme.headline6.color,
         size: size,
       );
     }
-    else return this.loader;
   }
 
   factory Loading.small() {
     return Loading(size: 15);
-  }
-
-  factory Loading.threeBounce({@required Color color, double size = 30}) {
-    return Loading(
-      loader: SpinKitThreeBounce(
-        color: color,
-        size: size,
-      ),
-    );
   }
 
 }
