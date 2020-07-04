@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:v34/utils/extensions.dart';
 
 class RoundedNetworkImage extends StatelessWidget {
   final double size;
@@ -22,7 +23,7 @@ class RoundedNetworkImage extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: Theme.of(context).bottomAppBarColor,
+          color: Theme.of(context).cardTheme.titleBackgroundColor(context),
         ),
         child: Padding(
           padding: const EdgeInsets.all(4.0),
