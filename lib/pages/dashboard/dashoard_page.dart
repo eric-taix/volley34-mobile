@@ -66,47 +66,19 @@ class _DashboardPageState extends State<DashboardPage> {
       create: (context) => _favoriteBloc,
       child: BlocBuilder<FavoriteBloc, FavoriteState>(
         builder: (context, state) {
-          return Builder(builder: (context) {
-              return Stack(
-                children: <Widget>[
-                  (state is FavoriteLoadedState)
-                      ? ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: 6,
-                    itemBuilder: (context, index) {
-                      return _buildDashboardItem(
-                        index,
-                        state,
-                      );
-                    },
-                  )
-                      : SizedBox(),
-                  Positioned(
-                    top: 40.0,
-                    right: 8.0,
-                    child: ThemeSwitcher(
-                      clipper: ThemeSwitcherCircleClipper(),
-                      builder: (context) {
-                        return Switch(
-                          value: _isDarkActive,
-                          onChanged: (value) {
-                            setState(() => _isDarkActive = value);
-                            if (_isDarkActive) {
-                              ThemeSwitcher.of(context).changeTheme(theme: AppTheme.darkTheme());
-                            } else {
-                              ThemeSwitcher.of(context).changeTheme(theme: AppTheme.lightTheme());
-                            }
-                          },
-                        );
-                      },
-                    )
-                  )
-                ],
-              );
-            }
-          );
-        },
-      ),
+          return (state is FavoriteLoadedState)
+            ? ListView.builder(
+              shrinkWrap: true,
+              itemCount: 6,
+              itemBuilder: (context, index) {
+                return _buildDashboardItem(
+                  index,
+                  state,
+                );
+              },
+          ) : SizedBox();
+        }
+      )
     );
   }
 
@@ -126,8 +98,32 @@ class _DashboardPageState extends State<DashboardPage> {
   Widget _buildDashboardItem(int index, FavoriteState state) {
     switch (index) {
       case 0:
-        return Paragraph(
-          title: state.clubs.length > 1 ? "Vos clubs" : "Votre club",
+        return Stack(
+          children: <Widget>[
+            Paragraph(
+              title: state.clubs.length > 1 ? "Vos clubs" : "Votre club",
+            ),
+            Positioned(
+                right: 10.0,
+                top: 2.0,
+                child: ThemeSwitcher(
+                  clipper: ThemeSwitcherCircleClipper(),
+                  builder: (context) {
+                    return Switch(
+                      value: _isDarkActive,
+                      onChanged: (value) {
+                        setState(() => _isDarkActive = value);
+                        if (_isDarkActive) {
+                          ThemeSwitcher.of(context).changeTheme(theme: AppTheme.darkTheme());
+                        } else {
+                          ThemeSwitcher.of(context).changeTheme(theme: AppTheme.lightTheme());
+                        }
+                      },
+                    );
+                  },
+                )
+            )
+          ],
         );
       case 1:
         return (state is FavoriteLoadedState)
