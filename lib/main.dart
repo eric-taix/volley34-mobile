@@ -37,12 +37,7 @@ class V34 extends StatefulWidget {
 }
 
 class _V34State extends State<V34> {
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
+  
   @override
   Widget build(BuildContext context) {
     return RepositoryProvider(
