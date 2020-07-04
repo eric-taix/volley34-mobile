@@ -49,7 +49,7 @@ class _V34State extends State<V34> {
       child: FeatureDiscovery(
         child: MaterialApp(
           title: 'Volley34',
-          theme: AppTheme.theme(),
+          theme: AppTheme.lightTheme(),
           home: _MainPage(),
         ),
       ),

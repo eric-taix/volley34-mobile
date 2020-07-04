@@ -153,7 +153,7 @@ class _FavoriteClubCardState extends State<FavoriteClubCard> with AutomaticKeepA
                       textScaleFactor: 1.1,
                       text: TextSpan(
                           text: "X",
-                          style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
+                          style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold, color: Theme.of(context).textTheme.bodyText2.color),
                           children: [new TextSpan(text: " / y matchs à domicile", style: Theme.of(context).textTheme.bodyText2)])),
                 ),
               ],

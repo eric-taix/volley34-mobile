@@ -208,7 +208,7 @@ class _PodiumState extends State<Podium> {
             ) {
               return BarTooltipItem(
                 showToolTip ? places[groupIndex].tooltip : "",
-                TextStyle(color: Colors.white, fontSize: 10, fontFamily: "Raleway"),
+                TextStyle(color: Theme.of(context).textTheme.bodyText1.color, fontSize: 10, fontFamily: "Raleway"),
               );
             },
           ),
