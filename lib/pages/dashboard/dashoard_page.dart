@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:v34/commons/loading.dart';
 import 'package:v34/commons/router.dart';
+import 'package:v34/main.dart';
 import 'package:v34/pages/club-details/club_detail_page.dart';
 import 'package:v34/pages/dashboard/blocs/agenda_bloc.dart';
 import 'package:v34/pages/dashboard/blocs/favorite_bloc.dart';
@@ -13,6 +14,7 @@ import 'package:v34/pages/dashboard/fav_club_card.dart';
 import 'package:v34/pages/dashboard/widgets/timeline/timeline.dart';
 import 'package:v34/pages/dashboard/widgets/timeline/timeline_items.dart';
 import 'package:v34/repositories/repository.dart';
+import 'package:v34/theme.dart';
 
 class DashboardPage extends StatefulWidget {
   final double cardHeight = 250;
@@ -27,10 +29,12 @@ class _DashboardPageState extends State<DashboardPage> {
   PageController _pageController;
   String _currentClubCode;
   double currentFavoriteClubPage = 0;
+  bool _isDarkActive;
 
   @override
   void initState() {
     super.initState();
+    _isDarkActive = false;
     _favoriteBloc = FavoriteBloc(repository: RepositoryProvider.of<Repository>(context))..add(FavoriteLoadEvent());
     _favoriteBloc.skip(1).listen((state) {
       if (state is FavoriteLoadedState) {
@@ -61,18 +65,42 @@ class _DashboardPageState extends State<DashboardPage> {
       create: (context) => _favoriteBloc,
       child: BlocBuilder<FavoriteBloc, FavoriteState>(
         builder: (context, state) {
-          return (state is FavoriteLoadedState)
-              ? ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: 6,
-                  itemBuilder: (context, index) {
-                    return _buildDashboardItem(
-                      index,
-                      state,
-                    );
+          return Stack(
+            children: <Widget>[
+              (state is FavoriteLoadedState)
+                ? ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: 6,
+                    itemBuilder: (context, index) {
+                      return _buildDashboardItem(
+                        index,
+                        state,
+                      );
+                    },
+                  )
+                : SizedBox(),
+              Positioned(
+                top: 40.0,
+                right: 8.0,
+                child: Switch(
+                  value: _isDarkActive,
+                  onChanged: (value) {
+                    setState(() => _isDarkActive = value);
+                    var v34State = context.findAncestorStateOfType<V34State>();
+                    if (_isDarkActive) {
+                      v34State.setState(() {
+                        v34State.theme = AppTheme.darkTheme();
+                      });
+                    } else {
+                      v34State.setState(() {
+                        v34State.theme = AppTheme.lightTheme();
+                      });
+                    }
                   },
-                )
-              : SizedBox();
+                ),
+              )
+            ],
+          );
         },
       ),
     );

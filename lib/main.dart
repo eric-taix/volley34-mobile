@@ -28,14 +28,22 @@ void main() {
 
 class V34 extends StatefulWidget {
   @override
-  _V34State createState() => _V34State();
+  V34State createState() => V34State();
 
   static String _pkg = "mobile";
 
   static String get pkg => Env.getPackage(_pkg);
 }
 
-class _V34State extends State<V34> {
+class V34State extends State<V34> {
+  ThemeData theme;
+
+  @override
+  void initState() {
+    super.initState();
+    theme = AppTheme.lightTheme();
+  }
+
   @override
   Widget build(BuildContext context) {
     return RepositoryProvider(
@@ -49,7 +57,7 @@ class _V34State extends State<V34> {
       child: FeatureDiscovery(
         child: MaterialApp(
           title: 'Volley34',
-          theme: AppTheme.lightTheme(),
+          theme: theme,
           home: _MainPage(),
         ),
       ),
