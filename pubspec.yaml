@@ -39,6 +39,7 @@ dependencies:
   radial_button: ^1.0.0
   flushbar: ^1.10.4
   simple_gravatar: ^1.0.5
+  animated_theme_switcher: ^1.0.5
   
 dev_dependencies:
   flutter_test:

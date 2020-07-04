@@ -1,3 +1,4 @@
+import 'package:animated_theme_switcher/animated_theme_switcher.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -65,10 +66,11 @@ class _DashboardPageState extends State<DashboardPage> {
       create: (context) => _favoriteBloc,
       child: BlocBuilder<FavoriteBloc, FavoriteState>(
         builder: (context, state) {
-          return Stack(
-            children: <Widget>[
-              (state is FavoriteLoadedState)
-                ? ListView.builder(
+          return Builder(builder: (context) {
+              return Stack(
+                children: <Widget>[
+                  (state is FavoriteLoadedState)
+                      ? ListView.builder(
                     shrinkWrap: true,
                     itemCount: 6,
                     itemBuilder: (context, index) {
@@ -78,28 +80,30 @@ class _DashboardPageState extends State<DashboardPage> {
                       );
                     },
                   )
-                : SizedBox(),
-              Positioned(
-                top: 40.0,
-                right: 8.0,
-                child: Switch(
-                  value: _isDarkActive,
-                  onChanged: (value) {
-                    setState(() => _isDarkActive = value);
-                    var v34State = context.findAncestorStateOfType<V34State>();
-                    if (_isDarkActive) {
-                      v34State.setState(() {
-                        v34State.theme = AppTheme.darkTheme();
-                      });
-                    } else {
-                      v34State.setState(() {
-                        v34State.theme = AppTheme.lightTheme();
-                      });
-                    }
-                  },
-                ),
-              )
-            ],
+                      : SizedBox(),
+                  Positioned(
+                    top: 40.0,
+                    right: 8.0,
+                    child: ThemeSwitcher(
+                      clipper: ThemeSwitcherCircleClipper(),
+                      builder: (context) {
+                        return Switch(
+                          value: _isDarkActive,
+                          onChanged: (value) {
+                            setState(() => _isDarkActive = value);
+                            if (_isDarkActive) {
+                              ThemeSwitcher.of(context).changeTheme(theme: AppTheme.darkTheme());
+                            } else {
+                              ThemeSwitcher.of(context).changeTheme(theme: AppTheme.lightTheme());
+                            }
+                          },
+                        );
+                      },
+                    )
+                  )
+                ],
+              );
+            }
           );
         },
       ),
