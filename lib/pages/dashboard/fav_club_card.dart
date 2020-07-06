@@ -30,8 +30,8 @@ class _FavoriteClubCardState extends State<FavoriteClubCard> with AutomaticKeepA
         new CircularStackEntry(
           <CircularSegmentEntry>[
             new CircularSegmentEntry(0.0, Theme.of(context).accentColor, rankKey: "none"),
-            new CircularSegmentEntry(wonMatches.toDouble(), Colors.green, rankKey: "win"),
-            new CircularSegmentEntry(totalMatches - wonMatches.toDouble(), Colors.red, rankKey: "lost"),
+            new CircularSegmentEntry(wonMatches.toDouble(), Colors.greenAccent, rankKey: "win"),
+            new CircularSegmentEntry(totalMatches - wonMatches.toDouble(), Colors.redAccent, rankKey: "lost"),
           ],
         ),
       ]);
@@ -57,8 +57,8 @@ class _FavoriteClubCardState extends State<FavoriteClubCard> with AutomaticKeepA
       new CircularStackEntry(
         <CircularSegmentEntry>[
           new CircularSegmentEntry(10, Theme.of(context).accentColor, rankKey: "none"),
-          new CircularSegmentEntry(0.toDouble(), Colors.green, rankKey: "win"),
-          new CircularSegmentEntry(0.toDouble(), Colors.red, rankKey: "lost"),
+          new CircularSegmentEntry(0.toDouble(), Colors.greenAccent, rankKey: "win"),
+          new CircularSegmentEntry(0.toDouble(), Colors.redAccent, rankKey: "lost"),
         ],
       ),
     ];
@@ -114,10 +114,10 @@ class _FavoriteClubCardState extends State<FavoriteClubCard> with AutomaticKeepA
                     key: _chartKey,
                     duration: Duration(milliseconds: 1000),
                     edgeStyle: SegmentEdgeStyle.round,
-                    size: const Size(80.0, 80.0),
+                    size: const Size(110.0, 110.0),
                     initialChartData: _data,
                     chartType: CircularChartType.Radial,
-                    holeRadius: 26,
+                    holeRadius: 24,
                   ),
                   (state is ClubStatsLoadedState)
                       ? RichText(
