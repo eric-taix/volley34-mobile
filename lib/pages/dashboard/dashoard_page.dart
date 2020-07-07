@@ -1,4 +1,3 @@
-import 'package:animated_theme_switcher/animated_theme_switcher.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -14,7 +13,8 @@ import 'package:v34/pages/dashboard/fav_club_card.dart';
 import 'package:v34/pages/dashboard/widgets/timeline/timeline.dart';
 import 'package:v34/pages/dashboard/widgets/timeline/timeline_items.dart';
 import 'package:v34/repositories/repository.dart';
-import 'package:v34/theme.dart';
+
+import '../preferences_page.dart';
 
 class DashboardPage extends StatefulWidget {
   final double cardHeight = 250;
@@ -29,12 +29,10 @@ class _DashboardPageState extends State<DashboardPage> {
   PageController _pageController;
   String _currentClubCode;
   double currentFavoriteClubPage = 0;
-  bool _isDarkActive;
 
   @override
   void initState() {
     super.initState();
-    _isDarkActive = false;
     _favoriteBloc = FavoriteBloc(repository: RepositoryProvider.of<Repository>(context))..add(FavoriteLoadEvent());
     _favoriteBloc.skip(1).listen((state) {
       if (state is FavoriteLoadedState) {
@@ -65,18 +63,29 @@ class _DashboardPageState extends State<DashboardPage> {
       create: (context) => _favoriteBloc,
       child: BlocBuilder<FavoriteBloc, FavoriteState>(
         builder: (context, state) {
-          return (state is FavoriteLoadedState)
-            ? ListView.builder(
-              shrinkWrap: true,
-              itemCount: 6,
-              itemBuilder: (context, index) {
-                return _buildDashboardItem(
-                  index,
-                  state,
-                );
-              },
-          ) : SizedBox();
+          return CustomScrollView(
+            slivers: <Widget>[
+              SliverAppBar(
+                pinned: false,
+                snap: false,
+                floating: true,
+                title: Text('Tableau de bord'),
+                actions: <Widget>[
+                  IconButton(icon: Icon(Icons.build), onPressed: _pushPreferences)
+                ],
+              ),
+              _buildSliverList(state)
+            ],
+          );
         }
+      )
+    );
+  }
+
+  void _pushPreferences() {
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (context) => PreferencesPage()
       )
     );
   }
@@ -94,35 +103,23 @@ class _DashboardPageState extends State<DashboardPage> {
     );
   }
 
+  SliverList _buildSliverList(FavoriteState state) {
+    if (state is FavoriteLoadedState) {
+      return SliverList(
+        delegate: SliverChildBuilderDelegate(
+          (context, index) => _buildDashboardItem(index, state)
+        ),
+      );
+    } else {
+      return SliverList(delegate: SliverChildListDelegate([]));
+    }
+  }
+
   Widget _buildDashboardItem(int index, FavoriteState state) {
     switch (index) {
       case 0:
-        return Stack(
-          children: <Widget>[
-            Paragraph(
-              title: state.clubs.length > 1 ? "Vos clubs" : "Votre club",
-            ),
-            Positioned(
-                right: 10.0,
-                top: 2.0,
-                child: ThemeSwitcher(
-                  clipper: ThemeSwitcherCircleClipper(),
-                  builder: (context) {
-                    return Switch(
-                      value: _isDarkActive,
-                      onChanged: (value) {
-                        setState(() => _isDarkActive = value);
-                        if (_isDarkActive) {
-                          ThemeSwitcher.of(context).changeTheme(theme: AppTheme.darkTheme());
-                        } else {
-                          ThemeSwitcher.of(context).changeTheme(theme: AppTheme.lightTheme());
-                        }
-                      },
-                    );
-                  },
-                )
-            )
-          ],
+        return Paragraph(
+          title: state.clubs.length > 1 ? "Vos clubs" : "Votre club",
         );
       case 1:
         return (state is FavoriteLoadedState)
@@ -207,4 +204,5 @@ class _DashboardPageState extends State<DashboardPage> {
       _currentClubCode = clubCode;
     });
   }
+
 }

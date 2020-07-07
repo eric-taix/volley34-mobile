@@ -8,6 +8,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:v34/commons/blocs/logging_bloc.dart';
 import 'package:v34/commons/env.dart';
 import 'package:v34/commons/feature_tour.dart';
@@ -21,6 +22,8 @@ import 'package:v34/repositories/providers/gymnasium_provider.dart';
 import 'package:v34/repositories/providers/team_provider.dart';
 import 'package:v34/repositories/repository.dart';
 import 'package:v34/theme.dart';
+
+import 'commons/loading.dart';
 
 void main() {
   BlocSupervisor.delegate = LoggingBlocDelegate();
@@ -37,31 +40,63 @@ class V34 extends StatefulWidget {
 }
 
 class _V34State extends State<V34> {
+  Future<SharedPreferences> _preferences;
+
+  @override
+  void initState() {
+    super.initState();
+    _preferences = SharedPreferences.getInstance();
+  }
   
   @override
   Widget build(BuildContext context) {
-    return RepositoryProvider(
-      create: (context) => Repository(
-        ClubProvider(),
-        TeamProvider(),
-        FavoriteProvider(),
-        AgendaProvider(),
-        GymnasiumProvider(),
-      ),
-      child: FeatureDiscovery(
-        child: ThemeProvider(
-          initTheme: AppTheme.lightTheme(),
-          child: Builder(builder: (context) {
+    return FutureBuilder<SharedPreferences>(
+      future: _preferences,
+      builder: (context, snapshot) {
+        switch (snapshot.connectionState) {
+          case ConnectionState.waiting:
             return MaterialApp(
               title: 'Volley34',
-              theme: ThemeProvider.of(context),
-              home: _MainPage(),
+              theme: AppTheme.lightTheme(),
+              home: Center(
+                child: Column(
+                  children: <Widget>[
+                    Loading()
+                  ],
+                ),
+              ),
             );
-          }),
-        ),
-      ),
+          case ConnectionState.done:
+            return RepositoryProvider(
+              create: (context) => Repository(
+                ClubProvider(),
+                TeamProvider(),
+                FavoriteProvider(),
+                AgendaProvider(),
+                GymnasiumProvider(),
+              ),
+              child: FeatureDiscovery(
+                child: ThemeProvider(
+                  initTheme: snapshot.data.getBool("dark_theme")
+                      ? AppTheme.darkTheme()
+                      : AppTheme.lightTheme(),
+                  child: Builder(builder: (context) {
+                    return MaterialApp(
+                      title: 'Volley34',
+                      theme: ThemeProvider.of(context),
+                      home: _MainPage(),
+                    );
+                  }),
+                ),
+              ),
+            );
+          default:
+            return Container();
+        }
+      },
     );
   }
+
 }
 
 class _MainPage extends StatefulWidget {
@@ -95,62 +130,58 @@ class __MainPageState extends State<_MainPage> {
 
   @override
   Widget build(BuildContext context) {
-    return ThemeSwitchingArea(
-      child: Builder(builder: (context) {
-        return Scaffold(
-          backgroundColor: Theme.of(context).primaryColor,
-          extendBody: true,
-          body: _child,
-          bottomNavigationBar: FluidNavBar(
-            icons: [
-              FluidNavBarIcon(iconPath: "assets/dashboard.svg", extras: {
-                "featureId": "dashboard_feature_id",
-                "title": "Tableau de bord",
-                "paragraphs": [
-                  "L'ensemble de vos clubs et équipes favorites toujours à portée.",
-                  "Retrouvez votre agenda, des statistiques et l'ensemble des informations utiles au jour le jour."
-                ],
-              }),
-              FluidNavBarIcon(iconPath: "assets/competition-filled.svg", extras: {
-                "featureId": "competition_feature_id",
-                "title": "Compétitions",
-                "paragraphs": [
-                  "Championnats, Challenges et Coupe de printemps.",
-                  "L'ensemble des résultats, classements par catégorie, poule et type de compétition."
-                ],
-              }),
-              FluidNavBarIcon(iconPath: "assets/shield.svg", extras: {
-                "featureId": "clubs_feature_id",
-                "title": "Liste des clubs",
-                "paragraphs": [
-                  "Accédez à l'ensemble des clubs inscrits aux compétitions.",
-                  "Sélectionnez un ou plusieurs favoris, ainsi accédez rapidement depuis le tableau de bord à des informations importantes sur vos favoris."
-                ],
-              }),
+    return Scaffold(
+      backgroundColor: Theme.of(context).primaryColor,
+      extendBody: true,
+      body: _child,
+      bottomNavigationBar: FluidNavBar(
+        icons: [
+          FluidNavBarIcon(iconPath: "assets/dashboard.svg", extras: {
+            "featureId": "dashboard_feature_id",
+            "title": "Tableau de bord",
+            "paragraphs": [
+              "L'ensemble de vos clubs et équipes favorites toujours à portée.",
+              "Retrouvez votre agenda, des statistiques et l'ensemble des informations utiles au jour le jour."
             ],
-            style: FluidNavBarStyle(
-              barBackgroundColor: Theme.of(context).bottomAppBarColor,
-              iconSelectedForegroundColor: Color(0xFF313852),
-              iconUnselectedForegroundColor: Theme.of(context).tabBarTheme.unselectedLabelColor,
+          }),
+          FluidNavBarIcon(iconPath: "assets/competition-filled.svg", extras: {
+            "featureId": "competition_feature_id",
+            "title": "Compétitions",
+            "paragraphs": [
+              "Championnats, Challenges et Coupe de printemps.",
+              "L'ensemble des résultats, classements par catégorie, poule et type de compétition."
+            ],
+          }),
+          FluidNavBarIcon(iconPath: "assets/shield.svg", extras: {
+            "featureId": "clubs_feature_id",
+            "title": "Liste des clubs",
+            "paragraphs": [
+              "Accédez à l'ensemble des clubs inscrits aux compétitions.",
+              "Sélectionnez un ou plusieurs favoris, ainsi accédez rapidement depuis le tableau de bord à des informations importantes sur vos favoris."
+            ],
+          }),
+        ],
+        style: FluidNavBarStyle(
+          barBackgroundColor: Theme.of(context).bottomAppBarColor,
+          iconSelectedForegroundColor: Color(0xFF313852),
+          iconUnselectedForegroundColor: Theme.of(context).tabBarTheme.unselectedLabelColor,
+        ),
+        scaleFactor: 1.4,
+        onChange: _handleNavigationChange,
+        itemBuilder: (icon, item) {
+          return FeatureTour(
+            child: item,
+            featureId: icon.extras["featureId"],
+            title: icon.extras["title"],
+            paragraphs: icon.extras["paragraphs"] ?? [],
+            target: SvgPicture.asset(
+              icon.iconPath,
+              height: 30,
+              color: Theme.of(context).tabBarTheme.unselectedLabelColor,
             ),
-            scaleFactor: 1.4,
-            onChange: _handleNavigationChange,
-            itemBuilder: (icon, item) {
-              return FeatureTour(
-                child: item,
-                featureId: icon.extras["featureId"],
-                title: icon.extras["title"],
-                paragraphs: icon.extras["paragraphs"] ?? [],
-                target: SvgPicture.asset(
-                  icon.iconPath,
-                  height: 30,
-                  color: Theme.of(context).tabBarTheme.unselectedLabelColor,
-                ),
-              );
-            },
-          ),
-        );
-      })
+          );
+        },
+      ),
     );
   }
 

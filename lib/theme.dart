@@ -157,7 +157,7 @@ class AppTheme {
         ),
       ),
       appBarTheme: AppBarTheme(
-        color: Color(0xff8f96b3),
+        color: Color(0xffcfd3e6),
         textTheme: TextTheme(
           headline6: TextStyle(
             color: Color(0xff080401),
