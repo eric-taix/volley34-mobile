@@ -40,25 +40,12 @@ class V34 extends StatefulWidget {
 }
 
 class _V34State extends State<V34> {
-  Future<SharedPreferences> _preferences;
-
-  @override
-  void initState() {
-    super.initState();
-    _preferences = SharedPreferences.getInstance();
-  }
+  Future<SharedPreferences> _preferences = SharedPreferences.getInstance();
 
   ThemeData _getTheme(AsyncSnapshot<SharedPreferences> snapshot) {
     bool automatic = snapshot.data.getBool("automatic_dark_theme") ?? false;
     bool dark = snapshot.data.getBool("dark_theme") ?? false;
-    DateTime now = DateTime.now();
-    if (automatic) {
-      if (now.hour >= 20 || now.hour < 8) return AppTheme.darkTheme();
-      else return AppTheme.lightTheme();
-    } else {
-      if (dark) return AppTheme.darkTheme();
-      else return AppTheme.lightTheme();
-    }
+    return AppTheme.getThemeFromPreferences(automatic, dark);
   }
   
   @override
