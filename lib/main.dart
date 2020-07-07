@@ -47,6 +47,19 @@ class _V34State extends State<V34> {
     super.initState();
     _preferences = SharedPreferences.getInstance();
   }
+
+  ThemeData _getTheme(AsyncSnapshot<SharedPreferences> snapshot) {
+    bool automatic = snapshot.data.getBool("automatic_dark_theme") ?? false;
+    bool dark = snapshot.data.getBool("dark_theme") ?? false;
+    DateTime now = DateTime.now();
+    if (automatic) {
+      if (now.hour >= 20 || now.hour < 8) return AppTheme.darkTheme();
+      else return AppTheme.lightTheme();
+    } else {
+      if (dark) return AppTheme.darkTheme();
+      else return AppTheme.lightTheme();
+    }
+  }
   
   @override
   Widget build(BuildContext context) {
@@ -77,9 +90,7 @@ class _V34State extends State<V34> {
               ),
               child: FeatureDiscovery(
                 child: ThemeProvider(
-                  initTheme: snapshot.data.getBool("dark_theme")
-                      ? AppTheme.darkTheme()
-                      : AppTheme.lightTheme(),
+                  initTheme: _getTheme(snapshot),
                   child: Builder(builder: (context) {
                     return MaterialApp(
                       title: 'Volley34',
