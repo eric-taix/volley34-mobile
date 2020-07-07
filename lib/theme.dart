@@ -146,10 +146,10 @@ class AppTheme {
       highlightColor: Colors.transparent,
       primarySwatch: Colors.blue,
       accentColor: Color(0xff4c4f59),
-      primaryColor: Color(0xffe6e8f2),
-      bottomAppBarColor: Color(0xfff7fbfe),
+      primaryColor: Color(0xfff3f5ff),
+      bottomAppBarColor: Color(0xffe2e5f3),
       cardTheme: CardTheme(
-        color: Color(0xffcfd3e6),
+        color: Color(0xffeceef8),
         margin: EdgeInsets.only(top: 30, left: 20, right: 20, bottom: 0),
         elevation: 0.0,
         shape: RoundedRectangleBorder(
@@ -157,7 +157,7 @@ class AppTheme {
         ),
       ),
       appBarTheme: AppBarTheme(
-        color: Color(0xffcfd3e6),
+        color: Color(0xffe2e5f3),
         textTheme: TextTheme(
           headline6: TextStyle(
             color: Color(0xff080401),
