@@ -71,7 +71,7 @@ class _DashboardPageState extends State<DashboardPage> {
                 floating: true,
                 title: Text('Tableau de bord'),
                 actions: <Widget>[
-                  IconButton(icon: Icon(Icons.build), onPressed: _pushPreferences)
+                  IconButton(icon: Icon(Icons.settings), onPressed: _pushPreferences)
                 ],
               ),
               _buildSliverList(state)

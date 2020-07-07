@@ -14,6 +14,7 @@ class _PreferencesPageState extends State<PreferencesPage> {
 
   @override
   void initState() {
+    super.initState();
     _preferences = SharedPreferences.getInstance();
   }
 
@@ -61,18 +62,40 @@ class _PreferencesPageState extends State<PreferencesPage> {
           return ThemeSwitcher(
             clipper: ThemeSwitcherCircleClipper(),
             builder: (context) {
+              bool automaticDarkTheme = snapshot.data.getBool('automatic_dark_theme') ?? false;
+              if (automaticDarkTheme) {
+                return ListTile(
+                  title: Text("Mode sombre", style: Theme.of(context).textTheme.bodyText2),
+                  leading: Icon(Icons.brightness_6, color: Theme.of(context).accentColor,),
+                  trailing: Text(
+                    "Mode sombre automatique activé",
+                    style: TextStyle(color: Theme.of(context).textTheme.bodyText2.color, fontSize: 10),
+                  ),
+                );
+              } else {
+                return SwitchListTile(
+                  title: Text("Mode sombre", style: Theme.of(context).textTheme.bodyText2),
+                  secondary: Icon(Icons.brightness_6, color: Theme.of(context).accentColor,),
+                  value: snapshot.data.getBool('dark_theme') ?? false,
+                  onChanged: (dark) => _setDarkTheme(dark, context, snapshot),
+                );
+              }
+            },
+          );
+        case 1:
+          return ThemeSwitcher(
+            clipper: ThemeSwitcherCircleClipper(),
+            builder: (context) {
               return SwitchListTile(
-                title: Text("Thème sombre", style: Theme.of(context).textTheme.bodyText2),
-                secondary: Icon(Icons.brightness_6, color: Theme.of(context).accentColor,),
-                value: snapshot.data.getBool('dark_theme') ?? false,
-                onChanged: (dark) {
-                  if (dark) {
-                    ThemeSwitcher.of(context).changeTheme(theme: AppTheme.darkTheme());
-                  } else {
-                    ThemeSwitcher.of(context).changeTheme(theme: AppTheme.lightTheme());
-                  }
-                  snapshot.data.setBool('dark_theme', dark);
-                },
+                contentPadding: EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0),
+                title: Text("Mode sombre automatique", style: Theme.of(context).textTheme.bodyText2),
+                subtitle: Text(
+                  "Cette option activera le mode sombre le soir et le désactivera le matin.",
+                    style: TextStyle(color: Theme.of(context).textTheme.bodyText2.color, fontSize: 10)
+                ),
+                secondary: Icon(Icons.access_time, color: Theme.of(context).accentColor),
+                value: snapshot.data.getBool('automatic_dark_theme') ?? false,
+                onChanged: (automatic) => _setAutomaticDarkTheme(automatic, context, snapshot),
               );
             },
           );
@@ -80,8 +103,30 @@ class _PreferencesPageState extends State<PreferencesPage> {
           return null;
       }
     } else {
-      return Divider();
+      return Divider(height: 1.0);
     }
+  }
+
+  void _setDarkTheme(bool dark, BuildContext context, AsyncSnapshot<SharedPreferences> snapshot) {
+    if (dark) {
+      ThemeSwitcher.of(context).changeTheme(theme: AppTheme.darkTheme());
+    } else {
+      ThemeSwitcher.of(context).changeTheme(theme: AppTheme.lightTheme());
+    }
+    snapshot.data.setBool('dark_theme', dark);
+  }
+
+  void _setAutomaticDarkTheme(bool automatic, BuildContext context, AsyncSnapshot<SharedPreferences> snapshot) {
+    DateTime now = DateTime.now();
+    if (automatic) {
+      if (now.hour >= 20 || now.hour < 8) ThemeSwitcher.of(context).changeTheme(theme: AppTheme.darkTheme());
+      else ThemeSwitcher.of(context).changeTheme(theme: AppTheme.lightTheme());
+    } else {
+      bool dark = snapshot.data.getBool('dark_theme') ?? false;
+      if (dark) ThemeSwitcher.of(context).changeTheme(theme: AppTheme.darkTheme());
+      else ThemeSwitcher.of(context).changeTheme(theme: AppTheme.lightTheme());
+    }
+    snapshot.data.setBool('automatic_dark_theme', automatic);
   }
 
 }
