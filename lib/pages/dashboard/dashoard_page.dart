@@ -69,9 +69,9 @@ class _DashboardPageState extends State<DashboardPage> {
                 pinned: false,
                 snap: false,
                 floating: true,
-                title: Text('Tableau de bord'),
+                title: Text('Volley34'),
                 actions: <Widget>[
-                  IconButton(icon: Icon(Icons.settings), onPressed: _pushPreferences)
+                  IconButton(icon: Icon(Icons.settings), onPressed: _gotoPreferencesPage)
                 ],
               ),
               _buildSliverList(state)
@@ -82,7 +82,7 @@ class _DashboardPageState extends State<DashboardPage> {
     );
   }
 
-  void _pushPreferences() {
+  void _gotoPreferencesPage() {
     Navigator.of(context).push(
       MaterialPageRoute<void>(
         builder: (context) => PreferencesPage()
