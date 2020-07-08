@@ -13,7 +13,7 @@ final Random random = Random.secure();
 
 class DashboardClubTeams extends StatefulWidget {
   final String clubCode;
-  final double cardHeight = 190;
+  final double cardHeight = 240;
 
   DashboardClubTeams({this.clubCode});
 
@@ -29,9 +29,7 @@ class _DashboardClubTeamsState extends State<DashboardClubTeams> with SingleTick
 
   @override
   void initState() {
-    _pageController = PageController(
-      viewportFraction: 0.8,
-    )..addListener(() {
+    _pageController = PageController()..addListener(() {
       var nextIndex = _pageController.page.round();
       setState(() => _currentTeamPage = _pageController.page);
       if (nextIndex != _currentIndex) {
@@ -74,10 +72,13 @@ class _DashboardClubTeamsState extends State<DashboardClubTeams> with SingleTick
                       controller: _pageController,
                       itemCount: state.teams.length,
                       itemBuilder: (context, index) {
-                        return TeamCard(
-                          currentlyDisplayed: _currentIndex == index,
-                          team: state.teams[index],
-                          distance: _currentTeamPage - index,
+                        return Padding(
+                          padding: const EdgeInsets.only(left: 8.0, right: 0),
+                          child: TeamCard(
+                            currentlyDisplayed: _currentIndex == index,
+                            team: state.teams[index],
+                            distance: _currentTeamPage - index,
+                          ),
                         );
                       },
                     )
