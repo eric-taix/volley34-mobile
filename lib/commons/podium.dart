@@ -146,17 +146,20 @@ class _PodiumState extends State<Podium> {
           )
               : Text(""),
         ),
-        Padding(
-          padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 38.0, bottom: 10),
-          child: Container(
-            child: Column(
-              children: <Widget>[
-                Expanded(child: _buildBarChart(context)),
-                Padding(
-                  padding: const EdgeInsets.only(top: 8.0),
-                  child: Text(widget.title),
-                ),
-              ],
+        Align(
+          alignment: Alignment.center,
+          child: Padding(
+            padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 38.0, bottom: 10),
+            child: Container(
+              child: Column(
+                children: <Widget>[
+                  Expanded(child: _buildBarChart(context)),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8.0),
+                    child: Text(widget.title),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
