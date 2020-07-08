@@ -158,7 +158,6 @@ class _DashboardPageState extends State<DashboardPage> {
       case 2:
         return Paragraph(
           title: state.teamCodes.length > 1 ? "Vos équipes" : "Vos équipes",
-          bottomPadding: 20.0,
         );
       case 3:
         return DashboardClubTeams(clubCode: _currentClubCode);

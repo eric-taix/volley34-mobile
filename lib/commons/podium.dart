@@ -39,7 +39,7 @@ class _PodiumState extends State<Podium> {
   PlaceValue highlightedValue;
   bool showToolTip = false;
   bool showPosition = false;
-  int animationDuration = 400;
+  int animationDuration = 200;
   int position;
 
   @override
@@ -107,8 +107,8 @@ class _PodiumState extends State<Podium> {
     return Stack(
       children: [
         Positioned(
-          top: -20,
-          left: 2,
+          top: -10,
+          left: 6,
           child: position != null && placeValues != null
               ? AnimatedOpacity(
                   duration: Duration(milliseconds: 600),
@@ -146,17 +146,20 @@ class _PodiumState extends State<Podium> {
           )
               : Text(""),
         ),
-        Padding(
-          padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 38.0, bottom: 10),
-          child: Container(
-            child: Column(
-              children: <Widget>[
-                Expanded(child: _buildBarChart(context)),
-                Padding(
-                  padding: const EdgeInsets.only(top: 8.0),
-                  child: Text(widget.title),
-                ),
-              ],
+        Align(
+          alignment: Alignment.center,
+          child: Padding(
+            padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 38.0, bottom: 10),
+            child: Container(
+              child: Column(
+                children: <Widget>[
+                  Expanded(child: _buildBarChart(context)),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8.0),
+                    child: Text(widget.title),
+                  ),
+                ],
+              ),
             ),
           ),
         ),

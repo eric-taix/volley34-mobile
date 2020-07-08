@@ -53,7 +53,7 @@ class _TeamCardState extends State<TeamCard> {
   Widget _noPodiumData() {
     return Expanded(
       child: Text(
-        'Aucunes données...',
+        "Aucune donnée",
         textAlign: TextAlign.center
       )
     );
@@ -89,14 +89,13 @@ class _TeamCardState extends State<TeamCard> {
   @override
   Widget build(BuildContext context) {
     var absDistance = widget.distance.abs() > 1 ? 1 : widget.distance.abs();
-    final double cardBodyHeight = widget.cardHeight - 40;
+    final double cardBodyHeight = widget.cardHeight - 20;
     return BlocBuilder<TeamClassificationBloc, TeamClassificationState>(
       bloc: _classificationBloc,
       builder: (context, state) {
         return Transform.scale(
           scale: 1.0 - (absDistance > 0.15 ? 0.15 : absDistance),
           child: TitledCard(
-            margin: EdgeInsets.zero,
             title: widget.team.name,
             bodyPadding: EdgeInsets.zero,
             body: Container(
