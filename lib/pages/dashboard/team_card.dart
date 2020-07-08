@@ -53,7 +53,7 @@ class _TeamCardState extends State<TeamCard> {
   Widget _noPodiumData() {
     return Expanded(
       child: Text(
-        'Aucunes données...',
+        "Aucune donnée",
         textAlign: TextAlign.center
       )
     );
