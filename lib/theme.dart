@@ -19,13 +19,13 @@ class AppTheme {
         ),
       ),
       appBarTheme: AppBarTheme(
-        color: Color(0xFF313852),
+        color: Color(0xFF373E5D),
         textTheme: TextTheme(
           headline6: TextStyle(
             color: Color(0xFFF7FBFE),
-            fontSize: 17.0,
+            fontSize: 22.0,
             fontFamily: "Raleway",
-            fontWeight: FontWeight.bold,
+            fontWeight: FontWeight.w600,
           ),
           subtitle2: TextStyle(
             color: Color(0xFF979DB2),
@@ -92,9 +92,9 @@ class AppTheme {
         textTheme: TextTheme(
           headline6: TextStyle(
             color: Color(0xff080401),
-            fontSize: 17.0,
+            fontSize: 22.0,
             fontFamily: "Raleway",
-            fontWeight: FontWeight.bold,
+            fontWeight: FontWeight.w600,
           ),
           subtitle2: TextStyle(
             color: Color(0xff4c4f59),
