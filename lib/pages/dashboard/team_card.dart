@@ -87,6 +87,14 @@ class _TeamCardState extends State<TeamCard> {
     }
   }
 
+  Widget _buildStar() {
+    return Positioned(
+      top: 38,
+      right: 35,
+      child: Icon(Icons.star, color: Theme.of(context).accentColor),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     var absDistance = widget.distance.abs() > 1 ? 1 : widget.distance.abs();
@@ -96,14 +104,19 @@ class _TeamCardState extends State<TeamCard> {
       builder: (context, state) {
         return Transform.scale(
           scale: 1.0 - (absDistance > 0.15 ? 0.15 : absDistance),
-          child: TitledCard(
-            title: widget.team.name,
-            bodyPadding: EdgeInsets.zero,
-            body: Container(
-              height: cardBodyHeight,
-              child: Row(children: _getPodiumWidget(state)),
-            ),
-            onTap: widget.onTap,
+          child: Stack(
+            children: <Widget>[
+              TitledCard(
+                title: widget.team.name,
+                bodyPadding: EdgeInsets.zero,
+                body: Container(
+                  height: cardBodyHeight,
+                  child: Row(children: _getPodiumWidget(state)),
+                ),
+                onTap: widget.onTap,
+              ),
+              if (widget.team.favorite) _buildStar(),
+            ],
           ),
         );
       },
