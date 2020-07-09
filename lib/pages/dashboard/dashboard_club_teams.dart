@@ -33,13 +33,14 @@ class _DashboardClubTeamsState extends State<DashboardClubTeams> with SingleTick
 
   @override
   void initState() {
-    _pageController = PageController()..addListener(() {
-      var nextIndex = _pageController.page.round();
-      setState(() => _currentTeamPage = _pageController.page);
-      if (nextIndex != _currentIndex) {
-        _currentIndex = nextIndex;
-      }
-    });
+    _pageController = PageController()
+      ..addListener(() {
+        var nextIndex = _pageController.page.round();
+        setState(() => _currentTeamPage = _pageController.page);
+        if (nextIndex != _currentIndex) {
+          _currentIndex = nextIndex;
+        }
+      });
     _clubTeamsBloc = ClubTeamsBloc(
       repository: RepositoryProvider.of<Repository>(context),
     );
@@ -49,11 +50,16 @@ class _DashboardClubTeamsState extends State<DashboardClubTeams> with SingleTick
           _currentIndex = 0;
           _pageController.jumpTo(0);
         }
+        List<String> favorites = (_favoriteBloc.state as FavoriteLoadedState).teamCodes;
+        state.teams.forEach((team) {
+          if (favorites.contains(team.code)) team.favorite = true;
+        });
         state.teams.sort((team1, team2) {
-          List<String> favorites = (_favoriteBloc.state as FavoriteLoadedState).teamCodes;
-          if (favorites.contains(team1.code) && !favorites.contains(team2.code)) return -1;
-          if (!favorites.contains(team1.code) && favorites.contains(team2.code)) return 1;
-          else return team1.name.compareTo(team2.name);
+          if (team1.favorite && !team2.favorite) return -1;
+          if (!team1.favorite && team2.favorite)
+            return 1;
+          else
+            return team1.name.compareTo(team2.name);
         });
       }
     });
@@ -74,6 +80,23 @@ class _DashboardClubTeamsState extends State<DashboardClubTeams> with SingleTick
     }
   }
 
+  Widget _buildTeamCategory(ClubTeamsLoaded state) {
+    String text = state.teams[_currentIndex].favorite ? "Équipes favorites" : "Autres";
+    return Container(
+      width: 160,
+      padding: EdgeInsets.only(right: 25.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: <Widget>[
+          Text(text, style: Theme.of(context).textTheme.bodyText2),
+          Divider(
+            color: Theme.of(context).textTheme.bodyText2.color,
+          )
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -81,8 +104,11 @@ class _DashboardClubTeamsState extends State<DashboardClubTeams> with SingleTick
       bloc: _clubTeamsBloc,
       builder: (context, state) {
         if (state is ClubTeamsLoaded) {
-          return Column(
+          return Column(children: <Widget>[
+            Stack(
+              alignment: Alignment.topRight,
               children: <Widget>[
+                _buildTeamCategory(state),
                 Container(
                     height: widget.cardHeight,
                     child: PageView.builder(
@@ -100,34 +126,32 @@ class _DashboardClubTeamsState extends State<DashboardClubTeams> with SingleTick
                           ),
                         );
                       },
-                    )
-                ),
-                if (state.teams.length > 1)
-                  Padding(
-                    padding: EdgeInsets.only(top: 16.0),
+                    )),
+              ],
+            ),
+            if (state.teams.length > 1)
+              Padding(
+                  padding: EdgeInsets.only(top: 16.0),
+                  child: Center(
                     child: SmoothPageIndicator(
-                        controller: _pageController,
-                        count: state.teams.length,
-                        effect: WormEffect(
-                          dotHeight: 8,
-                          dotWidth: 8,
-                          dotColor: Theme.of(context).cardTheme.color,
-                          activeDotColor: Theme.of(context).accentColor,
-                        )
+                      controller: _pageController,
+                      count: state.teams.length,
+                      effect: WormEffect(
+                        dotHeight: 8,
+                        dotWidth: 8,
+                        dotColor: Theme.of(context).cardTheme.color,
+                        activeDotColor: Theme.of(context).accentColor,
+                      ),
                     ),
-                  )
-              ]
-          );
+                  ))
+          ]);
         } else if (state is ClubTeamsLoading) {
           return Container(
             height: widget.cardHeight,
             child: Loading(),
           );
-        }
-        else {
-          return Container(
-            height: widget.cardHeight
-          );
+        } else {
+          return Container(height: widget.cardHeight);
         }
       },
     );
@@ -135,5 +159,4 @@ class _DashboardClubTeamsState extends State<DashboardClubTeams> with SingleTick
 
   @override
   bool get wantKeepAlive => true;
-
 }
