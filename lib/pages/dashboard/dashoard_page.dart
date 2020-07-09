@@ -77,7 +77,7 @@ class _DashboardPageState extends State<DashboardPage> {
     Navigator.of(context).push(MaterialPageRoute<void>(builder: (context) => PreferencesPage()));
   }
 
-  Widget _buildFavoriteClubCard(FavoriteState state, int index, double distance) {
+  Widget _buildFavoriteClubCard(FavoriteLoadedState state, int index, double distance) {
     var absDistance = distance.abs() > 1 ? 1 : distance.abs();
     return Transform.scale(
       scale: 1.0 - (absDistance > 0.15 ? 0.15 : absDistance),
@@ -103,7 +103,7 @@ class _DashboardPageState extends State<DashboardPage> {
     }
   }
 
-  Widget _buildDashboardItem(int index, FavoriteState state) {
+  Widget _buildDashboardItem(int index, FavoriteLoadedState state) {
     switch (index) {
       case 0:
         return Paragraph(
@@ -146,7 +146,10 @@ class _DashboardPageState extends State<DashboardPage> {
           title: state.teamCodes.length > 1 ? "Vos équipes" : "Vos équipes",
         );
       case 3:
-        return DashboardClubTeams(clubCode: _currentClubCode);
+        return BlocProvider(
+          create: (context) => _favoriteBloc,
+          child: DashboardClubTeams(clubCode: _currentClubCode),
+        );
       case 4:
         return Paragraph(
           title: "Votre agenda",

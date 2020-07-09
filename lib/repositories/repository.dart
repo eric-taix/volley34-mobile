@@ -47,6 +47,10 @@ class Repository {
     }).toList();
   }
 
+  /// Load all favorite team codes
+  Future<List<String>> loadFavoriteTeamCodes() async {
+    return _favoriteProvider.loadFavoriteTeams();
+  }
 
   //------ TEAM -------
 

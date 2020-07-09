@@ -7,6 +7,7 @@ import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:v34/commons/loading.dart';
 import 'package:v34/commons/router.dart';
 import 'package:v34/pages/club-details/blocs/club_teams.bloc.dart';
+import 'package:v34/pages/dashboard/blocs/favorite_bloc.dart';
 import 'package:v34/pages/dashboard/team_card.dart';
 import 'package:v34/pages/team-details/team_detail_page.dart';
 import 'package:v34/repositories/repository.dart';
@@ -28,6 +29,7 @@ class _DashboardClubTeamsState extends State<DashboardClubTeams> with SingleTick
   int _currentIndex = 0;
   double _currentTeamPage = 0;
   ClubTeamsBloc _clubTeamsBloc;
+  FavoriteBloc _favoriteBloc;
 
   @override
   void initState() {
@@ -42,12 +44,25 @@ class _DashboardClubTeamsState extends State<DashboardClubTeams> with SingleTick
       repository: RepositoryProvider.of<Repository>(context),
     );
     _clubTeamsBloc.listen((state) {
-      if (state is ClubTeamsLoaded && _pageController.hasClients) {
-        _currentIndex = 0;
-        _pageController.jumpTo(0);
+      if (state is ClubTeamsLoaded) {
+        if (_pageController.hasClients) {
+          _currentIndex = 0;
+          _pageController.jumpTo(0);
+        }
+        state.teams.sort((team1, team2) {
+          List<String> favorites = (_favoriteBloc.state as FavoriteLoadedState).teamCodes;
+          if (favorites.contains(team1.code) && !favorites.contains(team2.code)) return -1;
+          if (!favorites.contains(team1.code) && favorites.contains(team2.code)) return 1;
+          else return team1.name.compareTo(team2.name);
+        });
       }
     });
-    _clubTeamsBloc.add(ClubTeamsLoadEvent(clubCode: widget.clubCode));
+    _favoriteBloc = BlocProvider.of<FavoriteBloc>(context);
+    _favoriteBloc.listen((favoriteState) {
+      if (favoriteState is FavoriteLoadedState) {
+        _clubTeamsBloc.add(ClubTeamsLoadEvent(clubCode: widget.clubCode));
+      }
+    });
     super.initState();
   }
 
@@ -61,6 +76,7 @@ class _DashboardClubTeamsState extends State<DashboardClubTeams> with SingleTick
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return BlocBuilder<ClubTeamsBloc, ClubTeamsState>(
       bloc: _clubTeamsBloc,
       builder: (context, state) {
@@ -102,7 +118,7 @@ class _DashboardClubTeamsState extends State<DashboardClubTeams> with SingleTick
                   )
               ]
           );
-        } else if(state is ClubTeamsLoading) {
+        } else if (state is ClubTeamsLoading) {
           return Container(
             height: widget.cardHeight,
             child: Loading(),
