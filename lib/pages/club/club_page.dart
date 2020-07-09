@@ -38,10 +38,16 @@ class _ClubPageState extends State<ClubPage> with SingleTickerProviderStateMixin
       _loading = true;
     });
     _repository.loadAllClubs().then((clubs) {
-      setState(() {
-        _loading = false;
-        clubs.sort((c1, c2) => c1.shortName.toUpperCase().compareTo(c2.shortName.toUpperCase()));
-        _clubs = clubs;
+      _repository.loadFavoriteClubCodes().then((favorites) {
+        setState(() {
+          _loading = false;
+          clubs.sort((c1, c2) {
+            if (favorites.contains(c1.code) && !favorites.contains(c2.code)) return -1;
+            if (!favorites.contains(c1.code) && favorites.contains(c2.code)) return 1;
+            return c1.shortName.toUpperCase().compareTo(c2.shortName.toUpperCase());
+          });
+          _clubs = clubs;
+        });
       });
     });
   }
