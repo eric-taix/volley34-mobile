@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:v34/commons/loading.dart';
+import 'package:v34/commons/page/main_page.dart';
 import 'package:v34/commons/paragraph.dart';
 import 'package:v34/models/club.dart';
 import 'package:v34/pages/club/club_card.dart';
@@ -47,30 +48,31 @@ class _ClubPageState extends State<ClubPage> with SingleTickerProviderStateMixin
 
   @override
   Widget build(BuildContext context) {
-    return _loading
-        ? Center(child: Loading())
-        : Stack(children: <Widget>[
-            AnimationLimiter(
-              child: ListView.builder(
-                itemCount: _clubs.length + 1,
-                itemBuilder: (context, index) {
-                  return index == 0
-                      ? Paragraph(title: "Liste des clubs")
-                      : index < _clubs.length
-                          ? AnimationConfiguration.staggeredList(
-                              position: index,
-                              duration: const Duration(milliseconds: 375),
-                              child: SlideAnimation(
-                                horizontalOffset: 50.0,
-                                child: FadeInAnimation(
-                                  child: ClubCard(_clubs[index], index),
+    return MainPage(
+      title: "Clubs",
+      sliver: _loading
+          ? SliverToBoxAdapter(child: Center(child: Loading()))
+          : AnimationLimiter(
+              child: SliverList(
+                delegate: SliverChildBuilderDelegate(
+                  (context, index) {
+                    return index < _clubs.length
+                            ? AnimationConfiguration.staggeredList(
+                                position: index,
+                                duration: const Duration(milliseconds: 375),
+                                child: SlideAnimation(
+                                  horizontalOffset: 50.0,
+                                  child: FadeInAnimation(
+                                    child: ClubCard(_clubs[index], index),
+                                  ),
                                 ),
-                              ),
-                            )
-                          : SizedBox(height: 56);
-                },
+                              )
+                            : SizedBox(height: 86);
+                  },
+                  childCount: _clubs.length + 1,
+                ),
               ),
             ),
-          ]);
+    );
   }
 }

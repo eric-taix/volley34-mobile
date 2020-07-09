@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:v34/commons/loading.dart';
+import 'package:v34/commons/page/main_page.dart';
 import 'package:v34/commons/router.dart';
 import 'package:v34/pages/club-details/club_detail_page.dart';
 import 'package:v34/pages/dashboard/blocs/agenda_bloc.dart';
@@ -36,7 +37,7 @@ class _DashboardPageState extends State<DashboardPage> {
     _favoriteBloc = FavoriteBloc(repository: RepositoryProvider.of<Repository>(context))..add(FavoriteLoadEvent());
     _favoriteBloc.skip(1).listen((state) {
       if (state is FavoriteLoadedState) {
-        if(state.clubs.length > 0) {
+        if (state.clubs.length > 0) {
           setState(() {
             _currentClubCode = state.clubs[0].code;
           });
@@ -44,9 +45,12 @@ class _DashboardPageState extends State<DashboardPage> {
       }
     });
     _agendaBloc = AgendaBloc(repository: RepositoryProvider.of<Repository>(context))..add(AgendaLoadWeek(week: 0));
-    _pageController = PageController(initialPage: 0)..addListener(() {
-        setState(() {currentFavoriteClubPage = _pageController.page;});
-    });
+    _pageController = PageController(initialPage: 0)
+      ..addListener(() {
+        setState(() {
+          currentFavoriteClubPage = _pageController.page;
+        });
+      });
   }
 
   @override
@@ -60,34 +64,17 @@ class _DashboardPageState extends State<DashboardPage> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => _favoriteBloc,
-      child: BlocBuilder<FavoriteBloc, FavoriteState>(
-        builder: (context, state) {
-          return CustomScrollView(
-            slivers: <Widget>[
-              SliverAppBar(
-                pinned: false,
-                snap: false,
-                floating: true,
-                title: Text('Volley34'),
-                actions: <Widget>[
-                  IconButton(icon: Icon(Icons.settings), onPressed: _gotoPreferencesPage)
-                ],
-              ),
-              _buildSliverList(state)
-            ],
+        create: (context) => _favoriteBloc,
+        child: BlocBuilder<FavoriteBloc, FavoriteState>(builder: (context, state) {
+          return MainPage(
+            title: "Volley34",
+            sliver: _buildSliverList(state),
           );
-        }
-      )
-    );
+        }));
   }
 
   void _gotoPreferencesPage() {
-    Navigator.of(context).push(
-      MaterialPageRoute<void>(
-        builder: (context) => PreferencesPage()
-      )
-    );
+    Navigator.of(context).push(MaterialPageRoute<void>(builder: (context) => PreferencesPage()));
   }
 
   Widget _buildFavoriteClubCard(FavoriteState state, int index, double distance) {
@@ -96,8 +83,8 @@ class _DashboardPageState extends State<DashboardPage> {
       scale: 1.0 - (absDistance > 0.15 ? 0.15 : absDistance),
       child: FavoriteClubCard(
         state.clubs[index],
-            () => Router.push(context: context, builder: (_) => ClubDetailPage(state.clubs[index])).then(
-              (_) => _favoriteBloc.add(FavoriteLoadEvent()),
+        () => Router.push(context: context, builder: (_) => ClubDetailPage(state.clubs[index])).then(
+          (_) => _favoriteBloc.add(FavoriteLoadEvent()),
         ),
       ),
     );
@@ -107,7 +94,8 @@ class _DashboardPageState extends State<DashboardPage> {
     if (state is FavoriteLoadedState) {
       return SliverList(
         delegate: SliverChildBuilderDelegate(
-          (context, index) => _buildDashboardItem(index, state)
+          (context, index) => _buildDashboardItem(index, state),
+          childCount: 6,
         ),
       );
     } else {
@@ -133,9 +121,7 @@ class _DashboardPageState extends State<DashboardPage> {
                       controller: _pageController,
                       onPageChanged: (pageIndex) => _updateClubTeams(state.clubs[pageIndex].code),
                       itemBuilder: (context, index) => Padding(
-                        padding: const EdgeInsets.only(left: 8.0, right: 0),
-                        child: _buildFavoriteClubCard(state, index, currentFavoriteClubPage - index)
-                      ),
+                          padding: const EdgeInsets.only(left: 8.0, right: 0), child: _buildFavoriteClubCard(state, index, currentFavoriteClubPage - index)),
                     ),
                   ),
                   if (state.clubs.length > 1)
@@ -203,5 +189,4 @@ class _DashboardPageState extends State<DashboardPage> {
       _currentClubCode = clubCode;
     });
   }
-
 }
