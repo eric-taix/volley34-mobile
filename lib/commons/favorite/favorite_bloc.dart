@@ -54,33 +54,16 @@ class FavoriteBloc extends Bloc<FavoriteEvent, FavoriteState> {
   Stream<FavoriteState> mapEventToState(FavoriteEvent event) async* {
     if (event is FavoriteUpdateEvent) {
       yield FavoriteUpdating();
-      var firstClubFavorite = await _isFirstClubFavorite(event);
-      repository.updateFavorite(favoriteId, favoriteType, event.favorite);
-      if (firstClubFavorite) {
-        _updateAllTeamAsFavorite(true);
-      } else if (!event.favorite) {
-        _updateAllTeamAsFavorite(false);
-      }
+      await repository.updateFavorite(favoriteId, favoriteType, event.favorite);
       yield FavoriteUpdated(event.favorite);
     }
     if (event is FavoriteLoadEvent) {
       yield FavoriteUpdating();
-      var favorite = await repository.isClubFavorite(favoriteId);
+      var favorite;
+      if (favoriteType == FavoriteType.Club) favorite = await repository.isClubFavorite(favoriteId);
+      else favorite = await repository.isTeamFavorite(favoriteId);
       yield FavoriteLoaded(favorite);
     }
-  }
-  
-  Future<bool> _isFirstClubFavorite(FavoriteUpdateEvent event) async {
-    if (favoriteType == FavoriteType.Club && event.favorite) {
-      var currentFavoriteClubs = await repository.loadFavoriteClubs();
-      return currentFavoriteClubs.isEmpty;
-    }
-    return false;
-  }
-  
-  Future<void> _updateAllTeamAsFavorite(bool fav) async {
-    var teams = await repository.loadClubTeams(favoriteId);
-    teams.forEach((team) => repository.updateFavorite(team.code, FavoriteType.Team, fav));
   }
   
 }

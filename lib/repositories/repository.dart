@@ -116,6 +116,11 @@ class Repository {
     return _favoriteProvider.loadFavoriteClubs().then((clubs) => clubs.contains(code));
   }
 
+  /// Return if a team is in favorites
+  Future<bool> isTeamFavorite(String code) async {
+    return _favoriteProvider.loadFavoriteTeams().then((teams) => teams.contains(code));
+  }
+
   /// Load the club statistics by team
   Future<List<TeamStat>> loadClubStats(String clubCode) async {
     return _clubProvider.loadClubStats(clubCode);

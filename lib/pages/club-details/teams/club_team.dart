@@ -1,9 +1,9 @@
-import 'dart:math' as math;
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:v34/commons/cards/titled_card.dart';
+import 'package:v34/commons/favorite/favorite.dart';
+import 'package:v34/commons/favorite/favorite_icon.dart';
 import 'package:v34/commons/graphs/arc.dart';
 import 'package:v34/commons/graphs/line_graph.dart';
 import 'package:v34/commons/loading.dart';
@@ -45,6 +45,11 @@ class _ClubTeamState extends State<ClubTeam> {
       title: widget.team.name,
       bodyPadding: EdgeInsets.only(top: 18, bottom: 18, right: 8, left: 16),
       onTap: () => Router.push(context: context, builder: (_) => TeamDetailPage(team: widget.team)),
+      buttonBar: ButtonBar(
+        children: <Widget>[
+          FavoriteIcon(widget.team.code, FavoriteType.Team, false, padding: EdgeInsets.zero, reloadFavoriteWhenUpdate: true,),
+        ],
+      ),
       body: BlocBuilder(
         bloc: _teamBloc,
         builder: (context, state) {
