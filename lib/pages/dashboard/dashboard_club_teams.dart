@@ -24,12 +24,11 @@ class DashboardClubTeams extends StatefulWidget {
   _DashboardClubTeamsState createState() => _DashboardClubTeamsState();
 }
 
-class _DashboardClubTeamsState extends State<DashboardClubTeams> with SingleTickerProviderStateMixin, AutomaticKeepAliveClientMixin {
+class _DashboardClubTeamsState extends State<DashboardClubTeams> with SingleTickerProviderStateMixin{
   PageController _pageController;
   int _currentIndex = 0;
   double _currentTeamPage = 0;
   ClubTeamsBloc _clubTeamsBloc;
-  FavoriteBloc _favoriteBloc;
 
   @override
   void initState() {
@@ -43,29 +42,17 @@ class _DashboardClubTeamsState extends State<DashboardClubTeams> with SingleTick
       });
     _clubTeamsBloc = ClubTeamsBloc(
       repository: RepositoryProvider.of<Repository>(context),
+      favoriteBloc: BlocProvider.of<FavoriteBloc>(context)
     );
     _clubTeamsBloc.listen((state) {
-      if (state is ClubTeamsLoaded) {
-        if (_pageController.hasClients) {
+      if (state is ClubTeamsLoaded && _pageController.hasClients) {
           _currentIndex = 0;
           _pageController.jumpTo(0);
-        }
-        List<String> favorites = (_favoriteBloc.state as FavoriteLoadedState).teamCodes;
-        state.teams.forEach((team) {
-          if (favorites.contains(team.code)) team.favorite = true;
-        });
-        state.teams.sort((team1, team2) {
-          if (team1.favorite && !team2.favorite) return -1;
-          if (!team1.favorite && team2.favorite)
-            return 1;
-          else
-            return team1.name.compareTo(team2.name);
-        });
       }
     });
-    _favoriteBloc = BlocProvider.of<FavoriteBloc>(context);
-    _favoriteBloc.listen((favoriteState) {
-      if (favoriteState is FavoriteLoadedState) {
+    _clubTeamsBloc.add(ClubTeamsLoadEvent(clubCode: widget.clubCode));
+    BlocProvider.of<FavoriteBloc>(context).listen((state) {
+      if (state is FavoriteLoadedState) {
         _clubTeamsBloc.add(ClubTeamsLoadEvent(clubCode: widget.clubCode));
       }
     });
@@ -75,9 +62,7 @@ class _DashboardClubTeamsState extends State<DashboardClubTeams> with SingleTick
   @override
   void didUpdateWidget(DashboardClubTeams oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.clubCode != oldWidget.clubCode) {
-      _clubTeamsBloc.add(ClubTeamsLoadEvent(clubCode: widget.clubCode));
-    }
+    _clubTeamsBloc.add(ClubTeamsLoadEvent(clubCode: widget.clubCode));
   }
 
   Widget _buildTeamCategory(ClubTeamsLoaded state) {
@@ -99,7 +84,6 @@ class _DashboardClubTeamsState extends State<DashboardClubTeams> with SingleTick
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
     return BlocBuilder<ClubTeamsBloc, ClubTeamsState>(
       bloc: _clubTeamsBloc,
       builder: (context, state) {

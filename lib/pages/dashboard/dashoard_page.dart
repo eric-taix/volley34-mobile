@@ -84,7 +84,10 @@ class _DashboardPageState extends State<DashboardPage> {
       child: FavoriteClubCard(
         state.clubs[index],
         () => Router.push(context: context, builder: (_) => ClubDetailPage(state.clubs[index])).then(
-          (_) => _favoriteBloc.add(FavoriteLoadEvent()),
+          (_) {
+            _favoriteBloc.add(FavoriteLoadEvent());
+            setState(() {});
+          },
         ),
       ),
     );
