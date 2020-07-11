@@ -73,10 +73,6 @@ class _DashboardPageState extends State<DashboardPage> {
         }));
   }
 
-  void _gotoPreferencesPage() {
-    Navigator.of(context).push(MaterialPageRoute<void>(builder: (context) => PreferencesPage()));
-  }
-
   Widget _buildFavoriteClubCard(FavoriteLoadedState state, int index, double distance) {
     var absDistance = distance.abs() > 1 ? 1 : distance.abs();
     return Transform.scale(
@@ -124,7 +120,9 @@ class _DashboardPageState extends State<DashboardPage> {
                       controller: _pageController,
                       onPageChanged: (pageIndex) => _updateClubTeams(state.clubs[pageIndex].code),
                       itemBuilder: (context, index) => Padding(
-                          padding: const EdgeInsets.only(left: 8.0, right: 0), child: _buildFavoriteClubCard(state, index, currentFavoriteClubPage - index)),
+                        padding: const EdgeInsets.only(left: 8.0, right: 0),
+                        child: _buildFavoriteClubCard(state, index, currentFavoriteClubPage - index),
+                      ),
                     ),
                   ),
                   if (state.clubs.length > 1)
