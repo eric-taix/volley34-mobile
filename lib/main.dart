@@ -1,4 +1,3 @@
-import 'package:animated_theme_switcher/animated_theme_switcher.dart';
 import 'package:bloc/bloc.dart';
 import 'package:feature_discovery/feature_discovery.dart';
 import 'package:fluid_bottom_nav_bar/fluid_bottom_nav_bar.dart';
@@ -8,7 +7,6 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:v34/commons/blocs/logging_bloc.dart';
 import 'package:v34/commons/env.dart';
 import 'package:v34/commons/feature_tour.dart';
@@ -23,6 +21,7 @@ import 'package:v34/repositories/providers/team_provider.dart';
 import 'package:v34/repositories/repository.dart';
 import 'package:v34/theme.dart';
 
+import 'commons/blocs/preferences_bloc.dart';
 import 'commons/loading.dart';
 
 void main() {
@@ -40,21 +39,56 @@ class V34 extends StatefulWidget {
 }
 
 class _V34State extends State<V34> {
-  Future<SharedPreferences> _preferences = SharedPreferences.getInstance();
+  PreferencesBloc _preferencesBloc = PreferencesBloc();
 
-  ThemeData _getTheme(AsyncSnapshot<SharedPreferences> snapshot) {
-    bool automatic = snapshot.data.getBool("automatic_dark_theme") ?? false;
-    bool dark = snapshot.data.getBool("dark_theme") ?? false;
-    return AppTheme.getThemeFromPreferences(automatic, dark);
+  @override
+  void initState() {
+    super.initState();
+    _preferencesBloc.add(PreferencesLoadEvent());
+    _preferencesBloc.listen((state) {
+      if (state is PreferencesSavedState) {
+        _preferencesBloc.add(PreferencesLoadEvent());
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _preferencesBloc.close();
+  }
+
+  Widget _buildMaterialApp(PreferencesLoadedState state) {
+    bool automatic = state.automaticDarkTheme;
+    bool dark = state.darkTheme;
+    return MaterialApp(
+      title: 'Volley34',
+      theme: AppTheme.getNormalThemeFromPreferences(automatic, dark),
+      darkTheme: AppTheme.getDarkThemeFromPreferences(automatic),
+      home: _MainPage(),
+    );
   }
   
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<SharedPreferences>(
-      future: _preferences,
-      builder: (context, snapshot) {
-        switch (snapshot.connectionState) {
-          case ConnectionState.waiting:
+    return BlocProvider<PreferencesBloc>(
+      create: (context) => _preferencesBloc,
+      child: BlocBuilder<PreferencesBloc, PreferencesState>(
+        builder: (context, state) {
+          if (state is PreferencesLoadedState) {
+            return RepositoryProvider(
+              create: (context) => Repository(
+                ClubProvider(),
+                TeamProvider(),
+                FavoriteProvider(),
+                AgendaProvider(),
+                GymnasiumProvider(),
+              ),
+              child: FeatureDiscovery(
+                  child: _buildMaterialApp(state)
+              ),
+            );
+          } else {
             return MaterialApp(
               title: 'Volley34',
               theme: AppTheme.lightTheme(),
@@ -66,35 +100,11 @@ class _V34State extends State<V34> {
                 ),
               ),
             );
-          case ConnectionState.done:
-            return RepositoryProvider(
-              create: (context) => Repository(
-                ClubProvider(),
-                TeamProvider(),
-                FavoriteProvider(),
-                AgendaProvider(),
-                GymnasiumProvider(),
-              ),
-              child: FeatureDiscovery(
-                child: ThemeProvider(
-                  initTheme: _getTheme(snapshot),
-                  child: Builder(builder: (context) {
-                    return MaterialApp(
-                      title: 'Volley34',
-                      theme: ThemeProvider.of(context),
-                      home: _MainPage(),
-                    );
-                  }),
-                ),
-              ),
-            );
-          default:
-            return Container();
-        }
-      },
+          }
+        },
+      ),
     );
   }
-
 }
 
 class _MainPage extends StatefulWidget {
