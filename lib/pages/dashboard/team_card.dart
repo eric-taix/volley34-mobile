@@ -12,8 +12,9 @@ class TeamCard extends StatefulWidget {
   final bool currentlyDisplayed;
   final double distance;
   final double cardHeight = 190;
+  final Function onTap;
 
-  TeamCard({@required this.team, @required this.currentlyDisplayed, @required this.distance});
+  TeamCard({@required this.team, @required this.currentlyDisplayed, @required this.distance, this.onTap});
 
   @override
   _TeamCardState createState() => _TeamCardState();
@@ -102,6 +103,7 @@ class _TeamCardState extends State<TeamCard> {
               height: cardBodyHeight,
               child: Row(children: _getPodiumWidget(state)),
             ),
+            onTap: widget.onTap,
           ),
         );
       },

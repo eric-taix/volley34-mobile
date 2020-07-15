@@ -39,8 +39,7 @@ class _ClubTeamsState extends State<ClubTeams> {
             delegate: SliverChildBuilderDelegate((context, index) {
               return (state is ClubTeamsLoaded)
                   ? ClubTeam(
-                      code: state.teams[index].code,
-                      name: state.teams[index].name,
+                      team: state.teams[index]
                     )
                   : Loading();
             },

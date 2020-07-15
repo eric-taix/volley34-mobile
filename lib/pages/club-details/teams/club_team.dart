@@ -7,14 +7,16 @@ import 'package:v34/commons/cards/titled_card.dart';
 import 'package:v34/commons/graphs/arc.dart';
 import 'package:v34/commons/graphs/line_graph.dart';
 import 'package:v34/commons/loading.dart';
+import 'package:v34/commons/router.dart';
+import 'package:v34/models/team.dart';
 import 'package:v34/pages/club-details/blocs/club_team.bloc.dart';
+import 'package:v34/pages/team-details/team_detail_page.dart';
 import 'package:v34/repositories/repository.dart';
 
 class ClubTeam extends StatefulWidget {
-  final String code;
-  final String name;
+  final Team team;
 
-  ClubTeam({this.code, this.name});
+  ClubTeam({@required this.team});
 
   @override
   _ClubTeamState createState() => _ClubTeamState();
@@ -27,7 +29,7 @@ class _ClubTeamState extends State<ClubTeam> {
   void initState() {
     super.initState();
     _teamBloc = TeamBloc(repository: RepositoryProvider.of<Repository>(context))
-      ..add(TeamLoadAverageSlidingResult(code: widget.code, last: 100, count: 3));
+      ..add(TeamLoadAverageSlidingResult(code: widget.team.code, last: 100, count: 3));
   }
 
   @override
@@ -40,8 +42,9 @@ class _ClubTeamState extends State<ClubTeam> {
   Widget build(BuildContext context) {
     final double miniGraphHeight = 60;
     return TitledCard(
-      title: widget.name,
+      title: widget.team.name,
       bodyPadding: EdgeInsets.only(top: 18, bottom: 18, right: 8, left: 16),
+      onTap: () => Router.push(context: context, builder: (_) => TeamDetailPage(team: widget.team)),
       body: BlocBuilder(
         bloc: _teamBloc,
         builder: (context, state) {
