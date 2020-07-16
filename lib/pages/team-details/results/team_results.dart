@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
 import 'package:v34/models/match_result.dart';
 import 'package:v34/models/team.dart';
 import 'package:v34/pages/club-details/blocs/club_team.bloc.dart';
