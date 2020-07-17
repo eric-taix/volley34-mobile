@@ -17,13 +17,13 @@ class FeatureTour extends StatelessWidget {
       contentLocation: ContentLocation.above,
       featureId: featureId,
       tapTarget: target,
-      title: Text(title),
+      title: Text(title, style: TextStyle(fontWeight:FontWeight.bold, fontSize: 20.0, color: Theme.of(context).textTheme.bodyText1.color)),
       description: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           ...paragraphs.expand(
             (paragrah) => [
-              Text(paragrah),
+              Text(paragrah, textAlign: TextAlign.justify, style: Theme.of(context).textTheme.bodyText1),
               Container(
                 height: 10,
               ),
