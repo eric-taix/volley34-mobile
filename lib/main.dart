@@ -45,11 +45,6 @@ class _V34State extends State<V34> {
   void initState() {
     super.initState();
     _preferencesBloc.add(PreferencesLoadEvent());
-    _preferencesBloc.listen((state) {
-      if (state is PreferencesSavedState) {
-        _preferencesBloc.add(PreferencesLoadEvent());
-      }
-    });
   }
 
   @override
@@ -58,7 +53,7 @@ class _V34State extends State<V34> {
     _preferencesBloc.close();
   }
 
-  Widget _buildMaterialApp(PreferencesLoadedState state) {
+  Widget _buildMaterialApp(PreferencesUpdatedState state) {
     bool automatic = state.useAutomaticTheme;
     bool dark = state.useDarkTheme;
     return MaterialApp(
@@ -75,7 +70,7 @@ class _V34State extends State<V34> {
       create: (context) => _preferencesBloc,
       child: BlocBuilder<PreferencesBloc, PreferencesState>(
         builder: (context, state) {
-          if (state is PreferencesLoadedState) {
+          if (state is PreferencesUpdatedState) {
             return RepositoryProvider(
               create: (context) => Repository(
                 ClubProvider(),

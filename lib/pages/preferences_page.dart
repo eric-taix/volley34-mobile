@@ -29,7 +29,7 @@ class _PreferencesPageState extends State<PreferencesPage> {
   Widget _buildPreferencesContent() {
     return BlocBuilder<PreferencesBloc, PreferencesState>(
       builder: (context, state) {
-        if (state is PreferencesLoadedState) {
+        if (state is PreferencesUpdatedState) {
           return ListView(
             children: <Widget>[
               _buildDarkModeOption(state),
@@ -52,7 +52,7 @@ class _PreferencesPageState extends State<PreferencesPage> {
     );
   }
   
-  Widget _buildDarkModeOption(PreferencesLoadedState state) {
+  Widget _buildDarkModeOption(PreferencesUpdatedState state) {
     if (state.useAutomaticTheme) {
       return ListTile(
         title: Text("Mode sombre", style: Theme.of(context).textTheme.bodyText2),
@@ -74,7 +74,7 @@ class _PreferencesPageState extends State<PreferencesPage> {
     }
   }
   
-  Widget _buildAutomaticModeOption(PreferencesLoadedState state) {
+  Widget _buildAutomaticModeOption(PreferencesUpdatedState state) {
     return SwitchListTile(
       contentPadding: EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0),
       title: Text("Mode sombre automatique", style: Theme.of(context).textTheme.bodyText2),

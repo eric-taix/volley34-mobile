@@ -32,14 +32,12 @@ class PreferencesLoadingState extends PreferencesState {}
 
 class PreferencesSavingState extends PreferencesState {}
 
-class PreferencesLoadedState extends PreferencesState {
+class PreferencesUpdatedState extends PreferencesState {
   final bool useAutomaticTheme;
   final bool useDarkTheme;
 
-  PreferencesLoadedState({@required this.useAutomaticTheme, @required this.useDarkTheme});
+  PreferencesUpdatedState({@required this.useAutomaticTheme, @required this.useDarkTheme});
 }
-
-class PreferencesSavedState extends PreferencesState {}
 
 // ----- BLOC -----
 
@@ -61,7 +59,7 @@ class PreferencesBloc extends Bloc<PreferencesEvent, PreferencesState> {
     if (event is PreferencesLoadEvent) {
       yield PreferencesLoadingState();
       SharedPreferences preferences = await _getPreferences();
-      yield PreferencesLoadedState(
+      yield PreferencesUpdatedState(
         useAutomaticTheme: preferences.getBool("automatic_theme") ?? false,
         useDarkTheme: preferences.getBool("dark_theme") ?? false
       );
@@ -72,7 +70,10 @@ class PreferencesBloc extends Bloc<PreferencesEvent, PreferencesState> {
         preferences.setBool("automatic_theme", event.useAutomaticTheme);
       if (event.useDarkTheme != null)
         preferences.setBool("dark_theme", event.useDarkTheme);
-      yield PreferencesSavedState();
+      yield PreferencesUpdatedState(
+        useAutomaticTheme: preferences.getBool("automatic_theme") ?? false,
+        useDarkTheme: preferences.getBool("dark_theme") ?? false
+      );
     }
   }
 }
