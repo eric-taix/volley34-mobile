@@ -49,14 +49,18 @@ class _DashboardClubTeamsState extends State<DashboardClubTeams> with SingleTick
           _pageController.jumpTo(0);
       }
     });
-    _clubTeamsBloc.add(ClubTeamsLoadEvent(clubCode: widget.clubCode));
+    _loadFavoriteTeams();
     super.initState();
   }
 
   @override
   void didUpdateWidget(DashboardClubTeams oldWidget) {
     super.didUpdateWidget(oldWidget);
-    _clubTeamsBloc.add(ClubTeamsLoadEvent(clubCode: widget.clubCode));
+    _loadFavoriteTeams();
+  }
+
+  void _loadFavoriteTeams() {
+    _clubTeamsBloc.add(ClubFavoriteTeamsLoadEvent(widget.clubCode));
   }
 
   Widget _buildTeamCategory(ClubTeamsLoaded state) {

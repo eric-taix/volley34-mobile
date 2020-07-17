@@ -21,7 +21,7 @@ class _ClubTeamsState extends State<ClubTeams> {
   @override
   void initState() {
     super.initState();
-    _clubTeamsBloc = ClubTeamsBloc(repository: RepositoryProvider.of<Repository>(context))..add(ClubTeamsLoadEvent(clubCode: widget.club.code));
+    _clubTeamsBloc = ClubTeamsBloc(repository: RepositoryProvider.of<Repository>(context))..add(ClubTeamsLoadEvent(widget.club.code));
   }
 
   @override
