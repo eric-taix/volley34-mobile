@@ -26,26 +26,31 @@ class ResultCard extends StatelessWidget {
         elevation: 8.0,
         margin: new EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
         child: Container(
-          decoration: BoxDecoration(color: Theme.of(context).cardTheme.color, borderRadius: BorderRadius.all(Radius.circular(5.0))),
+          decoration: BoxDecoration(color: Theme.of(context).cardTheme.color, borderRadius: BorderRadius.all(Radius.circular(18.0))),
           child: ListTile(
             contentPadding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-            leading: Container(
-              padding: EdgeInsets.only(right: 12.0),
-              decoration: new BoxDecoration(
-                border: new Border(
-                    right: new BorderSide(width: 1.0, color: Theme.of(context).textTheme.bodyText2.color)
-                )
-              ),
-              child: Text(
-                "${result.totalSetsHost} - ${result.totalSetsVisitor}",
-                style: TextStyle(fontSize: 25.0, fontWeight: FontWeight.bold, color: scoreColor)
+            leading: Padding(
+              padding: const EdgeInsets.only(top: 10.0),
+              child: Container(
+                padding: EdgeInsets.only(right: 12.0),
+                decoration: new BoxDecoration(
+                  border: new Border(
+                      right: new BorderSide(width: 1.0, color: Theme.of(context).textTheme.bodyText2.color)
+                  )
+                ),
+                child: Text(
+                  "${result.totalSetsHost} - ${result.totalSetsVisitor}",
+                  style: TextStyle(fontSize: 25.0, fontWeight: FontWeight.bold, color: scoreColor)
+                ),
               ),
             ),
             title: Text(
-              "${result.hostName} vs. ${result.visitorName}",
+              "${result.hostName}\nvs.\n${result.visitorName}",
+              textAlign: TextAlign.center,
               style: TextStyle(fontSize: 15.0, color: Theme.of(context).textTheme.bodyText2.color, fontWeight: FontWeight.bold),
             ),
             subtitle: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Padding(
                   padding: EdgeInsets.only(right: 5.0),
@@ -54,8 +59,10 @@ class ResultCard extends StatelessWidget {
                 Text("Le ${dateFormat.format(result.matchDate)}", style: TextStyle(color: Theme.of(context).textTheme.bodyText2.color))
               ],
             ),
-            trailing:
-            Icon(Icons.keyboard_arrow_right, color: Theme.of(context).textTheme.bodyText2.color, size: 30.0)
+            trailing: Padding(
+              padding: const EdgeInsets.only(top: 10.0),
+              child: Icon(Icons.keyboard_arrow_right, color: Theme.of(context).textTheme.bodyText2.color, size: 30.0),
+            )
           )
         )
       ),

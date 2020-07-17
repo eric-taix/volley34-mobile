@@ -1,17 +1,21 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:v34/models/match_result.dart';
 import 'package:v34/pages/team-details/results/result_information_card.dart';
 
+import 'information_divider.dart';
+
 class ResultInformation extends StatelessWidget {
   final String teamCode;
   final MatchResult result;
 
+  static final List<IconData> icons = [Icons.looks_one, Icons.looks_two, Icons.looks_3, Icons.looks_4, Icons.looks_5];
+
   const ResultInformation({Key key, @required this.teamCode, @required this.result}) : super(key: key);
 
   Widget build(BuildContext context) {
+    int nbSets = result.totalSetsHost + result.totalSetsVisitor;
     DateFormat dateFormat = DateFormat('dd/MM/yyyy');
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
@@ -20,82 +24,67 @@ class ResultInformation extends StatelessWidget {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.only(bottomLeft: Radius.circular(10), bottomRight: Radius.circular(10))),
       ),
       body: ListView.builder(
-        itemBuilder: (context, index) => _buildListItem(context, index)
+        itemBuilder: (context, index) => _buildListItem(context, index, nbSets)
       ),
     );
   }
 
-  Widget _buildListItem(BuildContext context, int index) {
-    switch (index) {
-      case 0:
-        return _buildInformationCard(context, index);
-      case 1:
-        return Padding(
-          padding: const EdgeInsets.only(top: 30.0),
-          child: Row(
-            children: <Widget>[
-              Expanded(
-                flex: 1,
-                child: Divider(),
-              ),
-              Expanded(
-                flex: 6,
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 5.0),
-                  child: Text("Détails du match", textAlign: TextAlign.center, style: Theme.of(context).textTheme.headline6,),
-                ),
-              ),
-              Expanded(
-                flex: 7,
-                child: Divider(),
-              )
-            ],
-          ),
-        );
-      default:
-        return _buildInformationCard(context, index - 1);
-    }
+  Widget _buildListItem(BuildContext context, int index, int nbSets) {
+    if (index == 0) return _buildMatchResultInformationCard(context);
+    else if (index == 1) return InformationDivider(title: "Détails du match");
+    else if (index <= nbSets + 1) return _buildSetResultInformationCard(context, index - 1);
+    else if (index == nbSets + 2) return _buildPointSummaryInformationCard(context);
+    else if (index == nbSets + 3) return Container(height: 30,);
+    else return null;
   }
 
-  Widget _buildInformationCard(BuildContext context, int setIndex) {
+  Widget _buildMatchResultInformationCard(BuildContext context) {
+    String title = "Résultat du match";
+    int hostPoints = result.totalSetsHost;
+    int visitorPoints = result.totalSetsVisitor;
+    return _buildInformationCard(context, title, FontWeight.bold, hostPoints, visitorPoints, true);
+  }
+
+  Widget _buildSetResultInformationCard(BuildContext context, int setIndex) {
     if (setIndex > 5) return null;
-    if (setIndex > 0 && result.sets[setIndex - 1].hostPoint == null) return null;
+    if (result.sets[setIndex - 1].hostPoint == null) return null;
+    String title = "Set n°";
+    int hostPoints = result.sets[setIndex - 1].hostPoint;
+    int visitorPoints = result.sets[setIndex - 1].visitorpoint;
+    Icon icon = _buildIndexIcon(context, setIndex);
+    return _buildInformationCard(context, title, FontWeight.normal, hostPoints, visitorPoints, false, icon: icon);
+  }
+
+  Widget _buildPointSummaryInformationCard(BuildContext context) {
+    String title = "Total des points";
+    int hostPoints = result.totalPointsHost;
+    int visitorPoints = result.totalPointsVisitor;
+    return _buildInformationCard(context, title, FontWeight.normal, hostPoints, visitorPoints, false, neutral: true);
+  }
+
+  Widget _buildInformationCard(BuildContext context, String title, FontWeight fontWeight, int hostPoints, int visitorPoints, bool elevation, {Icon icon, bool neutral}) {
     TextStyle titleStyle = TextStyle(
         fontSize: 20,
-        fontWeight: (setIndex == 0) ? FontWeight.bold: FontWeight.normal,
+        fontWeight: fontWeight,
         color: Theme.of(context).textTheme.bodyText2.color
     );
-    String title = (setIndex == 0) ? "Résultat du match" : "Set n°";
-    int hostPoints = (setIndex == 0) ? result.totalSetsHost : result.sets[setIndex - 1].hostPoint;
-    int visitorPoints = (setIndex == 0) ? result.totalSetsVisitor : result.sets[setIndex - 1].visitorpoint;
     int diff = hostPoints - visitorPoints;
     if (teamCode == result.visitorTeamCode) diff = -diff;
     Color scoreColor;
-    if (diff == 0) scoreColor = Colors.orange;
+    if (neutral != null && neutral) scoreColor = Theme.of(context).textTheme.bodyText2.color;
+    else if (diff == 0) scoreColor = Colors.orange;
     else if (diff > 0) scoreColor = Colors.green;
     else scoreColor = Colors.red;
     return ResultInformationCard(
-      title: title, titleStyle: titleStyle, elevation: setIndex == 0,
-      hostName: result.hostName, visitorName: result.visitorName, titleIcon: _buildIndexIcon(context, setIndex),
+      title: title, titleStyle: titleStyle, elevation: elevation,
+      hostName: result.hostName, visitorName: result.visitorName, titleIcon: icon,
       hostPoints: hostPoints, visitorPoints: visitorPoints, scoreColor: scoreColor
     );
   }
 
   Widget _buildIndexIcon(BuildContext context, int index) {
     Color color = Theme.of(context).accentColor;
-    switch (index) {
-      case 1:
-        return Icon(Icons.looks_one, color: color,);
-      case 2:
-        return Icon(Icons.looks_two, color: color,);
-      case 3:
-        return Icon(Icons.looks_3, color: color,);
-      case 4:
-        return Icon(Icons.looks_4, color: color,);
-      case 5:
-        return Icon(Icons.looks_5, color: color,);
-      default:
-        return null;
-    }
+    if (index <= 5) return Icon(icons[index - 1], color: color);
+    else return null;
   }
 }

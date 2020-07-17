@@ -1,6 +1,7 @@
-import 'package:flutter/cupertino.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/widgets.dart';
 import 'package:v34/utils/extensions.dart';
 
 class ResultInformationCard extends StatelessWidget {
@@ -63,10 +64,11 @@ class ResultInformationCard extends StatelessWidget {
                     ),
                   ),
                   Expanded(
-                    child: Text(
-                        "$hostPoints - $visitorPoints",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: 35.0, fontWeight: FontWeight.bold, color: scoreColor)
+                    child: AutoSizeText(
+                      "$hostPoints - $visitorPoints",
+                      textAlign: TextAlign.center,
+                      maxLines: 1,
+                      style: TextStyle(fontSize: 45.0, fontWeight: FontWeight.bold, color: scoreColor)
                     ),
                   ),
                   Expanded(
