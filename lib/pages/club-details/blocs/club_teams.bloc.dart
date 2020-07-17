@@ -32,18 +32,8 @@ class ClubTeamsLoadEvent extends ClubTeamsEvent {
 class ClubTeamsBloc extends Bloc<ClubTeamsEvent, ClubTeamsState> {
 
   final Repository repository;
-  final FavoriteBloc favoriteBloc;
-  List<String> _favoriteTeams = [];
 
-  ClubTeamsBloc({@required this.repository, this.favoriteBloc}) {
-    if (favoriteBloc != null) {
-      favoriteBloc.listen((state) {
-        if (state is FavoriteLoadedState) {
-          _favoriteTeams.addAll(state.teamCodes);
-        }
-      });
-    }
-  }
+  ClubTeamsBloc({@required this.repository});
 
   @override
   ClubTeamsState get initialState => ClubTeamsUninitialized();
@@ -53,9 +43,10 @@ class ClubTeamsBloc extends Bloc<ClubTeamsEvent, ClubTeamsState> {
     if (event is ClubTeamsLoadEvent) {
       yield ClubTeamsLoading();
       var teams  = await repository.loadClubTeams(event.clubCode);
-      if (_favoriteTeams.isNotEmpty) {
+      var favTeams = await repository.loadFavoriteTeamCodes();
+      if (favTeams.isNotEmpty) {
         teams.forEach((team) {
-          if (_favoriteTeams.contains(team.code)) team.favorite = true;
+          if (favTeams.contains(team.code)) team.favorite = true;
         });
       }
       teams.sort((team1, team2) {

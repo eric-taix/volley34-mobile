@@ -34,7 +34,8 @@ class _DashboardPageState extends State<DashboardPage> {
   @override
   void initState() {
     super.initState();
-    _favoriteBloc = FavoriteBloc(repository: RepositoryProvider.of<Repository>(context))..add(FavoriteLoadEvent());
+    _favoriteBloc = FavoriteBloc(repository: RepositoryProvider.of<Repository>(context))
+      ..add(FavoriteLoadEvent());
     _favoriteBloc.skip(1).listen((state) {
       if (state is FavoriteLoadedState) {
         if (state.clubs.length > 0) {
@@ -47,9 +48,11 @@ class _DashboardPageState extends State<DashboardPage> {
     _agendaBloc = AgendaBloc(repository: RepositoryProvider.of<Repository>(context))..add(AgendaLoadWeek(week: 0));
     _pageController = PageController(initialPage: 0)
       ..addListener(() {
-        setState(() {
-          currentFavoriteClubPage = _pageController.page;
-        });
+        if (currentFavoriteClubPage != _pageController.page) {
+          setState(() {
+            currentFavoriteClubPage = _pageController.page;
+          });
+        }
       });
   }
 
@@ -80,10 +83,7 @@ class _DashboardPageState extends State<DashboardPage> {
       child: FavoriteClubCard(
         state.clubs[index],
         () => Router.push(context: context, builder: (_) => ClubDetailPage(state.clubs[index])).then(
-          (_) {
-            _favoriteBloc.add(FavoriteLoadEvent());
-            setState(() {});
-          },
+          (_) => _updateClubTeams(state.clubs[index].code),
         ),
       ),
     );
@@ -139,18 +139,14 @@ class _DashboardPageState extends State<DashboardPage> {
                 ],
               )
             : Container(
-                constraints: BoxConstraints(minHeight: 100),
-                child: Center(child: Loading()),
+                constraints: BoxConstraints(minHeight: 0),
               );
       case 2:
         return Paragraph(
           title: state.teamCodes.length > 1 ? "Vos équipes" : "Vos équipes",
         );
       case 3:
-        return BlocProvider(
-          create: (context) => _favoriteBloc,
-          child: DashboardClubTeams(clubCode: _currentClubCode),
-        );
+        return DashboardClubTeams(clubCode: _currentClubCode);
       case 4:
         return Paragraph(
           title: "Votre agenda",

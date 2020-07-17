@@ -42,7 +42,6 @@ class _DashboardClubTeamsState extends State<DashboardClubTeams> with SingleTick
       });
     _clubTeamsBloc = ClubTeamsBloc(
       repository: RepositoryProvider.of<Repository>(context),
-      favoriteBloc: BlocProvider.of<FavoriteBloc>(context)
     );
     _clubTeamsBloc.listen((state) {
       if (state is ClubTeamsLoaded && _pageController.hasClients) {
@@ -51,11 +50,6 @@ class _DashboardClubTeamsState extends State<DashboardClubTeams> with SingleTick
       }
     });
     _clubTeamsBloc.add(ClubTeamsLoadEvent(clubCode: widget.clubCode));
-    BlocProvider.of<FavoriteBloc>(context).listen((state) {
-      if (state is FavoriteLoadedState) {
-        _clubTeamsBloc.add(ClubTeamsLoadEvent(clubCode: widget.clubCode));
-      }
-    });
     super.initState();
   }
 
