@@ -52,7 +52,7 @@ class _TeamResultsState extends State<TeamResults> {
       bloc: _teamBloc,
       builder: (context, state) {
         if (state is TeamResultsLoaded) {
-          state.results.sort((res1, res2) => res2.inputDate.compareTo(res1.inputDate));
+          state.results.sort((res1, res2) => res2.matchDate.compareTo(res1.matchDate));
           return SliverList(
             delegate: SliverChildListDelegate([
               _buildChampionshipResults(state),

@@ -51,7 +51,7 @@ class ResultCard extends StatelessWidget {
                   padding: EdgeInsets.only(right: 5.0),
                   child: Icon(Icons.linear_scale, color: Theme.of(context).accentColor),
                 ),
-                Text("Saisi le ${dateFormat.format(result.inputDate)}", style: TextStyle(color: Theme.of(context).textTheme.bodyText2.color))
+                Text("Le ${dateFormat.format(result.matchDate)}", style: TextStyle(color: Theme.of(context).textTheme.bodyText2.color))
               ],
             ),
             trailing:
