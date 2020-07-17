@@ -5,8 +5,10 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:v34/commons/loading.dart';
+import 'package:v34/commons/router.dart';
 import 'package:v34/pages/club-details/blocs/club_teams.bloc.dart';
 import 'package:v34/pages/dashboard/team_card.dart';
+import 'package:v34/pages/team-details/team_detail_page.dart';
 import 'package:v34/repositories/repository.dart';
 
 final Random random = Random.secure();
@@ -78,6 +80,7 @@ class _DashboardClubTeamsState extends State<DashboardClubTeams> with SingleTick
                             currentlyDisplayed: _currentIndex == index,
                             team: state.teams[index],
                             distance: _currentTeamPage - index,
+                            onTap: () => Router.push(context: context, builder: (_) => TeamDetailPage(team: state.teams[index])),
                           ),
                         );
                       },
