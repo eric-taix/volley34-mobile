@@ -13,10 +13,10 @@ class PreferencesEvent extends Equatable {
 class PreferencesLoadEvent extends PreferencesEvent {}
 
 class PreferencesSaveEvent extends PreferencesEvent {
-  final bool automaticDarkTheme;
-  final bool darkTheme;
+  final bool useAutomaticTheme;
+  final bool useDarkTheme;
 
-  PreferencesSaveEvent({this.automaticDarkTheme, this.darkTheme});
+  PreferencesSaveEvent({this.useAutomaticTheme, this.useDarkTheme});
 }
 
 // ----- STATES -----
@@ -33,10 +33,10 @@ class PreferencesLoadingState extends PreferencesState {}
 class PreferencesSavingState extends PreferencesState {}
 
 class PreferencesLoadedState extends PreferencesState {
-  final bool automaticDarkTheme;
-  final bool darkTheme;
+  final bool useAutomaticTheme;
+  final bool useDarkTheme;
 
-  PreferencesLoadedState({@required this.automaticDarkTheme, @required this.darkTheme});
+  PreferencesLoadedState({@required this.useAutomaticTheme, @required this.useDarkTheme});
 }
 
 class PreferencesSavedState extends PreferencesState {}
@@ -62,16 +62,16 @@ class PreferencesBloc extends Bloc<PreferencesEvent, PreferencesState> {
       yield PreferencesLoadingState();
       SharedPreferences preferences = await _getPreferences();
       yield PreferencesLoadedState(
-        automaticDarkTheme: preferences.getBool("automatic_dark_theme"),
-        darkTheme: preferences.getBool("dark_theme")
+        useAutomaticTheme: preferences.getBool("automatic_theme") ?? false,
+        useDarkTheme: preferences.getBool("dark_theme") ?? false
       );
     } else if (event is PreferencesSaveEvent) {
       yield PreferencesSavingState();
       SharedPreferences preferences = await _getPreferences();
-      if (event.automaticDarkTheme != null)
-        preferences.setBool("automatic_dark_theme", event.automaticDarkTheme);
-      if (event.darkTheme != null)
-        preferences.setBool("dark_theme", event.darkTheme);
+      if (event.useAutomaticTheme != null)
+        preferences.setBool("automatic_theme", event.useAutomaticTheme);
+      if (event.useDarkTheme != null)
+        preferences.setBool("dark_theme", event.useDarkTheme);
       yield PreferencesSavedState();
     }
   }

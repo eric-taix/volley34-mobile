@@ -28,11 +28,15 @@ class _PreferencesPageState extends State<PreferencesPage> {
 
   Widget _buildPreferencesContent() {
     return BlocBuilder<PreferencesBloc, PreferencesState>(
-      bloc: BlocProvider.of<PreferencesBloc>(context),
       builder: (context, state) {
         if (state is PreferencesLoadedState) {
-          return ListView.builder(
-            itemBuilder: (context, index) => _buildPreferencesItem(index, state),
+          return ListView(
+            children: <Widget>[
+              _buildDarkModeOption(state),
+              Divider(height: 1.0),
+              _buildAutomaticModeOption(state),
+              Divider(height: 1.0)
+            ],
           );
         } else {
           return Center(
@@ -47,52 +51,42 @@ class _PreferencesPageState extends State<PreferencesPage> {
       },
     );
   }
-
-  Widget _buildPreferencesItem(int index, PreferencesLoadedState state) {
-    if (index % 2 == 0) {
-      index = index ~/ 2;
-      switch (index) {
-        case 0:
-          if (state.automaticDarkTheme) {
-            return ListTile(
-              title: Text("Mode sombre", style: Theme.of(context).textTheme.bodyText2),
-              leading: Icon(Icons.brightness_6, color: Theme.of(context).accentColor,),
-              trailing: Text(
-                "Mode sombre automatique activé",
-                style: TextStyle(color: Theme.of(context).textTheme.bodyText2.color, fontSize: 10),
-              ),
-            );
-          } else {
-            return SwitchListTile(
-              title: Text("Mode sombre", style: Theme.of(context).textTheme.bodyText2),
-              secondary: Icon(Icons.brightness_6, color: Theme.of(context).accentColor,),
-              value: state.darkTheme,
-              onChanged: (dark) {
-                BlocProvider.of<PreferencesBloc>(context).add(PreferencesSaveEvent(darkTheme: dark));
-              }
-            );
-          }
-          break;
-        case 1:
-          return SwitchListTile(
-            contentPadding: EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0),
-            title: Text("Mode sombre automatique", style: Theme.of(context).textTheme.bodyText2),
-            subtitle: Text(
-                "Cette option active automatiquement le mode sombre en fonction des préférences de votre appareil.",
-                style: TextStyle(color: Theme.of(context).textTheme.bodyText2.color, fontSize: 10)
-            ),
-            secondary: Icon(Icons.access_time, color: Theme.of(context).accentColor),
-            value: state.automaticDarkTheme,
-            onChanged: (automatic) {
-              BlocProvider.of<PreferencesBloc>(context).add(PreferencesSaveEvent(automaticDarkTheme: automatic));
-            },
-          );
-        default:
-          return null;
-      }
+  
+  Widget _buildDarkModeOption(PreferencesLoadedState state) {
+    if (state.useAutomaticTheme) {
+      return ListTile(
+        title: Text("Mode sombre", style: Theme.of(context).textTheme.bodyText2),
+        leading: Icon(Icons.brightness_6, color: Theme.of(context).accentColor,),
+        trailing: Text(
+          "Mode sombre automatique activé",
+          style: TextStyle(color: Theme.of(context).textTheme.bodyText2.color, fontSize: 10),
+        ),
+      );
     } else {
-      return Divider(height: 1.0);
+      return SwitchListTile(
+          title: Text("Mode sombre", style: Theme.of(context).textTheme.bodyText2),
+          secondary: Icon(Icons.brightness_6, color: Theme.of(context).accentColor,),
+          value: state.useDarkTheme,
+          onChanged: (isDark) {
+            BlocProvider.of<PreferencesBloc>(context).add(PreferencesSaveEvent(useDarkTheme: isDark));
+          }
+      );
     }
   }
-
+  
+  Widget _buildAutomaticModeOption(PreferencesLoadedState state) {
+    return SwitchListTile(
+      contentPadding: EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0),
+      title: Text("Mode sombre automatique", style: Theme.of(context).textTheme.bodyText2),
+      subtitle: Text(
+          "Cette option active automatiquement le mode sombre en fonction des préférences de votre appareil.",
+          style: TextStyle(color: Theme.of(context).textTheme.bodyText2.color, fontSize: 10)
+      ),
+      secondary: Icon(Icons.access_time, color: Theme.of(context).accentColor),
+      value: state.useAutomaticTheme,
+      onChanged: (isAutomatic) {
+        BlocProvider.of<PreferencesBloc>(context).add(PreferencesSaveEvent(useAutomaticTheme: isAutomatic));
+      },
+    );
+  }
 }

@@ -59,8 +59,8 @@ class _V34State extends State<V34> {
   }
 
   Widget _buildMaterialApp(PreferencesLoadedState state) {
-    bool automatic = state.automaticDarkTheme;
-    bool dark = state.darkTheme;
+    bool automatic = state.useAutomaticTheme;
+    bool dark = state.useDarkTheme;
     return MaterialApp(
       title: 'Volley34',
       theme: AppTheme.getNormalThemeFromPreferences(automatic, dark),

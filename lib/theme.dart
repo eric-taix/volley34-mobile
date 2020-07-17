@@ -162,16 +162,16 @@ class AppTheme {
     );
   }
 
-  static ThemeData getNormalThemeFromPreferences(bool automatic, bool dark) {
-    if (automatic) return AppTheme.lightTheme();
+  static ThemeData getNormalThemeFromPreferences(bool isAutomatic, bool isDark) {
+    if (isAutomatic) return AppTheme.lightTheme();
     else {
-      if (dark) return AppTheme.darkTheme();
+      if (isDark) return AppTheme.darkTheme();
       else return AppTheme.lightTheme();
     }
   }
 
-  static ThemeData getDarkThemeFromPreferences(bool automatic) {
-    if (automatic) return AppTheme.darkTheme();
+  static ThemeData getDarkThemeFromPreferences(bool isAutomatic) {
+    if (isAutomatic) return AppTheme.darkTheme();
     else return null;
   }
 
