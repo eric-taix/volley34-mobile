@@ -17,11 +17,6 @@ class TeamDetailPage extends StatefulWidget {
 class _TeamDetailPageState extends State<TeamDetailPage> {
 
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return AppBarWithImage(
       widget.team.code,
