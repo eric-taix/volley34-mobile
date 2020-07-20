@@ -3,25 +3,26 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:v34/commons/router.dart';
 import 'package:v34/models/match_result.dart';
+import 'package:v34/models/team.dart';
 import 'package:v34/pages/team-details/results/result_information.dart';
 
 class ResultCard extends StatelessWidget {
-  final String teamCode;
+  final Team team;
   final MatchResult result;
 
-  const ResultCard({Key key, @required this.teamCode, @required this.result}) : super(key: key);
+  const ResultCard({Key key, @required this.team, @required this.result}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     int diffSets = result.totalSetsHost - result.totalSetsVisitor;
-    if (teamCode == result.visitorTeamCode) diffSets = -diffSets;
+    if (team.code == result.visitorTeamCode) diffSets = -diffSets;
     Color scoreColor;
     if (diffSets == 0) scoreColor = Colors.orange;
     else if (diffSets > 0) scoreColor = Colors.green;
     else scoreColor = Colors.red;
     DateFormat dateFormat = DateFormat('dd/MM/yyyy');
     return GestureDetector(
-      onTap: () => Router.push(context: context, builder: (context) => ResultInformation(teamCode: teamCode, result: result)),
+      onTap: () => Router.push(context: context, builder: (context) => ResultInformation(team: team, result: result)),
       child: Card(
         elevation: 8.0,
         margin: new EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),

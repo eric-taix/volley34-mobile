@@ -30,7 +30,7 @@ class _TeamResultsState extends State<TeamResults> {
   Widget _buildChampionshipResults(TeamResultsLoaded state) {
     List<Widget> items = [];
     for (MatchResult result in state.results) {
-      Widget element = ResultCard(teamCode: widget.team.code, result: result);
+      Widget element = ResultCard(team: widget.team, result: result);
       items.add(element);
     }
     return Column(

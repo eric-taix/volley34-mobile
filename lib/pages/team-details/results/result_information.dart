@@ -1,18 +1,22 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:v34/models/match_result.dart';
+import 'package:v34/models/team.dart';
 
 import 'information_divider.dart';
 
 class ResultInformation extends StatelessWidget {
-  final String teamCode;
+  final Team team;
   final MatchResult result;
 
   static final double bigScoreSize = 50.0;
   static final double scoreSize = 30.0;
   static final List<IconData> icons = [Icons.looks_one, Icons.looks_two, Icons.looks_3, Icons.looks_4, Icons.looks_5];
 
-  const ResultInformation({Key key, @required this.teamCode, @required this.result}) : super(key: key);
+  static final String tempPlaceholder = "https://lunawood.com/wp-content/uploads/2018/02/placeholder-image.png";
+
+  const ResultInformation({Key key, @required this.team, @required this.result}) : super(key: key);
 
   Widget build(BuildContext context) {
     int nbSets = result.totalSetsHost + result.totalSetsVisitor;
@@ -45,28 +49,11 @@ class ResultInformation extends StatelessWidget {
     }
   }
 
-  Widget _buildScore(PointSituation pointSituation, double fontSize) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        Text(
-          pointSituation.hostPoints.toString(),
-          style: TextStyle(color: pointSituation.hostColor, fontWeight: FontWeight.bold, fontSize: fontSize),
-        ),
-        Text(
-            " - ",
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: fontSize)
-        ),
-        Text(
-          pointSituation.visitorPoints.toString(),
-          style: TextStyle(color: pointSituation.visitorColor, fontWeight: FontWeight.bold, fontSize: fontSize),
-        ),
-      ],
-    );
-  }
-
   Widget _buildMatchResult(BuildContext context) {
-    PointSituation matchSituation = PointSituation(context, result.totalSetsHost, result.totalSetsVisitor);
+    int hostPoints = result.totalSetsHost;
+    int visitorPoints = result.totalSetsVisitor;
+    String situation = _getSituation(hostPoints, visitorPoints);
+    bool isHost = team.code == result.hostTeamCode;
     return Padding(
       padding: const EdgeInsets.only(top: 16.0),
       child: Column(
@@ -75,18 +62,29 @@ class ResultInformation extends StatelessWidget {
             alignment: Alignment.centerLeft,
             child: Padding(
               padding: const EdgeInsets.only(left: 16.0),
-              child: Text("${result.hostName} ${matchSituation.label}", style: Theme.of(context).textTheme.subtitle1,),
+              child: Row(
+                children: <Widget>[
+                  _buildTeamIcon(context, true, isHost),
+                  Expanded(flex: 9, child: Text("${result.hostName} $situation", style: Theme.of(context).textTheme.subtitle1,)),
+                ],
+              ),
             )
           ),
           Padding(
-            padding: const EdgeInsets.only(top: 8.0, bottom: 16.0),
-            child: _buildScore(matchSituation, bigScoreSize)
+            padding: const EdgeInsets.only(top: 8.0, bottom: 32.0),
+            child: Flex(direction: Axis.horizontal, children: <Widget>[_buildScore(context, hostPoints, visitorPoints, true, bigScoreSize)])
           ),
           Align(
             alignment: Alignment.centerRight,
             child: Padding(
               padding: const EdgeInsets.only(right: 16.0),
-              child: Text("contre ${result.visitorName}", style: Theme.of(context).textTheme.subtitle1,),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: <Widget>[
+                  Expanded(flex: 9, child: Text("contre ${result.visitorName}", textAlign: TextAlign.right, style: Theme.of(context).textTheme.subtitle1,)),
+                  _buildTeamIcon(context, false, isHost)
+                ],
+              ),
             )
           )
         ],
@@ -97,18 +95,21 @@ class ResultInformation extends StatelessWidget {
   Widget _buildSetResult(BuildContext context, int setIndex) {
     if (setIndex > 5) return null;
     if (result.sets[setIndex - 1].hostPoint == null) return null;
-    PointSituation setSituation = PointSituation(context, result.sets[setIndex - 1].hostPoint, result.sets[setIndex - 1].visitorpoint);
+    int hostPoints = result.sets[setIndex - 1].hostPoint;
+    int visitorPoints = result.sets[setIndex - 1].visitorpoint;
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: <Widget>[
-        Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            Text("Set n°" , style: Theme.of(context).textTheme.headline4,),
-            _buildIndexIcon(context, setIndex)
-          ],
+        Expanded(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text("Set n°" , style: Theme.of(context).textTheme.headline4,),
+              _buildIndexIcon(context, setIndex)
+            ],
+          ),
         ),
-        _buildScore(setSituation, scoreSize)
+        _buildScore(context, hostPoints, visitorPoints, false, scoreSize)
       ],
     );
   }
@@ -119,22 +120,28 @@ class ResultInformation extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: <Widget>[
-        Text("Total des points", style: Theme.of(context).textTheme.headline4,),
-        Row(
-          children: <Widget>[
-            Text(
-              hostPoints.toString(),
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: scoreSize),
-            ),
-            Text(
-                " - ",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: scoreSize)
-            ),
-            Text(
-              visitorPoints.toString(),
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: scoreSize),
-            ),
-          ],
+        Expanded(
+          child: Text("Total des points", textAlign: TextAlign.center, style: Theme.of(context).textTheme.headline4,)
+        ),
+        Expanded(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text(
+                hostPoints.toString(),
+                textAlign: TextAlign.right,
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: scoreSize),
+              ),
+              Text(
+                  " - ",
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: scoreSize)
+              ),
+              Text(
+                visitorPoints.toString(),
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: scoreSize),
+              ),
+            ],
+          ),
         ),
       ],
     );
@@ -145,27 +152,59 @@ class ResultInformation extends StatelessWidget {
     if (index <= 5) return Icon(icons[index - 1], color: color);
     else return null;
   }
-}
 
-class PointSituation {
-  String label;
-  int hostPoints, visitorPoints;
-  Color hostColor, visitorColor;
-
-  PointSituation(BuildContext context, this.hostPoints, this.visitorPoints) {
+  String _getSituation(int hostPoints, int visitorPoints) {
     int diff = hostPoints - visitorPoints;
-    if (diff > 0){
-      this.label = "gagne";
-      this.hostColor = Colors.green;
-      this.visitorColor = Colors.red;
-    } else if (diff < 0){
-      this.label = "perd";
-      this.hostColor = Colors.red;
-      this.visitorColor = Colors.green;
+    if (diff > 0) return "gagne";
+    else if (diff < 0) return "perd";
+    else return "fait une égalité";
+  }
+
+  Widget _buildScore(BuildContext context, int hostPoints, int visitorPoints, bool colorAll, double fontSize) {
+    int diff = hostPoints - visitorPoints;
+    bool isHost = team.code == result.hostTeamCode;
+    Color hostColor, visitorColor;
+    if (diff > 0) {
+      hostColor = isHost ? Colors.green : Colors.red;
+      visitorColor = isHost ? Colors.green : Colors.red;
+    } else if (diff < 0) {
+      hostColor = isHost ? Colors.red : Colors.green;
+      visitorColor = isHost ? Colors.red : Colors.green;
     } else {
-      this.label = "fait une égalité";
-      this.hostColor = Theme.of(context).textTheme.bodyText2.color;
-      this.visitorColor = Theme.of(context).textTheme.bodyText2.color;
+      hostColor = Theme.of(context).textTheme.bodyText2.color;
+      visitorColor = Theme.of(context).textTheme.bodyText2.color;
     }
+    if (!colorAll) {
+      hostColor = isHost ? hostColor : Theme.of(context).textTheme.bodyText2.color;
+      visitorColor = isHost ? Theme.of(context).textTheme.bodyText2.color : visitorColor;
+    }
+    return Expanded(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Text(hostPoints.toString(), textAlign: TextAlign.right, style: TextStyle(color: hostColor, fontSize: fontSize, fontWeight: FontWeight.w500)),
+          Text(" - ", style: TextStyle(color: colorAll ? hostColor : Theme.of(context).textTheme.bodyText2.color, fontSize: fontSize, fontWeight: FontWeight.w500)),
+          Text(visitorPoints.toString(), style: TextStyle(color: visitorColor, fontSize: fontSize, fontWeight: FontWeight.w500))
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTeamIcon(BuildContext context, bool left, bool isHost) {
+    String imageUrl;
+    if (left) imageUrl = isHost ? team.clubLogoUrl : tempPlaceholder;
+    else imageUrl = isHost ? tempPlaceholder : team.clubLogoUrl;
+    return Container(
+      margin: left ? EdgeInsets.only(right: 16.0) : EdgeInsets.only(left: 16.0),
+      decoration: BoxDecoration(
+        color: Theme.of(context).appBarTheme.color,
+        borderRadius: BorderRadius.all(Radius.circular(30.0))
+      ),
+      width: 50,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: CachedNetworkImage(fit: BoxFit.fill, imageUrl: imageUrl),
+      )
+    );
   }
 }

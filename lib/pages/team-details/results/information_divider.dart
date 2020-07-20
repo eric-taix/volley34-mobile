@@ -8,24 +8,14 @@ class InformationDivider extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(top: 30.0),
-      child: Row(
+      padding: EdgeInsets.only(left: 16.0, right: 16.0, top: 32.0, bottom: 16.0),
+      child: Column(
         children: <Widget>[
-          Expanded(
-            flex: 1,
-            child: Divider(),
+          Align(
+            alignment: AlignmentDirectional.centerStart,
+            child: Text(title, style: Theme.of(context).textTheme.headline6,)
           ),
-          Expanded(
-            flex: 6,
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 5.0),
-              child: Text(title, textAlign: TextAlign.center, style: Theme.of(context).textTheme.headline6,),
-            ),
-          ),
-          Expanded(
-            flex: 7,
-            child: Divider(),
-          )
+          Divider()
         ],
       ),
     );
