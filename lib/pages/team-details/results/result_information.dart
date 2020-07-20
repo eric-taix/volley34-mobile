@@ -58,35 +58,24 @@ class ResultInformation extends StatelessWidget {
       padding: const EdgeInsets.only(top: 16.0),
       child: Column(
         children: <Widget>[
-          Align(
-            alignment: Alignment.centerLeft,
-            child: Padding(
-              padding: const EdgeInsets.only(left: 16.0),
-              child: Row(
-                children: <Widget>[
-                  _buildTeamIcon(context, true, isHost),
-                  Expanded(flex: 9, child: Text("${result.hostName} $situation", style: Theme.of(context).textTheme.subtitle1,)),
-                ],
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              _buildTeamIcon(context, true, isHost),
+              Expanded(
+                flex: 8,
+                child: Column(
+                  children: <Widget>[
+                    Text(result.hostName, textAlign: TextAlign.center, style: Theme.of(context).textTheme.subtitle1),
+                    Text("$situation contre", textAlign: TextAlign.center, style: Theme.of(context).textTheme.subtitle1),
+                    Text(result.visitorName, textAlign: TextAlign.center, style: Theme.of(context).textTheme.subtitle1)
+                  ],
+                ),
               ),
-            )
+              _buildTeamIcon(context, false, isHost),
+            ],
           ),
-          Padding(
-            padding: const EdgeInsets.only(top: 8.0, bottom: 32.0),
-            child: Flex(direction: Axis.horizontal, children: <Widget>[_buildScore(context, hostPoints, visitorPoints, true, bigScoreSize)])
-          ),
-          Align(
-            alignment: Alignment.centerRight,
-            child: Padding(
-              padding: const EdgeInsets.only(right: 16.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: <Widget>[
-                  Expanded(flex: 9, child: Text("contre ${result.visitorName}", textAlign: TextAlign.right, style: Theme.of(context).textTheme.subtitle1,)),
-                  _buildTeamIcon(context, false, isHost)
-                ],
-              ),
-            )
-          )
+          Flex(direction: Axis.horizontal, children: <Widget>[_buildScore(context, hostPoints, visitorPoints, true, false, bigScoreSize)]),
         ],
       ),
     );
@@ -109,7 +98,7 @@ class ResultInformation extends StatelessWidget {
             ],
           ),
         ),
-        _buildScore(context, hostPoints, visitorPoints, false, scoreSize)
+        _buildScore(context, hostPoints, visitorPoints, false, false, scoreSize)
       ],
     );
   }
@@ -160,11 +149,14 @@ class ResultInformation extends StatelessWidget {
     else return "fait une égalité";
   }
 
-  Widget _buildScore(BuildContext context, int hostPoints, int visitorPoints, bool colorAll, double fontSize) {
+  Widget _buildScore(BuildContext context, int hostPoints, int visitorPoints, bool noColor, bool colorAll, double fontSize) {
     int diff = hostPoints - visitorPoints;
     bool isHost = team.code == result.hostTeamCode;
     Color hostColor, visitorColor;
-    if (diff > 0) {
+    if (noColor) {
+      hostColor = isHost ? hostColor : Theme.of(context).textTheme.bodyText2.color;
+      visitorColor = isHost ? Theme.of(context).textTheme.bodyText2.color : visitorColor;
+    } else if (diff > 0) {
       hostColor = isHost ? Colors.green : Colors.red;
       visitorColor = isHost ? Colors.green : Colors.red;
     } else if (diff < 0) {
@@ -183,7 +175,7 @@ class ResultInformation extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Text(hostPoints.toString(), textAlign: TextAlign.right, style: TextStyle(color: hostColor, fontSize: fontSize, fontWeight: FontWeight.w500)),
-          Text(" - ", style: TextStyle(color: colorAll ? hostColor : Theme.of(context).textTheme.bodyText2.color, fontSize: fontSize, fontWeight: FontWeight.w500)),
+          Text(" - ", style: TextStyle(color: Theme.of(context).textTheme.bodyText2.color, fontSize: fontSize, fontWeight: FontWeight.w500)),
           Text(visitorPoints.toString(), style: TextStyle(color: visitorColor, fontSize: fontSize, fontWeight: FontWeight.w500))
         ],
       ),
@@ -195,7 +187,7 @@ class ResultInformation extends StatelessWidget {
     if (left) imageUrl = isHost ? team.clubLogoUrl : tempPlaceholder;
     else imageUrl = isHost ? tempPlaceholder : team.clubLogoUrl;
     return Container(
-      margin: left ? EdgeInsets.only(right: 16.0) : EdgeInsets.only(left: 16.0),
+      margin: left ? EdgeInsets.only(left: 16.0) : EdgeInsets.only(right: 16.0),
       decoration: BoxDecoration(
         color: Theme.of(context).appBarTheme.color,
         borderRadius: BorderRadius.all(Radius.circular(30.0))

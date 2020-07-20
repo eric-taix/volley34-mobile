@@ -15,7 +15,7 @@ class InformationDivider extends StatelessWidget {
             alignment: AlignmentDirectional.centerStart,
             child: Text(title, style: Theme.of(context).textTheme.headline6,)
           ),
-          Divider()
+          Divider(color: Theme.of(context).textTheme.headline6.color,)
         ],
       ),
     );
