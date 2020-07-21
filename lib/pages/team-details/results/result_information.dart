@@ -67,7 +67,7 @@ class ResultInformation extends StatelessWidget {
                 child: Column(
                   children: <Widget>[
                     Text(result.hostName, textAlign: TextAlign.center, style: Theme.of(context).textTheme.subtitle1),
-                    Text("$situation contre", textAlign: TextAlign.center, style: Theme.of(context).textTheme.subtitle1),
+                    Text("$situation contre", textAlign: TextAlign.center, style: TextStyle(color: Theme.of(context).textTheme.subtitle1.color, fontSize: 15.0)),
                     Text(result.visitorName, textAlign: TextAlign.center, style: Theme.of(context).textTheme.subtitle1)
                   ],
                 ),
