@@ -18,6 +18,7 @@ class MatchResult {
   final String visitorName;
   final String hostTeamCode;
   final String visitorTeamCode;
+  final DateTime matchDate;
 
   MatchResult({
     this.matchCode,
@@ -32,6 +33,7 @@ class MatchResult {
     this.visitorName,
     this.hostTeamCode,
     this.visitorTeamCode,
+    this.matchDate
   });
 
   factory MatchResult.fromJson(Map<String, dynamic> json) {
@@ -56,6 +58,7 @@ class MatchResult {
       visitorName: match["NomVisiteurs"],
       hostTeamCode: match["EquipeLocauxCode"],
       visitorTeamCode: match["EquipeVisiteursCode"],
+      matchDate: DateTime.parse(match["DateMatch"].toString())
     );
   }
 }

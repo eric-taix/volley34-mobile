@@ -35,6 +35,12 @@ class TeamSlidingStatsLoaded extends TeamState {
   TeamSlidingStatsLoaded({this.pointsDiffEvolution, this.pointsPerMax, this.pointsPerMaxWithFactor});
 }
 
+class TeamResultsLoaded extends TeamState {
+  final List<MatchResult> results;
+
+  TeamResultsLoaded({@required this.results});
+}
+
 //---- EVENT
 @immutable
 abstract class TeamEvent {}
@@ -54,11 +60,18 @@ class TeamLoadAverageSlidingResult extends TeamEvent {
   TeamLoadAverageSlidingResult({this.code, this.last, this.count});
 }
 
+class TeamLoadResults extends TeamEvent {
+  final String code;
+  final int last;
+
+  TeamLoadResults({@required this.code, @required this.last});
+}
+
 //---- BLOC
 class TeamBloc extends Bloc<TeamEvent, TeamState> {
   final Repository repository;
 
-  TeamBloc({this.repository});
+  TeamBloc({@required this.repository});
 
   @override
   TeamState get initialState => TeamStateUninitialized();
@@ -92,6 +105,12 @@ class TeamBloc extends Bloc<TeamEvent, TeamState> {
         pointsPerMax: pointsPerMax,
         pointsPerMaxWithFactor: pointPerMaxWithFactor,
       );
+    }
+
+    if (event is TeamLoadResults) {
+      yield TeamSlidingStatsLoading();
+      var results = await repository.loadTeamLastMatchesResult(event.code, event.last);
+      yield TeamResultsLoaded(results: results);
     }
   }
 
