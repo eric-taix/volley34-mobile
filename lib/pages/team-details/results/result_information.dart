@@ -4,7 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:v34/models/match_result.dart';
 import 'package:v34/models/team.dart';
 
-import 'information_divider.dart';
+import '../information_divider.dart';
 
 class ResultInformation extends StatelessWidget {
   final Team team;

@@ -2,19 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:v34/commons/cards/titled_card.dart';
 import 'package:v34/commons/loading.dart';
-import 'package:v34/commons/podium.dart';
+import 'package:v34/commons/podium_widget.dart';
+import 'package:v34/commons/router.dart';
 import 'package:v34/models/team.dart';
 import 'package:v34/pages/dashboard/blocs/team_classification_bloc.dart';
+import 'package:v34/pages/team-details/team_detail_page.dart';
 import 'package:v34/repositories/repository.dart';
 
 class TeamCard extends StatefulWidget {
   final Team team;
   final bool currentlyDisplayed;
   final double distance;
+  final Function() onFavoriteChange;
   final double cardHeight = 190;
-  final Function onTap;
 
-  TeamCard({@required this.team, @required this.currentlyDisplayed, @required this.distance, this.onTap});
+  TeamCard({@required this.team, @required this.currentlyDisplayed, @required this.distance, this.onFavoriteChange});
 
   @override
   _TeamCardState createState() => _TeamCardState();
@@ -31,7 +33,7 @@ class _TeamCardState extends State<TeamCard> {
       repository: RepositoryProvider.of<Repository>(context)
     );
     if (widget.currentlyDisplayed) {
-      _classificationBloc.add(TeamClassificationLoadEvent(widget.team));
+      _classificationBloc.add(LoadTeamClassificationEvent(widget.team));
     }
   }
 
@@ -41,7 +43,7 @@ class _TeamCardState extends State<TeamCard> {
     // !oldWidget.active -> to avoid several calls to the API when sliding
     // which can create a visual bug
     if (widget.currentlyDisplayed && ((widget.team.clubCode != oldWidget.team.clubCode) || !oldWidget.currentlyDisplayed)) {
-      _classificationBloc.add(TeamClassificationLoadEvent(widget.team));
+      _classificationBloc.add(LoadTeamClassificationEvent(widget.team));
     }
   }
 
@@ -62,19 +64,12 @@ class _TeamCardState extends State<TeamCard> {
 
   List<Widget> _getPodiumWidget(state) {
     if (state is TeamClassificationLoadedState) {
-      List<Widget> result = state.classifications.map((competitionClassificationSynthesis) {
-        var placeValues = competitionClassificationSynthesis.teamsClassifications.map((teamClassification) {
-          return PlaceValue(teamClassification.teamCode, teamClassification.totalPoints.toDouble());
-        }).toList();
-        var highlightedIndex = placeValues.indexWhere((placeValue) => placeValue.id == state.highlightedTeamCode);
+      List<Widget> result = state.classifications.map((classification) {
         return Expanded(
-          child: Podium(
-            placeValues,
-            active: widget.currentlyDisplayed,
-            title: competitionClassificationSynthesis.label,
-            highlightedIndex: highlightedIndex,
-            promoted: competitionClassificationSynthesis.promoted,
-            relegated: competitionClassificationSynthesis.relegated,
+          child: PodiumWidget(
+            classification: classification,
+            highlightedTeamCode: state.highlightedTeamCode,
+            currentlyDisplayed: widget.currentlyDisplayed,
           ),
         );
       }).toList();
@@ -85,6 +80,15 @@ class _TeamCardState extends State<TeamCard> {
     } else {
       return [];
     }
+  }
+
+  Function _onTap(TeamClassificationState state) {
+    if (state is TeamClassificationLoadedState) {
+      return () => Router.push(context: context, builder: (_) => TeamDetailPage(team: widget.team, classifications: state.classifications)).then(
+        (_) => widget.onFavoriteChange
+      );
+    }
+    else return null;
   }
 
   @override
@@ -103,7 +107,7 @@ class _TeamCardState extends State<TeamCard> {
               height: cardBodyHeight,
               child: Row(children: _getPodiumWidget(state)),
             ),
-            onTap: widget.onTap,
+            onTap: _onTap(state),
           ),
         );
       },
