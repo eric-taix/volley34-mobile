@@ -6,25 +6,30 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:v34/commons/loading.dart';
 import 'package:v34/commons/router.dart';
+import 'package:v34/models/club.dart';
+import 'package:v34/models/team.dart';
 import 'package:v34/pages/club-details/blocs/club_teams.bloc.dart';
-import 'package:v34/pages/dashboard/blocs/favorite_bloc.dart';
+import 'package:v34/pages/club-details/club_detail_page.dart';
 import 'package:v34/pages/dashboard/team_card.dart';
 import 'package:v34/pages/team-details/team_detail_page.dart';
 import 'package:v34/repositories/repository.dart';
 
 final Random random = Random.secure();
 
-class DashboardClubTeams extends StatefulWidget {
-  final String clubCode;
-  final double cardHeight = 240;
+typedef TeamFavoriteChangeCallback = void Function(Team team);
 
-  DashboardClubTeams({this.clubCode});
+class DashboardClubTeams extends StatefulWidget {
+  final Club club;
+  final double cardHeight = 240;
+  final TeamFavoriteChangeCallback onTeamFavoriteChange;
+
+  DashboardClubTeams({this.club, this.onTeamFavoriteChange});
 
   @override
   _DashboardClubTeamsState createState() => _DashboardClubTeamsState();
 }
 
-class _DashboardClubTeamsState extends State<DashboardClubTeams> with SingleTickerProviderStateMixin{
+class _DashboardClubTeamsState extends State<DashboardClubTeams> with SingleTickerProviderStateMixin {
   PageController _pageController;
   int _currentIndex = 0;
   double _currentTeamPage = 0;
@@ -45,8 +50,8 @@ class _DashboardClubTeamsState extends State<DashboardClubTeams> with SingleTick
     );
     _clubTeamsBloc.listen((state) {
       if (state is ClubTeamsLoaded && _pageController.hasClients) {
-          _currentIndex = 0;
-          _pageController.jumpTo(0);
+        _currentIndex = 0;
+        _pageController.jumpTo(0);
       }
     });
     _loadFavoriteTeams();
@@ -60,24 +65,7 @@ class _DashboardClubTeamsState extends State<DashboardClubTeams> with SingleTick
   }
 
   void _loadFavoriteTeams() {
-    _clubTeamsBloc.add(ClubFavoriteTeamsLoadEvent(widget.clubCode));
-  }
-
-  Widget _buildTeamCategory(ClubTeamsLoaded state) {
-    String text = state.teams[_currentIndex].favorite ? "Équipes favorites" : "Autres";
-    return Container(
-      width: 160,
-      padding: EdgeInsets.only(right: 25.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: <Widget>[
-          Text(text, style: Theme.of(context).textTheme.bodyText2),
-          Divider(
-            color: Theme.of(context).textTheme.bodyText2.color,
-          )
-        ],
-      ),
-    );
+    _clubTeamsBloc.add(ClubFavoriteTeamsLoadEvent(widget.club.code));
   }
 
   @override
@@ -86,14 +74,11 @@ class _DashboardClubTeamsState extends State<DashboardClubTeams> with SingleTick
       bloc: _clubTeamsBloc,
       builder: (context, state) {
         if (state is ClubTeamsLoaded) {
-          return Column(children: <Widget>[
-            Stack(
-              alignment: Alignment.topRight,
-              children: <Widget>[
-                _buildTeamCategory(state),
-                Container(
-                    height: widget.cardHeight,
-                    child: PageView.builder(
+          return Column(crossAxisAlignment: CrossAxisAlignment.center, children: <Widget>[
+            Container(
+              height: widget.cardHeight,
+              child: state.teams.length > 0
+                  ? PageView.builder(
                       physics: const BouncingScrollPhysics(),
                       controller: _pageController,
                       itemCount: state.teams.length,
@@ -104,12 +89,26 @@ class _DashboardClubTeamsState extends State<DashboardClubTeams> with SingleTick
                             currentlyDisplayed: _currentIndex == index,
                             team: state.teams[index],
                             distance: _currentTeamPage - index,
-                            onTap: () => Router.push(context: context, builder: (_) => TeamDetailPage(team: state.teams[index])),
+                            onTap: () => Router.push(context: context, builder: (_) => TeamDetailPage(team: state.teams[index]))
+                                .then((_) => widget.onTeamFavoriteChange(state.teams[index])),
                           ),
                         );
                       },
-                    )),
-              ],
+                    )
+                  : Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(28.0),
+                        child: RaisedButton(
+                          onPressed: () =>  Router.push(context: context, builder: (_) => ClubDetailPage(widget.club)).then(
+                                (_) => widget.onTeamFavoriteChange(null),
+                          ),
+                          padding: EdgeInsets.all(12.0),
+                          child: Text(
+                            "Sélectionnez une équipe favorite",
+                          ),
+                        ),
+                      ),
+                    ),
             ),
             if (state.teams.length > 1)
               Padding(

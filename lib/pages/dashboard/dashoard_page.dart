@@ -5,6 +5,7 @@ import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:v34/commons/loading.dart';
 import 'package:v34/commons/page/main_page.dart';
 import 'package:v34/commons/router.dart';
+import 'package:v34/models/club.dart';
 import 'package:v34/pages/club-details/club_detail_page.dart';
 import 'package:v34/pages/dashboard/blocs/agenda_bloc.dart';
 import 'package:v34/pages/dashboard/blocs/favorite_bloc.dart';
@@ -28,7 +29,7 @@ class _DashboardPageState extends State<DashboardPage> {
   FavoriteBloc _favoriteBloc;
   AgendaBloc _agendaBloc;
   PageController _pageController;
-  String _currentClubCode;
+  Club _currentClub;
   double currentFavoriteClubPage = 0;
 
   @override
@@ -40,7 +41,7 @@ class _DashboardPageState extends State<DashboardPage> {
       if (state is FavoriteLoadedState) {
         if (state.clubs.length > 0) {
           setState(() {
-            _currentClubCode = state.clubs[0].code;
+            _currentClub = state.clubs[0];
           });
         }
       }
@@ -83,7 +84,7 @@ class _DashboardPageState extends State<DashboardPage> {
       child: FavoriteClubCard(
         state.clubs[index],
         () => Router.push(context: context, builder: (_) => ClubDetailPage(state.clubs[index])).then(
-          (_) => _updateClubTeams(state.clubs[index].code),
+          (_) => _selectCurrentClub(state.clubs[index]),
         ),
       ),
     );
@@ -118,7 +119,7 @@ class _DashboardPageState extends State<DashboardPage> {
                       physics: BouncingScrollPhysics(),
                       itemCount: state.clubs.length,
                       controller: _pageController,
-                      onPageChanged: (pageIndex) => _updateClubTeams(state.clubs[pageIndex].code),
+                      onPageChanged: (pageIndex) => _selectCurrentClub(state.clubs[pageIndex]),
                       itemBuilder: (context, index) => Padding(
                         padding: const EdgeInsets.only(left: 8.0, right: 0),
                         child: _buildFavoriteClubCard(state, index, currentFavoriteClubPage - index),
@@ -142,11 +143,9 @@ class _DashboardPageState extends State<DashboardPage> {
                 constraints: BoxConstraints(minHeight: 0),
               );
       case 2:
-        return Paragraph(
-          title: state.teamCodes.length > 1 ? "Vos équipes" : "Vos équipes",
-        );
+        return Paragraph(title: "Vos équipes");
       case 3:
-        return DashboardClubTeams(clubCode: _currentClubCode);
+        return DashboardClubTeams(club: _currentClub, onTeamFavoriteChange: (_) => _selectCurrentClub(_currentClub));
       case 4:
         return Paragraph(
           title: "Votre agenda",
@@ -184,9 +183,9 @@ class _DashboardPageState extends State<DashboardPage> {
     }
   }
 
-  _updateClubTeams(String clubCode) {
+  _selectCurrentClub(Club club) {
     setState(() {
-      _currentClubCode = clubCode;
+      _currentClub = club;
     });
   }
 }
