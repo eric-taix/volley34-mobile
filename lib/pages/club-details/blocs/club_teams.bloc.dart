@@ -1,12 +1,10 @@
-
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:v34/models/team.dart';
 import 'package:v34/repositories/repository.dart';
 
-//---- STATE
-@immutable
+// ----- STATES -----
+
 abstract class ClubTeamsState {}
 
 class ClubTeamsUninitialized extends ClubTeamsState {}
@@ -19,16 +17,23 @@ class ClubTeamsLoaded extends ClubTeamsState {
 }
 
 
-//---- EVENT
-@immutable
-abstract class ClubTeamsEvent {}
+// ----- EVENTS -----
 
-class ClubTeamsLoadEvent extends ClubTeamsEvent {
+abstract class ClubTeamsEvent {
   final String clubCode;
-  ClubTeamsLoadEvent({@required this.clubCode});
+  ClubTeamsEvent(this.clubCode);
 }
 
-//---- BLOC
+class ClubTeamsLoadEvent extends ClubTeamsEvent {
+  ClubTeamsLoadEvent(clubCode): super(clubCode);
+}
+
+class ClubFavoriteTeamsLoadEvent extends ClubTeamsEvent {
+  ClubFavoriteTeamsLoadEvent(clubCode): super(clubCode);
+}
+
+// ----- BLOC -----
+
 class ClubTeamsBloc extends Bloc<ClubTeamsEvent, ClubTeamsState> {
 
   final Repository repository;
@@ -40,13 +45,24 @@ class ClubTeamsBloc extends Bloc<ClubTeamsEvent, ClubTeamsState> {
 
   @override
   Stream<ClubTeamsState> mapEventToState(ClubTeamsEvent event) async* {
-    if (event is ClubTeamsLoadEvent) {
+    if (event is ClubTeamsLoadEvent || event is ClubFavoriteTeamsLoadEvent) {
       yield ClubTeamsLoading();
       var teams  = await repository.loadClubTeams(event.clubCode);
-      final seen = Set<String>();
-      teams.sort((team1, team2) => team1.name.compareTo(team2.name));
-      var uniqueTeams = teams.where((team) => seen.add(team.name)).toList();
-      yield ClubTeamsLoaded(teams: uniqueTeams);
+      var favTeams = await repository.loadFavoriteTeamCodes();
+      if (favTeams.isNotEmpty) {
+        teams.forEach((team) {
+          if (favTeams.contains(team.code)) team.favorite = true;
+        });
+      }
+      if (event is ClubFavoriteTeamsLoadEvent) {
+        teams = teams.where((team) => team.favorite).toList();
+      }
+      teams.sort((team1, team2) {
+        if (team1.favorite && !team2.favorite) return -1;
+        if (!team1.favorite && team2.favorite) return 1;
+        else return team1.name.compareTo(team2.name);
+      });
+      yield ClubTeamsLoaded(teams: teams);
     }
   }
 

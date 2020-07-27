@@ -47,6 +47,15 @@ class Repository {
     }).toList();
   }
 
+  /// Load all favorite team codes
+  Future<List<String>> loadFavoriteTeamCodes() async {
+    return _favoriteProvider.loadFavoriteTeams();
+  }
+
+  /// Load all favorite club codes
+  Future<List<String>> loadFavoriteClubCodes() async {
+    return _favoriteProvider.loadFavoriteClubs();
+  }
 
   //------ TEAM -------
 
@@ -114,6 +123,11 @@ class Repository {
   /// Return if a club is in favorites
   Future<bool> isClubFavorite(String code) async {
     return _favoriteProvider.loadFavoriteClubs().then((clubs) => clubs.contains(code));
+  }
+
+  /// Return if a team is in favorites
+  Future<bool> isTeamFavorite(String code) async {
+    return _favoriteProvider.loadFavoriteTeams().then((teams) => teams.contains(code));
   }
 
   /// Load the club statistics by team

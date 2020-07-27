@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:like_button/like_button.dart';
 import 'package:v34/commons/favorite/favorite.dart';
 import 'package:v34/repositories/repository.dart';
+import 'package:v34/utils/extensions.dart';
 
 import 'favorite_bloc.dart';
 
@@ -68,7 +69,7 @@ class _FavoriteIconState extends State<FavoriteIcon> with SingleTickerProviderSt
             likeBuilder: (bool isLiked) {
               return Icon(
                 isLiked ? Icons.star : Icons.star_border,
-                color: isLiked ? Colors.yellow : Theme.of(context).textTheme.bodyText1.color,
+                color: isLiked ? Colors.orangeAccent : Theme.of(context).textTheme.bodyText1.color,
                 size: 26,
               );
             },

@@ -5,6 +5,7 @@ import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:v34/commons/loading.dart';
 import 'package:v34/commons/page/main_page.dart';
 import 'package:v34/commons/router.dart';
+import 'package:v34/models/club.dart';
 import 'package:v34/pages/club-details/club_detail_page.dart';
 import 'package:v34/pages/dashboard/blocs/agenda_bloc.dart';
 import 'package:v34/pages/dashboard/blocs/favorite_bloc.dart';
@@ -28,18 +29,19 @@ class _DashboardPageState extends State<DashboardPage> {
   FavoriteBloc _favoriteBloc;
   AgendaBloc _agendaBloc;
   PageController _pageController;
-  String _currentClubCode;
+  Club _currentClub;
   double currentFavoriteClubPage = 0;
 
   @override
   void initState() {
     super.initState();
-    _favoriteBloc = FavoriteBloc(repository: RepositoryProvider.of<Repository>(context))..add(FavoriteLoadEvent());
+    _favoriteBloc = FavoriteBloc(repository: RepositoryProvider.of<Repository>(context))
+      ..add(FavoriteLoadEvent());
     _favoriteBloc.skip(1).listen((state) {
       if (state is FavoriteLoadedState) {
         if (state.clubs.length > 0) {
           setState(() {
-            _currentClubCode = state.clubs[0].code;
+            _currentClub = state.clubs[0];
           });
         }
       }
@@ -47,9 +49,11 @@ class _DashboardPageState extends State<DashboardPage> {
     _agendaBloc = AgendaBloc(repository: RepositoryProvider.of<Repository>(context))..add(AgendaLoadWeek(week: 0));
     _pageController = PageController(initialPage: 0)
       ..addListener(() {
-        setState(() {
-          currentFavoriteClubPage = _pageController.page;
-        });
+        if (currentFavoriteClubPage != _pageController.page) {
+          setState(() {
+            currentFavoriteClubPage = _pageController.page;
+          });
+        }
       });
   }
 
@@ -73,18 +77,14 @@ class _DashboardPageState extends State<DashboardPage> {
         }));
   }
 
-  void _gotoPreferencesPage() {
-    Navigator.of(context).push(MaterialPageRoute<void>(builder: (context) => PreferencesPage()));
-  }
-
-  Widget _buildFavoriteClubCard(FavoriteState state, int index, double distance) {
+  Widget _buildFavoriteClubCard(FavoriteLoadedState state, int index, double distance) {
     var absDistance = distance.abs() > 1 ? 1 : distance.abs();
     return Transform.scale(
       scale: 1.0 - (absDistance > 0.15 ? 0.15 : absDistance),
       child: FavoriteClubCard(
         state.clubs[index],
         () => Router.push(context: context, builder: (_) => ClubDetailPage(state.clubs[index])).then(
-          (_) => _favoriteBloc.add(FavoriteLoadEvent()),
+          (_) => _selectCurrentClub(state.clubs[index]),
         ),
       ),
     );
@@ -103,7 +103,7 @@ class _DashboardPageState extends State<DashboardPage> {
     }
   }
 
-  Widget _buildDashboardItem(int index, FavoriteState state) {
+  Widget _buildDashboardItem(int index, FavoriteLoadedState state) {
     switch (index) {
       case 0:
         return Paragraph(
@@ -119,9 +119,11 @@ class _DashboardPageState extends State<DashboardPage> {
                       physics: BouncingScrollPhysics(),
                       itemCount: state.clubs.length,
                       controller: _pageController,
-                      onPageChanged: (pageIndex) => _updateClubTeams(state.clubs[pageIndex].code),
+                      onPageChanged: (pageIndex) => _selectCurrentClub(state.clubs[pageIndex]),
                       itemBuilder: (context, index) => Padding(
-                          padding: const EdgeInsets.only(left: 8.0, right: 0), child: _buildFavoriteClubCard(state, index, currentFavoriteClubPage - index)),
+                        padding: const EdgeInsets.only(left: 8.0, right: 0),
+                        child: _buildFavoriteClubCard(state, index, currentFavoriteClubPage - index),
+                      ),
                     ),
                   ),
                   if (state.clubs.length > 1)
@@ -138,15 +140,12 @@ class _DashboardPageState extends State<DashboardPage> {
                 ],
               )
             : Container(
-                constraints: BoxConstraints(minHeight: 100),
-                child: Center(child: Loading()),
+                constraints: BoxConstraints(minHeight: 0),
               );
       case 2:
-        return Paragraph(
-          title: state.teamCodes.length > 1 ? "Vos équipes" : "Vos équipes",
-        );
+        return Paragraph(title: "Vos équipes");
       case 3:
-        return DashboardClubTeams(clubCode: _currentClubCode);
+        return DashboardClubTeams(club: _currentClub, onTeamFavoriteChange: (_) => _selectCurrentClub(_currentClub));
       case 4:
         return Paragraph(
           title: "Votre agenda",
@@ -184,9 +183,9 @@ class _DashboardPageState extends State<DashboardPage> {
     }
   }
 
-  _updateClubTeams(String clubCode) {
+  _selectCurrentClub(Club club) {
     setState(() {
-      _currentClubCode = clubCode;
+      _currentClub = club;
     });
   }
 }
