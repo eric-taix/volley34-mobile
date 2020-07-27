@@ -15,10 +15,11 @@ typedef TeamFavoriteChangeCallback = void Function(Team team);
 
 class DashboardClubTeams extends StatefulWidget {
   final Club club;
+  final Function(List<Team>) onTeamsLoaded;
   final double cardHeight = 240;
   final TeamFavoriteChangeCallback onTeamFavoriteChange;
 
-  const DashboardClubTeams({@required this.club, this.onTeamFavoriteChange});
+  const DashboardClubTeams({@required this.club, this.onTeamFavoriteChange, this.onTeamsLoaded});
 
   @override
   _DashboardClubTeamsState createState() => _DashboardClubTeamsState();
@@ -46,9 +47,12 @@ class _DashboardClubTeamsState extends State<DashboardClubTeams> with SingleTick
       repository: RepositoryProvider.of<Repository>(context),
     );
     _clubTeamsBloc.listen((state) {
-      if (state is ClubTeamsLoaded && _pageController.hasClients) {
-        _currentIndex = 0;
-        _pageController.jumpTo(0);
+      if (state is ClubTeamsLoaded) {
+        widget.onTeamsLoaded(state.teams);
+        if (_pageController.hasClients) {
+          _currentIndex = 0;
+          _pageController.jumpTo(0);
+        }
       }
     });
     _loadFavoriteTeams();
@@ -58,7 +62,7 @@ class _DashboardClubTeamsState extends State<DashboardClubTeams> with SingleTick
   @override
   void didUpdateWidget(DashboardClubTeams oldWidget) {
     super.didUpdateWidget(oldWidget);
-    _loadFavoriteTeams();
+    if (oldWidget.club.code != widget.club.code) _loadFavoriteTeams();
   }
 
   void _loadFavoriteTeams() {
@@ -137,4 +141,5 @@ class _DashboardClubTeamsState extends State<DashboardClubTeams> with SingleTick
 
   @override
   bool get wantKeepAlive => true;
+
 }

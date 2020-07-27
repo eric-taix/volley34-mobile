@@ -26,7 +26,7 @@ class Event {
     if (json["MatchCode"] != null) {
       return Event(
         date: DateTime.parse(json["DateMatch"]),
-        name: json["CalendarEventName"],
+        name: json["CalendarEventName"] ?? json["LibelleMatch"],
         place: json["NomGymnase"],
         hostName: json["NomLocaux"],
         visitorName: json["NomVisiteurs"],

@@ -99,6 +99,13 @@ class Repository {
     return _agendaProvider.listEvents();
   }
 
+  Future<List<Event>> loadTeamMonthAgenda(String teamCode) async {
+    List<Event> matches = await _agendaProvider.listTeamMonthMatches(teamCode);
+    List<Event> events = await _agendaProvider.listTeamMonthEvents(teamCode);
+    events.addAll(matches);
+    return events;
+  }
+
   /// Update a favorite by providing the [FavoriteType], a generic favoriteId and the flag (favorite or not)
   Future updateFavorite(String favoriteId, FavoriteType favoriteType, bool favorite) async {
     switch (favoriteType) {

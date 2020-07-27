@@ -35,13 +35,31 @@ class AgendaLoaded extends AgendaState {
 @immutable
 abstract class AgendaEvent extends Equatable {}
 
-class AgendaLoadWeek extends AgendaEvent {
+class LoadWeekAgenda extends AgendaEvent {
   final int week;
 
-  AgendaLoadWeek({this.week});
+  LoadWeekAgenda({this.week});
 
   @override
   List<Object> get props => [week];
+}
+
+class LoadTeamMonthAgenda extends AgendaEvent {
+  final String teamCode;
+
+  LoadTeamMonthAgenda({@required this.teamCode});
+
+  @override
+  List<Object> get props => [teamCode];
+}
+
+class LoadTeamsMonthAgenda extends AgendaEvent {
+  final List<String> teamCodes;
+
+  LoadTeamsMonthAgenda({@required this.teamCodes});
+
+  @override
+  List<Object> get props => [teamCodes];
 }
 
 //--- Bloc
@@ -56,8 +74,8 @@ class AgendaBloc extends Bloc<AgendaEvent, AgendaState> {
 
   @override
   Stream<AgendaState> mapEventToState(AgendaEvent event) async* {
-    if (event is AgendaLoadWeek) {
-      yield AgendaLoading(state.events);
+    yield AgendaLoading(state.events);
+    if (event is LoadWeekAgenda) {
       List<Event> otherEvents = await repository.loadAgendaWeek(event.week);
       List<Event> favoriteTeamsEvents =
           await repository.loadFavoriteTeamsMatches();
@@ -65,6 +83,20 @@ class AgendaBloc extends Bloc<AgendaEvent, AgendaState> {
         ..addAll(otherEvents)
         ..addAll(state.events)
         ..sort((event1, event2) => event1.date.compareTo(event2.date)));
+    }
+    else if (event is LoadTeamMonthAgenda) {
+      List<Event> events = await repository.loadTeamMonthAgenda(event.teamCode);
+      events.sort((event1, event2) => event1.date.compareTo(event2.date));
+      yield AgendaLoaded(events);
+    }
+    else if (event is LoadTeamsMonthAgenda) {
+      List<Event> allEvents = [];
+      for (String teamCode in event.teamCodes) {
+        List<Event> events = await repository.loadTeamMonthAgenda(teamCode);
+        allEvents.addAll(events);
+      }
+      allEvents.sort((event1, event2) => event1.date.compareTo(event2.date));
+      yield AgendaLoaded(allEvents);
     }
   }
 }

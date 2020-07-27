@@ -2,12 +2,17 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:v34/commons/loading.dart';
+import 'package:v34/models/team.dart';
 import 'package:v34/pages/dashboard/blocs/agenda_bloc.dart';
 import 'package:v34/pages/dashboard/widgets/timeline/timeline.dart';
 import 'package:v34/pages/dashboard/widgets/timeline/timeline_items.dart';
 import 'package:v34/repositories/repository.dart';
 
 class DashboardAgenda extends StatefulWidget {
+  final List<Team> teams;
+
+  const DashboardAgenda({Key key, @required this.teams}) : super(key: key);
+
   @override
   DashboardAgendaState createState() => DashboardAgendaState();
 }
@@ -21,7 +26,7 @@ class DashboardAgendaState extends State<DashboardAgenda> with AutomaticKeepAliv
   void initState() {
     super.initState();
     _agendaBloc = AgendaBloc(repository: RepositoryProvider.of<Repository>(context));
-    _agendaBloc.add(AgendaLoadWeek(week: 0));
+    _agendaBloc.add(LoadTeamsMonthAgenda(teamCodes: widget.teams.map((team) => team.code).toList()));
   }
 
   Widget _buildTimeline(AgendaState state) {
@@ -42,7 +47,7 @@ class DashboardAgendaState extends State<DashboardAgenda> with AutomaticKeepAliv
         }),
       ]);
     } else {
-      return Center(child: Loading());
+      return Container(height: 250, child: Center(child: Loading()));
     }
   }
 
