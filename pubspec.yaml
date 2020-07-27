@@ -39,7 +39,6 @@ dependencies:
   radial_button: ^1.0.0
   flushbar: ^1.10.4
   simple_gravatar: ^1.0.5
-  animated_theme_switcher: ^1.0.5
   shared_preferences: ^0.5.7+3
   auto_size_text: ^2.1.0
   

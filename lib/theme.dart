@@ -162,18 +162,13 @@ class AppTheme {
     );
   }
 
-  static ThemeData getThemeFromPreferences(bool automatic, bool dark) {
-    DateTime now = DateTime.now();
-    if (automatic) {
-      if (now.hour >= 20 || now.hour < 8)
-        return AppTheme.darkTheme();
-      else
-        return AppTheme.lightTheme();
-    } else {
-      if (dark)
-        return AppTheme.darkTheme();
-      else
-        return AppTheme.lightTheme();
-    }
+  static ThemeData getNormalThemeFromPreferences(bool isAutomatic, bool isDark) {
+    if (isAutomatic) return lightTheme();
+    else return isDark ? darkTheme() : lightTheme();
   }
+
+  static ThemeData getDarkThemeFromPreferences(bool isAutomatic) {
+    return isAutomatic ? darkTheme() : null;
+  }
+
 }
