@@ -163,16 +163,12 @@ class AppTheme {
   }
 
   static ThemeData getNormalThemeFromPreferences(bool isAutomatic, bool isDark) {
-    if (isAutomatic) return AppTheme.lightTheme();
-    else {
-      if (isDark) return AppTheme.darkTheme();
-      else return AppTheme.lightTheme();
-    }
+    if (isAutomatic) return lightTheme();
+    else return isDark ? darkTheme() : lightTheme();
   }
 
   static ThemeData getDarkThemeFromPreferences(bool isAutomatic) {
-    if (isAutomatic) return AppTheme.darkTheme();
-    else return null;
+    return isAutomatic ? darkTheme() : null;
   }
 
 }

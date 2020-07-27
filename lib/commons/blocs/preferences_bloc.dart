@@ -42,30 +42,21 @@ class PreferencesUpdatedState extends PreferencesState {
 // ----- BLOC -----
 
 class PreferencesBloc extends Bloc<PreferencesEvent, PreferencesState> {
-  SharedPreferences _preferences;
-
-  Future<SharedPreferences> _getPreferences() async {
-    if (_preferences == null) {
-      _preferences = await SharedPreferences.getInstance();
-    }
-    return _preferences;
-  }
 
   @override
   PreferencesState get initialState => PreferencesUninitializedState();
 
   @override
   Stream<PreferencesState> mapEventToState(PreferencesEvent event) async* {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
     if (event is PreferencesLoadEvent) {
       yield PreferencesLoadingState();
-      SharedPreferences preferences = await _getPreferences();
       yield PreferencesUpdatedState(
         useAutomaticTheme: preferences.getBool("automatic_theme") ?? false,
         useDarkTheme: preferences.getBool("dark_theme") ?? false
       );
     } else if (event is PreferencesSaveEvent) {
       yield PreferencesSavingState();
-      SharedPreferences preferences = await _getPreferences();
       if (event.useAutomaticTheme != null)
         preferences.setBool("automatic_theme", event.useAutomaticTheme);
       if (event.useDarkTheme != null)
