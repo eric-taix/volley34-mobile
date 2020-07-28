@@ -15,11 +15,10 @@ typedef TeamFavoriteChangeCallback = void Function(Team team);
 
 class DashboardClubTeams extends StatefulWidget {
   final Club club;
-  final Function(List<Team>) onTeamsLoaded;
+  final Function(List<Team>) onTeamsChange;
   final double cardHeight = 240;
-  final TeamFavoriteChangeCallback onTeamFavoriteChange;
 
-  const DashboardClubTeams({@required this.club, this.onTeamFavoriteChange, this.onTeamsLoaded});
+  const DashboardClubTeams({Key key, this.club, this.onTeamsChange}) : super(key: key);
 
   @override
   _DashboardClubTeamsState createState() => _DashboardClubTeamsState();
@@ -48,25 +47,15 @@ class _DashboardClubTeamsState extends State<DashboardClubTeams> with SingleTick
     );
     _clubTeamsBloc.listen((state) {
       if (state is ClubTeamsLoaded) {
-        widget.onTeamsLoaded(state.teams);
+        widget.onTeamsChange(state.teams);
         if (_pageController.hasClients) {
           _currentIndex = 0;
           _pageController.jumpTo(0);
         }
       }
     });
-    _loadFavoriteTeams();
-    super.initState();
-  }
-
-  @override
-  void didUpdateWidget(DashboardClubTeams oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.club.code != widget.club.code) _loadFavoriteTeams();
-  }
-
-  void _loadFavoriteTeams() {
     _clubTeamsBloc.add(ClubFavoriteTeamsLoadEvent(widget.club.code));
+    super.initState();
   }
 
   @override
@@ -91,7 +80,7 @@ class _DashboardClubTeamsState extends State<DashboardClubTeams> with SingleTick
                             currentlyDisplayed: _currentIndex == index,
                             team: state.teams[index],
                             distance: _currentTeamPage - index,
-                            onFavoriteChange: () => widget.onTeamFavoriteChange(state.teams[index]),
+                            onFavoriteChange: () => widget.onTeamsChange(null),
                           ),
                         );
                       },
@@ -101,7 +90,7 @@ class _DashboardClubTeamsState extends State<DashboardClubTeams> with SingleTick
                         padding: const EdgeInsets.all(28.0),
                         child: RaisedButton(
                           onPressed: () =>  Router.push(context: context, builder: (_) => ClubDetailPage(widget.club)).then(
-                            (_) => widget.onTeamFavoriteChange(null),
+                            (_) => widget.onTeamsChange(null),
                           ),
                           padding: EdgeInsets.all(12.0),
                           child: Text(

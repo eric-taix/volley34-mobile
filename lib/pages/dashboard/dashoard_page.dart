@@ -27,9 +27,9 @@ class _DashboardPageState extends State<DashboardPage> {
           DashboardClubs(onClubChange: (club) => _selectCurrentClub(club)),
           Paragraph(title: "Vos équipes"),
           if (_currentClub != null) DashboardClubTeams(
+            key: ValueKey("dashboard-club-teams-${hashList(_currentTeams)}"),
             club: _currentClub,
-            onTeamFavoriteChange: (_) => _selectCurrentClub(_currentClub),
-            onTeamsLoaded: (teams) => _setCurrentTeams(teams),
+            onTeamsChange: (teams) => _selectCurrentTeams(teams),
           ),
           Paragraph(title: "Votre agenda"),
           if(_currentTeams != null) DashboardAgenda(teams: _currentTeams)
@@ -45,7 +45,7 @@ class _DashboardPageState extends State<DashboardPage> {
     });
   }
 
-  void _setCurrentTeams(List<Team> teams) {
+  void _selectCurrentTeams(List<Team> teams) {
     setState(() => _currentTeams = teams);
   }
 }
