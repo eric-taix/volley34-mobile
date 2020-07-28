@@ -12,7 +12,9 @@ class DashboardAgenda extends StatefulWidget {
   DashboardAgendaState createState() => DashboardAgendaState();
 }
 
-class DashboardAgendaState extends State<DashboardAgenda> {
+class DashboardAgendaState extends State<DashboardAgenda> with AutomaticKeepAliveClientMixin {
+  // AutomaticKeepAliveClientMixin permits to preserve this state when scrolling on the dashboard
+
   AgendaBloc _agendaBloc;
 
   @override
@@ -46,6 +48,7 @@ class DashboardAgendaState extends State<DashboardAgenda> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return BlocBuilder<AgendaBloc, AgendaState>(
       bloc: _agendaBloc,
       builder: (context, state) {
@@ -56,5 +59,8 @@ class DashboardAgendaState extends State<DashboardAgenda> {
       },
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 
 }

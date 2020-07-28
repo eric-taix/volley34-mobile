@@ -19,13 +19,15 @@ class DashboardClubTeams extends StatefulWidget {
   final double cardHeight = 240;
   final TeamFavoriteChangeCallback onTeamFavoriteChange;
 
-  DashboardClubTeams({this.club, this.onTeamFavoriteChange});
+  const DashboardClubTeams({@required this.club, this.onTeamFavoriteChange});
 
   @override
   _DashboardClubTeamsState createState() => _DashboardClubTeamsState();
 }
 
-class _DashboardClubTeamsState extends State<DashboardClubTeams> with SingleTickerProviderStateMixin {
+class _DashboardClubTeamsState extends State<DashboardClubTeams> with SingleTickerProviderStateMixin, AutomaticKeepAliveClientMixin {
+  // AutomaticKeepAliveClientMixin permits to preserve this state when scrolling on the dashboard
+
   PageController _pageController;
   int _currentIndex = 0;
   double _currentTeamPage = 0;
@@ -66,6 +68,7 @@ class _DashboardClubTeamsState extends State<DashboardClubTeams> with SingleTick
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return BlocBuilder<ClubTeamsBloc, ClubTeamsState>(
       bloc: _clubTeamsBloc,
       builder: (context, state) {
@@ -96,7 +99,7 @@ class _DashboardClubTeamsState extends State<DashboardClubTeams> with SingleTick
                         padding: const EdgeInsets.all(28.0),
                         child: RaisedButton(
                           onPressed: () =>  Router.push(context: context, builder: (_) => ClubDetailPage(widget.club)).then(
-                                (_) => widget.onTeamFavoriteChange(null),
+                            (_) => widget.onTeamFavoriteChange(null),
                           ),
                           padding: EdgeInsets.all(12.0),
                           child: Text(
@@ -133,4 +136,7 @@ class _DashboardClubTeamsState extends State<DashboardClubTeams> with SingleTick
       },
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

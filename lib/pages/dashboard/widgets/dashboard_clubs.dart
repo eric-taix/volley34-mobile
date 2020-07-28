@@ -19,7 +19,9 @@ class DashboardClubs extends StatefulWidget {
   DashboardClubsState createState() => DashboardClubsState();
 }
 
-class DashboardClubsState extends State<DashboardClubs> {
+class DashboardClubsState extends State<DashboardClubs> with AutomaticKeepAliveClientMixin {
+  // AutomaticKeepAliveClientMixin permits to preserve this state when scrolling on the dashboard
+
   FavoriteBloc _favoriteBloc;
   PageController _pageController;
   double currentFavoriteClubPage = 0;
@@ -44,6 +46,7 @@ class DashboardClubsState extends State<DashboardClubs> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return BlocBuilder<FavoriteBloc, FavoriteState>(
       bloc: _favoriteBloc,
       builder: (context, state) {
@@ -99,5 +102,8 @@ class DashboardClubsState extends State<DashboardClubs> {
       ),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 
 }
