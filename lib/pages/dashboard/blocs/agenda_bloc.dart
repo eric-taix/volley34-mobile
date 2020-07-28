@@ -90,13 +90,14 @@ class AgendaBloc extends Bloc<AgendaEvent, AgendaState> {
       yield AgendaLoaded(events);
     }
     else if (event is LoadTeamsMonthAgenda) {
-      List<Event> allEvents = [];
+      Set<Event> allEvents = Set();
       for (String teamCode in event.teamCodes) {
         List<Event> events = await repository.loadTeamMonthAgenda(teamCode);
         allEvents.addAll(events);
       }
-      allEvents.sort((event1, event2) => event1.date.compareTo(event2.date));
-      yield AgendaLoaded(allEvents);
+      List<Event> eventList = allEvents.toList();
+      eventList.sort((event1, event2) => event1.date.compareTo(event2.date));
+      yield AgendaLoaded(eventList);
     }
   }
 }

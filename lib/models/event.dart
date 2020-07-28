@@ -54,6 +54,13 @@ class Event {
         return EventType.Unknown;
     }
   }
+
+  @override
+  int get hashCode => name.hashCode + date.hashCode;
+
+  @override
+  bool operator ==(other) => this.hashCode == other.hashCode;
+
 }
 
 enum EventType { Match, Tournament, Meeting, Unknown }
