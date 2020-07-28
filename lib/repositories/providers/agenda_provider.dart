@@ -1,5 +1,3 @@
-
-
 import 'package:dio/dio.dart';
 import 'package:dio_http_cache/dio_http_cache.dart';
 import 'package:intl/intl.dart';
@@ -29,8 +27,8 @@ class AgendaProvider {
   }
 
   Future<List<Event>> listTeamMonthEvents(String teamCode) async {
-    DateTime min = DateTime.now(), max = DateTime.now().add(Duration(days: 30));
-    DateFormat format = DateFormat("yyyy-MM-ddThh:mm:ss");
+    DateTime min = DateTime.now(), max = min.add(Duration(days: 30));
+    DateFormat format = DateFormat("yyyy-MM-ddTHH:00:00");
     Response response = await dio.get("/calendars?equipe=$teamCode&min=${format.format(min)}&max=${format.format(max)}", options: buildConfigurableCacheOptions());
     if (response.statusCode == 200) {
       return (response.data as List).map((json) => Event.fromJson(json)).toList();
