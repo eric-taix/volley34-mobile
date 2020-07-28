@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,11 +8,9 @@ import 'package:v34/models/club.dart';
 import 'package:v34/models/team.dart';
 import 'package:v34/pages/club-details/blocs/club_teams.bloc.dart';
 import 'package:v34/pages/club-details/club_detail_page.dart';
-import 'package:v34/pages/dashboard/team_card.dart';
+import 'package:v34/pages/dashboard/widgets/team_card.dart';
 import 'package:v34/pages/team-details/team_detail_page.dart';
 import 'package:v34/repositories/repository.dart';
-
-final Random random = Random.secure();
 
 typedef TeamFavoriteChangeCallback = void Function(Team team);
 
@@ -23,13 +19,15 @@ class DashboardClubTeams extends StatefulWidget {
   final double cardHeight = 240;
   final TeamFavoriteChangeCallback onTeamFavoriteChange;
 
-  DashboardClubTeams({this.club, this.onTeamFavoriteChange});
+  const DashboardClubTeams({@required this.club, this.onTeamFavoriteChange});
 
   @override
   _DashboardClubTeamsState createState() => _DashboardClubTeamsState();
 }
 
-class _DashboardClubTeamsState extends State<DashboardClubTeams> with SingleTickerProviderStateMixin {
+class _DashboardClubTeamsState extends State<DashboardClubTeams> with SingleTickerProviderStateMixin, AutomaticKeepAliveClientMixin {
+  // AutomaticKeepAliveClientMixin permits to preserve this state when scrolling on the dashboard
+
   PageController _pageController;
   int _currentIndex = 0;
   double _currentTeamPage = 0;
@@ -70,6 +68,7 @@ class _DashboardClubTeamsState extends State<DashboardClubTeams> with SingleTick
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return BlocBuilder<ClubTeamsBloc, ClubTeamsState>(
       bloc: _clubTeamsBloc,
       builder: (context, state) {
@@ -100,7 +99,7 @@ class _DashboardClubTeamsState extends State<DashboardClubTeams> with SingleTick
                         padding: const EdgeInsets.all(28.0),
                         child: RaisedButton(
                           onPressed: () =>  Router.push(context: context, builder: (_) => ClubDetailPage(widget.club)).then(
-                                (_) => widget.onTeamFavoriteChange(null),
+                            (_) => widget.onTeamFavoriteChange(null),
                           ),
                           padding: EdgeInsets.all(12.0),
                           child: Text(
