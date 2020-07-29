@@ -6,6 +6,7 @@ import 'package:v34/commons/loading.dart';
 import 'package:v34/commons/text_tab_bar.dart';
 import 'package:v34/models/classication.dart';
 import 'package:v34/models/match_result.dart';
+import 'package:v34/models/club.dart';
 import 'package:v34/models/team.dart';
 import 'package:v34/pages/club-details/blocs/club_team.bloc.dart';
 import 'package:v34/pages/dashboard/blocs/team_classification_bloc.dart';
@@ -17,9 +18,9 @@ class TeamDetailPage extends StatefulWidget {
   final Team team;
   final List<ClassificationSynthesis> classifications;
 
-  const TeamDetailPage(
-      {Key key, @required this.team, this.classifications})
-      : super(key: key);
+  final Club club;
+
+  const TeamDetailPage({Key key, @required this.team, @required this.classifications, @required this.club}) : super(key: key);
 
   @override
   TeamDetailPageState createState() => TeamDetailPageState();
@@ -74,10 +75,10 @@ class TeamDetailPageState extends State<TeamDetailPage> {
 
   Widget _buildTeamDetailPage(String key, List<TextTab> tabs) {
     return AppBarWithImage(
-      widget.team.code,
+      widget.team.name,
       "hero-logo-${widget.team.code}",
       key: ValueKey(key),
-      subTitle: widget.team.name,
+      subTitle: widget.club.name,
       logoUrl: widget.team.clubLogoUrl,
       tabs: tabs,
       favorite: Favorite(

@@ -8,6 +8,7 @@ import 'package:v34/commons/graphs/arc.dart';
 import 'package:v34/commons/graphs/line_graph.dart';
 import 'package:v34/commons/loading.dart';
 import 'package:v34/commons/router.dart';
+import 'package:v34/models/club.dart';
 import 'package:v34/models/team.dart';
 import 'package:v34/pages/club-details/blocs/club_team.bloc.dart';
 import 'package:v34/pages/team-details/team_detail_page.dart';
@@ -15,8 +16,9 @@ import 'package:v34/repositories/repository.dart';
 
 class ClubTeam extends StatefulWidget {
   final Team team;
+  final Club club;
 
-  ClubTeam({@required this.team});
+  ClubTeam({@required this.team, @required this.club});
 
   @override
   _ClubTeamState createState() => _ClubTeamState();
@@ -44,7 +46,7 @@ class _ClubTeamState extends State<ClubTeam> {
     return TitledCard(
       title: widget.team.name,
       bodyPadding: EdgeInsets.only(top: 18, bottom: 18, right: 8, left: 16),
-      onTap: () => Router.push(context: context, builder: (_) => TeamDetailPage(team: widget.team)),
+      onTap: () => Router.push(context: context, builder: (_) => TeamDetailPage(team: widget.team, club: widget.club)),
       buttonBar: ButtonBar(
         children: <Widget>[
           FavoriteIcon(widget.team.code, FavoriteType.Team, false, padding: EdgeInsets.zero, reloadFavoriteWhenUpdate: true,),

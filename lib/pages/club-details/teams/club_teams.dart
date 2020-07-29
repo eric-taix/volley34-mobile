@@ -39,11 +39,11 @@ class _ClubTeamsState extends State<ClubTeams> {
             delegate: SliverChildBuilderDelegate((context, index) {
               return (state is ClubTeamsLoaded)
                   ? ClubTeam(
-                      team: state.teams[index]
+                      team: state.teams[index],
+                      club: widget.club,
                     )
                   : Loading();
-            },
-            childCount: (state is ClubTeamsLoaded) ? state.teams.length : 0),
+            }, childCount: (state is ClubTeamsLoaded) ? state.teams.length : 0),
           );
         });
   }
