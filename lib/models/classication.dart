@@ -5,20 +5,20 @@ class ClassificationTeamSynthesis {
   final int wonSets, lostSets;
   final int wonPoints, lostPoints;
   final int nbSets30, nbSets31, nbSets32;
-  final int nbSets22;
   final int nbSets03, nbSets13, nbSets23;
+  final int nbSetsMI;
 
   ClassificationTeamSynthesis(
     this.teamCode, this.rank, this.totalPoints, this.wonMatches, this.lostMatches,
     this.wonSets, this.lostSets, this.wonPoints, this.lostPoints, this.nbSets30,
-    this.nbSets31, this.nbSets32, this.nbSets22, this.nbSets03, this.nbSets13, this.nbSets23
+    this.nbSets31, this.nbSets32, this.nbSets03, this.nbSets13, this.nbSets23, this.nbSetsMI,
   );
 
   factory ClassificationTeamSynthesis.fromJson(Map<String, dynamic> json) {
     return ClassificationTeamSynthesis(
       json["EquipeCode"], json["Rang"], json["Total"], json["Gagne"], json["Perdu"],
       json["SetP"], json["SetC"], json["PointsP"], json["PointsC"], json["NbSets_30"],
-      json["NbSets_31"], json["NbSets_32"], json["NbSets_MI"], json["NbSets_03"], json["NbSets_13"], json["NbSets_23"]
+      json["NbSets_31"], json["NbSets_32"], json["NbSets_03"], json["NbSets_13"], json["NbSets_23"], json["NbSets_MI"]
     );
   }
 

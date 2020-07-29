@@ -19,7 +19,7 @@ class TeamRanking extends StatelessWidget {
     ClassificationTeamSynthesis stats = classification.teamsClassifications[teamIndex];
     return SliverList(delegate: SliverChildListDelegate([
       _buildTitle(),
-      _buildPodium(),
+      _buildPodium(stats),
       InformationDivider(title: "Statistiques", size: 15),
       _buildStats(context, stats),
       InformationDivider(title: "Résultat de vos matchs", size: 15),
@@ -31,12 +31,13 @@ class TeamRanking extends StatelessWidget {
     return InformationDivider(title: "Classement du ${classification.fullLabel}",);
   }
 
-  Widget _buildPodium() {
+  Widget _buildPodium(ClassificationTeamSynthesis teamStats) {
+    String title = teamStats.rank <= classification.promoted ? "Promue" : "Reléguée";
     return Container(
       height: 150,
       child: Row(
         children: <Widget>[
-          Expanded(child: PodiumWidget(classification: classification, currentlyDisplayed: true, highlightedTeamCode: team.code)),
+          Expanded(child: PodiumWidget(title: title, classification: classification, currentlyDisplayed: true, highlightedTeamCode: team.code)),
         ],
       ),
     );
@@ -74,6 +75,7 @@ class TeamRanking extends StatelessWidget {
                   case 3: return '2-3\n${teamStats.nbSets23 > 0 ? teamStats.nbSets23.toString() : "-"}';
                   case 4: return '1-3\n${teamStats.nbSets13 > 0 ? teamStats.nbSets13.toString() : "-"}';
                   case 5: return '0-3\n${teamStats.nbSets03 > 0 ? teamStats.nbSets03.toString() : "-"}';
+                  case 6: return 'NT\n${teamStats.nbSetsMI > 0 ? teamStats.nbSetsMI.toString() : "-"}';
                   default: return '';
                 }
               },
@@ -87,7 +89,7 @@ class TeamRanking extends StatelessWidget {
   }
 
   List<BarChartGroupData> showingGroups(BuildContext context, ClassificationTeamSynthesis teamStats) {
-    return List.generate(6, (i) {
+    return List.generate(7, (i) {
      switch (i) {
        case 0:
          return makeGroupData(context, 0, teamStats.nbSets30.toDouble(), Colors.green, teamStats);
@@ -101,6 +103,8 @@ class TeamRanking extends StatelessWidget {
          return makeGroupData(context, 4, teamStats.nbSets13.toDouble(), Colors.deepOrangeAccent, teamStats);
        case 5:
          return makeGroupData(context, 5, teamStats.nbSets03.toDouble(), Colors.redAccent, teamStats);
+       case 6:
+         return makeGroupData(context, 6, teamStats.nbSetsMI.toDouble(), Theme.of(context).accentColor, teamStats);
        default:
          return null;
      }

@@ -3,11 +3,12 @@ import 'package:v34/commons/podium.dart';
 import 'package:v34/models/classication.dart';
 
 class PodiumWidget extends StatelessWidget {
+  final String title;
   final ClassificationSynthesis classification;
   final bool currentlyDisplayed;
   final String highlightedTeamCode;
 
-  const PodiumWidget({Key key, @required this.classification, @required this.currentlyDisplayed, @required this.highlightedTeamCode}) : super(key: key);
+  const PodiumWidget({Key key, this.title, @required this.classification, @required this.currentlyDisplayed, @required this.highlightedTeamCode}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +19,7 @@ class PodiumWidget extends StatelessWidget {
     return Podium(
       placeValues,
       active: currentlyDisplayed,
-      title: classification.label,
+      title: title ?? classification.label,
       highlightedIndex: highlightedIndex,
       promoted: classification.promoted,
       relegated: classification.relegated,
