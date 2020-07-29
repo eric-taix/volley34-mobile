@@ -1,7 +1,8 @@
+import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
 
 @immutable
-class Event {
+class Event extends Equatable {
   // Common
   final DateTime date;
   final String place;
@@ -56,10 +57,7 @@ class Event {
   }
 
   @override
-  int get hashCode => name.hashCode + date.hashCode;
-
-  @override
-  bool operator ==(other) => this.hashCode == other.hashCode;
+  List<Object> get props => [name, date];
 
 }
 
