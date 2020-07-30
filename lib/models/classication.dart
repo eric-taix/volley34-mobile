@@ -25,16 +25,18 @@ class ClassificationTeamSynthesis {
 }
 
 class ClassificationSynthesis {
+  final String competitionCode;
   final int promoted;
   final int relegated;
   final String label;
   final String fullLabel;
   final List<ClassificationTeamSynthesis> teamsClassifications;
 
-  ClassificationSynthesis(this.label, this.fullLabel, this.promoted, this.relegated, this.teamsClassifications);
+  ClassificationSynthesis(this.competitionCode, this.label, this.fullLabel, this.promoted, this.relegated, this.teamsClassifications);
 
   factory ClassificationSynthesis.fromJson(Map<String, dynamic> json) {
     return ClassificationSynthesis(
+      json["CompetitionCode"],
       _getLabel(json["Libelle"]),
       json["Libelle"],
       json["Promus"],

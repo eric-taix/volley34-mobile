@@ -8,6 +8,8 @@ import 'package:v34/pages/team-details/information_divider.dart';
 import 'package:v34/pages/team-details/ranking/statistics_widget.dart';
 import 'package:v34/utils/extensions.dart';
 
+import 'evolution_widget.dart';
+
 class TeamRanking extends StatelessWidget {
   final Team team;
   final ClassificationSynthesis classification;
@@ -50,6 +52,7 @@ class TeamRanking extends StatelessWidget {
       children: <Widget>[
         StatisticsWidget(title: "Matchs gagnés", wonPoints: teamStats.wonMatches, lostPoints: teamStats.lostMatches),
         StatisticsWidget(title: "Set pris", wonPoints: teamStats.wonSets, lostPoints: teamStats.lostSets),
+        EvolutionWidget(title: "Evolution de la différence de sets", team: team, results: results),
         StatisticsWidget(title: "Points pris", wonPoints: teamStats.wonPoints, lostPoints: teamStats.lostPoints),
 
       ],

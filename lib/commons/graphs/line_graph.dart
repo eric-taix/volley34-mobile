@@ -14,8 +14,9 @@ class LineGraph extends StatelessWidget {
 
   final List<double> results;
   final bool thumbnail;
+  final bool showTitle;
 
-  LineGraph(this.results, {this.thumbnail = false});
+  LineGraph(this.results, {this.thumbnail = false, this.showTitle = true});
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +33,7 @@ class LineGraph extends StatelessWidget {
       ),
       axisTitleData: FlAxisTitleData(
         leftTitle: AxisTitle(
-          showTitle: true,
+          showTitle: showTitle,
           titleText: 'Sets',
           margin: 20,
           textStyle: Theme.of(context).textTheme.bodyText1,
@@ -45,13 +46,13 @@ class LineGraph extends StatelessWidget {
           showTitles: false,
         ),
         leftTitles: SideTitles(
-          showTitles: true,
+          showTitles: !thumbnail,
           textStyle: const TextStyle(
             color: Color(0xff67727d),
             fontSize: 12,
           ),
           getTitles: (value) {
-            if ((!thumbnail && value.toInt() % (thumbnail ? 10 : 5) == 0) || (value.toInt() == 0))
+            if (value.floor().toDouble() == value)
               return "${value.toInt()}";
             else
               return "";

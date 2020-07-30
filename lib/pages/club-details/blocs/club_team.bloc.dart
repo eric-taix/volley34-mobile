@@ -1,7 +1,6 @@
 //---- STATE
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:tuple/tuple.dart';
 import 'package:v34/models/match_result.dart';
 import 'package:v34/repositories/repository.dart';
 
@@ -81,7 +80,7 @@ class TeamBloc extends Bloc<TeamEvent, TeamState> {
     if (event is TeamLoadSlidingResult) {
       yield TeamSlidingStatsLoading();
       var results = await repository.loadTeamLastMatchesResult(event.code, event.last);
-      var pointDiffs = await _computePointsDiffs(results, event.code, event.last);
+      var pointDiffs = computePointsDiffs(results, event.code);
       yield TeamSlidingStatsLoaded(pointsDiffEvolution: pointDiffs);
     }
 
@@ -89,7 +88,7 @@ class TeamBloc extends Bloc<TeamEvent, TeamState> {
       yield TeamSlidingStatsLoading();
       var results = await repository.loadTeamLastMatchesResult(event.code, event.last);
 
-      var pointDiffs = await _computePointsDiffs(results, event.code, event.last);
+      var pointDiffs = computePointsDiffs(results, event.code);
       var averagePointDiffs = List.generate(event.count, (index) {
         double sum = 0;
         for (int i = index * event.count; i < (index + 1) * event.count; i++) {
@@ -157,14 +156,14 @@ class TeamBloc extends Bloc<TeamEvent, TeamState> {
     return pointsPerMax;
   }
 
-  List<double> _computePointsDiffs(List<MatchResult> matchResults, String code, int last) {
+  static List<double> computePointsDiffs(List<MatchResult> matchResults, String code) {
     var setsDiff = matchResults.map((result) {
       bool isHost = result.hostTeamCode == code;
       return (result.totalSetsHost - result.totalSetsVisitor) * (isHost ? 1 : -1);
     }).toList();
-    for (int i = 0; i < setsDiff.length - 1; i++) {
+/*    for (int i = 0; i < setsDiff.length - 1; i++) {
       setsDiff[i + 1] += setsDiff[i];
-    }
+    }*/
     return setsDiff.map((d) => d.toDouble()).toList();
   }
 }

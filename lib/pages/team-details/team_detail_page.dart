@@ -54,7 +54,11 @@ class TeamDetailPageState extends State<TeamDetailPage> {
   }
 
   Widget _buildTeamRanking(ClassificationSynthesis classification, List<MatchResult> results) {
-    return TeamRanking(team: widget.team, classification: classification, results: results);
+    return TeamRanking(
+      team: widget.team,
+      classification: classification,
+      results: results.where((result) => result.competitionCode == classification.competitionCode).toList()
+    );
   }
 
   Widget _buildTeamResults(ClassificationSynthesis classification, List<MatchResult> results) {
