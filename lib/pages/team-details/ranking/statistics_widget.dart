@@ -53,7 +53,7 @@ class StatisticsWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 15.0),
+      padding: EdgeInsets.symmetric(vertical: 20.0),
       child: Row(
         children: <Widget>[
           Expanded(child: Text(title, textAlign: TextAlign.center, style: Theme.of(context).textTheme.subtitle2)),
