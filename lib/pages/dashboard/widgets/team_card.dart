@@ -85,7 +85,7 @@ class _TeamCardState extends State<TeamCard> {
   Function _onTap(TeamClassificationState state) {
     if (state is TeamClassificationLoadedState) {
       return () => Router.push(context: context, builder: (_) => TeamDetailPage(team: widget.team, classifications: state.classifications)).then(
-        (_) => widget.onFavoriteChange
+        (_) => widget.onFavoriteChange()
       );
     }
     else return null;

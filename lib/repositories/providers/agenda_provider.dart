@@ -16,11 +16,9 @@ class AgendaProvider {
   }
 
   Future<List<Event>> listTeamMonthMatches(String teamCode) async {
-    Response response = await dio.get("/equipes/$teamCode/matchs", options: buildConfigurableCacheOptions());
+    Response response = await dio.get("/equipes/$teamCode/matchs?filter=weeks&value=4", options: buildConfigurableCacheOptions());
     if (response.statusCode == 200) {
-      List<Event> events = (response.data as List).map((json) => Event.fromJson(json)).toList();
-      events.removeWhere((event) => event.date.compareTo(DateTime.now()) < 0 || event.date.compareTo(DateTime.now().add(Duration(days: 30))) > 0);
-      return events;
+      return (response.data as List).map((json) => Event.fromJson(json)).toList();
     } else {
       throw Exception('Impossible de récupérer les événements');
     }

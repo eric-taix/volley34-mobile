@@ -26,7 +26,19 @@ class DashboardAgendaState extends State<DashboardAgenda> with AutomaticKeepAliv
   void initState() {
     super.initState();
     _agendaBloc = AgendaBloc(repository: RepositoryProvider.of<Repository>(context));
+    _loadTeamsMonthAgenda();
+  }
+
+  void _loadTeamsMonthAgenda() {
     _agendaBloc.add(LoadTeamsMonthAgenda(teamCodes: widget.teams.map((team) => team.code).toList()));
+  }
+
+  @override
+  void didUpdateWidget(DashboardAgenda oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (!ListEquality().equals(widget.teams, oldWidget.teams)) {
+      _loadTeamsMonthAgenda();
+    }
   }
 
   Widget _buildTimeline(AgendaState state) {
