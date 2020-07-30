@@ -2,6 +2,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:v34/commons/podium_widget.dart';
 import 'package:v34/models/classication.dart';
+import 'package:v34/models/match_result.dart';
 import 'package:v34/models/team.dart';
 import 'package:v34/pages/team-details/information_divider.dart';
 import 'package:v34/pages/team-details/ranking/statistics_widget.dart';
@@ -10,8 +11,9 @@ import 'package:v34/utils/extensions.dart';
 class TeamRanking extends StatelessWidget {
   final Team team;
   final ClassificationSynthesis classification;
+  final List<MatchResult> results;
 
-  const TeamRanking({Key key, @required this.team, @required this.classification}) : super(key: key);
+  const TeamRanking({Key key, @required this.team, @required this.classification, @required this.results}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
