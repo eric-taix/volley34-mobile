@@ -166,4 +166,13 @@ class TeamBloc extends Bloc<TeamEvent, TeamState> {
     }*/
     return setsDiff.map((d) => d.toDouble()).toList();
   }
+
+  static List<double> computeCumulativePointsDiffs(List<double> pointsDiff) {
+    List<double> cumulativePointsDiff = List(pointsDiff.length);
+    if (pointsDiff.length > 0) cumulativePointsDiff[0] = pointsDiff[0];
+    for (int i = 0; i < cumulativePointsDiff.length - 1; i++) {
+      cumulativePointsDiff[i + 1] = pointsDiff[i + 1] + cumulativePointsDiff[i];
+    }
+    return cumulativePointsDiff;
+  }
 }

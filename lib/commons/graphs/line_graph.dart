@@ -49,7 +49,7 @@ class LineGraph extends StatelessWidget {
           showTitles: !thumbnail,
           textStyle: const TextStyle(
             color: Color(0xff67727d),
-            fontSize: 12,
+            fontSize: 8,
           ),
           getTitles: (value) {
             if (value.floor().toDouble() == value)

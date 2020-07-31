@@ -4,6 +4,7 @@ import 'package:v34/commons/podium_widget.dart';
 import 'package:v34/models/classication.dart';
 import 'package:v34/models/match_result.dart';
 import 'package:v34/models/team.dart';
+import 'package:v34/pages/club-details/blocs/club_team.bloc.dart';
 import 'package:v34/pages/team-details/information_divider.dart';
 import 'package:v34/pages/team-details/ranking/statistics_widget.dart';
 import 'package:v34/pages/team-details/ranking/summary_widget.dart';
@@ -45,13 +46,24 @@ class TeamRanking extends StatelessWidget {
     );
   }
 
+  int _getSetsDifference(MatchResult result) {
+    if (result.hostTeamCode == team.code) {
+      return result.totalSetsHost - result.totalSetsVisitor;
+    } else {
+      return result.totalSetsVisitor - result.totalSetsHost;
+    }
+  }
+
   Widget _buildStats(BuildContext context, ClassificationTeamSynthesis teamStats) {
+    List<double> setsDiffEvolution = TeamBloc.computePointsDiffs(results, team.code);
+    List<double> cumulativeSetsDiffEvolution = TeamBloc.computeCumulativePointsDiffs(setsDiffEvolution);
     return Column(
       children: <Widget>[
         StatisticsWidget(title: "Matchs gagnés", wonPoints: teamStats.wonMatches, lostPoints: teamStats.lostMatches),
         SummaryWidget(title: "Scores", teamStats: teamStats),
         StatisticsWidget(title: "Set pris", wonPoints: teamStats.wonSets, lostPoints: teamStats.lostSets),
-        EvolutionWidget(title: "Évolution de la différence de sets", team: team, results: results),
+        EvolutionWidget(title: "Évolution de la différence de sets", evolution: setsDiffEvolution),
+        EvolutionWidget(title: "Évolution de la différence de sets cumulée", evolution: cumulativeSetsDiffEvolution),
         StatisticsWidget(title: "Points pris", wonPoints: teamStats.wonPoints, lostPoints: teamStats.lostPoints),
       ],
     );
