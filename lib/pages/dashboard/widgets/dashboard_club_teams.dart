@@ -9,7 +9,6 @@ import 'package:v34/models/team.dart';
 import 'package:v34/pages/club-details/blocs/club_teams.bloc.dart';
 import 'package:v34/pages/club-details/club_detail_page.dart';
 import 'package:v34/pages/dashboard/widgets/team_card.dart';
-import 'package:v34/pages/team-details/team_detail_page.dart';
 import 'package:v34/repositories/repository.dart';
 
 typedef TeamFavoriteChangeCallback = void Function(Team team);
@@ -88,8 +87,7 @@ class _DashboardClubTeamsState extends State<DashboardClubTeams> with SingleTick
                             currentlyDisplayed: _currentIndex == index,
                             team: state.teams[index],
                             distance: _currentTeamPage - index,
-                            onTap: () => Router.push(context: context, builder: (_) => TeamDetailPage(team: state.teams[index]))
-                                .then((_) => widget.onTeamFavoriteChange(state.teams[index])),
+                            onFavoriteChange: () => widget.onTeamFavoriteChange(state.teams[index]),
                           ),
                         );
                       },

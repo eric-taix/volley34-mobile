@@ -1,26 +1,44 @@
 class ClassificationTeamSynthesis {
   final String teamCode;
-  final int totalPoints;
-  final int rank;
+  final int rank, totalPoints;
+  final int wonMatches, lostMatches;
+  final int wonSets, lostSets;
+  final int wonPoints, lostPoints;
+  final int nbSets30, nbSets31, nbSets32;
+  final int nbSets03, nbSets13, nbSets23;
+  final int nbSetsMI;
 
-  ClassificationTeamSynthesis(this.teamCode, this.rank, this.totalPoints);
+  ClassificationTeamSynthesis(
+    this.teamCode, this.rank, this.totalPoints, this.wonMatches, this.lostMatches,
+    this.wonSets, this.lostSets, this.wonPoints, this.lostPoints, this.nbSets30,
+    this.nbSets31, this.nbSets32, this.nbSets03, this.nbSets13, this.nbSets23, this.nbSetsMI,
+  );
 
   factory ClassificationTeamSynthesis.fromJson(Map<String, dynamic> json) {
-    return ClassificationTeamSynthesis(json["EquipeCode"], json["Rang"], json["Total"]);
+    return ClassificationTeamSynthesis(
+      json["EquipeCode"], json["Rang"], json["Total"], json["Gagne"], json["Perdu"],
+      json["SetP"], json["SetC"], json["PointsP"], json["PointsC"], json["NbSets_30"],
+      json["NbSets_31"], json["NbSets_32"], json["NbSets_03"], json["NbSets_13"], json["NbSets_23"], json["NbSets_MI"]
+    );
   }
+
 }
 
 class ClassificationSynthesis {
+  final String competitionCode;
   final int promoted;
   final int relegated;
   final String label;
+  final String fullLabel;
   final List<ClassificationTeamSynthesis> teamsClassifications;
 
-  ClassificationSynthesis(this.label, this.promoted, this.relegated, this.teamsClassifications);
+  ClassificationSynthesis(this.competitionCode, this.label, this.fullLabel, this.promoted, this.relegated, this.teamsClassifications);
 
   factory ClassificationSynthesis.fromJson(Map<String, dynamic> json) {
     return ClassificationSynthesis(
+      json["CompetitionCode"],
       _getLabel(json["Libelle"]),
+      json["Libelle"],
       json["Promus"],
       json["Relegue"],
       (json["classementDetail"] as List<dynamic>).map((detail) => ClassificationTeamSynthesis.fromJson(detail)).toList(),

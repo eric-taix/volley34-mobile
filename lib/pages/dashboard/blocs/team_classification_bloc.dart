@@ -16,8 +16,8 @@ class TeamClassificationEvent extends Equatable {
   List<Object> get props => [team];
 }
 
-class TeamClassificationLoadEvent extends TeamClassificationEvent {
-  TeamClassificationLoadEvent(Team team) : super(team);
+class LoadTeamClassificationEvent extends TeamClassificationEvent {
+  LoadTeamClassificationEvent(Team team) : super(team);
 }
 
 // -- States
@@ -53,7 +53,7 @@ class TeamClassificationBloc extends Bloc<TeamClassificationEvent, TeamClassific
 
   @override
   Stream<TeamClassificationState> mapEventToState(TeamClassificationEvent event) async* {
-    if (event is TeamClassificationLoadEvent) {
+    if (event is LoadTeamClassificationEvent) {
       yield TeamClassificationLoadingState();
       List<ClassificationSynthesis> classifications = await repository.loadTeamClassificationSynthesis(event.team.code);
       classifications = classifications.map((classification) {
