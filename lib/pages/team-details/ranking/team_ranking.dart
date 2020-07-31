@@ -32,16 +32,9 @@ class TeamRanking extends StatelessWidget {
   }
 
   Widget _buildTitle(BuildContext context) {
-    return Container(
-      height: 100,
-      padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: <Widget>[
-          Text("Classement", style: Theme.of(context).textTheme.headline4),
-          CompetitionBadge(competitionCode: classification.competitionCode)
-        ],
-      ),
+    return InformationDivider(
+      title: "Classement",
+      extra: CompetitionBadge(competitionCode: classification.competitionCode, deltaSize: 0.8)
     );
   }
 

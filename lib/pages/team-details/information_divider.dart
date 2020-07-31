@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 class InformationDivider extends StatelessWidget {
   final String title;
   final double size;
+  final Widget extra;
 
-  const InformationDivider({Key key, @required this.title, this.size}) : super(key: key);
+  const InformationDivider({Key key, @required this.title, this.size, this.extra}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +17,12 @@ class InformationDivider extends StatelessWidget {
         children: <Widget>[
           Align(
             alignment: AlignmentDirectional.centerStart,
-            child: Text(title, style: style,)
+            child: Row(
+              children: <Widget>[
+                Text(title, style: style),
+                if (extra != null) Padding(padding: EdgeInsets.only(left: 10.0), child: extra)
+              ],
+            )
           ),
           Divider(color: Theme.of(context).textTheme.headline6.color,)
         ],

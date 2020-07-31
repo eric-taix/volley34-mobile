@@ -107,7 +107,7 @@ class SummaryWidget extends StatelessWidget {
       padding: EdgeInsets.symmetric(vertical: 20.0),
       child: Row(
         children: <Widget>[
-          Expanded(flex: 1, child: Text(title, textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodyText2)),
+          Expanded(flex: 1, child: Text(title, textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodyText1)),
           Expanded(flex: 2, child: _buildGraph(context)),
         ],
       ),
