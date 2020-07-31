@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:v34/commons/competition_badge.dart';
 import 'package:v34/commons/podium_widget.dart';
 import 'package:v34/models/classication.dart';
 import 'package:v34/models/match_result.dart';
@@ -23,15 +24,25 @@ class TeamRanking extends StatelessWidget {
     int teamIndex = classification.teamsClassifications.indexWhere((element) => element.teamCode == team.code);
     ClassificationTeamSynthesis stats = classification.teamsClassifications[teamIndex];
     return SliverList(delegate: SliverChildListDelegate([
-      _buildTitle(),
+      _buildTitle(context),
       _buildPodium(stats),
       InformationDivider(title: "Statistiques", size: 15),
       _buildStats(context, stats),
     ]));
   }
 
-  Widget _buildTitle() {
-    return InformationDivider(title: "Classement du ${classification.fullLabel}",);
+  Widget _buildTitle(BuildContext context) {
+    return Container(
+      height: 100,
+      padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: <Widget>[
+          Text("Classement", style: Theme.of(context).textTheme.headline4),
+          CompetitionBadge(competitionCode: classification.competitionCode)
+        ],
+      ),
+    );
   }
 
   Widget _buildPodium(ClassificationTeamSynthesis teamStats) {
@@ -44,14 +55,6 @@ class TeamRanking extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  int _getSetsDifference(MatchResult result) {
-    if (result.hostTeamCode == team.code) {
-      return result.totalSetsHost - result.totalSetsVisitor;
-    } else {
-      return result.totalSetsVisitor - result.totalSetsHost;
-    }
   }
 
   Widget _buildStats(BuildContext context, ClassificationTeamSynthesis teamStats) {

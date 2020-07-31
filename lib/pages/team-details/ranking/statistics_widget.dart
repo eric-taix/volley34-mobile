@@ -56,7 +56,7 @@ class StatisticsWidget extends StatelessWidget {
       padding: EdgeInsets.symmetric(vertical: 20.0),
       child: Row(
         children: <Widget>[
-          Expanded(child: Text(title, textAlign: TextAlign.center, style: Theme.of(context).textTheme.subtitle2)),
+          Expanded(child: Text(title, textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodyText2)),
           Expanded(child: _buildRatio(context)),
           Expanded(child: _buildGraph(context)),
         ],

@@ -1,36 +1,58 @@
-
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'dart:ui' as ui;
 
-class CompetitionBadge extends StatelessWidget{
+class CompetitionBadge extends StatelessWidget {
+  final double deltaSize;
+  final String competitionCode;
+
+  const CompetitionBadge({Key key, this.deltaSize = 1, @required this.competitionCode}) : super(key: key);
+
+  _CompetitionBadgePainter _drawCompetitionBadge(BuildContext context) {
+    String gameType = competitionCode.substring(competitionCode.length - 1);
+    switch (int.parse(gameType)) {
+      case 1:
+        return _CompetitionBadgePainter(context: context, label: "4", leftColor: Colors.blue, rightColor: Colors.blue);
+      case 2:
+        return _CompetitionBadgePainter(context: context, label: "6", leftColor: Colors.blue, rightColor: Colors.blue);
+      case 3:
+      case 4:
+        return _CompetitionBadgePainter(context: context, label: "4", leftColor: Colors.blue, rightColor: Colors.pinkAccent);
+      case 5:
+        return _CompetitionBadgePainter(context: context, label: "6", leftColor: Colors.blue, rightColor: Colors.pinkAccent);
+      case 6:
+        return _CompetitionBadgePainter(context: context, label: "4", leftColor: Colors.pinkAccent, rightColor: Colors.pinkAccent);
+      case 7:
+        return _CompetitionBadgePainter(context: context, label: "6", leftColor: Colors.pinkAccent, rightColor: Colors.pinkAccent);
+      default:
+        // throw new Exception("Type de compétition inconnue.");
+        return _CompetitionBadgePainter(context: context, label: "4", leftColor: Colors.blue, rightColor: Colors.blue);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 30,
-      height: 20,
-      child: CustomPaint(
-          painter: _CompetitionBadgePainter(label: "4", leftColor: Colors.blue, rightColor: Colors.pinkAccent),
-      ),
+      width: deltaSize * 90,
+      height: deltaSize * 40,
+      child: CustomPaint(painter: _drawCompetitionBadge(context)),
     );
   }
 }
 
 class _CompetitionBadgePainter extends CustomPainter {
 
+  final BuildContext context;
   final String label;
   final Color leftColor;
   final Color rightColor;
 
-  _CompetitionBadgePainter({@required this.label, @required this.leftColor, Color rightColor}) : this.rightColor = rightColor ?? leftColor;
+  _CompetitionBadgePainter({@required this.context, @required this.label, @required this.leftColor, Color rightColor}) : this.rightColor = rightColor ?? leftColor;
 
   @override
   void paint(Canvas canvas, Size size) {
 
-    var space = 2.5;
+    double width = size.width;
+    double height = size.height, demiHeight = height / 2;
 
-    double height = size.height;
     Paint left = new Paint()
       ..color = leftColor
       ..strokeCap = StrokeCap.round
@@ -52,27 +74,20 @@ class _CompetitionBadgePainter extends CustomPainter {
       ..style = PaintingStyle.fill
       ..strokeWidth = height;
 
-    canvas.drawLine(Offset(0, 0), Offset(size.width/10, 0), left);
-    canvas.drawLine(Offset(size.width/10, 0), Offset((size.width/2)-space, 0), leftSquare);
+    canvas.drawLine(Offset(demiHeight, demiHeight), Offset(demiHeight, demiHeight), left);
+    canvas.drawLine(Offset(demiHeight, demiHeight), Offset(height, demiHeight), leftSquare);
 
-    canvas.drawLine(Offset((size.width/2)+space, 0), Offset(9*size.width/10, 0), rightSquare);
-    canvas.drawLine(Offset(9*size.width/10, 0), Offset(size.width, 0), right);
+    canvas.drawLine(Offset(width - demiHeight, demiHeight), Offset(width - demiHeight, demiHeight), right);
+    canvas.drawLine(Offset(width - demiHeight, demiHeight), Offset(width - height, demiHeight), rightSquare);
 
-    final textStyle = ui.TextStyle(
-      color: Colors.white,
-      fontSize: 14,
-    );
-    final paragraphStyle = ui.ParagraphStyle(
-      textDirection: TextDirection.ltr,
-    );
-    final paragraphBuilder = ui.ParagraphBuilder(paragraphStyle)
-      ..pushStyle(textStyle)
-      ..addText(label);
-    final constraints = ui.ParagraphConstraints(width: 300);
-    final paragraph = paragraphBuilder.build();
-    paragraph.layout(constraints);
-    canvas.drawParagraph(paragraph, Offset(0-2.0, -8.0));
-    canvas.drawParagraph(paragraph, Offset(size.width-6, -8.0));
+    TextStyle textStyle = TextStyle(color: Theme.of(context).textTheme.bodyText2.color, fontSize: 18);
+    TextSpan span = TextSpan(text: label, style: textStyle);
+    TextPainter tp = TextPainter(text: span, textAlign: TextAlign.left, textDirection: TextDirection.ltr);
+
+    tp.layout();
+
+    tp.paint(canvas, Offset(demiHeight - tp.width / 2, demiHeight - tp.height / 2));
+    tp.paint(canvas, Offset(width - demiHeight - tp.width / 2, demiHeight - tp.height / 2));
   }
 
   @override
