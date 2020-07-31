@@ -61,8 +61,8 @@ class TeamRanking extends StatelessWidget {
         StatisticsWidget(title: "Matchs gagnés", wonPoints: teamStats.wonMatches, lostPoints: teamStats.lostMatches),
         SummaryWidget(title: "Scores", teamStats: teamStats),
         StatisticsWidget(title: "Set pris", wonPoints: teamStats.wonSets, lostPoints: teamStats.lostSets),
-        EvolutionWidget(title: "Évolution de la différence de sets", evolution: setsDiffEvolution),
-        EvolutionWidget(title: "Évolution de la différence de sets cumulée", evolution: cumulativeSetsDiffEvolution),
+        EvolutionWidget(title: "Ev. de la différence de sets", evolution: setsDiffEvolution),
+        EvolutionWidget(title: "Ev. de la différence de sets cumulée", evolution: cumulativeSetsDiffEvolution),
         StatisticsWidget(title: "Points pris", wonPoints: teamStats.wonPoints, lostPoints: teamStats.lostPoints),
       ],
     );
