@@ -32,9 +32,15 @@ class TeamRanking extends StatelessWidget {
   }
 
   Widget _buildTitle(BuildContext context) {
-    return InformationDivider(
-      title: "Classement",
-      extra: CompetitionBadge(competitionCode: classification.competitionCode, deltaSize: 0.8)
+    return Stack(
+      children: <Widget>[
+        InformationDivider(title: "Classement", size: 15),
+        Positioned(
+          top: 12,
+          right: 12,
+          child: CompetitionBadge(competitionCode: classification.competitionCode, deltaSize: 0.8)
+        )
+      ],
     );
   }
 
