@@ -7,7 +7,7 @@ class SummaryWidget extends StatelessWidget {
   final String title;
   final ClassificationTeamSynthesis teamStats;
 
-  static final double miniGraphHeight = 80;
+  static final double miniGraphHeight = 100;
 
   const SummaryWidget({Key key, @required this.title, @required this.teamStats}) : super(key: key);
 
@@ -58,19 +58,37 @@ class SummaryWidget extends StatelessWidget {
           borderData: FlBorderData(show: false),
           titlesData: FlTitlesData(
             show: true,
+            topTitles: SideTitles(
+              reservedSize: 0,
+              margin: 0,
+              showTitles: true,
+              textStyle: Theme.of(context).textTheme.bodyText2,
+              getTitles: (double value) {
+                switch (value.toInt()) {
+                  case 0: return '${teamStats.nbSets30 > 0 ? teamStats.nbSets30.toString() : ""}';
+                  case 1: return '${teamStats.nbSets31 > 0 ? teamStats.nbSets31.toString() : ""}';
+                  case 2: return '${teamStats.nbSets32 > 0 ? teamStats.nbSets32.toString() : ""}';
+                  case 3: return '${teamStats.nbSets23 > 0 ? teamStats.nbSets23.toString() : ""}';
+                  case 4: return '${teamStats.nbSets13 > 0 ? teamStats.nbSets13.toString() : ""}';
+                  case 5: return '${teamStats.nbSets03 > 0 ? teamStats.nbSets03.toString() : ""}';
+                  case 6: return '${teamStats.nbSetsMI > 0 ? teamStats.nbSetsMI.toString() : ""}';
+                  default: return '';
+                }
+              },
+            ),
             bottomTitles: SideTitles(
               showTitles: true,
               textStyle: Theme.of(context).textTheme.bodyText2,
               margin: 2,
               getTitles: (double value) {
                 switch (value.toInt()) {
-                  case 0: return '3-0\n${teamStats.nbSets30 > 0 ? teamStats.nbSets30.toString() : "-"}';
-                  case 1: return '3-1\n${teamStats.nbSets31 > 0 ? teamStats.nbSets31.toString() : "-"}';
-                  case 2: return '3-2\n${teamStats.nbSets32 > 0 ? teamStats.nbSets32.toString() : "-"}';
-                  case 3: return '2-3\n${teamStats.nbSets23 > 0 ? teamStats.nbSets23.toString() : "-"}';
-                  case 4: return '1-3\n${teamStats.nbSets13 > 0 ? teamStats.nbSets13.toString() : "-"}';
-                  case 5: return '0-3\n${teamStats.nbSets03 > 0 ? teamStats.nbSets03.toString() : "-"}';
-                  case 6: return 'NT\n${teamStats.nbSetsMI > 0 ? teamStats.nbSetsMI.toString() : "-"}';
+                  case 0: return '3-0';
+                  case 1: return '3-1';
+                  case 2: return '3-2';
+                  case 3: return '2-3';
+                  case 4: return '1-3';
+                  case 5: return '0-3';
+                  case 6: return 'NT';
                   default: return '';
                 }
               },

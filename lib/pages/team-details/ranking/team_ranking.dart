@@ -49,13 +49,9 @@ class TeamRanking extends StatelessWidget {
     return Column(
       children: <Widget>[
         StatisticsWidget(title: "Matchs gagnés", wonPoints: teamStats.wonMatches, lostPoints: teamStats.lostMatches),
-        Divider(),
         SummaryWidget(title: "Scores", teamStats: teamStats),
-        Divider(),
         StatisticsWidget(title: "Set pris", wonPoints: teamStats.wonSets, lostPoints: teamStats.lostSets),
-        Divider(),
-        EvolutionWidget(title: "Evolution de la différence de sets", team: team, results: results),
-        Divider(),
+        EvolutionWidget(title: "Évolution de la différence de sets", team: team, results: results),
         StatisticsWidget(title: "Points pris", wonPoints: teamStats.wonPoints, lostPoints: teamStats.lostPoints),
       ],
     );
