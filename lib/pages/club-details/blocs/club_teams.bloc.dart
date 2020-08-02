@@ -16,7 +16,6 @@ class ClubTeamsLoaded extends ClubTeamsState {
   ClubTeamsLoaded({this.teams});
 }
 
-
 // ----- EVENTS -----
 
 abstract class ClubTeamsEvent {
@@ -25,29 +24,25 @@ abstract class ClubTeamsEvent {
 }
 
 class ClubTeamsLoadEvent extends ClubTeamsEvent {
-  ClubTeamsLoadEvent(clubCode): super(clubCode);
+  ClubTeamsLoadEvent(clubCode) : super(clubCode);
 }
 
 class ClubFavoriteTeamsLoadEvent extends ClubTeamsEvent {
-  ClubFavoriteTeamsLoadEvent(clubCode): super(clubCode);
+  ClubFavoriteTeamsLoadEvent(clubCode) : super(clubCode);
 }
 
 // ----- BLOC -----
 
 class ClubTeamsBloc extends Bloc<ClubTeamsEvent, ClubTeamsState> {
-
   final Repository repository;
 
-  ClubTeamsBloc({@required this.repository});
-
-  @override
-  ClubTeamsState get initialState => ClubTeamsUninitialized();
+  ClubTeamsBloc({@required this.repository}) : super(ClubTeamsUninitialized());
 
   @override
   Stream<ClubTeamsState> mapEventToState(ClubTeamsEvent event) async* {
     if (event is ClubTeamsLoadEvent || event is ClubFavoriteTeamsLoadEvent) {
       yield ClubTeamsLoading();
-      var teams  = await repository.loadClubTeams(event.clubCode);
+      var teams = await repository.loadClubTeams(event.clubCode);
       var favTeams = await repository.loadFavoriteTeamCodes();
       if (favTeams.isNotEmpty) {
         teams.forEach((team) {
@@ -59,11 +54,12 @@ class ClubTeamsBloc extends Bloc<ClubTeamsEvent, ClubTeamsState> {
       }
       teams.sort((team1, team2) {
         if (team1.favorite && !team2.favorite) return -1;
-        if (!team1.favorite && team2.favorite) return 1;
-        else return team1.name.compareTo(team2.name);
+        if (!team1.favorite && team2.favorite)
+          return 1;
+        else
+          return team1.name.compareTo(team2.name);
       });
       yield ClubTeamsLoaded(teams: teams);
     }
   }
-
 }

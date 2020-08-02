@@ -11,7 +11,13 @@ class GymnasiumSlot {
   final String postalCode;
   final String address;
 
-  GymnasiumSlot({this.name, this.day, this.time, this.town, this.postalCode, this.address});
+  GymnasiumSlot(
+      {this.name,
+      this.day,
+      this.time,
+      this.town,
+      this.postalCode,
+      this.address});
 }
 
 //----- STATE
@@ -55,10 +61,7 @@ class ClubSlotsLoadEvent extends ClubSlotsEvent {
 class ClubSlotsBloc extends Bloc<ClubSlotsEvent, ClubSlotsState> {
   final Repository repository;
 
-  ClubSlotsBloc({this.repository});
-
-  @override
-  ClubSlotsState get initialState => ClubSlotUninitialized();
+  ClubSlotsBloc({this.repository}) : super(ClubSlotUninitialized());
 
   @override
   Stream<ClubSlotsState> mapEventToState(ClubSlotsEvent event) async* {
@@ -68,8 +71,12 @@ class ClubSlotsBloc extends Bloc<ClubSlotsEvent, ClubSlotsState> {
       var gymnasiums = await repository.loadAllGymnasiums();
       final seen = Set<String>();
       slots.sort((slot1, slot2) => slot1.dayOfWeek.compareTo(slot2.dayOfWeek));
-      var gyms = slots.where((slot) => seen.add("${slot.gymnasiumCode}-${slot.dayOfWeek}-${slot.startTime}")).map((slot) {
-        var gymnasium = gymnasiums.firstWhere((gymnasium) => gymnasium.gymnasiumCode == slot.gymnasiumCode);
+      var gyms = slots
+          .where((slot) => seen
+              .add("${slot.gymnasiumCode}-${slot.dayOfWeek}-${slot.startTime}"))
+          .map((slot) {
+        var gymnasium = gymnasiums.firstWhere(
+            (gymnasium) => gymnasium.gymnasiumCode == slot.gymnasiumCode);
         String day;
         switch (slot.dayOfWeek) {
           case 0:
@@ -94,7 +101,13 @@ class ClubSlotsBloc extends Bloc<ClubSlotsEvent, ClubSlotsState> {
             day = "Sam.";
             break;
         }
-        return GymnasiumSlot(name: gymnasium.name, day: day, time: slot.startTime, town: gymnasium.town, postalCode: gymnasium.postalCode, address: gymnasium.address);
+        return GymnasiumSlot(
+            name: gymnasium.name,
+            day: day,
+            time: slot.startTime,
+            town: gymnasium.town,
+            postalCode: gymnasium.postalCode,
+            address: gymnasium.address);
       }).toList();
       yield ClubSlotsLoaded(slots: gyms);
     }

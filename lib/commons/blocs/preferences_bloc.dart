@@ -36,15 +36,14 @@ class PreferencesUpdatedState extends PreferencesState {
   final bool useAutomaticTheme;
   final bool useDarkTheme;
 
-  PreferencesUpdatedState({@required this.useAutomaticTheme, @required this.useDarkTheme});
+  PreferencesUpdatedState(
+      {@required this.useAutomaticTheme, @required this.useDarkTheme});
 }
 
 // ----- BLOC -----
 
 class PreferencesBloc extends Bloc<PreferencesEvent, PreferencesState> {
-
-  @override
-  PreferencesState get initialState => PreferencesUninitializedState();
+  PreferencesBloc() : super(PreferencesUninitializedState());
 
   @override
   Stream<PreferencesState> mapEventToState(PreferencesEvent event) async* {
@@ -52,9 +51,8 @@ class PreferencesBloc extends Bloc<PreferencesEvent, PreferencesState> {
     if (event is PreferencesLoadEvent) {
       yield PreferencesLoadingState();
       yield PreferencesUpdatedState(
-        useAutomaticTheme: preferences.getBool("automatic_theme") ?? false,
-        useDarkTheme: preferences.getBool("dark_theme") ?? false
-      );
+          useAutomaticTheme: preferences.getBool("automatic_theme") ?? false,
+          useDarkTheme: preferences.getBool("dark_theme") ?? false);
     } else if (event is PreferencesSaveEvent) {
       yield PreferencesSavingState();
       if (event.useAutomaticTheme != null)
@@ -62,9 +60,8 @@ class PreferencesBloc extends Bloc<PreferencesEvent, PreferencesState> {
       if (event.useDarkTheme != null)
         preferences.setBool("dark_theme", event.useDarkTheme);
       yield PreferencesUpdatedState(
-        useAutomaticTheme: preferences.getBool("automatic_theme") ?? false,
-        useDarkTheme: preferences.getBool("dark_theme") ?? false
-      );
+          useAutomaticTheme: preferences.getBool("automatic_theme") ?? false,
+          useDarkTheme: preferences.getBool("dark_theme") ?? false);
     }
   }
 }

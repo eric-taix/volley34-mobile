@@ -67,10 +67,7 @@ class LoadTeamsMonthAgenda extends AgendaEvent {
 class AgendaBloc extends Bloc<AgendaEvent, AgendaState> {
   final Repository repository;
 
-  AgendaBloc({this.repository});
-
-  @override
-  AgendaState get initialState => AgendaUninitialized();
+  AgendaBloc({this.repository}) : super(AgendaUninitialized());
 
   @override
   Stream<AgendaState> mapEventToState(AgendaEvent event) async* {
@@ -83,13 +80,11 @@ class AgendaBloc extends Bloc<AgendaEvent, AgendaState> {
         ..addAll(otherEvents)
         ..addAll(state.events)
         ..sort((event1, event2) => event1.date.compareTo(event2.date)));
-    }
-    else if (event is LoadTeamMonthAgenda) {
+    } else if (event is LoadTeamMonthAgenda) {
       List<Event> events = await repository.loadTeamMonthAgenda(event.teamCode);
       events.sort((event1, event2) => event1.date.compareTo(event2.date));
       yield AgendaLoaded(events);
-    }
-    else if (event is LoadTeamsMonthAgenda) {
+    } else if (event is LoadTeamsMonthAgenda) {
       Set<Event> allEvents = Set();
       for (String teamCode in event.teamCodes) {
         List<Event> events = await repository.loadTeamMonthAgenda(teamCode);

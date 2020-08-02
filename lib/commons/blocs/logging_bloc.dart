@@ -1,8 +1,6 @@
-
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class LoggingBlocDelegate extends BlocDelegate {
+class LoggingBlocDelegate extends BlocObserver {
   @override
   void onEvent(Bloc bloc, Object event) {
     print(event);
@@ -16,7 +14,7 @@ class LoggingBlocDelegate extends BlocDelegate {
   }
 
   @override
-  void onError(Bloc bloc, Object error, StackTrace stackTrace) {
+  void onError(Cubit bloc, Object error, StackTrace stackTrace) {
     super.onError(bloc, error, stackTrace);
     print('$error, $stackTrace');
   }

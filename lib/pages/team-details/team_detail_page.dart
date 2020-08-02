@@ -20,7 +20,12 @@ class TeamDetailPage extends StatefulWidget {
 
   final Club club;
 
-  const TeamDetailPage({Key key, @required this.team, @required this.classifications, @required this.club}) : super(key: key);
+  const TeamDetailPage(
+      {Key key,
+      @required this.team,
+      @required this.classifications,
+      @required this.club})
+      : super(key: key);
 
   @override
   TeamDetailPageState createState() => TeamDetailPageState();
@@ -44,7 +49,8 @@ class TeamDetailPageState extends State<TeamDetailPage> {
 
   List<TextTab> _getTabs(List<ClassificationSynthesis> classifications) {
     List<TextTab> tabs = classifications.map((classification) {
-      return TextTab(classification.label, _buildTab(_buildTeamRanking, classification));
+      return TextTab(
+          classification.label, _buildTab(_buildTeamRanking, classification));
     }).toList();
     tabs.add(TextTab("Résultats", _buildTab(_buildTeamResults, null)));
     return tabs;
@@ -52,24 +58,28 @@ class TeamDetailPageState extends State<TeamDetailPage> {
 
   Widget _buildTab(Function element, ClassificationSynthesis classification) {
     return BlocBuilder<TeamBloc, TeamState>(
-      bloc: _teamBloc,
-      builder: (context, state) {
-        if (state is TeamResultsLoaded) {
-          return element(classification, state.results);
-        } else return SliverList(delegate: SliverChildListDelegate([Loading()]));
-      }
-    );
+        cubit: _teamBloc,
+        builder: (context, state) {
+          if (state is TeamResultsLoaded) {
+            return element(classification, state.results);
+          } else
+            return SliverList(delegate: SliverChildListDelegate([Loading()]));
+        });
   }
 
-  Widget _buildTeamRanking(ClassificationSynthesis classification, List<MatchResult> results) {
+  Widget _buildTeamRanking(
+      ClassificationSynthesis classification, List<MatchResult> results) {
     return TeamRanking(
-      team: widget.team,
-      classification: classification,
-      results: results.where((result) => result.competitionCode == classification.competitionCode).toList()
-    );
+        team: widget.team,
+        classification: classification,
+        results: results
+            .where((result) =>
+                result.competitionCode == classification.competitionCode)
+            .toList());
   }
 
-  Widget _buildTeamResults(ClassificationSynthesis classification, List<MatchResult> results) {
+  Widget _buildTeamResults(
+      ClassificationSynthesis classification, List<MatchResult> results) {
     return TeamResults(team: widget.team, results: results);
   }
 
@@ -93,20 +103,26 @@ class TeamDetailPageState extends State<TeamDetailPage> {
   Widget build(BuildContext context) {
     if (widget.classifications == null) {
       return BlocBuilder<TeamClassificationBloc, TeamClassificationState>(
-        bloc: _classificationBloc,
-        builder: (context, state) {
-          if (state is TeamClassificationLoadedState) {
-            return _buildTeamDetailPage("teamDetailPageLoaded", _getTabs(state.classifications));
-          } else {
-            return _buildTeamDetailPage(
-              "teamDetailPageLoading",
-              [TextTab("Chargement", SliverList(delegate: SliverChildListDelegate([Padding(padding: EdgeInsets.only(top: 16.0), child: Loading())])))]
-            );
-          }
-        }
-      );
+          cubit: _classificationBloc,
+          builder: (context, state) {
+            if (state is TeamClassificationLoadedState) {
+              return _buildTeamDetailPage(
+                  "teamDetailPageLoaded", _getTabs(state.classifications));
+            } else {
+              return _buildTeamDetailPage("teamDetailPageLoading", [
+                TextTab(
+                    "Chargement",
+                    SliverList(
+                        delegate: SliverChildListDelegate([
+                      Padding(
+                          padding: EdgeInsets.only(top: 16.0), child: Loading())
+                    ])))
+              ]);
+            }
+          });
     } else {
-      return _buildTeamDetailPage("teamDetailPageLoaded", _getTabs(widget.classifications));
+      return _buildTeamDetailPage(
+          "teamDetailPageLoaded", _getTabs(widget.classifications));
     }
   }
 }

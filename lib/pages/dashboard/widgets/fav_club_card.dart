@@ -22,16 +22,21 @@ class _FavoriteClubCardState extends State<FavoriteClubCard> {
   ClubStatsBloc _clubStatsBloc;
   List<CircularStackEntry> _data;
 
-  final GlobalKey<AnimatedCircularChartState> _chartKey = new GlobalKey<AnimatedCircularChartState>();
+  final GlobalKey<AnimatedCircularChartState> _chartKey =
+      new GlobalKey<AnimatedCircularChartState>();
 
   void _updateState(int wonMatches, int totalMatches) {
     setState(() {
       _chartKey.currentState.updateData([
         new CircularStackEntry(
           <CircularSegmentEntry>[
-            new CircularSegmentEntry(0.0, Theme.of(context).accentColor, rankKey: "none"),
-            new CircularSegmentEntry(wonMatches.toDouble(), Colors.greenAccent, rankKey: "win"),
-            new CircularSegmentEntry(totalMatches - wonMatches.toDouble(), Colors.redAccent, rankKey: "lost"),
+            new CircularSegmentEntry(0.0, Theme.of(context).accentColor,
+                rankKey: "none"),
+            new CircularSegmentEntry(wonMatches.toDouble(), Colors.greenAccent,
+                rankKey: "win"),
+            new CircularSegmentEntry(
+                totalMatches - wonMatches.toDouble(), Colors.redAccent,
+                rankKey: "lost"),
           ],
         ),
       ]);
@@ -41,7 +46,8 @@ class _FavoriteClubCardState extends State<FavoriteClubCard> {
   @override
   void initState() {
     super.initState();
-    _clubStatsBloc = ClubStatsBloc(RepositoryProvider.of<Repository>(context))..add(ClubStatsLoadEvent(widget.club.code));
+    _clubStatsBloc = ClubStatsBloc(RepositoryProvider.of<Repository>(context))
+      ..add(ClubStatsLoadEvent(widget.club.code));
   }
 
   @override
@@ -56,9 +62,12 @@ class _FavoriteClubCardState extends State<FavoriteClubCard> {
     _data = <CircularStackEntry>[
       new CircularStackEntry(
         <CircularSegmentEntry>[
-          new CircularSegmentEntry(10, Theme.of(context).accentColor, rankKey: "none"),
-          new CircularSegmentEntry(0.toDouble(), Colors.greenAccent, rankKey: "win"),
-          new CircularSegmentEntry(0.toDouble(), Colors.redAccent, rankKey: "lost"),
+          new CircularSegmentEntry(10, Theme.of(context).accentColor,
+              rankKey: "none"),
+          new CircularSegmentEntry(0.toDouble(), Colors.greenAccent,
+              rankKey: "win"),
+          new CircularSegmentEntry(0.toDouble(), Colors.redAccent,
+              rankKey: "lost"),
         ],
       ),
     ];
@@ -72,18 +81,18 @@ class _FavoriteClubCardState extends State<FavoriteClubCard> {
       logoUrl: widget.club.logoUrl,
       onTap: widget.onTap,
       body: BlocListener(
-          listener: (context, state) {
-            if (state is ClubStatsLoadedState) {
-              _updateState(state.wonMatches, state.totalMatches);
-            }
+        listener: (context, state) {
+          if (state is ClubStatsLoadedState) {
+            _updateState(state.wonMatches, state.totalMatches);
+          }
+        },
+        cubit: _clubStatsBloc,
+        child: BlocBuilder(
+          cubit: _clubStatsBloc,
+          builder: (context, state) {
+            return _buildCardContent(context, state);
           },
-          bloc: _clubStatsBloc,
-          child: BlocBuilder(
-            bloc: _clubStatsBloc,
-            builder: (context, state) {
-              return _buildCardContent(context, state);
-            },
-          ),
+        ),
       ),
     );
   }
@@ -95,7 +104,8 @@ class _FavoriteClubCardState extends State<FavoriteClubCard> {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Text("La semaine dernière", style: Theme.of(context).textTheme.bodyText1),
+          Text("La semaine dernière",
+              style: Theme.of(context).textTheme.bodyText1),
           SizedBox(
             height: 50,
             child: Row(
@@ -127,10 +137,15 @@ class _FavoriteClubCardState extends State<FavoriteClubCard> {
                             style: new TextStyle(
                               fontSize: 24.0,
                               fontWeight: FontWeight.bold,
-                              color: Theme.of(context).textTheme.bodyText2.color,
+                              color:
+                                  Theme.of(context).textTheme.bodyText2.color,
                             ),
                             children: <TextSpan>[
-                              new TextSpan(text: ' / ${state.totalMatches}', style: TextStyle(fontSize: 12, fontWeight: FontWeight.normal)),
+                              new TextSpan(
+                                  text: ' / ${state.totalMatches}',
+                                  style: TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.normal)),
                             ],
                           ),
                         )
@@ -152,8 +167,16 @@ class _FavoriteClubCardState extends State<FavoriteClubCard> {
                       textScaleFactor: 1.1,
                       text: TextSpan(
                           text: "X",
-                          style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold, color: Theme.of(context).textTheme.bodyText2.color),
-                          children: [new TextSpan(text: " / y matchs à domicile", style: Theme.of(context).textTheme.bodyText2)])),
+                          style: TextStyle(
+                              fontSize: 24.0,
+                              fontWeight: FontWeight.bold,
+                              color:
+                                  Theme.of(context).textTheme.bodyText2.color),
+                          children: [
+                            new TextSpan(
+                                text: " / y matchs à domicile",
+                                style: Theme.of(context).textTheme.bodyText2)
+                          ])),
                 ),
               ],
             ),
@@ -162,5 +185,4 @@ class _FavoriteClubCardState extends State<FavoriteClubCard> {
       ),
     );
   }
-
 }

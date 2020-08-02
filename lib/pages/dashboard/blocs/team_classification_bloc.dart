@@ -43,19 +43,20 @@ class TeamClassificationLoadedState extends TeamClassificationState {
 
 // -- Bloc
 
-class TeamClassificationBloc extends Bloc<TeamClassificationEvent, TeamClassificationState> {
+class TeamClassificationBloc
+    extends Bloc<TeamClassificationEvent, TeamClassificationState> {
   final Repository repository;
 
-  TeamClassificationBloc({@required this.repository});
+  TeamClassificationBloc({@required this.repository})
+      : super(TeamClassificationUninitializedState());
 
   @override
-  TeamClassificationState get initialState => TeamClassificationUninitializedState();
-
-  @override
-  Stream<TeamClassificationState> mapEventToState(TeamClassificationEvent event) async* {
+  Stream<TeamClassificationState> mapEventToState(
+      TeamClassificationEvent event) async* {
     if (event is LoadTeamClassificationEvent) {
       yield TeamClassificationLoadingState();
-      List<ClassificationSynthesis> classifications = await repository.loadTeamClassificationSynthesis(event.team.code);
+      List<ClassificationSynthesis> classifications =
+          await repository.loadTeamClassificationSynthesis(event.team.code);
       classifications = classifications.map((classification) {
         classification.teamsClassifications.sort((tc1, tc2) {
           return tc1.rank.compareTo(tc2.rank) * -1;
@@ -65,5 +66,4 @@ class TeamClassificationBloc extends Bloc<TeamClassificationEvent, TeamClassific
       yield TeamClassificationLoadedState(event.team.code, classifications);
     }
   }
-
 }

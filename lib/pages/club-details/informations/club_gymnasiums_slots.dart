@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:v34/commons/cards/titled_card.dart';
 import 'package:v34/commons/loading.dart';
 import 'package:v34/pages/club-details/blocs/club_slots.bloc.dart';
@@ -22,7 +21,9 @@ class _ClubGymnasiumsSlotsState extends State<ClubGymnasiumsSlots> {
   @override
   void initState() {
     super.initState();
-    _slotsBloc = ClubSlotsBloc(repository: RepositoryProvider.of<Repository>(context))..add(ClubSlotsLoadEvent(clubCode: widget.clubCode));
+    _slotsBloc =
+        ClubSlotsBloc(repository: RepositoryProvider.of<Repository>(context))
+          ..add(ClubSlotsLoadEvent(clubCode: widget.clubCode));
   }
 
   @override
@@ -34,11 +35,14 @@ class _ClubGymnasiumsSlotsState extends State<ClubGymnasiumsSlots> {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder(
-        bloc: _slotsBloc,
+        cubit: _slotsBloc,
         builder: (context, state) {
           return TitledCard(
-              icon: Icon(Icons.date_range, color: Theme.of(context).textTheme.headline6.color),
-              title: (state is ClubSlotsLoaded && state.slots.length > 1) ? "Créneaux" : "Créneau",
+              icon: Icon(Icons.date_range,
+                  color: Theme.of(context).textTheme.headline6.color),
+              title: (state is ClubSlotsLoaded && state.slots.length > 1)
+                  ? "Créneaux"
+                  : "Créneau",
               body: (state is ClubSlotsLoaded)
                   ? Column(
                       children: <Widget>[
@@ -50,22 +54,30 @@ class _ClubGymnasiumsSlotsState extends State<ClubGymnasiumsSlots> {
                                 Padding(
                                   padding: const EdgeInsets.only(right: 18.0),
                                   child: ClipRRect(
-                                    borderRadius: BorderRadius.all(Radius.circular(8)),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(8)),
                                     child: Container(
                                       decoration: BoxDecoration(
                                         color: Theme.of(context).primaryColor,
                                         border: Border(
                                           left: BorderSide(
                                             width: 5,
-                                            color: Colors.red, //TinyColor(Theme.of(context).cardTheme.color).lighten(3).color
+                                            color: Colors
+                                                .red, //TinyColor(Theme.of(context).cardTheme.color).lighten(3).color
                                           ),
                                         ),
                                       ),
                                       padding: EdgeInsets.all(8.0),
                                       child: Column(
                                         children: <Widget>[
-                                          Text(slot.day, style: Theme.of(context).textTheme.headline4),
-                                          Text(slot.time.format(context), style: Theme.of(context).textTheme.headline5),
+                                          Text(slot.day,
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .headline4),
+                                          Text(slot.time.format(context),
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .headline5),
                                         ],
                                       ),
                                     ),
@@ -73,10 +85,14 @@ class _ClubGymnasiumsSlotsState extends State<ClubGymnasiumsSlots> {
                                 ),
                                 Expanded(
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: <Widget>[
                                       Text(slot.name),
-                                      Text("${slot.postalCode} - ${slot.town}", style: Theme.of(context).textTheme.bodyText1),
+                                      Text("${slot.postalCode} - ${slot.town}",
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodyText1),
                                     ],
                                   ),
                                 ),
