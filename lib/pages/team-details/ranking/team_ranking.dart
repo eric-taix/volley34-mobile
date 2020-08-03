@@ -45,7 +45,9 @@ class TeamRanking extends StatelessWidget {
   }
 
   Widget _buildPodium(ClassificationTeamSynthesis teamStats) {
-    String title = teamStats.rank <= classification.promoted ? "Promue" : "Reléguée";
+    String title = "";
+    if (teamStats.rank <= classification.promoted) title = "Promue";
+    else if (classification.teamsClassifications.length - teamStats.rank < classification.relegated) title = "Reléguée";
     return FractionallySizedBox(
       widthFactor: 0.7,
       child: Container(
