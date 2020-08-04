@@ -163,7 +163,7 @@ class AppBarWithImage extends StatefulWidget {
   final Favorite favorite;
   final String heroTag;
 
-  AppBarWithImage(this.title, this.heroTag, {@required this.tabs, this.logoUrl, this.subTitle, this.favorite});
+  AppBarWithImage(this.title, this.heroTag, {Key key, @required this.tabs, this.logoUrl, this.subTitle, this.favorite}): super(key: key);
 
   @override
   _AppBarWithImageState createState() => _AppBarWithImageState();
