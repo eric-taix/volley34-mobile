@@ -1,7 +1,8 @@
+import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
 
 @immutable
-class Event {
+class Event extends Equatable {
   // Common
   final DateTime date;
   final String place;
@@ -26,7 +27,7 @@ class Event {
     if (json["MatchCode"] != null) {
       return Event(
         date: DateTime.parse(json["DateMatch"]),
-        name: json["CalendarEventName"],
+        name: json["CalendarEventName"] ?? json["LibelleMatch"],
         place: json["NomGymnase"],
         hostName: json["NomLocaux"],
         visitorName: json["NomVisiteurs"],
@@ -54,6 +55,10 @@ class Event {
         return EventType.Unknown;
     }
   }
+
+  @override
+  List<Object> get props => [name, date];
+
 }
 
 enum EventType { Match, Tournament, Meeting, Unknown }

@@ -1,7 +1,6 @@
-
-
 import 'package:dio/dio.dart';
 import 'package:dio_http_cache/dio_http_cache.dart';
+import 'package:intl/intl.dart';
 import 'package:v34/models/event.dart';
 import 'package:v34/repositories/providers/http.dart';
 
@@ -12,7 +11,28 @@ class AgendaProvider {
     if (response.statusCode == 200) {
       return (response.data as List).map((json) => Event.fromJson(json)).toList();
     } else {
-      throw Exception('Impossible de récupérer les clubs');
+      throw Exception('Impossible de récupérer les événements');
     }
   }
+
+  Future<List<Event>> listTeamMonthMatches(String teamCode) async {
+    Response response = await dio.get("/equipes/$teamCode/matchs?filter=weeks&value=4", options: buildConfigurableCacheOptions());
+    if (response.statusCode == 200) {
+      return (response.data as List).map((json) => Event.fromJson(json)).toList();
+    } else {
+      throw Exception('Impossible de récupérer les événements');
+    }
+  }
+
+  Future<List<Event>> listTeamMonthEvents(String teamCode) async {
+    DateTime min = DateTime.now(), max = min.add(Duration(days: 30));
+    DateFormat format = DateFormat("yyyy-MM-ddTHH:00:00");
+    Response response = await dio.get("/calendars?equipe=$teamCode&min=${format.format(min)}&max=${format.format(max)}", options: buildConfigurableCacheOptions());
+    if (response.statusCode == 200) {
+      return (response.data as List).map((json) => Event.fromJson(json)).toList();
+    } else {
+      throw Exception('Impossible de récupérer les événements');
+    }
+  }
+
 }
