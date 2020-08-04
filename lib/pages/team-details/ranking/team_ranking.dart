@@ -31,10 +31,26 @@ class TeamRanking extends StatelessWidget {
     ]));
   }
 
+  String _getClassificationCategory() {
+    switch (classification.division) {
+      case "EX": return "- Excellence";
+      case "HO": return "- Honneur";
+      case "PR": return "- Promotion";
+      case "AC": return "- Accession";
+      case "L1": return "- Loisirs 1";
+      default: return _getPool();
+    }
+  }
+
+  String _getPool() {
+    if (classification.pool == "0") return "";
+    else return "- Poule ${classification.pool}";
+  }
+
   Widget _buildTitle(BuildContext context) {
     return Stack(
       children: <Widget>[
-        InformationDivider(title: "Classement", size: 15),
+        InformationDivider(title: "Classement ${_getClassificationCategory()}", size: 15),
         Positioned(
           top: 12,
           right: 12,

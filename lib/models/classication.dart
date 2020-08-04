@@ -30,9 +30,11 @@ class ClassificationSynthesis {
   final int relegated;
   final String label;
   final String fullLabel;
+  final String division;
+  final String pool;
   final List<ClassificationTeamSynthesis> teamsClassifications;
 
-  ClassificationSynthesis(this.competitionCode, this.label, this.fullLabel, this.promoted, this.relegated, this.teamsClassifications);
+  ClassificationSynthesis(this.competitionCode, this.label, this.fullLabel, this.promoted, this.relegated, this.division, this.pool, this.teamsClassifications);
 
   factory ClassificationSynthesis.fromJson(Map<String, dynamic> json) {
     return ClassificationSynthesis(
@@ -41,6 +43,8 @@ class ClassificationSynthesis {
       json["Libelle"],
       json["Promus"],
       json["Relegue"],
+      json["Division"],
+      json["Poule"],
       (json["classementDetail"] as List<dynamic>).map((detail) => ClassificationTeamSynthesis.fromJson(detail)).toList(),
     );
   }
