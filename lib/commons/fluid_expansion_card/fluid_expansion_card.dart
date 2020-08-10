@@ -350,7 +350,6 @@ class BottomClip extends CustomClipper<Rect> {
 
   @override
   Rect getClip(Size size) {
-    print("toClip: $clip");
     return Offset.zero &
         (clip ? Size(size.width, minheight - 20) : Size(size.width, maxheight));
   }
