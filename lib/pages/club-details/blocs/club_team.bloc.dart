@@ -31,7 +31,10 @@ class TeamSlidingStatsLoaded extends TeamState {
   final ValuePerMax pointsPerMax;
   final ValuePerMaxMin pointsPerMaxWithFactor;
 
-  TeamSlidingStatsLoaded({this.pointsDiffEvolution, this.pointsPerMax, this.pointsPerMaxWithFactor});
+  TeamSlidingStatsLoaded(
+      {this.pointsDiffEvolution,
+      this.pointsPerMax,
+      this.pointsPerMaxWithFactor});
 }
 
 class TeamResultsLoaded extends TeamState {
@@ -70,23 +73,22 @@ class TeamLoadResults extends TeamEvent {
 class TeamBloc extends Bloc<TeamEvent, TeamState> {
   final Repository repository;
 
-  TeamBloc({@required this.repository});
-
-  @override
-  TeamState get initialState => TeamStateUninitialized();
+  TeamBloc({@required this.repository}) : super(TeamStateUninitialized());
 
   @override
   Stream<TeamState> mapEventToState(TeamEvent event) async* {
     if (event is TeamLoadSlidingResult) {
       yield TeamSlidingStatsLoading();
-      var results = await repository.loadTeamLastMatchesResult(event.code, event.last);
+      var results =
+          await repository.loadTeamLastMatchesResult(event.code, event.last);
       var pointDiffs = computePointsDiffs(results, event.code);
       yield TeamSlidingStatsLoaded(pointsDiffEvolution: pointDiffs);
     }
 
     if (event is TeamLoadAverageSlidingResult) {
       yield TeamSlidingStatsLoading();
-      var results = await repository.loadTeamLastMatchesResult(event.code, event.last);
+      var results =
+          await repository.loadTeamLastMatchesResult(event.code, event.last);
 
       var pointDiffs = computePointsDiffs(results, event.code);
       var averagePointDiffs = List.generate(event.count, (index) {
@@ -98,7 +100,8 @@ class TeamBloc extends Bloc<TeamEvent, TeamState> {
       }).toList();
 
       var pointsPerMax = _computePointsPerMax(event.code, results);
-      var pointPerMaxWithFactor = _computePointsDiffWithFactor(event.code, results, [1.0, 1.2, 1.4, 8.0, 32.0]);
+      var pointPerMaxWithFactor = _computePointsDiffWithFactor(
+          event.code, results, [1.0, 1.2, 1.4, 8.0, 32.0]);
       yield TeamSlidingStatsLoaded(
         pointsDiffEvolution: averagePointDiffs..insert(0, 0),
         pointsPerMax: pointsPerMax,
@@ -108,12 +111,14 @@ class TeamBloc extends Bloc<TeamEvent, TeamState> {
 
     if (event is TeamLoadResults) {
       yield TeamSlidingStatsLoading();
-      var results = await repository.loadTeamLastMatchesResult(event.code, event.last);
+      var results =
+          await repository.loadTeamLastMatchesResult(event.code, event.last);
       yield TeamResultsLoaded(results: results);
     }
   }
 
-  ValuePerMaxMin _computePointsDiffWithFactor(String teamCode, List<MatchResult> results, List<double> factors) {
+  ValuePerMaxMin _computePointsDiffWithFactor(
+      String teamCode, List<MatchResult> results, List<double> factors) {
     assert(factors != null);
     assert(factors.length == 5);
 
@@ -123,19 +128,26 @@ class TeamBloc extends Bloc<TeamEvent, TeamState> {
           var diff = 0;
           if (set.key > 0) {
             var previousSet = result.sets[set.key - 1];
-            var previousDiff = result.hostTeamCode == teamCode ? previousSet.hostPoint - (previousSet.visitorpoint ?? 0) : (previousSet.visitorpoint ?? 0) - previousSet.hostPoint;
-            var currentDiff = result.hostTeamCode == teamCode ? set.value.hostPoint - (set.value.visitorpoint ?? 0) : (set.value.visitorpoint ?? 0) - set.value.hostPoint;
+            var previousDiff = result.hostTeamCode == teamCode
+                ? previousSet.hostPoint - (previousSet.visitorpoint ?? 0)
+                : (previousSet.visitorpoint ?? 0) - previousSet.hostPoint;
+            var currentDiff = result.hostTeamCode == teamCode
+                ? set.value.hostPoint - (set.value.visitorpoint ?? 0)
+                : (set.value.visitorpoint ?? 0) - set.value.hostPoint;
             diff = currentDiff - previousDiff;
           }
           return ValuePerMaxMin(
-           value: acc.value + (diff * factors[set.key]).toInt(),
+            value: acc.value + (diff * factors[set.key]).toInt(),
             minimum: ((set.key == 5 ? -15 : -25) * factors[set.key]).toInt(),
             maximum: ((set.key == 5 ? 15 : 25) * factors[set.key]).toInt(),
           );
         }
         return acc;
       });
-      return ValuePerMaxMin(value: acc.value + set.value, maximum: acc.maximum + set.maximum.toInt(), minimum: acc.minimum - set.minimum.toInt());
+      return ValuePerMaxMin(
+          value: acc.value + set.value,
+          maximum: acc.maximum + set.maximum.toInt(),
+          minimum: acc.minimum - set.minimum.toInt());
     });
     return pointPerMaxWithFactor;
   }
@@ -145,21 +157,30 @@ class TeamBloc extends Bloc<TeamEvent, TeamState> {
       var set = result.sets.fold(ValuePerMax(), (acc, set) {
         if (set.hostPoint != null) {
           return ValuePerMax(
-            value: acc.value + (result.hostTeamCode == teamCode ? set.hostPoint : (set.visitorpoint ?? 0)),
-            maximum: acc.maximum + (set.hostPoint > (set.visitorpoint ?? 0) ? set.hostPoint : (set.visitorpoint ?? 0)),
+            value: acc.value +
+                (result.hostTeamCode == teamCode
+                    ? set.hostPoint
+                    : (set.visitorpoint ?? 0)),
+            maximum: acc.maximum +
+                (set.hostPoint > (set.visitorpoint ?? 0)
+                    ? set.hostPoint
+                    : (set.visitorpoint ?? 0)),
           );
         }
         return acc;
       });
-      return ValuePerMax(value: acc.value + set.value, maximum: acc.maximum + set.maximum);
+      return ValuePerMax(
+          value: acc.value + set.value, maximum: acc.maximum + set.maximum);
     });
     return pointsPerMax;
   }
 
-  static List<double> computePointsDiffs(List<MatchResult> matchResults, String code) {
+  static List<double> computePointsDiffs(
+      List<MatchResult> matchResults, String code) {
     var setsDiff = matchResults.map((result) {
       bool isHost = result.hostTeamCode == code;
-      return (result.totalSetsHost - result.totalSetsVisitor) * (isHost ? 1 : -1);
+      return (result.totalSetsHost - result.totalSetsVisitor) *
+          (isHost ? 1 : -1);
     }).toList();
 /*    for (int i = 0; i < setsDiff.length - 1; i++) {
       setsDiff[i + 1] += setsDiff[i];

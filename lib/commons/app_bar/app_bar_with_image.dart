@@ -41,9 +41,11 @@ class _AppBarHeaderDelegate extends SliverPersistentHeaderDelegate {
   }
 
   @override
-  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
+  Widget build(
+      BuildContext context, double shrinkOffset, bool overlapsContent) {
     final ModalRoute<dynamic> parentRoute = ModalRoute.of(context);
-    final bool useCloseButton = parentRoute is PageRoute<dynamic> && parentRoute.fullscreenDialog;
+    final bool useCloseButton =
+        parentRoute is PageRoute<dynamic> && parentRoute.fullscreenDialog;
 
     final appBarTheme = Theme.of(context).appBarTheme;
 
@@ -83,15 +85,23 @@ class _AppBarHeaderDelegate extends SliverPersistentHeaderDelegate {
           Align(
             alignment: Alignment.topCenter,
             child: Padding(
-              padding: const EdgeInsets.only(top: 18.0 + kSystemBarHeight, left: 18),
+              padding:
+                  const EdgeInsets.only(top: 18.0 + kSystemBarHeight, left: 18),
               child: Opacity(
                 opacity: compute(0.0, 1.0),
-                child: Text(subTitle, style: appBarTheme.textTheme.subtitle2),
+                child: Container(
+                  child: Text(
+                    subTitle,
+                    style: appBarTheme.textTheme.subtitle2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
               ),
             ),
           ),
           Positioned(
-            top: compute(kSystemBarHeight + 2, expandedHeight - compute(38.0, 60.0) / 2),
+            top: compute(
+                kSystemBarHeight + 2, expandedHeight - compute(38.0, 60.0) / 2),
             left: compute(75.0, 80.0),
             width: MediaQuery.of(context).size.width - 75,
             child: Padding(
@@ -99,15 +109,26 @@ class _AppBarHeaderDelegate extends SliverPersistentHeaderDelegate {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.only(left: 14.0, bottom: compute(0.0, 22.0)),
-                    child: Text(title, style: appBarTheme.textTheme.headline6),
+                  Expanded(
+                    child: Padding(
+                      padding: EdgeInsets.only(
+                          left: 14.0, bottom: compute(0.0, 22.0)),
+                      child: Text(
+                        title,
+                        style: appBarTheme.textTheme.headline6,
+                        overflow: TextOverflow.fade,
+                        textAlign: TextAlign.center,
+                        maxLines: 1,
+                        softWrap: false,
+                      ),
+                    ),
                   ),
                   FavoriteIcon(
                     favorite.id,
                     favorite.type,
                     favorite.value,
-                    padding: EdgeInsets.only(left: 12, bottom: compute(0.0, 22.0)),
+                    padding:
+                        EdgeInsets.only(left: 12, bottom: compute(0.0, 22.0)),
                   ),
                 ],
               ),
@@ -163,13 +184,20 @@ class AppBarWithImage extends StatefulWidget {
   final Favorite favorite;
   final String heroTag;
 
-  AppBarWithImage(this.title, this.heroTag, {Key key, @required this.tabs, this.logoUrl, this.subTitle, this.favorite}): super(key: key);
+  AppBarWithImage(this.title, this.heroTag,
+      {Key key,
+      @required this.tabs,
+      this.logoUrl,
+      this.subTitle,
+      this.favorite})
+      : super(key: key);
 
   @override
   _AppBarWithImageState createState() => _AppBarWithImageState();
 }
 
-class _AppBarWithImageState extends State<AppBarWithImage> with SingleTickerProviderStateMixin {
+class _AppBarWithImageState extends State<AppBarWithImage>
+    with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Material(
@@ -180,7 +208,8 @@ class _AppBarWithImageState extends State<AppBarWithImage> with SingleTickerProv
           headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
             return <Widget>[
               SliverOverlapAbsorber(
-                handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+                handle:
+                    NestedScrollView.sliverOverlapAbsorberHandleFor(context),
                 sliver: SliverPersistentHeader(
                   pinned: true,
                   delegate: _AppBarHeaderDelegate(
@@ -210,10 +239,13 @@ class _AppBarWithImageState extends State<AppBarWithImage> with SingleTickerProv
                       key: PageStorageKey<String>(tab.title),
                       slivers: <Widget>[
                         SliverOverlapInjector(
-                          handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+                          handle:
+                              NestedScrollView.sliverOverlapAbsorberHandleFor(
+                                  context),
                         ),
                         SliverPadding(
-                          padding: const EdgeInsets.only(top: 0.0, right: 8.0, bottom: 48.0, left: 8.0),
+                          padding: const EdgeInsets.only(
+                              top: 0.0, right: 8.0, bottom: 48.0, left: 8.0),
                           sliver: tab.child,
                         ),
                       ],

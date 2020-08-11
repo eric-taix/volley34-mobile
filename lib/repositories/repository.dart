@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:v34/commons/favorite/favorite.dart';
 import 'package:v34/models/classication.dart';
 import 'package:v34/models/club.dart';
@@ -21,11 +20,8 @@ class Repository {
   final AgendaProvider _agendaProvider;
   final GymnasiumProvider _gymnasiumProvider;
 
-  Repository(this._clubProvider,
-      this._teamProvider,
-      this._favoriteProvider,
-      this._agendaProvider,
-      this._gymnasiumProvider);
+  Repository(this._clubProvider, this._teamProvider, this._favoriteProvider,
+      this._agendaProvider, this._gymnasiumProvider);
 
   /// Load all clubs
   Future<List<Club>> loadAllClubs() async {
@@ -41,8 +37,10 @@ class Repository {
     List<Club> clubs = await _clubProvider.loadAllClubs();
     var favoriteClubs = await _favoriteProvider.loadFavoriteClubs();
     return favoriteClubs.expand((favoriteCode) {
-      var favoriteClub = clubs.firstWhere((club) => club.code == favoriteCode, orElse: null);
-      List<Club> c = favoriteClub != null ? [favoriteClub..favorite = true] : [];
+      var favoriteClub =
+          clubs.firstWhere((club) => club.code == favoriteCode, orElse: null);
+      List<Club> c =
+          favoriteClub != null ? [favoriteClub..favorite = true] : [];
       return c;
     }).toList();
   }
@@ -69,7 +67,10 @@ class Repository {
       String teamCode, int nbLastMatches) async {
     List<MatchResult> matches =
         await _teamProvider.lastTeamMatchesResult(teamCode);
-    return matches.sublist(matches.length > nbLastMatches ? matches.length - nbLastMatches : 0).toList();
+    return matches
+        .sublist(
+            matches.length > nbLastMatches ? matches.length - nbLastMatches : 0)
+        .toList();
   }
 
   /// Load all favorite teams matches
@@ -83,18 +84,19 @@ class Repository {
   }
 
   /// Load classification synthesis
-  Future<List<ClassificationSynthesis>> loadTeamClassificationSynthesis(String teamCode) async {
+  Future<List<ClassificationSynthesis>> loadTeamClassificationSynthesis(
+      String teamCode) async {
     return await _teamProvider.loadClassificationSynthesis(teamCode);
   }
 
   //-------------------------------
 
-  Future<MatchResult> loadTeamLastMatchResult(
-      String teamCode) async {
+  Future<MatchResult> loadTeamLastMatchResult(String teamCode) async {
     var matches = await loadTeamLastMatchesResult(teamCode, 1);
     return matches.isNotEmpty ? matches.last : null;
   }
-    /// Load the general agenda for a week number
+
+  /// Load the general agenda for a week number
   Future<List<Event>> loadAgendaWeek(int week) async {
     return _agendaProvider.listEvents();
   }
@@ -107,21 +109,34 @@ class Repository {
   }
 
   /// Update a favorite by providing the [FavoriteType], a generic favoriteId and the flag (favorite or not)
-  Future updateFavorite(String favoriteId, FavoriteType favoriteType, bool favorite) async {
+  Future updateFavorite(
+      String favoriteId, FavoriteType favoriteType, bool favorite) async {
     switch (favoriteType) {
       case FavoriteType.Team:
-        List<String> favoriteTeams = await _favoriteProvider.loadFavoriteTeams();
-        var isCurrentlyFavorite = favoriteTeams.firstWhere((favId) => favId == favoriteId, orElse: () => null) ?? false;
+        List<String> favoriteTeams =
+            await _favoriteProvider.loadFavoriteTeams();
+        var isCurrentlyFavorite = favoriteTeams.firstWhere(
+                (favId) => favId == favoriteId,
+                orElse: () => null) ??
+            false;
         if (isCurrentlyFavorite != favorite) {
-          favorite ? favoriteTeams.add(favoriteId) : favoriteTeams.remove(favoriteId);
+          favorite
+              ? favoriteTeams.add(favoriteId)
+              : favoriteTeams.remove(favoriteId);
         }
         _favoriteProvider.saveFavoriteTeams(favoriteTeams);
         break;
       case FavoriteType.Club:
-        List<String> favoriteClubs = await _favoriteProvider.loadFavoriteClubs();
-        var isCurrentlyFavorite = favoriteClubs.firstWhere((favId) => favId == favoriteId, orElse: () => null) ?? false;
+        List<String> favoriteClubs =
+            await _favoriteProvider.loadFavoriteClubs();
+        var isCurrentlyFavorite = favoriteClubs.firstWhere(
+                (favId) => favId == favoriteId,
+                orElse: () => null) ??
+            false;
         if (isCurrentlyFavorite != favorite) {
-          favorite ? favoriteClubs.add(favoriteId) : favoriteClubs.remove(favoriteId);
+          favorite
+              ? favoriteClubs.add(favoriteId)
+              : favoriteClubs.remove(favoriteId);
         }
         _favoriteProvider.saveFavoriteClubs(favoriteClubs);
     }
@@ -129,12 +144,16 @@ class Repository {
 
   /// Return if a club is in favorites
   Future<bool> isClubFavorite(String code) async {
-    return _favoriteProvider.loadFavoriteClubs().then((clubs) => clubs.contains(code));
+    return _favoriteProvider
+        .loadFavoriteClubs()
+        .then((clubs) => clubs.contains(code));
   }
 
   /// Return if a team is in favorites
   Future<bool> isTeamFavorite(String code) async {
-    return _favoriteProvider.loadFavoriteTeams().then((teams) => teams.contains(code));
+    return _favoriteProvider
+        .loadFavoriteTeams()
+        .then((teams) => teams.contains(code));
   }
 
   /// Load the club statistics by team
@@ -143,13 +162,12 @@ class Repository {
   }
 
   /// Load all available slots for a club
- Future<List<Slot>> loadClubSlots(String clubCode) async {
+  Future<List<Slot>> loadClubSlots(String clubCode) async {
     return _clubProvider.loadClubSlots(clubCode);
- }
+  }
 
- /// Load all gymnasiums
- Future<List<Gymnasium>> loadAllGymnasiums() async {
+  /// Load all gymnasiums
+  Future<List<Gymnasium>> loadAllGymnasiums() async {
     return _gymnasiumProvider.loadAllGymnasiums();
- }
-
+  }
 }

@@ -21,7 +21,9 @@ class _ClubTeamsState extends State<ClubTeams> {
   @override
   void initState() {
     super.initState();
-    _clubTeamsBloc = ClubTeamsBloc(repository: RepositoryProvider.of<Repository>(context))..add(ClubTeamsLoadEvent(widget.club.code));
+    _clubTeamsBloc =
+        ClubTeamsBloc(repository: RepositoryProvider.of<Repository>(context))
+          ..add(ClubTeamsLoadEvent(widget.club.code));
   }
 
   @override
@@ -33,17 +35,17 @@ class _ClubTeamsState extends State<ClubTeams> {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder(
-        bloc: _clubTeamsBloc,
+        cubit: _clubTeamsBloc,
         builder: (context, state) {
           return SliverList(
             delegate: SliverChildBuilderDelegate((context, index) {
               return (state is ClubTeamsLoaded)
                   ? ClubTeam(
-                      team: state.teams[index]
+                      team: state.teams[index],
+                      club: widget.club,
                     )
                   : Loading();
-            },
-            childCount: (state is ClubTeamsLoaded) ? state.teams.length : 0),
+            }, childCount: (state is ClubTeamsLoaded) ? state.teams.length : 0),
           );
         });
   }

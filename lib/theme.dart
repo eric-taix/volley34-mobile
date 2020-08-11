@@ -10,6 +10,7 @@ class AppTheme {
       accentColor: Color(0xFF979DB2),
       primaryColor: Color(0xFF262C41),
       bottomAppBarColor: Color(0xFFF7FBFE),
+      buttonColor: Color(0xFF373E5D),
       cardTheme: CardTheme(
         color: Color(0xFF313852),
         margin: EdgeInsets.only(top: 30, left: 20, right: 20, bottom: 0),

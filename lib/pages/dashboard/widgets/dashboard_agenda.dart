@@ -17,7 +17,8 @@ class DashboardAgenda extends StatefulWidget {
   DashboardAgendaState createState() => DashboardAgendaState();
 }
 
-class DashboardAgendaState extends State<DashboardAgenda> with AutomaticKeepAliveClientMixin {
+class DashboardAgendaState extends State<DashboardAgenda>
+    with AutomaticKeepAliveClientMixin {
   // AutomaticKeepAliveClientMixin permits to preserve this state when scrolling on the dashboard
 
   AgendaBloc _agendaBloc;
@@ -25,12 +26,14 @@ class DashboardAgendaState extends State<DashboardAgenda> with AutomaticKeepAliv
   @override
   void initState() {
     super.initState();
-    _agendaBloc = AgendaBloc(repository: RepositoryProvider.of<Repository>(context));
+    _agendaBloc =
+        AgendaBloc(repository: RepositoryProvider.of<Repository>(context));
     _loadTeamsMonthAgenda();
   }
 
   void _loadTeamsMonthAgenda() {
-    _agendaBloc.add(LoadTeamsMonthAgenda(teamCodes: widget.teams.map((team) => team.code).toList()));
+    _agendaBloc.add(LoadTeamsMonthAgenda(
+        teamCodes: widget.teams.map((team) => team.code).toList()));
   }
 
   @override
@@ -44,11 +47,17 @@ class DashboardAgendaState extends State<DashboardAgenda> with AutomaticKeepAliv
   Widget _buildTimeline(AgendaState state) {
     if (state is AgendaLoaded) {
       return Timeline([
-        ...groupBy(state.events, (event) => DateTime(event.date.year, event.date.month, event.date.day)).entries.expand((entry) {
+        ...groupBy(
+                state.events,
+                (event) =>
+                    DateTime(event.date.year, event.date.month, event.date.day))
+            .entries
+            .expand((entry) {
           return [
             TimelineItem(date: entry.key, events: [
               ...entry.value.map((e) {
-                TimelineItemWidget timelineItemWidget = TimelineItemWidget.from(e);
+                TimelineItemWidget timelineItemWidget =
+                    TimelineItemWidget.from(e);
                 return TimelineEvent(
                   child: timelineItemWidget,
                   color: timelineItemWidget.color(),
@@ -67,17 +76,15 @@ class DashboardAgendaState extends State<DashboardAgenda> with AutomaticKeepAliv
   Widget build(BuildContext context) {
     super.build(context);
     return BlocBuilder<AgendaBloc, AgendaState>(
-      bloc: _agendaBloc,
+      cubit: _agendaBloc,
       builder: (context, state) {
         return Padding(
-          padding: const EdgeInsets.only(top: 18, bottom: 28.0),
-          child: _buildTimeline(state)
-        );
+            padding: const EdgeInsets.only(top: 18, bottom: 28.0),
+            child: _buildTimeline(state));
       },
     );
   }
 
   @override
   bool get wantKeepAlive => true;
-
 }

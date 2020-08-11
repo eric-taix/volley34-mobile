@@ -8,32 +8,16 @@ class TeamResults extends StatelessWidget {
   final Team team;
   final List<MatchResult> results;
 
-  const TeamResults({Key key, @required this.team, @required this.results}) : super(key: key);
-
-  Widget _buildChampionshipResults() {
-    List<Widget> items = [];
-    for (MatchResult result in results) {
-      Widget element = ResultCard(team: team, result: result);
-      items.add(element);
-    }
-    return Column(children: items);
-  }
-
-  Widget _buildChallengeResults() {
-    return Container();
-  }
-
-  Widget _buildSpringCupResults() {
-    return Container();
+  TeamResults({Key key, @required this.team, @required this.results}) : super(key: key) {
+    results.sort((result1, result2) => result1.matchDate.compareTo(result2.matchDate) * -1);
   }
 
   @override
   Widget build(BuildContext context) {
     return SliverList(
       delegate: SliverChildListDelegate([
-        _buildChampionshipResults(),
-        _buildChallengeResults(),
-        _buildSpringCupResults()
+        SizedBox(height: 28),
+        ...results.map((result) => ResultCard(team: team, result: result)),
       ]),
     );
   }

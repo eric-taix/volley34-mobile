@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import 'package:v34/models/club.dart';
 import 'package:v34/models/team.dart';
 import 'package:v34/pages/dashboard/widgets/team_card.dart';
 
@@ -8,10 +9,11 @@ typedef TeamFavoriteChangeCallback = void Function(Team team);
 
 class DashboardClubTeams extends StatefulWidget {
   final List<Team> teams;
+  final Club club;
   final Function() onFavoriteTeamsChange;
   final double cardHeight = 240;
 
-  const DashboardClubTeams({Key key, @required this.teams, this.onFavoriteTeamsChange}) : super(key: key);
+  const DashboardClubTeams({Key key, @required this.teams, @required this.club, this.onFavoriteTeamsChange}) : super(key: key);
 
   @override
   _DashboardClubTeamsState createState() => _DashboardClubTeamsState();
@@ -53,6 +55,7 @@ class _DashboardClubTeamsState extends State<DashboardClubTeams> with SingleTick
               child: TeamCard(
                 currentlyDisplayed: _currentIndex == index,
                 team: widget.teams[index],
+                club: widget.club,
                 distance: _currentTeamPage - index,
                 onFavoriteChange: widget.onFavoriteTeamsChange,
               ),

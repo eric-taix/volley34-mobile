@@ -1,14 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:v34/commons/cards/rounded_title_card.dart';
 import 'package:v34/commons/favorite/favorite_icon.dart';
-import 'package:v34/commons/rounded_network_image.dart';
 import 'package:v34/commons/router.dart';
 import 'package:v34/models/club.dart';
 import 'package:v34/commons/favorite/favorite.dart';
 import 'package:v34/pages/club-details/club_detail_page.dart';
-import 'package:v34/repositories/repository.dart';
 
 class ClubCard extends StatefulWidget {
   final Club club;
@@ -33,14 +30,25 @@ class _ClubCardState extends State<ClubCard> {
         logoUrl: widget.club.logoUrl,
         body: Padding(
           padding: const EdgeInsets.symmetric(vertical: 12.0),
-          child: Text(widget.club.name, textAlign: TextAlign.center,),
+          child: Text(
+            widget.club.name,
+            textAlign: TextAlign.center,
+          ),
         ),
-        onTap: () => Router.push(context: context, builder: (_) => ClubDetailPage(widget.club)).then((_) => setState((){
-          _favorite = !_favorite;
-        })),
+        onTap: () => Router.push(
+                context: context, builder: (_) => ClubDetailPage(widget.club))
+            .then((_) => setState(() {
+                  _favorite = !_favorite;
+                })),
         buttonBar: ButtonBar(
           children: <Widget>[
-            FavoriteIcon(widget.club.code, FavoriteType.Club, _favorite, padding: EdgeInsets.zero, reloadFavoriteWhenUpdate: true,),
+            FavoriteIcon(
+              widget.club.code,
+              FavoriteType.Club,
+              _favorite,
+              padding: EdgeInsets.zero,
+              reloadFavoriteWhenUpdate: true,
+            ),
           ],
         ),
       ),

@@ -1,5 +1,3 @@
-
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:v34/commons/favorite/favorite.dart';
@@ -40,15 +38,12 @@ class FavoriteLoadEvent extends FavoriteEvent {
 
 //---- BLOC
 class FavoriteBloc extends Bloc<FavoriteEvent, FavoriteState> {
-
   final Repository repository;
   final String favoriteId;
   final FavoriteType favoriteType;
 
-  FavoriteBloc(this.repository, this.favoriteId, this.favoriteType);
-
-  @override
-  FavoriteState get initialState => FavoriteUninitialized();
+  FavoriteBloc(this.repository, this.favoriteId, this.favoriteType)
+      : super(FavoriteUninitialized());
 
   @override
   Stream<FavoriteState> mapEventToState(FavoriteEvent event) async* {
@@ -60,10 +55,11 @@ class FavoriteBloc extends Bloc<FavoriteEvent, FavoriteState> {
     if (event is FavoriteLoadEvent) {
       yield FavoriteUpdating();
       var favorite;
-      if (favoriteType == FavoriteType.Club) favorite = await repository.isClubFavorite(favoriteId);
-      else favorite = await repository.isTeamFavorite(favoriteId);
+      if (favoriteType == FavoriteType.Club)
+        favorite = await repository.isClubFavorite(favoriteId);
+      else
+        favorite = await repository.isTeamFavorite(favoriteId);
       yield FavoriteLoaded(favorite);
     }
   }
-  
 }

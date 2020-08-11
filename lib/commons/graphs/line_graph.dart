@@ -3,11 +3,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class LineGraph extends StatelessWidget {
-  List<Color> gradientColorsAboveCutOff = [
+  final List<Color> gradientColorsAboveCutOff = [
     const Color(0xff23b6e6),
     const Color(0xff02d39a),
   ];
-  List<Color> gradientColorsBelowCutOff = [
+  final List<Color> gradientColorsBelowCutOff = [
     Colors.redAccent,
     Colors.orangeAccent,
   ];
@@ -61,7 +61,9 @@ class LineGraph extends StatelessWidget {
           margin: 12,
         ),
       ),
-      borderData: FlBorderData(show: false, border: Border.all(color: const Color(0xff37434d), width: 1)),
+      borderData: FlBorderData(
+          show: false,
+          border: Border.all(color: const Color(0xff37434d), width: 1)),
       minX: 0,
       maxX: (results.length - 1).toDouble(),
       lineBarsData: [
@@ -80,13 +82,17 @@ class LineGraph extends StatelessWidget {
           ),
           belowBarData: BarAreaData(
             show: true,
-            colors: gradientColorsAboveCutOff.map((color) => color.withOpacity(0.3)).toList(),
+            colors: gradientColorsAboveCutOff
+                .map((color) => color.withOpacity(0.3))
+                .toList(),
             cutOffY: 0,
             applyCutOffY: true,
           ),
           aboveBarData: BarAreaData(
             show: true,
-            colors: gradientColorsBelowCutOff.map((color) => color.withOpacity(0.3)).toList(),
+            colors: gradientColorsBelowCutOff
+                .map((color) => color.withOpacity(0.3))
+                .toList(),
             cutOffY: 0,
             applyCutOffY: true,
           ),

@@ -25,7 +25,7 @@ import 'commons/blocs/preferences_bloc.dart';
 import 'commons/loading.dart';
 
 void main() {
-  BlocSupervisor.delegate = LoggingBlocDelegate();
+  Bloc.observer = LoggingBlocDelegate();
   runApp(V34());
 }
 
@@ -63,7 +63,7 @@ class _V34State extends State<V34> {
       home: _MainPage(),
     );
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider<PreferencesBloc>(
@@ -79,9 +79,7 @@ class _V34State extends State<V34> {
                 AgendaProvider(),
                 GymnasiumProvider(),
               ),
-              child: FeatureDiscovery(
-                  child: _buildMaterialApp(state)
-              ),
+              child: FeatureDiscovery(child: _buildMaterialApp(state)),
             );
           } else {
             return MaterialApp(
@@ -89,9 +87,7 @@ class _V34State extends State<V34> {
               theme: AppTheme.lightTheme(),
               home: Center(
                 child: Column(
-                  children: <Widget>[
-                    Loading()
-                  ],
+                  children: <Widget>[Loading()],
                 ),
               ),
             );
@@ -123,7 +119,11 @@ class __MainPageState extends State<_MainPage> {
           Future.delayed(Duration(seconds: 1)).then((_) {
             FeatureDiscovery.discoverFeatures(
               context,
-              const <String>{"dashboard_feature_id", "competition_feature_id", "clubs_feature_id"},
+              const <String>{
+                "dashboard_feature_id",
+                "competition_feature_id",
+                "clubs_feature_id"
+              },
             );
           });
         }
@@ -167,7 +167,8 @@ class __MainPageState extends State<_MainPage> {
         style: FluidNavBarStyle(
           barBackgroundColor: Theme.of(context).bottomAppBarColor,
           iconSelectedForegroundColor: Color(0xFF313852),
-          iconUnselectedForegroundColor: Theme.of(context).tabBarTheme.unselectedLabelColor,
+          iconUnselectedForegroundColor:
+              Theme.of(context).tabBarTheme.unselectedLabelColor,
         ),
         scaleFactor: 1.4,
         onChange: _handleNavigationChange,

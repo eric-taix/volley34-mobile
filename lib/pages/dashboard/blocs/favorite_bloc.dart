@@ -19,7 +19,9 @@ class FavoriteLoadedState extends FavoriteState {
   final List<String> teamCodes;
   final List<Club> clubs;
 
-  FavoriteLoadedState(this.teamCodes, this.clubs) : assert(teamCodes != null), assert(clubs != null);
+  FavoriteLoadedState(this.teamCodes, this.clubs)
+      : assert(teamCodes != null),
+        assert(clubs != null);
 
   @override
   List<Object> get props => [teamCodes, clubs];
@@ -27,7 +29,6 @@ class FavoriteLoadedState extends FavoriteState {
   @override
   String toString() => "FavoriteState(teams: $teamCodes, clubs: $clubs)";
 }
-
 
 //--- Events
 @immutable
@@ -40,16 +41,13 @@ abstract class FavoriteEvent extends Equatable {
 
 class FavoriteLoadEvent extends FavoriteEvent {}
 
-
 //--- Bloc
 
 class FavoriteBloc extends Bloc<FavoriteEvent, FavoriteState> {
-  @override
-  FavoriteState get initialState => FavoriteUninitializedState();
-
   final Repository repository;
 
-  FavoriteBloc({@required this.repository});
+  FavoriteBloc({@required this.repository})
+      : super(FavoriteUninitializedState());
 
   @override
   Stream<FavoriteState> mapEventToState(FavoriteEvent event) async* {
@@ -60,5 +58,4 @@ class FavoriteBloc extends Bloc<FavoriteEvent, FavoriteState> {
       yield FavoriteLoadedState(favTeamsCodes, favClubs);
     }
   }
-
 }

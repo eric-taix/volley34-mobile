@@ -8,6 +8,7 @@ import 'package:v34/commons/graphs/arc.dart';
 import 'package:v34/commons/graphs/line_graph.dart';
 import 'package:v34/commons/loading.dart';
 import 'package:v34/commons/router.dart';
+import 'package:v34/models/club.dart';
 import 'package:v34/models/team.dart';
 import 'package:v34/pages/club-details/blocs/club_team.bloc.dart';
 import 'package:v34/pages/team-details/team_detail_page.dart';
@@ -15,8 +16,9 @@ import 'package:v34/repositories/repository.dart';
 
 class ClubTeam extends StatefulWidget {
   final Team team;
+  final Club club;
 
-  ClubTeam({@required this.team});
+  ClubTeam({@required this.team, @required this.club});
 
   @override
   _ClubTeamState createState() => _ClubTeamState();
@@ -29,7 +31,8 @@ class _ClubTeamState extends State<ClubTeam> {
   void initState() {
     super.initState();
     _teamBloc = TeamBloc(repository: RepositoryProvider.of<Repository>(context))
-      ..add(TeamLoadAverageSlidingResult(code: widget.team.code, last: 100, count: 3));
+      ..add(TeamLoadAverageSlidingResult(
+          code: widget.team.code, last: 100, count: 3));
   }
 
   @override
@@ -44,14 +47,26 @@ class _ClubTeamState extends State<ClubTeam> {
     return TitledCard(
       title: widget.team.name,
       bodyPadding: EdgeInsets.only(top: 18, bottom: 18, right: 8, left: 16),
-      onTap: () => Router.push(context: context, builder: (_) => TeamDetailPage(team: widget.team)),
+      onTap: () => Router.push(
+          context: context,
+          builder: (_) => TeamDetailPage(
+                team: widget.team,
+                club: widget.club,
+                classifications: null,
+              )),
       buttonBar: ButtonBar(
         children: <Widget>[
-          FavoriteIcon(widget.team.code, FavoriteType.Team, false, padding: EdgeInsets.zero, reloadFavoriteWhenUpdate: true,),
+          FavoriteIcon(
+            widget.team.code,
+            FavoriteType.Team,
+            false,
+            padding: EdgeInsets.zero,
+            reloadFavoriteWhenUpdate: true,
+          ),
         ],
       ),
       body: BlocBuilder(
-        bloc: _teamBloc,
+        cubit: _teamBloc,
         builder: (context, state) {
           if (state is TeamSlidingStatsLoaded) {
             return Column(
@@ -62,7 +77,8 @@ class _ClubTeamState extends State<ClubTeam> {
                     children: <Widget>[
                       Expanded(
                         child: Padding(
-                          padding: const EdgeInsets.only(left: 16, top: 8, right: 16, bottom: 8),
+                          padding: const EdgeInsets.only(
+                              left: 16, top: 8, right: 16, bottom: 8),
                           child: SizedBox(
                             height: miniGraphHeight,
                             child: LineGraph(
@@ -74,7 +90,8 @@ class _ClubTeamState extends State<ClubTeam> {
                       ),
                       Expanded(
                         child: Padding(
-                          padding: const EdgeInsets.only(left: 16, top: 8, right: 8, bottom: 8),
+                          padding: const EdgeInsets.only(
+                              left: 16, top: 8, right: 8, bottom: 8),
                           child: SizedBox(
                             height: miniGraphHeight,
                             child: ArcGraph(
@@ -85,13 +102,12 @@ class _ClubTeamState extends State<ClubTeam> {
                               leftTitle: LeftTitle(
                                 show: true,
                                 text: "Points",
-                                style: Theme
-                                    .of(context)
-                                    .textTheme
-                                    .bodyText1,
+                                style: Theme.of(context).textTheme.bodyText1,
                               ),
                               valueBuilder: (value, minValue, maxValue) {
-                                var percentage = maxValue != 0 ? "${(((value - minValue) / maxValue) * 100).toStringAsFixed(1)}%" : "- -";
+                                var percentage = maxValue != 0
+                                    ? "${(((value - minValue) / maxValue) * 100).toStringAsFixed(1)}%"
+                                    : "- -";
                                 return Text(percentage);
                               },
                             ),
@@ -107,26 +123,29 @@ class _ClubTeamState extends State<ClubTeam> {
                     children: <Widget>[
                       Expanded(
                         child: Padding(
-                          padding: const EdgeInsets.only(left: 16, top: 8, right: 8, bottom: 8),
+                          padding: const EdgeInsets.only(
+                              left: 16, top: 8, right: 8, bottom: 8),
                           child: SizedBox(
                             height: miniGraphHeight,
                             child: ArcGraph(
-                              minValue: -state.pointsPerMaxWithFactor.maximum.toDouble(),
-                              maxValue: state.pointsPerMaxWithFactor.maximum.toDouble(),
-                              value: state.pointsPerMaxWithFactor.value.toDouble(),
+                              minValue: -state.pointsPerMaxWithFactor.maximum
+                                  .toDouble(),
+                              maxValue: state.pointsPerMaxWithFactor.maximum
+                                  .toDouble(),
+                              value:
+                                  state.pointsPerMaxWithFactor.value.toDouble(),
                               lineWidth: 6,
                               leftTitle: LeftTitle(
                                 show: true,
                                 text: "Accroche",
-                                style: Theme
-                                    .of(context)
-                                    .textTheme
-                                    .bodyText1,
+                                style: Theme.of(context).textTheme.bodyText1,
                               ),
                               colors: [Colors.blueAccent, Colors.greenAccent],
                               stops: [0.1, 0.95],
                               valueBuilder: (value, minValue, maxValue) {
-                                var percentage = maxValue != 0 ? "${((value - minValue) / (maxValue - minValue) * 100).toStringAsFixed(1)}%" : "- -";
+                                var percentage = maxValue != 0
+                                    ? "${((value - minValue) / (maxValue - minValue) * 100).toStringAsFixed(1)}%"
+                                    : "- -";
                                 return Text(percentage);
                               },
                             ),
@@ -135,7 +154,8 @@ class _ClubTeamState extends State<ClubTeam> {
                       ),
                       Expanded(
                         child: Padding(
-                          padding: const EdgeInsets.only(left: 16, top: 8, right: 16, bottom: 8),
+                          padding: const EdgeInsets.only(
+                              left: 16, top: 8, right: 16, bottom: 8),
                           child: SizedBox(
                             height: miniGraphHeight,
                           ),

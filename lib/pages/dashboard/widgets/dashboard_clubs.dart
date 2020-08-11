@@ -19,7 +19,8 @@ class DashboardClubs extends StatefulWidget {
   DashboardClubsState createState() => DashboardClubsState();
 }
 
-class DashboardClubsState extends State<DashboardClubs> with AutomaticKeepAliveClientMixin {
+class DashboardClubsState extends State<DashboardClubs>
+    with AutomaticKeepAliveClientMixin {
   // AutomaticKeepAliveClientMixin permits to preserve this state when scrolling on the dashboard
 
   FavoriteBloc _favoriteBloc;
@@ -29,7 +30,8 @@ class DashboardClubsState extends State<DashboardClubs> with AutomaticKeepAliveC
   @override
   void initState() {
     super.initState();
-    _favoriteBloc = FavoriteBloc(repository: RepositoryProvider.of<Repository>(context));
+    _favoriteBloc =
+        FavoriteBloc(repository: RepositoryProvider.of<Repository>(context));
     _favoriteBloc.add(FavoriteLoadEvent());
     _pageController = PageController(initialPage: 0);
     _pageController.addListener(() {
@@ -48,7 +50,7 @@ class DashboardClubsState extends State<DashboardClubs> with AutomaticKeepAliveC
   Widget build(BuildContext context) {
     super.build(context);
     return BlocBuilder<FavoriteBloc, FavoriteState>(
-      bloc: _favoriteBloc,
+      cubit: _favoriteBloc,
       builder: (context, state) {
         if (state is FavoriteLoadedState) {
           return Column(
@@ -59,10 +61,12 @@ class DashboardClubsState extends State<DashboardClubs> with AutomaticKeepAliveC
                   physics: BouncingScrollPhysics(),
                   itemCount: state.clubs.length,
                   controller: _pageController,
-                  onPageChanged: (pageIndex) => widget.onClubChange(state.clubs[pageIndex]),
+                  onPageChanged: (pageIndex) =>
+                      widget.onClubChange(state.clubs[pageIndex]),
                   itemBuilder: (context, index) => Padding(
                     padding: const EdgeInsets.only(left: 8.0, right: 0),
-                    child: _buildFavoriteClubCard(state, index, currentFavoriteClubPage - index),
+                    child: _buildFavoriteClubCard(
+                        state, index, currentFavoriteClubPage - index),
                   ),
                 ),
               ),
@@ -90,13 +94,16 @@ class DashboardClubsState extends State<DashboardClubs> with AutomaticKeepAliveC
     );
   }
 
-  Widget _buildFavoriteClubCard(FavoriteLoadedState state, int index, double distance) {
+  Widget _buildFavoriteClubCard(
+      FavoriteLoadedState state, int index, double distance) {
     var absDistance = distance.abs() > 1 ? 1 : distance.abs();
     return Transform.scale(
       scale: 1.0 - (absDistance > 0.15 ? 0.15 : absDistance),
       child: FavoriteClubCard(
         state.clubs[index],
-        () => Router.push(context: context, builder: (_) => ClubDetailPage(state.clubs[index])).then(
+        () => Router.push(
+            context: context,
+            builder: (_) => ClubDetailPage(state.clubs[index])).then(
           (_) => widget.onClubChange(state.clubs[index]),
         ),
       ),
@@ -105,5 +112,4 @@ class DashboardClubsState extends State<DashboardClubs> with AutomaticKeepAliveC
 
   @override
   bool get wantKeepAlive => true;
-
 }

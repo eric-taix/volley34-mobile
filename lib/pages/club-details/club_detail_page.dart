@@ -1,13 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:v34/commons/app_bar/app_bar_with_image.dart';
-import 'package:v34/commons/no_data.dart';
 import 'package:v34/commons/text_tab_bar.dart';
 import 'package:v34/models/club.dart';
 import 'package:v34/commons/favorite/favorite.dart';
 import 'package:v34/pages/club-details/teams/club_teams.dart';
-import 'package:v34/repositories/repository.dart';
 
 import 'informations/club_informations.dart';
 import 'statistics/club_statistics.dart';
@@ -22,7 +19,6 @@ class ClubDetailPage extends StatefulWidget {
 }
 
 class _ClubDetailPageState extends State<ClubDetailPage> {
-
   @override
   void initState() {
     super.initState();

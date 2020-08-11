@@ -14,7 +14,6 @@ import 'package:v34/pages/dashboard/widgets/dashboard_clubs.dart';
 import 'package:v34/repositories/repository.dart';
 
 class DashboardPage extends StatefulWidget {
-
   @override
   _DashboardPageState createState() => _DashboardPageState();
 }
@@ -34,34 +33,38 @@ class _DashboardPageState extends State<DashboardPage> {
   @override
   Widget build(BuildContext context) {
     return MainPage(
-      title: "Volley34",
-      sliver: SliverList(
-        delegate: SliverChildListDelegate.fixed([
+        title: "Volley34",
+        sliver: SliverList(
+            delegate: SliverChildListDelegate.fixed([
           Paragraph(title: "Vos clubs"),
-          DashboardClubs(key: ValueKey("dashboard-clubs"), onClubChange: (club) => _selectCurrentClub(club)),
+          DashboardClubs(
+              key: ValueKey("dashboard-clubs"),
+              onClubChange: (club) => _selectCurrentClub(club)),
           Paragraph(title: "Vos équipes"),
           if (_currentClub != null) _buildDashboardElement(_teamsElement),
           Paragraph(title: "Votre agenda"),
           if (_currentClub != null) _buildDashboardElement(_agendaElement)
-        ])
-      )
-    );
+        ])));
   }
 
   Widget _teamsElement(List<Team> teams) {
     if (teams.length > 0) {
-      return DashboardClubTeams(teams: teams, onFavoriteTeamsChange: () => _selectCurrentClub(_currentClub));
+      return DashboardClubTeams(
+          teams: teams,
+          club: _currentClub,
+          onFavoriteTeamsChange: () => _selectCurrentClub(_currentClub));
     } else {
       return Center(
         child: Padding(
           padding: const EdgeInsets.all(28.0),
           child: RaisedButton(
-            onPressed: () =>  Router.push(context: context, builder: (_) => ClubDetailPage(_currentClub)).then(
-              (_) => _selectCurrentClub(_currentClub),
-            ),
-            padding: EdgeInsets.all(12.0),
-            child: Text("Sélectionnez une équipe favorite")
-          ),
+              onPressed: () => Router.push(
+                      context: context,
+                      builder: (_) => ClubDetailPage(_currentClub)).then(
+                    (_) => _selectCurrentClub(_currentClub),
+                  ),
+              padding: EdgeInsets.all(12.0),
+              child: Text("Sélectionnez une équipe favorite")),
         ),
       );
     }
@@ -73,18 +76,17 @@ class _DashboardPageState extends State<DashboardPage> {
 
   Widget _buildDashboardElement(Function toBuild) {
     return BlocBuilder<ClubTeamsBloc, ClubTeamsState>(
-      bloc: _clubTeamsBloc,
-      builder: (context, state) {
-        if (state is ClubTeamsLoaded) {
-          return toBuild(state.teams);
-        } else return Container(height: 250, child: Loading());
-      }
-    );
+        cubit: _clubTeamsBloc,
+        builder: (context, state) {
+          if (state is ClubTeamsLoaded) {
+            return toBuild(state.teams);
+          } else
+            return Container(height: 250, child: Loading());
+        });
   }
 
   void _selectCurrentClub(Club club) {
     setState(() => _currentClub = club);
     _clubTeamsBloc.add(ClubFavoriteTeamsLoadEvent(club.code));
   }
-
 }
