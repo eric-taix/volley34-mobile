@@ -31,6 +31,7 @@ class TeamRanking extends StatefulWidget {
 
 class _TeamRankingState extends State<TeamRanking> {
   double _cupOpacity = 0;
+  bool _openClassificationList = false;
 
   @override
   void initState() {
@@ -144,40 +145,84 @@ class _TeamRankingState extends State<TeamRanking> {
             ],
           ),
         ),
-        ...widget.classification.teamsClassifications.reversed
-            .map((classificationSynthesis) {
-          return Padding(
-            padding:
-                const EdgeInsets.only(left: 28.0, right: 28, top: 6, bottom: 6),
-            child: Container(
-                alignment: Alignment.centerLeft,
-                child: Row(
+        Align(
+          child: GestureDetector(
+            onTap: () {
+              setState(() {
+                _openClassificationList = !_openClassificationList;
+              });
+            },
+            child: Padding(
+              padding: const EdgeInsets.only(right: 18.0, top: 12, bottom: 8),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Text(
+                      _openClassificationList
+                          ? "Cacher le détail"
+                          : "Voir le détail",
+                      style: Theme.of(context).textTheme.bodyText2),
+                  Icon(
+                    _openClassificationList
+                        ? Icons.arrow_drop_up
+                        : Icons.arrow_drop_down,
+                    color: Theme.of(context).textTheme.bodyText2.color,
+                  )
+                ],
+              ),
+            ),
+          ),
+          alignment: Alignment.bottomRight,
+        ),
+        AnimatedOpacity(
+          curve: Curves.easeInOut,
+          duration: Duration(milliseconds: 800),
+          opacity: _openClassificationList ? 1.0 : 0.0,
+          child: _openClassificationList
+              ? Column(
                   children: [
-                    Expanded(
-                      flex: 5,
-                      child: Text(
-                        classificationSynthesis.name,
-                        overflow: TextOverflow.fade,
-                        maxLines: 1,
-                        style:
-                            classificationSynthesis.teamCode == widget.team.code
-                                ? Theme.of(context).textTheme.bodyText2
-                                : Theme.of(context).textTheme.bodyText1,
-                      ),
-                    ),
-                    Expanded(
-                        flex: 1,
-                        child: Text(
-                          "${classificationSynthesis.wonSets} pts",
-                          style: classificationSynthesis.teamCode ==
-                                  widget.team.code
-                              ? Theme.of(context).textTheme.bodyText2
-                              : Theme.of(context).textTheme.bodyText1,
-                        ))
+                    ...widget.classification.teamsClassifications.reversed
+                        .map((classificationSynthesis) {
+                      return Padding(
+                        padding: const EdgeInsets.only(
+                            left: 28.0, right: 28, top: 6, bottom: 6),
+                        child: Container(
+                            alignment: Alignment.centerLeft,
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  flex: 5,
+                                  child: Text(
+                                    classificationSynthesis.name,
+                                    overflow: TextOverflow.fade,
+                                    maxLines: 1,
+                                    style: classificationSynthesis.teamCode ==
+                                            widget.team.code
+                                        ? Theme.of(context).textTheme.bodyText2
+                                        : Theme.of(context).textTheme.bodyText1,
+                                  ),
+                                ),
+                                Expanded(
+                                    flex: 1,
+                                    child: Text(
+                                      "${classificationSynthesis.wonSets} pts",
+                                      style: classificationSynthesis.teamCode ==
+                                              widget.team.code
+                                          ? Theme.of(context)
+                                              .textTheme
+                                              .bodyText2
+                                          : Theme.of(context)
+                                              .textTheme
+                                              .bodyText1,
+                                    ))
+                              ],
+                            )),
+                      );
+                    }).toList()
                   ],
-                )),
-          );
-        }).toList()
+                )
+              : null,
+        ),
       ],
     );
   }
@@ -225,5 +270,21 @@ class _TeamRankingState extends State<TeamRanking> {
         ),
       ],
     );
+  }
+}
+
+class ClassificationClip extends CustomClipper<Rect> {
+  final double height;
+
+  ClassificationClip(this.height);
+
+  @override
+  Rect getClip(Size size) {
+    return Offset.zero & Size(size.width, height);
+  }
+
+  @override
+  bool shouldReclip(CustomClipper<Rect> oldClipper) {
+    return true;
   }
 }

@@ -25,14 +25,18 @@ class Podium extends StatefulWidget {
   final int promoted;
   final int relegated;
 
-  Podium(this.placeValues, {this.title = "", this.active = true, this.highlightedIndex, this.promoted = 0, this.relegated = 0});
+  Podium(this.placeValues,
+      {this.title = "",
+      this.active = true,
+      this.highlightedIndex,
+      this.promoted = 0,
+      this.relegated = 0});
 
   @override
   _PodiumState createState() => _PodiumState();
 }
 
 class _PodiumState extends State<Podium> {
-
   List<Place> places;
   PlaceValue max;
   List<PlaceValue> placeValues;
@@ -45,7 +49,8 @@ class _PodiumState extends State<Podium> {
   @override
   void initState() {
     _updatePlaces();
-    places = List.generate(placeValues.length, (index) => Place(PlaceValue("", 0), "", false));
+    places = List.generate(
+        placeValues.length, (index) => Place(PlaceValue("", 0), "", false));
     super.initState();
   }
 
@@ -58,22 +63,27 @@ class _PodiumState extends State<Podium> {
   _updatePlaces() {
     placeValues = widget.placeValues;
     highlightedValue = placeValues[widget.highlightedIndex];
-    max = placeValues.fold(new PlaceValue("", 0), (max, placeValue) => placeValue.value > max.value ? placeValue : max);
+    max = placeValues.fold(new PlaceValue("", 0),
+        (max, placeValue) => placeValue.value > max.value ? placeValue : max);
     if (widget.active) {
       Future.delayed(Duration(milliseconds: 200), () {
         var length = placeValues.length;
         if (this.mounted) {
           setState(() {
             places = List.generate(length, (index) {
-              var diff = (placeValues[index].value - highlightedValue.value).round();
-              var diffStr = ((index > 0 && placeValues[index - 1].id == highlightedValue.id) ||
-                  (index < placeValues.length - 1 && placeValues[index + 1].id == highlightedValue.id))
+              var diff =
+                  (placeValues[index].value - highlightedValue.value).round();
+              var diffStr = ((index > 0 &&
+                          placeValues[index - 1].id == highlightedValue.id) ||
+                      (index < placeValues.length - 1 &&
+                          placeValues[index + 1].id == highlightedValue.id))
                   ? (diff > 0 ? "+$diff" : "$diff")
                   : "";
               if (placeValues[index].id == highlightedValue.id) {
                 position = placeValues.length - index;
               }
-              return Place(placeValues[index], "$diffStr", placeValues[index].id == highlightedValue.id);
+              return Place(placeValues[index], "$diffStr",
+                  placeValues[index].id == highlightedValue.id);
             });
             Future.delayed(Duration(milliseconds: animationDuration + 0), () {
               if (this.mounted) {
@@ -97,7 +107,8 @@ class _PodiumState extends State<Podium> {
         showToolTip = false;
         showPosition = false;
         position = null;
-        places = List.generate(placeValues.length, (index) => Place(PlaceValue("", 0), "", false));
+        places = List.generate(
+            placeValues.length, (index) => Place(PlaceValue("", 0), "", false));
       });
     }
   }
@@ -120,7 +131,9 @@ class _PodiumState extends State<Podium> {
                       fontFamily: "Roboto",
                       fontSize: 108,
                       fontWeight: FontWeight.w500,
-                      color: _getColor(placeValues.length - position, context).tiny(5).withAlpha(70),
+                      color: _getColor(placeValues.length - position, context)
+                          .tiny(5)
+                          .withAlpha(70),
                     ),
                   ),
                 )
@@ -128,35 +141,42 @@ class _PodiumState extends State<Podium> {
         ),
         Positioned(
           top: 10,
-          left: position == 1 ? 57 : (position == 4 || position == 6 ? 65 : (position == 7 ? 74 : 70)),
+          left: position == 1
+              ? 57
+              : (position == 4 || position == 6
+                  ? 65
+                  : (position == 7 ? 74 : 70)),
           child: position != null && placeValues != null
               ? AnimatedOpacity(
-            duration: Duration(milliseconds: 2000),
-            curve: Curves.easeInOut,
-            opacity: showPosition ? 1.0 : 0.0,
-            child: Text(
-              position == 1 ? "er" : "ème",
-              style: TextStyle(
-                fontFamily: "Roboto",
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
-                color: _getColor(placeValues.length - position, context).withAlpha(200),
-              ),
-            ),
-          )
+                  duration: Duration(milliseconds: 2000),
+                  curve: Curves.easeInOut,
+                  opacity: showPosition ? 1.0 : 0.0,
+                  child: Text(
+                    position == 1 ? "er" : "ème",
+                    style: TextStyle(
+                      fontFamily: "Roboto",
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                      color: _getColor(placeValues.length - position, context)
+                          .withAlpha(200),
+                    ),
+                  ),
+                )
               : Text(""),
         ),
         Align(
           alignment: Alignment.center,
           child: Padding(
-            padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 38.0, bottom: 10),
+            padding: const EdgeInsets.only(
+                left: 8.0, right: 8.0, top: 38.0, bottom: 0),
             child: Container(
               child: Column(
                 children: <Widget>[
                   Expanded(child: _buildBarChart(context)),
                   Padding(
                     padding: const EdgeInsets.only(top: 8.0),
-                    child: Text(widget.title),
+                    child: Text(widget.title,
+                        style: Theme.of(context).textTheme.bodyText1),
                   ),
                 ],
               ),
@@ -183,7 +203,9 @@ class _PodiumState extends State<Podium> {
                 BarChartRodData(
                   y: entry.value.placeValue.value,
                   width: 9,
-                  color: entry.value.highlight ? _getColor(entry.key, context) : Theme.of(context).cardTheme.color.tiny(10),
+                  color: entry.value.highlight
+                      ? _getColor(entry.key, context)
+                      : Theme.of(context).cardTheme.color.tiny(10),
                   backDrawRodData: BackgroundBarChartRodData(
                     show: false,
                     y: max.value,
@@ -211,7 +233,10 @@ class _PodiumState extends State<Podium> {
             ) {
               return BarTooltipItem(
                 showToolTip ? places[groupIndex].tooltip : "",
-                TextStyle(color: Theme.of(context).textTheme.bodyText1.color, fontSize: 10, fontFamily: "Raleway"),
+                TextStyle(
+                    color: Theme.of(context).textTheme.bodyText1.color,
+                    fontSize: 10,
+                    fontFamily: "Raleway"),
               );
             },
           ),
@@ -223,7 +248,8 @@ class _PodiumState extends State<Podium> {
 
   Color _getColor(int placeIndex, BuildContext context) {
     var podiumLength = placeValues.length;
-    if (placeIndex >= podiumLength - widget.promoted) return Colors.lightGreenAccent;
+    if (placeIndex >= podiumLength - widget.promoted)
+      return Colors.lightGreenAccent;
     if (placeIndex <= widget.relegated) return Colors.deepOrangeAccent;
     return Colors.blueAccent;
   }

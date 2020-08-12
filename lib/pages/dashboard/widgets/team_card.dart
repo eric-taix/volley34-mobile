@@ -99,7 +99,7 @@ class _TeamCardState extends State<TeamCard> {
   @override
   Widget build(BuildContext context) {
     var absDistance = widget.distance.abs() > 1 ? 1 : widget.distance.abs();
-    final double cardBodyHeight = widget.cardHeight - 20;
+    final double cardBodyHeight = widget.cardHeight - 30;
     return BlocBuilder<TeamClassificationBloc, TeamClassificationState>(
       cubit: _classificationBloc,
       builder: (context, state) {
@@ -108,9 +108,12 @@ class _TeamCardState extends State<TeamCard> {
           child: TitledCard(
             title: widget.team.name,
             bodyPadding: EdgeInsets.zero,
-            body: Container(
-              height: cardBodyHeight,
-              child: Row(children: _getPodiumWidget(state)),
+            body: Padding(
+              padding: const EdgeInsets.only(bottom: 8.0),
+              child: Container(
+                height: cardBodyHeight,
+                child: Row(children: _getPodiumWidget(state)),
+              ),
             ),
             onTap: _onTap(state),
           ),
