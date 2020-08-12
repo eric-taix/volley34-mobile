@@ -5,7 +5,7 @@ class ResultBar extends StatelessWidget {
   final MinMax minMax;
   final int diffValue;
   final bool isHost;
-  final double kHeight = 12;
+  final double kHeight = 8;
 
   const ResultBar(
       {@required this.minMax, @required this.diffValue, @required this.isHost});
@@ -17,7 +17,7 @@ class ResultBar extends StatelessWidget {
     return Center(
       child: CustomPaint(
         painter: _BarPainter(
-            color: Theme.of(context).accentColor,
+            color: Theme.of(context).textTheme.caption.color,
             widthOffset: diffValue / max,
             height: kHeight,
             isHost: isHost),
@@ -72,7 +72,7 @@ class _BarPainter extends CustomPainter {
           roundedLinePaint);
     }
     canvas.drawLine(
-        Offset(size.width / 2, -4), Offset(size.width / 2, 10), verticalLine);
+        Offset(size.width / 2, -5), Offset(size.width / 2, 10), verticalLine);
   }
 
   @override
