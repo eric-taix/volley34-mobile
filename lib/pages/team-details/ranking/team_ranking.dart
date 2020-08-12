@@ -113,19 +113,17 @@ class TeamRanking extends StatelessWidget {
     return Column(
       children: <Widget>[
         StatisticsWidget(
-            title: "Matchs gagnés",
+            title: "Matchs\ngagnés",
             wonPoints: teamStats.wonMatches,
             lostPoints: teamStats.lostMatches),
         SummaryWidget(title: "Scores", teamStats: teamStats),
         StatisticsWidget(
-            title: "Set pris",
+            title: "Sets pris",
             wonPoints: teamStats.wonSets,
             lostPoints: teamStats.lostSets),
+        EvolutionWidget(title: "Diff.\nde sets", evolution: setsDiffEvolution),
         EvolutionWidget(
-            title: "Ev. de la différence de sets",
-            evolution: setsDiffEvolution),
-        EvolutionWidget(
-            title: "Ev. de la différence de sets cumulée",
+            title: "Cumul diff.\nde sets",
             evolution: cumulativeSetsDiffEvolution),
         StatisticsWidget(
             title: "Points pris",
