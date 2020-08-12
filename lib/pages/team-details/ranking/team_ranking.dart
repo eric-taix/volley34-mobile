@@ -113,22 +113,25 @@ class TeamRanking extends StatelessWidget {
     return Column(
       children: <Widget>[
         StatisticsWidget(
-            title: "Matchs\ngagnés",
-            wonPoints: teamStats.wonMatches,
-            lostPoints: teamStats.lostMatches),
+          title: "Matchs\ngagnés",
+          wonPoints: teamStats.wonMatches,
+          maxPoints: teamStats.wonMatches + teamStats.lostMatches,
+        ),
         SummaryWidget(title: "Scores", teamStats: teamStats),
         StatisticsWidget(
-            title: "Sets pris",
-            wonPoints: teamStats.wonSets,
-            lostPoints: teamStats.lostSets),
+          title: "Sets pris",
+          wonPoints: teamStats.wonSets,
+          maxPoints: teamStats.wonSets + teamStats.lostSets,
+        ),
         EvolutionWidget(title: "Diff.\nde sets", evolution: setsDiffEvolution),
         EvolutionWidget(
             title: "Cumul diff.\nde sets",
             evolution: cumulativeSetsDiffEvolution),
         StatisticsWidget(
-            title: "Points pris",
-            wonPoints: teamStats.wonPoints,
-            lostPoints: teamStats.lostPoints),
+          title: "Points pris",
+          wonPoints: teamStats.wonPoints,
+          maxPoints: teamStats.wonPoints + teamStats.lostPoints,
+        ),
       ],
     );
   }

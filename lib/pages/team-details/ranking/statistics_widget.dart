@@ -5,10 +5,17 @@ class StatisticsWidget extends StatelessWidget {
   final String title;
   final int wonPoints;
   final int lostPoints;
+  final int maxPoints;
 
   static final double miniGraphSize = 60;
 
-  const StatisticsWidget({Key key, @required this.wonPoints, @required this.lostPoints, @required this.title}) : super(key: key);
+  const StatisticsWidget(
+      {Key key,
+      @required this.wonPoints,
+      @required this.lostPoints,
+      @required this.title,
+      @required this.maxPoints})
+      : super(key: key);
 
   Widget _buildRatio(BuildContext context) {
     return RichText(
@@ -22,7 +29,9 @@ class StatisticsWidget extends StatelessWidget {
           color: Theme.of(context).textTheme.bodyText2.color,
         ),
         children: <TextSpan>[
-          new TextSpan(text: ' / ${wonPoints + lostPoints}', style: TextStyle(fontSize: 12, fontWeight: FontWeight.normal)),
+          new TextSpan(
+              text: ' / ${(maxPoints ?? lostPoints)}',
+              style: TextStyle(fontSize: 12, fontWeight: FontWeight.normal)),
         ],
       ),
     );
@@ -34,7 +43,7 @@ class StatisticsWidget extends StatelessWidget {
       width: miniGraphSize,
       child: ArcGraph(
         minValue: 0,
-        maxValue: (wonPoints + lostPoints).toDouble(),
+        maxValue: (maxPoints ?? lostPoints).toDouble(),
         value: wonPoints.toDouble(),
         lineWidth: 6,
         leftTitle: LeftTitle(
@@ -43,7 +52,9 @@ class StatisticsWidget extends StatelessWidget {
           style: Theme.of(context).textTheme.bodyText1,
         ),
         valueBuilder: (value, minValue, maxValue) {
-          var percentage = maxValue != 0 ? "${(((value - minValue) / maxValue) * 100).toStringAsFixed(1)}%" : "- -";
+          var percentage = maxValue != 0
+              ? "${(((value - minValue) / maxValue) * 100).toStringAsFixed(1)}%"
+              : "- -";
           return Text(percentage);
         },
       ),
@@ -56,7 +67,10 @@ class StatisticsWidget extends StatelessWidget {
       padding: EdgeInsets.symmetric(vertical: 20.0),
       child: Row(
         children: <Widget>[
-          Expanded(child: Text(title, textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodyText1)),
+          Expanded(
+              child: Text(title,
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.bodyText1)),
           Expanded(child: _buildRatio(context)),
           Expanded(child: _buildGraph(context)),
         ],
