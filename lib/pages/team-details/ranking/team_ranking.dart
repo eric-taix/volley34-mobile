@@ -8,7 +8,6 @@ import 'package:v34/models/classication.dart';
 import 'package:v34/models/match_result.dart';
 import 'package:v34/models/team.dart';
 import 'package:v34/pages/club-details/blocs/club_team.bloc.dart';
-import 'package:v34/pages/team-details/information_divider.dart';
 import 'package:v34/pages/team-details/ranking/statistics_widget.dart';
 import 'package:v34/pages/team-details/ranking/summary_widget.dart';
 
@@ -35,6 +34,7 @@ class _TeamRankingState extends State<TeamRanking> {
 
   @override
   void initState() {
+    super.initState();
     Future.delayed(Duration(milliseconds: 800), () {
       setState(() {
         _cupOpacity = 1;
@@ -106,41 +106,79 @@ class _TeamRankingState extends State<TeamRanking> {
     else if (widget.classification.teamsClassifications.length -
             teamStats.rank <
         widget.classification.relegated) title = "Reléguée";
-    return FractionallySizedBox(
-      widthFactor: 0.8,
-      child: Stack(
-        children: [
-          Container(
-            alignment: Alignment.bottomRight,
-            height: 50,
-            child: AnimatedOpacity(
-              opacity: _cupOpacity,
-              duration: Duration(milliseconds: 1800),
-              curve: Curves.easeInOut,
-              child: FaIcon(
-                FontAwesomeIcons.trophy,
-                size: 44,
-                color: _getRankColor(teamStats.rank),
+    return Column(
+      children: [
+        FractionallySizedBox(
+          widthFactor: 0.8,
+          child: Stack(
+            children: [
+              Container(
+                alignment: Alignment.bottomRight,
+                height: 50,
+                child: AnimatedOpacity(
+                  opacity: _cupOpacity,
+                  duration: Duration(milliseconds: 1800),
+                  curve: Curves.easeInOut,
+                  child: FaIcon(
+                    FontAwesomeIcons.trophy,
+                    size: 44,
+                    color: _getRankColor(teamStats.rank),
+                  ),
+                ),
               ),
-            ),
+              Container(
+                alignment: Alignment.bottomLeft,
+                height: 150,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Expanded(
+                        child: PodiumWidget(
+                            title: title,
+                            classification: widget.classification,
+                            currentlyDisplayed: true,
+                            highlightedTeamCode: widget.team.code)),
+                  ],
+                ),
+              ),
+            ],
           ),
-          Container(
-            alignment: Alignment.bottomLeft,
-            height: 150,
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Expanded(
-                    child: PodiumWidget(
-                        title: title,
-                        classification: widget.classification,
-                        currentlyDisplayed: true,
-                        highlightedTeamCode: widget.team.code)),
-              ],
-            ),
-          ),
-        ],
-      ),
+        ),
+        ...widget.classification.teamsClassifications.reversed
+            .map((classificationSynthesis) {
+          return Padding(
+            padding:
+                const EdgeInsets.only(left: 28.0, right: 28, top: 6, bottom: 6),
+            child: Container(
+                alignment: Alignment.centerLeft,
+                child: Row(
+                  children: [
+                    Expanded(
+                      flex: 5,
+                      child: Text(
+                        classificationSynthesis.name,
+                        overflow: TextOverflow.fade,
+                        maxLines: 1,
+                        style:
+                            classificationSynthesis.teamCode == widget.team.code
+                                ? Theme.of(context).textTheme.bodyText2
+                                : Theme.of(context).textTheme.bodyText1,
+                      ),
+                    ),
+                    Expanded(
+                        flex: 1,
+                        child: Text(
+                          "${classificationSynthesis.wonSets} pts",
+                          style: classificationSynthesis.teamCode ==
+                                  widget.team.code
+                              ? Theme.of(context).textTheme.bodyText2
+                              : Theme.of(context).textTheme.bodyText1,
+                        ))
+                  ],
+                )),
+          );
+        }).toList()
+      ],
     );
   }
 

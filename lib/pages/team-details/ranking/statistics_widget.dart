@@ -12,7 +12,7 @@ class StatisticsWidget extends StatelessWidget {
   const StatisticsWidget(
       {Key key,
       @required this.wonPoints,
-      @required this.lostPoints,
+      this.lostPoints,
       @required this.title,
       @required this.maxPoints})
       : super(key: key);
