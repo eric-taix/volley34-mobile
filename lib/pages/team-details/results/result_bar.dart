@@ -17,7 +17,10 @@ class ResultBar extends StatelessWidget {
     return Center(
       child: CustomPaint(
         painter: _BarPainter(
-            widthOffset: diffValue / max, height: kHeight, isHost: isHost),
+            color: Theme.of(context).accentColor,
+            widthOffset: diffValue / max,
+            height: kHeight,
+            isHost: isHost),
         child: Container(),
       ),
     );
@@ -35,8 +38,10 @@ class _BarPainter extends CustomPainter {
   final double widthOffset;
   final double height;
   final bool isHost;
+  final Color color;
 
   _BarPainter({
+    @required this.color,
     @required this.widthOffset,
     @required this.height,
     @required this.isHost,
@@ -50,15 +55,24 @@ class _BarPainter extends CustomPainter {
       ..strokeWidth = height
       ..strokeCap = StrokeCap.round
       ..style = PaintingStyle.stroke;
+    Paint verticalLine = Paint()
+      ..color = color
+      ..strokeWidth = height / 2
+      ..strokeCap = StrokeCap.square
+      ..style = PaintingStyle.stroke;
     if (offset > 0) {
       canvas.drawLine(
-          Offset((size.width) / 2 + (height / 2), 0),
-          Offset(size.width / 2 + ((size.width / 2) * offset), 0),
+          Offset(size.width / 2 + (height / 2), height / 4),
+          Offset(size.width / 2 + ((size.width / 2) * offset), height / 4),
           roundedLinePaint);
     } else {
-      canvas.drawLine(Offset(size.width / 2 + ((size.width / 2) * offset), 0),
-          Offset((size.width) / 2 - (height / 2), 0), roundedLinePaint);
+      canvas.drawLine(
+          Offset(size.width / 2 + ((size.width / 2) * offset), height / 4),
+          Offset((size.width) / 2 - (height / 2), height / 4),
+          roundedLinePaint);
     }
+    canvas.drawLine(
+        Offset(size.width / 2, -4), Offset(size.width / 2, 10), verticalLine);
   }
 
   @override
