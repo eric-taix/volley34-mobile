@@ -33,7 +33,7 @@ class ResultCard extends StatelessWidget {
       child: FluidExpansionCard(
         topCardHeight: 100,
         topCardWidget: _buildResult(context),
-        bottomCardHeight: (countSet + 1) * 40.0 + 18,
+        bottomCardHeight: (countSet + 1) * 41.0 + 18,
         bottomCardWidget: Padding(
           padding: const EdgeInsets.only(top: 18.0),
           child: _buildResultDetails(context),
