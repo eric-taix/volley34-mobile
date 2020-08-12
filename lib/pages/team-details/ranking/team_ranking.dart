@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:v34/commons/competition_badge.dart';
 import 'package:v34/commons/paragraph.dart';
 import 'package:v34/commons/podium_widget.dart';
@@ -13,7 +14,7 @@ import 'package:v34/pages/team-details/ranking/summary_widget.dart';
 
 import 'evolution_widget.dart';
 
-class TeamRanking extends StatelessWidget {
+class TeamRanking extends StatefulWidget {
   final Team team;
   final ClassificationSynthesis classification;
   final List<MatchResult> results;
@@ -26,16 +27,32 @@ class TeamRanking extends StatelessWidget {
       : super(key: key);
 
   @override
+  _TeamRankingState createState() => _TeamRankingState();
+}
+
+class _TeamRankingState extends State<TeamRanking> {
+  double _cupOpacity = 0;
+
+  @override
+  void initState() {
+    Future.delayed(Duration(milliseconds: 800), () {
+      setState(() {
+        _cupOpacity = 1;
+      });
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    int teamIndex = classification.teamsClassifications
-        .indexWhere((element) => element.teamCode == team.code);
+    int teamIndex = widget.classification.teamsClassifications
+        .indexWhere((element) => element.teamCode == widget.team.code);
     ClassificationTeamSynthesis stats =
-        classification.teamsClassifications[teamIndex];
+        widget.classification.teamsClassifications[teamIndex];
     return SliverList(
         delegate: SliverChildListDelegate([
       _buildCompetitionDescription(context),
       Paragraph(title: "Classement"),
-      _buildPodium(stats),
+      _buildPodium(context, stats),
       Paragraph(title: "Statistiques"),
       _buildStats(context, stats),
     ]));
@@ -50,14 +67,15 @@ class TeamRanking extends StatelessWidget {
           Text(_getClassificationCategory(),
               style: Theme.of(context).textTheme.headline4),
           CompetitionBadge(
-              competitionCode: classification.competitionCode, deltaSize: 0.8),
+              competitionCode: widget.classification.competitionCode,
+              deltaSize: 0.8),
         ],
       ),
     );
   }
 
   String _getClassificationCategory() {
-    switch (classification.division) {
+    switch (widget.classification.division) {
       case "EX":
         return "Excellence";
       case "HO":
@@ -74,40 +92,75 @@ class TeamRanking extends StatelessWidget {
   }
 
   String _getPool() {
-    if (classification.pool == "0")
+    if (widget.classification.pool == "0")
       return "";
     else
-      return "Poule ${classification.pool}";
+      return "Poule ${widget.classification.pool}";
   }
 
-  Widget _buildPodium(ClassificationTeamSynthesis teamStats) {
+  Widget _buildPodium(
+      BuildContext context, ClassificationTeamSynthesis teamStats) {
     String title = "";
-    if (teamStats.rank <= classification.promoted)
+    if (teamStats.rank <= widget.classification.promoted)
       title = "Promue";
-    else if (classification.teamsClassifications.length - teamStats.rank <
-        classification.relegated) title = "Reléguée";
+    else if (widget.classification.teamsClassifications.length -
+            teamStats.rank <
+        widget.classification.relegated) title = "Reléguée";
     return FractionallySizedBox(
-      widthFactor: 0.7,
-      child: Container(
-        height: 150,
-        child: Row(
-          children: <Widget>[
-            Expanded(
-                child: PodiumWidget(
-                    title: title,
-                    classification: classification,
-                    currentlyDisplayed: true,
-                    highlightedTeamCode: team.code)),
-          ],
-        ),
+      widthFactor: 0.8,
+      child: Stack(
+        children: [
+          Container(
+            alignment: Alignment.bottomRight,
+            height: 50,
+            child: AnimatedOpacity(
+              opacity: _cupOpacity,
+              duration: Duration(milliseconds: 1800),
+              curve: Curves.easeInOut,
+              child: FaIcon(
+                FontAwesomeIcons.trophy,
+                size: 44,
+                color: _getRankColor(teamStats.rank),
+              ),
+            ),
+          ),
+          Container(
+            alignment: Alignment.bottomLeft,
+            height: 150,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Expanded(
+                    child: PodiumWidget(
+                        title: title,
+                        classification: widget.classification,
+                        currentlyDisplayed: true,
+                        highlightedTeamCode: widget.team.code)),
+              ],
+            ),
+          ),
+        ],
       ),
     );
+  }
+
+  Color _getRankColor(int rank) {
+    switch (rank) {
+      case 1:
+        return Color(0xffFFD700);
+      case 2:
+        return Color(0xffC0C0C0);
+      case 3:
+        return Color(0xff796221);
+      default:
+        return Colors.transparent;
+    }
   }
 
   Widget _buildStats(
       BuildContext context, ClassificationTeamSynthesis teamStats) {
     List<double> setsDiffEvolution =
-        TeamBloc.computePointsDiffs(results, team.code);
+        TeamBloc.computePointsDiffs(widget.results, widget.team.code);
     List<double> cumulativeSetsDiffEvolution =
         TeamBloc.computeCumulativePointsDiffs(setsDiffEvolution);
     return Column(
