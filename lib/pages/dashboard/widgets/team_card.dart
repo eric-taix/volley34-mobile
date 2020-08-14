@@ -91,7 +91,7 @@ class _TeamCardState extends State<TeamCard> {
           builder: (_) => TeamDetailPage(
               team: widget.team,
               classifications: state.classifications,
-              club: widget.club)).then((_) => widget.onFavoriteChange);
+              club: widget.club)).then((_) => widget.onFavoriteChange());
     } else
       return null;
   }
