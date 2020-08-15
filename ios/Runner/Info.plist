@@ -41,5 +41,7 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>NSCalendarsUsageDescription</key>
+    <string>Permet d'ajouter des événements (matchs, etc) à votre calendrier.</string>
 </dict>
 </plist>
