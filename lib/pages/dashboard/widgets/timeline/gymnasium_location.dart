@@ -69,12 +69,12 @@ class GymnasiumLocationState extends State<GymnasiumLocation> {
                         ListTile(
                           onTap: () {
                             if (route) {
-                              availableMaps.first.showDirections(
+                              map.showDirections(
                                 destination: coordinates,
                                 destinationTitle: title
                               );
                             } else {
-                              availableMaps.first.showMarker(
+                              map.showMarker(
                                 coords: coordinates,
                                 title: title
                               );
@@ -105,8 +105,8 @@ class GymnasiumLocationState extends State<GymnasiumLocation> {
       children: [
         Container(
           padding: EdgeInsets.only(bottom: 8.0),
+          margin: EdgeInsets.symmetric(horizontal: 16.0),
           height: 250,
-          width: 300,
           child: GestureDetector(
             onTap: () => _launchMap(state, false),
             child: FlutterMap(
@@ -136,12 +136,15 @@ class GymnasiumLocationState extends State<GymnasiumLocation> {
         ),
         Wrap(
           direction: Axis.horizontal,
+          alignment: WrapAlignment.center,
+          runAlignment: WrapAlignment.center,
+          spacing: 8.0,
           children: [
             FlatButton.icon(
               onPressed: () => _launchMap(state, true),
-              icon: Icon(Icons.directions_car),
+              icon: Icon(Icons.directions),
               label: Text("Itinéraire"),
-              color: Theme.of(context).cardTheme.titleBackgroundColor(context),
+              color: Theme.of(context).cardTheme.titleBackgroundColor(context).tiny(10),
             ),
             FlatButton.icon(
               onPressed: () => _addEventToCalendar(),

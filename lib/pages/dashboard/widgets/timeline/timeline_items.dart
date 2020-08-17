@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
+import 'package:v34/commons/router.dart';
 import 'package:v34/models/event.dart';
 import 'package:v34/pages/dashboard/widgets/timeline/event_date.dart';
 import 'package:v34/pages/dashboard/widgets/timeline/gymnasium_location.dart';
 import 'package:v34/pages/dashboard/widgets/timeline/match_title.dart';
+
+import 'event_details.dart';
 
 const double CardMargin = 19.0;
 
@@ -107,35 +110,12 @@ class _MatchTimelineItem extends TimelineItemWidget {
           _Place(event.place, event.date)
         ],
       ),
-      onTap: () => _showEventDetailsDialog(context),
+      onTap: () => _showEventDetails(context),
     );
   }
 
-  Future<void> _showEventDetailsDialog(BuildContext context) async {
-    showDialog(
-      context: context,
-      builder: (context) => _eventDetailsDialog(context),
-    );
-  }
-
-  Widget _eventDetailsDialog(BuildContext context) {
-    return SimpleDialog(
-      title: MatchTitle(event: event),
-      backgroundColor: Theme.of(context).cardTheme.color,
-      elevation: 8.0,
-      contentPadding: const EdgeInsets.all(10.0),
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(bottom: 16.0),
-          child: EventDate(date: event.date, fullFormat: true),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(bottom: 16.0),
-          child: Text("Lieu : ${event.place}", textAlign: TextAlign.center),
-        ),
-        GymnasiumLocation(event: event)
-      ],
-    );
+  void _showEventDetails(BuildContext context) {
+    Router.push(context: context, builder: (context) => EventDetails(event: event));
   }
 
   @override
