@@ -59,6 +59,7 @@ class GymnasiumLocationState extends State<GymnasiumLocation> {
       } else {
         showModalBottomSheet(
           context: context,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.only(topLeft: Radius.circular(8), topRight: Radius.circular(8))),
           builder: (BuildContext context) {
             return SafeArea(
               child: SingleChildScrollView(
@@ -80,7 +81,7 @@ class GymnasiumLocationState extends State<GymnasiumLocation> {
                               );
                             }
                           },
-                          title: Text(map.mapName),
+                          title: Text(map.mapName, style: Theme.of(context).textTheme.bodyText1.apply(fontSizeDelta: 1.5)),
                           leading: Image(
                             image: map.icon,
                             height: 30.0,
