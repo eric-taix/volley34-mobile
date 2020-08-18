@@ -30,7 +30,7 @@ class Timeline extends StatelessWidget {
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      EventDate(item.date),
+                      EventDate(date: item.date),
                       Padding(
                         padding: const EdgeInsets.only(right: 8.0),
                         child: Line(

@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
+import 'package:v34/commons/router.dart';
 import 'package:v34/models/event.dart';
+import 'package:v34/pages/dashboard/widgets/timeline/event_date.dart';
+import 'package:v34/pages/dashboard/widgets/timeline/gymnasium_location.dart';
+import 'package:v34/pages/dashboard/widgets/timeline/match_title.dart';
+
+import 'event_details.dart';
 
 const double CardMargin = 19.0;
 
@@ -13,8 +19,7 @@ abstract class TimelineItemWidget extends StatelessWidget {
   factory TimelineItemWidget.from(Event event) {
     switch (event.type) {
       case EventType.Match:
-        return _MatchTimelineItem(
-            event.hostName, event.visitorName, event.place, event.date);
+        return _MatchTimelineItem(event);
       case EventType.Meeting:
         return _MeetingTimelineItem(event.name, event.place, event.date);
       case EventType.Tournament:
@@ -93,44 +98,24 @@ class _MeetingTimelineItem extends TimelineItemWidget {
 }
 
 class _MatchTimelineItem extends TimelineItemWidget {
-  final String host;
-  final String visitor;
-  final String place;
-  final DateTime dateTime;
-  _MatchTimelineItem(this.host, this.visitor, this.place, this.dateTime);
+  final Event event;
+  _MatchTimelineItem(this.event);
 
   @override
   Widget build(BuildContext context) {
-    return _TimelineItemCard(
-      children: <Widget>[
-        Text(
-          host,
-          maxLines: 2,
-          overflow: TextOverflow.ellipsis,
-          textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.bodyText2.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
-        ),
-        Padding(
-          padding: const EdgeInsets.all(4.0),
-          child: Text("reçoit", style: Theme.of(context).textTheme.bodyText1),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(bottom: 8.0),
-          child: Text(
-            visitor,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.bodyText2.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
-          ),
-        ),
-        _Place(place, dateTime)
-      ],
+    return GestureDetector(
+      child: _TimelineItemCard(
+        children: <Widget>[
+          MatchTitle(event: event),
+          _Place(event.place, event.date)
+        ],
+      ),
+      onTap: () => _showEventDetails(context),
     );
+  }
+
+  void _showEventDetails(BuildContext context) {
+    Router.push(context: context, builder: (context) => EventDetails(event: event));
   }
 
   @override

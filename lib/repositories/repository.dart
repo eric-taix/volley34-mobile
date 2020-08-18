@@ -170,4 +170,9 @@ class Repository {
   Future<List<Gymnasium>> loadAllGymnasiums() async {
     return _gymnasiumProvider.loadAllGymnasiums();
   }
+
+  /// Load a gymnasium
+  Future<Gymnasium> loadGymnasium(String gymnasiumCode) async {
+    return _gymnasiumProvider.loadGymnasium(gymnasiumCode);
+  }
 }

@@ -14,11 +14,13 @@ class Event extends Equatable {
 
   // Others
   final String name;
+  final String gymnasiumCode;
 
   Event(
       {this.date,
       this.name,
       this.place,
+        this.gymnasiumCode,
       this.type,
       this.hostName,
       this.visitorName});
@@ -29,6 +31,7 @@ class Event extends Equatable {
         date: DateTime.parse(json["DateMatch"]),
         name: json["CalendarEventName"] ?? json["LibelleMatch"],
         place: json["NomGymnase"],
+        gymnasiumCode : json["GymnaseCode"],
         hostName: json["NomLocaux"],
         visitorName: json["NomVisiteurs"],
         type: EventType.Match,

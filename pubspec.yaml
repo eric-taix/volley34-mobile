@@ -43,6 +43,9 @@ dependencies:
   auto_size_text: ^2.1.0
   slimy_card: ^1.0.4
   flare_flutter: ^2.0.5
+  flutter_map: ^0.10.1
+  map_launcher: ^0.12.0
+  add_2_calendar: ^1.4.0
 
 dev_dependencies:
   flutter_test:
@@ -62,6 +65,7 @@ flutter:
     - assets/circle_spritesheet.png
     - assets/shield.svg
     - assets/flare/
+    - assets/gymnasium_marker.png
   fonts:
     - family: Raleway
       fonts:

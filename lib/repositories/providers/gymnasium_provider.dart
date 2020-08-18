@@ -14,4 +14,13 @@ class GymnasiumProvider {
       throw Exception('Impossible de récupérer les gymnases');
     }
   }
+
+  Future<Gymnasium> loadGymnasium(String gymnasiumCode) async {
+    Response response = await dio.get("/gymnases/$gymnasiumCode", options: buildConfigurableCacheOptions());
+    if (response.statusCode == 200) {
+      return Gymnasium.fromJson(response.data);
+    } else {
+      throw Exception('Impossible de récupérer le gymnase');
+    }
+  }
 }
