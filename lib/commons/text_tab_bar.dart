@@ -12,29 +12,23 @@ class TextTabBar extends StatelessWidget with PreferredSizeWidget {
     return Padding(
       padding: const EdgeInsets.only(top: 0),
       child: Container(
-        //color: Theme.of(context).primaryColor,
-        child: new SafeArea(
-          top: true,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: <Widget>[
-              TabBar(
-                isScrollable: true,
-                indicatorPadding: EdgeInsets.symmetric(horizontal: 20.0),
-                tabs: tabs
-                    .map(
-                      (tab) => Container(
-                        height: 20,
-                        child: Align(
-                          alignment: Alignment.bottomCenter,
-                          child: Text(tab.title),
-                        ),
-                      ),
-                    )
-                    .toList(),
-              ),
-            ],
-          ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: <Widget>[
+            TabBar(
+              isScrollable: true,
+              indicatorPadding: EdgeInsets.symmetric(horizontal: 20.0),
+              tabs: tabs.map((tab) {
+                return Container(
+                  height: 20,
+                  child: Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Text(tab.title),
+                  ),
+                );
+              }).toList(),
+            ),
+          ],
         ),
       ),
     );
@@ -102,7 +96,8 @@ class _DashedUnderlinePainter extends BoxPainter {
     assert(configuration.size != null);
     final Rect rect = offset & configuration.size;
     final TextDirection textDirection = configuration.textDirection;
-    final Rect indicator = _indicatorRectFor(rect, textDirection).deflate(borderSide.width / 2.0);
+    final Rect indicator =
+        _indicatorRectFor(rect, textDirection).deflate(borderSide.width / 2.0);
     final Paint paint = borderSide.toPaint()..strokeCap = StrokeCap.round;
 
     // bl.dx     (bl.dx + br.dx)/2        br.dx
@@ -110,11 +105,24 @@ class _DashedUnderlinePainter extends BoxPainter {
     // startX = (bl.dx + br.dx - w)/2
     // endX = (bl.dx + br.dx + w)/2
 
-    double startX = decoration.width != null ? (indicator.bottomLeft.dx + indicator.bottomRight.dx - decoration.width) / 2 : indicator.bottomLeft.dx;
-    double endX = decoration.width != null ? (indicator.bottomLeft.dx + indicator.bottomRight.dx + decoration.width) / 2 : indicator.bottomRight.dx;
+    double startX = decoration.width != null
+        ? (indicator.bottomLeft.dx +
+                indicator.bottomRight.dx -
+                decoration.width) /
+            2
+        : indicator.bottomLeft.dx;
+    double endX = decoration.width != null
+        ? (indicator.bottomLeft.dx +
+                indicator.bottomRight.dx +
+                decoration.width) /
+            2
+        : indicator.bottomRight.dx;
 
     while (startX < endX) {
-      canvas.drawLine(Offset(startX, indicator.bottomLeft.dy), Offset(startX + decoration.dashWidth, indicator.bottomRight.dy), paint);
+      canvas.drawLine(
+          Offset(startX, indicator.bottomLeft.dy),
+          Offset(startX + decoration.dashWidth, indicator.bottomRight.dy),
+          paint);
       startX += decoration.dashWidth + decoration.dashSpace;
     }
   }
