@@ -1,0 +1,15 @@
+                    GNU GENERAL PUBLIC LICENSE
+                       Version 3, 29 June 2007
+
+
+# Préambule
+
+La licence GNU General Public License vous accorde le droits d'utiliser, de modifier et de partager ce travail à des fins
+commerciales ou non. Cependant étant une licence de type CopyLeft, elle vous oblige aussi à placer votre propre travail
+sous licence GNU General Public License. Pour consulter l'intégralité du contenu de la licence, consultez le site https://fsf.org/.
+
+
+
+# Sources
+
+L'intégralité du code source de cette application mobile est consultable à l'adresse suivante: https://github.com/eric-taix/volley34-mobile
