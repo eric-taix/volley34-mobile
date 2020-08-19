@@ -43,6 +43,7 @@ class TitledCard extends StatelessWidget {
                             child: icon,
                           ),
                         Expanded(child: Text(title, style: Theme.of(context).textTheme.caption, overflow: TextOverflow.ellipsis,)),
+                        Icon(Icons.arrow_forward_ios, color: Theme.of(context).textTheme.caption.color, size: 12),
                       ],
                     ),
                   ),

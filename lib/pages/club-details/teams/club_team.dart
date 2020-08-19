@@ -56,12 +56,15 @@ class _ClubTeamState extends State<ClubTeam> {
               )),
       buttonBar: ButtonBar(
         children: <Widget>[
-          FavoriteIcon(
-            widget.team.code,
-            FavoriteType.Team,
-            false,
-            padding: EdgeInsets.zero,
-            reloadFavoriteWhenUpdate: true,
+          Padding(
+            padding: const EdgeInsets.only(right: 12.0),
+            child: FavoriteIcon(
+              widget.team.code,
+              FavoriteType.Team,
+              false,
+              padding: EdgeInsets.zero,
+              reloadFavoriteWhenUpdate: true,
+            ),
           ),
         ],
       ),
