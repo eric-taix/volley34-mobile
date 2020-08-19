@@ -56,8 +56,8 @@ class _PreferencesPageState extends State<PreferencesPage> {
           Icons.brightness_6,
           color: Theme.of(context).accentColor,
         ),
-        trailing: Text(
-          "Mode sombre automatique activé",
+        subtitle: Text(
+          "Mode sombre automatique",
           style: TextStyle(
               color: Theme.of(context).textTheme.bodyText2.color, fontSize: 10),
         ),
@@ -66,6 +66,10 @@ class _PreferencesPageState extends State<PreferencesPage> {
       return SwitchListTile(
           title:
               Text("Mode sombre", style: Theme.of(context).textTheme.bodyText2),
+          subtitle: Text(state.useDarkTheme ? "Mode sombre actif" : "Mode sombre inactif",
+              style: TextStyle(
+                  color: Theme.of(context).textTheme.bodyText2.color,
+                  fontSize: 10)),
           secondary: Icon(
             Icons.brightness_6,
             color: Theme.of(context).accentColor,
