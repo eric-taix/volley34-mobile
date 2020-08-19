@@ -6,6 +6,7 @@ class AppTheme {
   static ThemeData darkTheme() {
     return ThemeData(
       canvasColor: Color(0xFF262C41),
+      scaffoldBackgroundColor: Color(0xFF262C41),
       highlightColor: Colors.transparent,
       primarySwatch: Colors.blue,
       accentColor: Color(0xFF979DB2),
@@ -120,6 +121,7 @@ class AppTheme {
   static ThemeData lightTheme() {
     return ThemeData(
         canvasColor: Color(0xfff3f5ff),
+        scaffoldBackgroundColor: Color(0xfff3f5ff),
         highlightColor: Colors.transparent,
         primarySwatch: Colors.blue,
         accentColor: Color(0xff4c4f59),

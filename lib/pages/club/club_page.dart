@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:search_page/search_page.dart';
 import 'package:v34/commons/loading.dart';
 import 'package:v34/commons/page/main_page.dart';
 import 'package:v34/models/club.dart';
@@ -60,6 +61,28 @@ class _ClubPageState extends State<ClubPage>
   Widget build(BuildContext context) {
     return MainPage(
       title: "Clubs",
+      actions: [
+        IconButton(
+          icon: Icon(Icons.search),
+          onPressed: () => showSearch(
+            context: context,
+            delegate: SearchPage<Club>(
+              items: _clubs,
+              showItemsOnEmpty: true,
+              searchLabel: "Rechercher un club",
+              failure: Center(
+                child: Text("Aucun club trouvé !"),
+              ),
+              filter: (club) => [
+                club.name,
+                club.shortName,
+                club.code,
+              ],
+              builder: (club) => ClubCard(club, 1),
+            ),
+          ),
+        ),
+      ],
       sliver: _loading
           ? SliverToBoxAdapter(child: Center(child: Loading()))
           : AnimationLimiter(
