@@ -114,7 +114,7 @@ class GymnasiumLocationState extends State<GymnasiumLocation> {
               options: MapOptions(
                 center: LatLng(state.gymnasium.latitude, state.gymnasium.longitude),
                 zoom: 13.0,
-                interactive: false,
+                interactive: true,
               ),
               layers: [
                 TileLayerOptions(

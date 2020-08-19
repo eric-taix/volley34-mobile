@@ -1,13 +1,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:search_page/search_page.dart';
 import 'package:v34/commons/loading.dart';
+import 'package:v34/commons/no_data.dart';
 import 'package:v34/commons/page/main_page.dart';
+import 'package:v34/commons/text_tab_bar.dart';
 import 'package:v34/models/club.dart';
 import 'package:v34/pages/club/club_card.dart';
 import 'package:v34/repositories/repository.dart';
+import 'package:latlong/latlong.dart';
 
 class ClubPage extends StatefulWidget {
   @override
@@ -59,6 +63,7 @@ class _ClubPageState extends State<ClubPage>
 
   @override
   Widget build(BuildContext context) {
+    List<TextTab> tabs = _buildTabs();
     return MainPage(
       title: "Clubs",
       actions: [
@@ -84,28 +89,78 @@ class _ClubPageState extends State<ClubPage>
         ),
       ],
       sliver: _loading
-          ? SliverToBoxAdapter(child: Center(child: Loading()))
-          : AnimationLimiter(
-              child: SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  (context, index) {
-                    return index < _clubs.length
-                        ? AnimationConfiguration.staggeredList(
-                            position: index,
-                            duration: const Duration(milliseconds: 375),
-                            child: SlideAnimation(
-                              horizontalOffset: 50.0,
-                              child: FadeInAnimation(
-                                child: ClubCard(_clubs[index], index),
-                              ),
-                            ),
-                          )
-                        : SizedBox(height: 86);
-                  },
-                  childCount: _clubs.length + 1,
+          ? SliverFillRemaining(child: Center(child: Loading()))
+          : SliverFillRemaining(fillOverscroll: true,
+              hasScrollBody: false,
+              child: DefaultTabController(
+                length: 2,
+                child: Scaffold(
+                  appBar: PreferredSize(
+                    preferredSize: Size.fromHeight(kToolbarHeight-30),
+                    child: TextTabBar(
+                      tabs: tabs,
+                    ),
+                  ),
+                  body: TabBarView(
+                    children: [
+                      ...tabs.map((tab) => tab.child).toList(),
+                    ],
+                  ),
                 ),
               ),
             ),
+    );
+  }
+
+  List<TextTab> _buildTabs() {
+    return [
+      TextTab("Liste", _buildList()),
+      TextTab("Carte", _buildMap()),
+    ];
+  }
+
+  Widget _buildList() {
+    return ListView.builder(
+      itemBuilder: (context, index) {
+          return index < _clubs.length
+              ? ClubCard(_clubs[index], index)
+              : SizedBox(height: 86);
+        },
+        itemCount: _clubs.length + 1,
+    );
+  }
+
+  Widget _buildMap() {
+    return Padding(
+      padding: const EdgeInsets.all(56.0),
+      child: Container(
+        height: 100,
+        child: FlutterMap(
+          options: new MapOptions(
+            center: new LatLng(51.5, -0.09),
+            zoom: 13.0,
+          ),
+          layers: [
+            new TileLayerOptions(
+                urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                subdomains: ['a', 'b', 'c']
+            ),
+            new MarkerLayerOptions(
+              markers: [
+                new Marker(
+                  width: 80.0,
+                  height: 80.0,
+                  point: new LatLng(51.5, -0.09),
+                  builder: (ctx) =>
+                  new Container(
+                    child: new FlutterLogo(),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
