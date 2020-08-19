@@ -46,6 +46,7 @@ dependencies:
   flutter_map: ^0.10.1
   map_launcher: ^0.12.0
   add_2_calendar: ^1.4.0
+  flutter_markdown: ^0.4.3
 
 dev_dependencies:
   flutter_test:
@@ -55,6 +56,8 @@ flutter:
   uses-material-design: true
 
   assets:
+    - assets/gpl_licence.txt
+    - assets/about.txt
     - assets/dashboard.svg
     - assets/competition.svg
     - assets/competition-filled.svg
@@ -66,6 +69,7 @@ flutter:
     - assets/shield.svg
     - assets/flare/
     - assets/gymnasium_marker.png
+    - assets/logo.png
   fonts:
     - family: Raleway
       fonts:

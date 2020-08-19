@@ -18,16 +18,14 @@ class MainPage extends StatelessWidget {
           snap: false,
           floating: true,
           centerTitle: true,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.only(bottomLeft: Radius.circular(10), bottomRight: Radius.circular(10))),
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(10),
+                  bottomRight: Radius.circular(10))),
           title: Text(title),
-          actions: <Widget>[IconButton(icon: Icon(Icons.settings), onPressed: () => _gotoPreferencesPage(context))],
         ),
         sliver
       ],
     );
-  }
-
-  void _gotoPreferencesPage(BuildContext context) {
-    Navigator.of(context).push(MaterialPageRoute<void>(builder: (context) => PreferencesPage()));
   }
 }
