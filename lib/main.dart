@@ -23,6 +23,7 @@ import 'package:v34/theme.dart';
 
 import 'commons/blocs/preferences_bloc.dart';
 import 'commons/loading.dart';
+import 'menu.dart';
 
 void main() {
   Bloc.observer = LoggingBlocDelegate();
@@ -134,6 +135,7 @@ class __MainPageState extends State<_MainPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: AppMenu(),
       backgroundColor: Theme.of(context).primaryColor,
       extendBody: true,
       body: _child,

@@ -5,6 +5,8 @@ import 'commons/text_tab_bar.dart';
 class AppTheme {
   static ThemeData darkTheme() {
     return ThemeData(
+      canvasColor: Color(0xFF262C41),
+      scaffoldBackgroundColor: Color(0xFF262C41),
       highlightColor: Colors.transparent,
       primarySwatch: Colors.blue,
       accentColor: Color(0xFF979DB2),
@@ -41,15 +43,48 @@ class AppTheme {
         ),
       ),
       textTheme: TextTheme(
-        button: TextStyle(color: Color(0xFFF7FBFE), fontSize: 14.0, fontFamily: "Raleway", fontWeight: FontWeight.normal),
-        headline4: TextStyle(color: Color(0xFFF7FBFE), fontSize: 20.0, fontFamily: "Raleway", fontWeight: FontWeight.normal),
-        headline5: TextStyle(color: Color(0xFF979DB2), fontSize: 20, fontFamily: "Raleway", fontWeight: FontWeight.w300),
-        headline6: TextStyle(color: Color(0xFF979DB2), fontSize: 20, fontFamily: "Raleway", fontWeight: FontWeight.w300),
-        subtitle1: TextStyle(color: Color(0xFFF7FBFE), fontSize: 20, fontFamily: "Raleway", fontWeight: FontWeight.bold),
-        subtitle2: TextStyle(color: Color(0xFFF7FBFE), fontSize: 14, fontFamily: "Raleway", fontWeight: FontWeight.bold),
-        bodyText2: TextStyle(color: Color(0xFFF7FBFE), fontSize: 14, fontFamily: "Raleway", fontWeight: FontWeight.w400),
-        bodyText1: TextStyle(color: Color(0xFF979DB2), fontSize: 14, fontFamily: "Raleway", fontWeight: FontWeight.w400),
-        caption: TextStyle(color: Color(0xFF979DB2), fontSize: 16, fontFamily: "Raleway"),
+        button: TextStyle(
+            color: Color(0xFFF7FBFE),
+            fontSize: 14.0,
+            fontFamily: "Raleway",
+            fontWeight: FontWeight.normal),
+        headline4: TextStyle(
+            color: Color(0xFFF7FBFE),
+            fontSize: 20.0,
+            fontFamily: "Raleway",
+            fontWeight: FontWeight.normal),
+        headline5: TextStyle(
+            color: Color(0xFF979DB2),
+            fontSize: 20,
+            fontFamily: "Raleway",
+            fontWeight: FontWeight.w300),
+        headline6: TextStyle(
+            color: Color(0xFF979DB2),
+            fontSize: 20,
+            fontFamily: "Raleway",
+            fontWeight: FontWeight.w300),
+        subtitle1: TextStyle(
+            color: Color(0xFFF7FBFE),
+            fontSize: 20,
+            fontFamily: "Raleway",
+            fontWeight: FontWeight.bold),
+        subtitle2: TextStyle(
+            color: Color(0xFFF7FBFE),
+            fontSize: 14,
+            fontFamily: "Raleway",
+            fontWeight: FontWeight.bold),
+        bodyText2: TextStyle(
+            color: Color(0xFFF7FBFE),
+            fontSize: 14,
+            fontFamily: "Raleway",
+            fontWeight: FontWeight.w400),
+        bodyText1: TextStyle(
+            color: Color(0xFF979DB2),
+            fontSize: 14,
+            fontFamily: "Raleway",
+            fontWeight: FontWeight.w400),
+        caption: TextStyle(
+            color: Color(0xFF979DB2), fontSize: 16, fontFamily: "Raleway"),
       ),
       tabBarTheme: TabBarTheme(
         labelColor: Color(0xFFF7FBFE),
@@ -85,6 +120,8 @@ class AppTheme {
 
   static ThemeData lightTheme() {
     return ThemeData(
+        canvasColor: Color(0xfff3f5ff),
+        scaffoldBackgroundColor: Color(0xfff3f5ff),
         highlightColor: Colors.transparent,
         primarySwatch: Colors.blue,
         accentColor: Color(0xff4c4f59),
@@ -120,22 +157,56 @@ class AppTheme {
           ),
         ),
         textTheme: TextTheme(
-          button: TextStyle(color: Color(0xff020202), fontSize: 14.0, fontFamily: "Raleway", fontWeight: FontWeight.normal),
-          headline4: TextStyle(color: Color(0xff020202), fontSize: 20.0, fontFamily: "Raleway", fontWeight: FontWeight.normal),
-          headline5: TextStyle(color: Color(0xff8c8f99), fontSize: 20, fontFamily: "Raleway", fontWeight: FontWeight.w300),
-          headline6: TextStyle(color: Color(0xff8c8f99), fontSize: 20, fontFamily: "Raleway", fontWeight: FontWeight.w300),
-          subtitle1: TextStyle(color: Color(0xff020202), fontSize: 20, fontFamily: "Raleway", fontWeight: FontWeight.bold),
-          subtitle2: TextStyle(color: Color(0xff020202), fontSize: 14, fontFamily: "Raleway", fontWeight: FontWeight.bold),
-          bodyText2: TextStyle(color: Color(0xff020202), fontSize: 14, fontFamily: "Raleway", fontWeight: FontWeight.w400),
-          bodyText1: TextStyle(color: Color(0xff8c8f99), fontSize: 14, fontFamily: "Raleway", fontWeight: FontWeight.w400),
-          caption: TextStyle(color: Color(0xff8c8f99), fontSize: 16, fontFamily: "Raleway"),
+          button: TextStyle(
+              color: Color(0xff020202),
+              fontSize: 14.0,
+              fontFamily: "Raleway",
+              fontWeight: FontWeight.normal),
+          headline4: TextStyle(
+              color: Color(0xff020202),
+              fontSize: 20.0,
+              fontFamily: "Raleway",
+              fontWeight: FontWeight.normal),
+          headline5: TextStyle(
+              color: Color(0xff8c8f99),
+              fontSize: 20,
+              fontFamily: "Raleway",
+              fontWeight: FontWeight.w300),
+          headline6: TextStyle(
+              color: Color(0xff8c8f99),
+              fontSize: 20,
+              fontFamily: "Raleway",
+              fontWeight: FontWeight.w300),
+          subtitle1: TextStyle(
+              color: Color(0xff020202),
+              fontSize: 20,
+              fontFamily: "Raleway",
+              fontWeight: FontWeight.bold),
+          subtitle2: TextStyle(
+              color: Color(0xff020202),
+              fontSize: 14,
+              fontFamily: "Raleway",
+              fontWeight: FontWeight.bold),
+          bodyText2: TextStyle(
+              color: Color(0xff020202),
+              fontSize: 14,
+              fontFamily: "Raleway",
+              fontWeight: FontWeight.w400),
+          bodyText1: TextStyle(
+              color: Color(0xff8c8f99),
+              fontSize: 14,
+              fontFamily: "Raleway",
+              fontWeight: FontWeight.w400),
+          caption: TextStyle(
+              color: Color(0xff8c8f99), fontSize: 16, fontFamily: "Raleway"),
         ),
         tabBarTheme: TabBarTheme(
           labelColor: Color(0xff080401),
           unselectedLabelColor: Color(0xff4c4f59),
           labelPadding: const EdgeInsets.fromLTRB(18.0, 0.0, 18.0, 10.0),
           labelStyle: TextStyle(fontSize: 15.0, fontFamily: "Raleway"),
-          unselectedLabelStyle: TextStyle(fontSize: 15.0, fontFamily: "Raleway"),
+          unselectedLabelStyle:
+              TextStyle(fontSize: 15.0, fontFamily: "Raleway"),
           indicatorSize: TabBarIndicatorSize.label,
           indicator: DashedUnderlineIndicator(
             width: 30.0,
@@ -158,18 +229,18 @@ class AppTheme {
                 color: Colors.transparent,
               ),
             ),
-            textTheme: ButtonTextTheme.accent
-        )
-    );
+            textTheme: ButtonTextTheme.accent));
   }
 
-  static ThemeData getNormalThemeFromPreferences(bool isAutomatic, bool isDark) {
-    if (isAutomatic) return lightTheme();
-    else return isDark ? darkTheme() : lightTheme();
+  static ThemeData getNormalThemeFromPreferences(
+      bool isAutomatic, bool isDark) {
+    if (isAutomatic)
+      return lightTheme();
+    else
+      return isDark ? darkTheme() : lightTheme();
   }
 
   static ThemeData getDarkThemeFromPreferences(bool isAutomatic) {
     return isAutomatic ? darkTheme() : null;
   }
-
 }
