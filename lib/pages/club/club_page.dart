@@ -5,6 +5,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:search_page/search_page.dart';
 import 'package:v34/commons/loading.dart';
+import 'package:v34/commons/map/map_view.dart';
 import 'package:v34/commons/no_data.dart';
 import 'package:v34/commons/page/main_page.dart';
 import 'package:v34/commons/text_tab_bar.dart';
@@ -63,7 +64,7 @@ class _ClubPageState extends State<ClubPage>
 
   @override
   Widget build(BuildContext context) {
-    List<TextTab> tabs = _buildTabs();
+    List<TextTab> tabs = _buildTabs(context);
     return MainPage(
       title: "Clubs",
       actions: [
@@ -90,13 +91,14 @@ class _ClubPageState extends State<ClubPage>
       ],
       sliver: _loading
           ? SliverFillRemaining(child: Center(child: Loading()))
-          : SliverFillRemaining(fillOverscroll: true,
+          : SliverFillRemaining(
+              fillOverscroll: true,
               hasScrollBody: false,
               child: DefaultTabController(
                 length: 2,
                 child: Scaffold(
                   appBar: PreferredSize(
-                    preferredSize: Size.fromHeight(kToolbarHeight-30),
+                    preferredSize: Size.fromHeight(kToolbarHeight - 10),
                     child: TextTabBar(
                       tabs: tabs,
                     ),
@@ -112,53 +114,38 @@ class _ClubPageState extends State<ClubPage>
     );
   }
 
-  List<TextTab> _buildTabs() {
+  List<TextTab> _buildTabs(BuildContext context) {
     return [
       TextTab("Liste", _buildList()),
-      TextTab("Carte", _buildMap()),
+      TextTab("Carte", _buildMap(context)),
     ];
   }
 
   Widget _buildList() {
     return ListView.builder(
       itemBuilder: (context, index) {
-          return index < _clubs.length
-              ? ClubCard(_clubs[index], index)
-              : SizedBox(height: 86);
-        },
-        itemCount: _clubs.length + 1,
+        return index < (_clubs?.length ?? 0)
+            ? ClubCard(_clubs[index], index)
+            : SizedBox(height: 86);
+      },
+      itemCount: (_clubs?.length ?? 0) + 1,
     );
   }
 
-  Widget _buildMap() {
+  Widget _buildMap(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(56.0),
+      padding: const EdgeInsets.only(top: 18.0, right: 18.0, left: 18.0, bottom: 88),
       child: Container(
-        height: 100,
-        child: FlutterMap(
-          options: new MapOptions(
-            center: new LatLng(51.5, -0.09),
-            zoom: 13.0,
+        decoration: BoxDecoration(
+            border: Border.all(color: Theme.of(context).accentColor, width: 2),
+            borderRadius: BorderRadius.all(Radius.circular(18.0))
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.all(Radius.circular(18.0)),
+          clipBehavior: Clip.hardEdge,
+          child: Container(
+            child: MapView(),
           ),
-          layers: [
-            new TileLayerOptions(
-                urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-                subdomains: ['a', 'b', 'c']
-            ),
-            new MarkerLayerOptions(
-              markers: [
-                new Marker(
-                  width: 80.0,
-                  height: 80.0,
-                  point: new LatLng(51.5, -0.09),
-                  builder: (ctx) =>
-                  new Container(
-                    child: new FlutterLogo(),
-                  ),
-                ),
-              ],
-            ),
-          ],
         ),
       ),
     );

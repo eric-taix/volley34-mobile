@@ -48,6 +48,7 @@ dependencies:
   add_2_calendar: ^1.4.0
   flutter_markdown: ^0.4.3
   search_page: ^1.3.0
+  google_maps_flutter: ^0.5.28+1
 
 dev_dependencies:
   flutter_test:
@@ -71,6 +72,8 @@ flutter:
     - assets/flare/
     - assets/gymnasium_marker.png
     - assets/logo.png
+    - assets/maps/dark_style_map.txt
+
   fonts:
     - family: Raleway
       fonts:
