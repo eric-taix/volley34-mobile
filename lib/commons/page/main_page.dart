@@ -1,14 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:v34/pages/preferences_page.dart';
 
 class MainPage extends StatelessWidget {
   final String title;
   final Widget sliver;
   final List<Widget> actions;
 
-  MainPage({this.title = "", this.sliver, this.actions = null});
+  MainPage({this.title = "", this.sliver, this.actions});
 
   @override
   Widget build(BuildContext context) {

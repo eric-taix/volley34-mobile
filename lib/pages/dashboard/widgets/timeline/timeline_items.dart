@@ -3,13 +3,15 @@ import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:v34/commons/router.dart';
 import 'package:v34/models/event.dart';
-import 'package:v34/pages/dashboard/widgets/timeline/event_date.dart';
-import 'package:v34/pages/dashboard/widgets/timeline/gymnasium_location.dart';
 import 'package:v34/pages/dashboard/widgets/timeline/match_title.dart';
 
 import 'event_details.dart';
 
 const double CardMargin = 19.0;
+
+void showEventDetails(BuildContext context, Event event) {
+  Router.push(context: context, builder: (context) => EventDetails(event: event));
+}
 
 abstract class TimelineItemWidget extends StatelessWidget {
   TimelineItemWidget();
@@ -21,9 +23,9 @@ abstract class TimelineItemWidget extends StatelessWidget {
       case EventType.Match:
         return _MatchTimelineItem(event);
       case EventType.Meeting:
-        return _MeetingTimelineItem(event.name, event.place, event.date);
+        return _MeetingTimelineItem(event);
       case EventType.Tournament:
-        return _TournamentTimelineItem(event.name, event.place, event.date);
+        return _TournamentTimelineItem(event);
       default:
         return _UnknownTimelineItem();
     }
@@ -40,58 +42,42 @@ class _UnknownTimelineItem extends TimelineItemWidget {
   Color color() => null;
 }
 
-class _TournamentTimelineItem extends TimelineItemWidget {
-  final String title;
-  final String place;
-  final DateTime dateTime;
+abstract class _OtherTimelineItem extends TimelineItemWidget {
+  final Event event;
 
-  _TournamentTimelineItem(this.title, this.place, this.dateTime);
+  _OtherTimelineItem(this.event);
 
   @override
   Widget build(BuildContext context) {
-    return _TimelineItemCard(
-      children: [
-        Text(
-          title,
-          textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.bodyText2.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
-        ),
-        _Place(place, dateTime),
-      ],
+    return GestureDetector(
+      child: _TimelineItemCard(
+        children: [
+          Text(
+            event.name,
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.bodyText2.copyWith(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          _Place(event.place, event.date),
+        ],
+      ),
+      onTap: () => showEventDetails(context, event)
     );
   }
+}
+
+class _TournamentTimelineItem extends _OtherTimelineItem {
+
+  _TournamentTimelineItem(Event event): super(event);
 
   @override
   Color color() => Colors.green;
 }
 
-class _MeetingTimelineItem extends TimelineItemWidget {
-  final String title;
-  final String place;
-  final DateTime dateTime;
+class _MeetingTimelineItem extends _OtherTimelineItem {
 
-  _MeetingTimelineItem(this.title, this.place, this.dateTime);
-
-  @override
-  Widget build(BuildContext context) {
-    return _TimelineItemCard(
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(bottom: 8.0),
-          child: Text(
-            title,
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.bodyText2.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
-          ),
-        ),
-        _Place(place, dateTime),
-      ],
-    );
-  }
+  _MeetingTimelineItem(Event event): super(event);
 
   @override
   Color color() => Colors.blueAccent;
@@ -99,6 +85,7 @@ class _MeetingTimelineItem extends TimelineItemWidget {
 
 class _MatchTimelineItem extends TimelineItemWidget {
   final Event event;
+
   _MatchTimelineItem(this.event);
 
   @override
@@ -110,12 +97,8 @@ class _MatchTimelineItem extends TimelineItemWidget {
           _Place(event.place, event.date)
         ],
       ),
-      onTap: () => _showEventDetails(context),
+      onTap: () => showEventDetails(context, event),
     );
-  }
-
-  void _showEventDetails(BuildContext context) {
-    Router.push(context: context, builder: (context) => EventDetails(event: event));
   }
 
   @override

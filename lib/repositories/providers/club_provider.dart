@@ -19,6 +19,15 @@ class ClubProvider {
     }
   }
 
+  Future<Club> loadClub(String clubCode) async {
+    Response response = await dio.get("/clubs/$clubCode", options: buildConfigurableCacheOptions());
+    if (response.statusCode == 200) {
+      return Club.fromJson(response.data);
+    } else {
+      throw Exception('Impossible de récupérer le club');
+    }
+  }
+
   Future<List<TeamStat>> loadClubStats(String clubCode) async {
     Response response = await dio.get("/clubs/$clubCode/stats", options: buildConfigurableCacheOptions());
     if (response.statusCode == 200) {
