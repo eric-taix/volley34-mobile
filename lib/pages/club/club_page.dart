@@ -134,19 +134,27 @@ class _ClubPageState extends State<ClubPage>
 
   Widget _buildMap(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(top: 18.0, right: 18.0, left: 18.0, bottom: 88),
+      padding: const EdgeInsets.only(top: 8.0),
       child: Container(
-        decoration: BoxDecoration(
-            border: Border.all(color: Theme.of(context).accentColor, width: 2),
-            borderRadius: BorderRadius.all(Radius.circular(18.0))
-        ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.all(Radius.circular(18.0)),
-          clipBehavior: Clip.hardEdge,
-          child: Container(
+        child: Stack(children: [
+          Padding(
+            padding: const EdgeInsets.only(bottom: 186.0),
             child: MapView(),
           ),
-        ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Container(
+              margin: EdgeInsets.only(bottom: 26),
+              height: 200,
+              child: PageView.builder(
+                itemBuilder: (context, index) {
+                  return SizedBox.shrink(child: ClubCard(_clubs[index], index));
+                },
+                itemCount: _clubs.length,
+              ),
+            ),
+          )
+        ]),
       ),
     );
   }
