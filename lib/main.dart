@@ -183,7 +183,7 @@ class __MainPageState extends State<_MainPage> {
             target: SvgPicture.asset(
               icon.iconPath,
               height: 30,
-              color: Theme.of(context).bottomAppBarColor,
+              color: Theme.of(context).appBarTheme.color,
             ),
           );
         },
