@@ -51,7 +51,7 @@ class PreferencesBloc extends Bloc<PreferencesEvent, PreferencesState> {
     if (event is PreferencesLoadEvent) {
       yield PreferencesLoadingState();
       yield PreferencesUpdatedState(
-          useAutomaticTheme: preferences.getBool("automatic_theme") ?? false,
+          useAutomaticTheme: preferences.getBool("automatic_theme") ?? true,
           useDarkTheme: preferences.getBool("dark_theme") ?? false);
     } else if (event is PreferencesSaveEvent) {
       yield PreferencesSavingState();
@@ -60,7 +60,7 @@ class PreferencesBloc extends Bloc<PreferencesEvent, PreferencesState> {
       if (event.useDarkTheme != null)
         preferences.setBool("dark_theme", event.useDarkTheme);
       yield PreferencesUpdatedState(
-          useAutomaticTheme: preferences.getBool("automatic_theme") ?? false,
+          useAutomaticTheme: preferences.getBool("automatic_theme") ?? true,
           useDarkTheme: preferences.getBool("dark_theme") ?? false);
     }
   }
