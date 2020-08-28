@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'event_date.dart';
+import 'details/event_date.dart';
 import 'line.dart';
 
 const double circleRadius = 8.0;

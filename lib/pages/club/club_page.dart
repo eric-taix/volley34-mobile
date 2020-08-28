@@ -14,8 +14,7 @@ class ClubPage extends StatefulWidget {
   _ClubPageState createState() => _ClubPageState();
 }
 
-class _ClubPageState extends State<ClubPage>
-    with SingleTickerProviderStateMixin {
+class _ClubPageState extends State<ClubPage> with SingleTickerProviderStateMixin {
   Repository _repository;
 
   List<Club> _clubs;
@@ -43,13 +42,9 @@ class _ClubPageState extends State<ClubPage>
         setState(() {
           _loading = false;
           clubs.sort((c1, c2) {
-            if (favorites.contains(c1.code) && !favorites.contains(c2.code))
-              return -1;
-            if (!favorites.contains(c1.code) && favorites.contains(c2.code))
-              return 1;
-            return c1.shortName
-                .toUpperCase()
-                .compareTo(c2.shortName.toUpperCase());
+            if (favorites.contains(c1.code) && !favorites.contains(c2.code)) return -1;
+            if (!favorites.contains(c1.code) && favorites.contains(c2.code)) return 1;
+            return c1.shortName.toUpperCase().compareTo(c2.shortName.toUpperCase());
           });
           _clubs = clubs;
         });
@@ -59,6 +54,7 @@ class _ClubPageState extends State<ClubPage>
 
   @override
   Widget build(BuildContext context) {
+    ThemeData currentTheme = Theme.of(context);
     return MainPage(
       title: "Clubs",
       actions: [
@@ -79,6 +75,14 @@ class _ClubPageState extends State<ClubPage>
                 club.code,
               ],
               builder: (club) => ClubCard(club, 1),
+              barTheme: Theme.of(context).copyWith(
+                textTheme: TextTheme(
+                  headline6: Theme.of(context).textTheme.headline4
+                ),
+                inputDecorationTheme: InputDecorationTheme(
+                  hintStyle: Theme.of(context).textTheme.headline5
+                ),
+              ),
             ),
           ),
         ),

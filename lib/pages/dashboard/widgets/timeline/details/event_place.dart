@@ -1,4 +1,3 @@
-import 'package:add_2_calendar/add_2_calendar.dart' as addToCalendar;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -7,35 +6,44 @@ import 'package:map_launcher/map_launcher.dart' as mapLauncher;
 import 'package:v34/commons/loading.dart';
 import 'package:v34/models/event.dart';
 import 'package:v34/pages/dashboard/blocs/gymnasium_bloc.dart';
-import 'package:v34/utils/extensions.dart';
 
-class GymnasiumLocation extends StatefulWidget {
+class EventPlace extends StatefulWidget {
   final Event event;
 
-  const GymnasiumLocation({Key key, @required this.event}) : super(key: key);
+  const EventPlace({Key key, @required this.event}) : super(key: key);
 
   @override
-  GymnasiumLocationState createState() => GymnasiumLocationState();
+  _EventPlaceState createState() => _EventPlaceState();
 }
 
-class GymnasiumLocationState extends State<GymnasiumLocation> {
+class _EventPlaceState extends State<EventPlace> with SingleTickerProviderStateMixin {
+  bool isMapOpened = false;
   GymnasiumBloc _gymnasiumBloc;
+  AnimationController _controller;
 
   @override
   void initState() {
     super.initState();
-    _gymnasiumBloc = GymnasiumBloc(RepositoryProvider.of(context), GymnasiumUninitializedState());
-    _gymnasiumBloc.add(LoadGymnasiumEvent(gymnasiumCode: widget.event.gymnasiumCode));
+    if (widget.event.type == EventType.Match) {
+      _gymnasiumBloc = GymnasiumBloc(RepositoryProvider.of(context), GymnasiumUninitializedState());
+      _gymnasiumBloc.add(LoadGymnasiumEvent(gymnasiumCode: widget.event.gymnasiumCode));
+    }
+    _controller = AnimationController(
+      vsync: this,
+      duration: Duration(milliseconds: 300)
+    );
   }
 
-  void _addEventToCalendar() async {
-    final addToCalendar.Event event = addToCalendar.Event(
-      title: widget.event.name,
-      location: widget.event.place,
-      startDate: widget.event.date,
-      endDate: widget.event.date.add(Duration(hours: 2))
-    );
-    await addToCalendar.Add2Calendar.addEvent2Cal(event);
+  @override
+  void dispose() {
+    super.dispose();
+    _controller.dispose();
+  }
+
+  void _toggleMap() async {
+    if (isMapOpened) await _controller.reverse();
+    else await _controller.forward();
+    setState(() => isMapOpened = !isMapOpened);
   }
 
   void _launchMap(GymnasiumLoadedState state, bool route) async {
@@ -47,13 +55,13 @@ class GymnasiumLocationState extends State<GymnasiumLocation> {
       if (availableMaps.length == 1) {
         if (route) {
           availableMaps.first.showDirections(
-            destination: coordinates,
-            destinationTitle: title
+              destination: coordinates,
+              destinationTitle: title
           );
         } else {
           availableMaps.first.showMarker(
-            coords: coordinates,
-            title: title
+              coords: coordinates,
+              title: title
           );
         }
       } else {
@@ -71,13 +79,13 @@ class GymnasiumLocationState extends State<GymnasiumLocation> {
                           onTap: () {
                             if (route) {
                               map.showDirections(
-                                destination: coordinates,
-                                destinationTitle: title
+                                  destination: coordinates,
+                                  destinationTitle: title
                               );
                             } else {
                               map.showMarker(
-                                coords: coordinates,
-                                title: title
+                                  coords: coordinates,
+                                  title: title
                               );
                             }
                           },
@@ -105,7 +113,7 @@ class GymnasiumLocationState extends State<GymnasiumLocation> {
     return Column(
       children: [
         Container(
-          padding: EdgeInsets.only(bottom: 8.0),
+          padding: EdgeInsets.symmetric(vertical: 8.0),
           margin: EdgeInsets.symmetric(horizontal: 16.0),
           height: 250,
           child: GestureDetector(
@@ -118,8 +126,8 @@ class GymnasiumLocationState extends State<GymnasiumLocation> {
               ),
               layers: [
                 TileLayerOptions(
-                  urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-                  subdomains: ['a', 'b', 'c']
+                    urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                    subdomains: ['a', 'b', 'c']
                 ),
                 MarkerLayerOptions(
                   markers: [
@@ -135,40 +143,55 @@ class GymnasiumLocationState extends State<GymnasiumLocation> {
             ),
           ),
         ),
-        Wrap(
-          direction: Axis.horizontal,
-          alignment: WrapAlignment.center,
-          runAlignment: WrapAlignment.center,
-          spacing: 8.0,
-          children: [
-            FlatButton.icon(
-              onPressed: () => _launchMap(state, true),
-              icon: Icon(Icons.directions),
-              label: Text("Itinéraire"),
-              color: Theme.of(context).cardTheme.titleBackgroundColor(context).tiny(10),
-            ),
-            FlatButton.icon(
-              onPressed: () => _addEventToCalendar(),
-              icon: Icon(Icons.calendar_today),
-              label: Text("Ajouter à l'agenda"),
-              color: Theme.of(context).cardTheme.titleBackgroundColor(context),
-            ),
-          ],
+        ConstrainedBox(
+          constraints: const BoxConstraints(minWidth: double.infinity),
+          child: OutlineButton.icon(
+            onPressed: () => _launchMap(state, true),
+            icon: Icon(Icons.directions),
+            label: Text("Itinéraire"),
+            borderSide: BorderSide(color: Theme.of(context).textTheme.bodyText1.color, width: 0.5),
+          ),
         ),
       ],
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder(
-      cubit: _gymnasiumBloc,
-      builder: (context, state) {
-        if (state is GymnasiumLoadedState) return _buildGymnasiumLocationLoaded(state);
-        else if (state is GymnasiumLoadingState) return Loading();
-        else return Container();
-      },
+  Widget _buildContent(BuildContext context, Widget map) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 8.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          if (!isMapOpened) OutlineButton.icon(
+            onPressed: () => _toggleMap(),
+            icon: Icon(Icons.keyboard_arrow_down, color: Theme.of(context).accentColor.withOpacity(0.5)),
+            label: Text("Ouvrir la carte"),
+            borderSide: BorderSide(color: Theme.of(context).textTheme.bodyText1.color, width: 0.5),
+          ) else OutlineButton.icon(
+            onPressed: () => _toggleMap(),
+            icon: Icon(Icons.keyboard_arrow_up, color: Theme.of(context).accentColor.withOpacity(0.5)),
+            label: Text("Fermer la carte"),
+            borderSide: BorderSide(color: Theme.of(context).textTheme.bodyText1.color, width: 0.5),
+          ),
+          SizeTransition(axis: Axis.vertical, sizeFactor: _controller, child: map)
+        ],
+      ),
     );
   }
 
+  @override
+  Widget build(BuildContext context) {
+    if (widget.event.type == EventType.Match) {
+      return BlocBuilder(
+        cubit: _gymnasiumBloc,
+        builder: (context, state) {
+          if (state is GymnasiumLoadedState) {
+            return _buildContent(context, _buildGymnasiumLocationLoaded(state));
+          } else {
+            return Loading();
+          }
+        },
+      );
+    } else return Container();
+  }
 }
