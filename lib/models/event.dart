@@ -7,23 +7,36 @@ class Event extends Equatable {
   final DateTime date;
   final String place;
   final EventType type;
+  final String name;
 
   // Match
   final String hostName;
   final String visitorName;
-
-  // Others
-  final String name;
   final String gymnasiumCode;
+
+  // Tournament & Meeting
+  final DateTime endDate;
+  final String contactName, contactPhone, contactEmail;
+  final String description;
+  final String clubCode;
+
+  final String imageUrl;
 
   Event(
       {this.date,
       this.name,
       this.place,
-        this.gymnasiumCode,
+      this.gymnasiumCode,
       this.type,
       this.hostName,
-      this.visitorName});
+      this.visitorName,
+      this.endDate,
+      this.contactName,
+      this.contactPhone,
+      this.contactEmail,
+      this.clubCode,
+      this.description,
+      this.imageUrl});
 
   factory Event.fromJson(json) {
     if (json["MatchCode"] != null) {
@@ -41,6 +54,13 @@ class Event extends Equatable {
         date: DateTime.parse(json["CalendarEventStartDate"]),
         name: json["CalendarEventName"],
         place: json["CalendarEventPlace"],
+        endDate: DateTime.parse(json["CalendarEventEndDate"]),
+        description: json["CalendarEventDesciption"],
+        clubCode: json["CodeClub"],
+        contactName: json["CalendarEventContactName"],
+        contactPhone: json["CalendarEventContactPhone"],
+        contactEmail: json["CalendarEventContactEmail"],
+        imageUrl: json["CalendarEventImageURL"],
         type: _toEnumType(json["CalendarEventType"]),
       );
     }

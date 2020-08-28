@@ -55,6 +55,10 @@ class Repository {
     return _favoriteProvider.loadFavoriteClubs();
   }
 
+  Future<Club> loadClub(String clubCode) async {
+    return _clubProvider.loadClub(clubCode);
+  }
+
   //------ TEAM -------
 
   /// Load a club's teams
