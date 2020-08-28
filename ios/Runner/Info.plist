@@ -58,5 +58,7 @@
         <string>osmandmaps</string>
         <string>dgis</string>
     </array>
+    <key>ITSAppUsesNonExemptEncryption</key>
+    <false/>
 </dict>
 </plist>
