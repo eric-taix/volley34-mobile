@@ -49,19 +49,17 @@ abstract class _OtherTimelineItem extends TimelineItemWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      child: _TimelineItemCard(
-        children: [
-          Text(
-            event.name,
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.bodyText2.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
+    return _TimelineItemCard(
+      children: [
+        Text(
+          event.name,
+          textAlign: TextAlign.center,
+          style: Theme.of(context).textTheme.bodyText2.copyWith(
+            fontWeight: FontWeight.bold,
           ),
-          _Place(event.place, event.date),
-        ],
-      ),
+        ),
+        _Place(event.place, event.date),
+      ],
       onTap: () => showEventDetails(context, event)
     );
   }
@@ -90,14 +88,12 @@ class _MatchTimelineItem extends TimelineItemWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      child: _TimelineItemCard(
-        children: <Widget>[
-          MatchTitle(event: event),
-          _Place(event.place, event.date)
-        ],
-      ),
-      onTap: () => showEventDetails(context, event),
+    return _TimelineItemCard(
+      children: <Widget>[
+        MatchTitle(event: event),
+        _Place(event.place, event.date)
+      ],
+      onTap: () => showEventDetails(context, event)
     );
   }
 
@@ -107,21 +103,26 @@ class _MatchTimelineItem extends TimelineItemWidget {
 
 class _TimelineItemCard extends StatelessWidget {
   final List<Widget> children;
+  final Function onTap;
 
-  _TimelineItemCard({this.children});
+  _TimelineItemCard({@required this.children, this.onTap});
 
   @override
   Widget build(BuildContext context) {
     return Card(
-      elevation: 2.0,
-        margin: EdgeInsets.only(
-            left: 0, right: 0, top: 0, bottom: CardMargin),
+      margin: EdgeInsets.only(
+          left: 0, right: 0, top: 0, bottom: CardMargin),
+      child: InkWell(
+        onTap: () => onTap(),
+        borderRadius: BorderRadius.circular(16.0),
         child: Padding(
             padding: const EdgeInsets.only(
                 left: 12.0, right: 12, bottom: 12, top: 12),
             child: Column(
               children: children,
-            )));
+            )),
+      )
+    );
   }
 }
 
