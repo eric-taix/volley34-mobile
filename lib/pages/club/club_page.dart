@@ -54,7 +54,6 @@ class _ClubPageState extends State<ClubPage> with SingleTickerProviderStateMixin
 
   @override
   Widget build(BuildContext context) {
-    ThemeData currentTheme = Theme.of(context);
     return MainPage(
       title: "Clubs",
       actions: [

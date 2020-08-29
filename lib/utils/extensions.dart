@@ -27,3 +27,10 @@ extension CustomCardTheme on CardTheme {
         :	TinyColor(Theme.of(context).cardTheme.color).darken(3).color;
   }
 }
+
+extension HexColor on Color {
+  String toHexWithoutAlpha({bool leadingHashSign = true}) => '${leadingHashSign ? '#' : ''}'
+      '${red.toRadixString(16).padLeft(2, '0')}'
+      '${green.toRadixString(16).padLeft(2, '0')}'
+      '${blue.toRadixString(16).padLeft(2, '0')}';
+}

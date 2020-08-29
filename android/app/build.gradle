@@ -52,6 +52,7 @@ android {
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        resValue "string", "maps_api_key", "$System.env.MAPS_API_KEY"
     }
 
     signingConfigs {

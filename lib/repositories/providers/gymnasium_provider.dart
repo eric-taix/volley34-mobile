@@ -6,6 +6,7 @@ import 'package:v34/models/gymnasium.dart';
 import 'http.dart';
 
 class GymnasiumProvider {
+
   Future<List<Gymnasium>> loadAllGymnasiums() async {
     Response response = await dio.get("/gymnases", options: buildConfigurableCacheOptions());
     if (response.statusCode == 200) {
