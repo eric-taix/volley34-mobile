@@ -22,4 +22,15 @@ Nous sommes à l'écoute de toutes vos idées, donc n'hésitez pas à créer un 
 Privilégiez des idées courtes qui se résument en quelques phrases.
 
 
+## Exécution en local (développement)
+
+Cette application utilise Google Maps Api. Cependant pour des raisons de sécurité, aucune clé n'est
+stockée dans le code source (ces clés sont injectées au moment du build). Pour pouvoir lancer l'application
+en mode développement, vous devez:
+
+  - Pour Android et iOS: Créez une variable d'environnement `MAPS_API_KEY` et mettez dans cette variable la valeur de la clé.
+  Cette variable d'environnement est utilisée au moment du build pour être injectée dans le fichier `Info.plist` pour iOS et dans
+  `android/app/src/main/AndroidManisfest.xml` pour Android (via `android/app/build.gradle`)
+  
+  
 

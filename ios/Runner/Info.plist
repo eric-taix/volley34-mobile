@@ -57,8 +57,15 @@
         <string>mapsme</string>
         <string>osmandmaps</string>
         <string>dgis</string>
+        <string>tel</string>
+        <string>telprompt</string>
+        <string>sms</string>
     </array>
-    <key>ITSAppUsesNonExemptEncryption</key>
-    <false/>
+    <key>io.flutter.embedded_views_preview</key>
+    <string>YES</string>
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>Geolocalisation est nécessaire pour la gestion des itinéraires</string>
+    <key>MAPS_API_KEY</key>
+    <string>$(MAPS_API_KEY)</string>
 </dict>
 </plist>
