@@ -48,6 +48,11 @@ class AppTheme {
             fontSize: 14.0,
             fontFamily: "Raleway",
             fontWeight: FontWeight.normal),
+        headline1: TextStyle(
+            color: Color(0xFFF7FBFE),
+            fontSize: 16.0,
+            fontFamily: "Raleway",
+            fontWeight: FontWeight.normal),
         headline4: TextStyle(
             color: Color(0xFFF7FBFE),
             fontSize: 20.0,
@@ -160,6 +165,11 @@ class AppTheme {
           button: TextStyle(
               color: Color(0xff020202),
               fontSize: 14.0,
+              fontFamily: "Raleway",
+              fontWeight: FontWeight.normal),
+          headline1: TextStyle(
+              color: Color(0xff020202),
+              fontSize: 16.0,
               fontFamily: "Raleway",
               fontWeight: FontWeight.normal),
           headline4: TextStyle(

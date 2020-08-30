@@ -13,10 +13,12 @@ import 'package:v34/commons/feature_tour.dart';
 import 'package:v34/pages/club/club_page.dart';
 import 'package:v34/pages/competition/competition_page.dart';
 import 'package:v34/pages/dashboard/dashoard_page.dart';
+import 'package:v34/pages/gymnasium/gymnasium_page.dart';
 import 'package:v34/repositories/providers/agenda_provider.dart';
 import 'package:v34/repositories/providers/club_provider.dart';
 import 'package:v34/repositories/providers/favorite_provider.dart';
 import 'package:v34/repositories/providers/gymnasium_provider.dart';
+import 'package:v34/repositories/providers/map_provider.dart';
 import 'package:v34/repositories/providers/team_provider.dart';
 import 'package:v34/repositories/repository.dart';
 import 'package:v34/theme.dart';
@@ -79,6 +81,7 @@ class _V34State extends State<V34> {
                 FavoriteProvider(),
                 AgendaProvider(),
                 GymnasiumProvider(),
+                MapProvider(),
               ),
               child: FeatureDiscovery(child: _buildMaterialApp(state)),
             );
@@ -123,7 +126,8 @@ class __MainPageState extends State<_MainPage> {
               const <String>{
                 "dashboard_feature_id",
                 "competition_feature_id",
-                "clubs_feature_id"
+                "clubs_feature_id",
+                "gymnasiums_feature_id",
               },
             );
           });
@@ -165,6 +169,14 @@ class __MainPageState extends State<_MainPage> {
               "Sélectionnez un ou plusieurs favoris, ainsi accédez rapidement depuis le tableau de bord à des informations importantes sur vos favoris."
             ],
           }),
+          FluidNavBarIcon(iconPath: "assets/gymnasium.svg", extras: {
+            "featureId": "gymnasiums_feature_id",
+            "title": "Liste des gymnases",
+            "paragraphs": [
+              "Trouvez l'ensemble des gymnases.",
+              "Horaires, téléphone ou itinéraire pour aller à un gymnase."
+            ],
+          }),
         ],
         style: FluidNavBarStyle(
           barBackgroundColor: Theme.of(context).bottomAppBarColor,
@@ -202,6 +214,9 @@ class __MainPageState extends State<_MainPage> {
           break;
         case 2:
           _child = ClubPage();
+          break;
+        case 3:
+          _child = GymnasiumPage();
           break;
       }
       _child = AnimatedSwitcher(

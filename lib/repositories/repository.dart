@@ -1,3 +1,4 @@
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:v34/commons/favorite/favorite.dart';
 import 'package:v34/models/classication.dart';
 import 'package:v34/models/club.dart';
@@ -11,6 +12,7 @@ import 'package:v34/repositories/providers/agenda_provider.dart';
 import 'package:v34/repositories/providers/club_provider.dart';
 import 'package:v34/repositories/providers/favorite_provider.dart';
 import 'package:v34/repositories/providers/gymnasium_provider.dart';
+import 'package:v34/repositories/providers/map_provider.dart';
 import 'package:v34/repositories/providers/team_provider.dart';
 
 class Repository {
@@ -19,9 +21,10 @@ class Repository {
   final FavoriteProvider _favoriteProvider;
   final AgendaProvider _agendaProvider;
   final GymnasiumProvider _gymnasiumProvider;
+  final MapProvider _mapProvider;
 
   Repository(this._clubProvider, this._teamProvider, this._favoriteProvider,
-      this._agendaProvider, this._gymnasiumProvider);
+      this._agendaProvider, this._gymnasiumProvider, this._mapProvider);
 
   /// Load all clubs
   Future<List<Club>> loadAllClubs() async {
@@ -178,5 +181,14 @@ class Repository {
   /// Load a gymnasium
   Future<Gymnasium> loadGymnasium(String gymnasiumCode) async {
     return _gymnasiumProvider.loadGymnasium(gymnasiumCode);
+  }
+
+  /// Load gymnasium map camera
+  Future<CameraPosition> loadCameraPosition(String mapName) {
+    return _mapProvider.loadCameraPosition(mapName);
+  }
+
+  void saveCameraPosition(String mapName, CameraPosition cameraPosition) {
+    return _mapProvider.saveCameraPosition(mapName, cameraPosition);
   }
 }
