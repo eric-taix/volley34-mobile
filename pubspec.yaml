@@ -61,7 +61,7 @@ flutter:
 
   assets:
     - assets/gpl_licence.txt
-    - assets/about.txt
+    - assets/about.markdown
     - assets/dashboard.svg
     - assets/competition.svg
     - assets/competition-filled.svg

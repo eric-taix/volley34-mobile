@@ -7,17 +7,17 @@ et à leur offrir un verre à l'occasion.
 
 ## Eric Taix
 
-_Membre du VCV (Vailhauquès Volley Club)_
+_Membre du VCV (Vailhauquès Volley Club)_  
 https://github.com/eric-taix
 
 ## Thomas Foulon
 
-_Étudiant en 2ème année EPSI Grenoble_
+_Étudiant en formation d'ingénieur à Grenoble INP - ENSIMAG_  
 https://github.com/thomasFoulon
 
 ## Laurent Sangalli
 
-_Créateur du site Volley34 et président de l'association sportive "3ème mi-temps"_
+_Créateur du site Volley34 et président de l'association sportive "3ème mi-temps"_  
 http://www.volley34.fr
 
 

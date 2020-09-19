@@ -38,7 +38,7 @@ class AppMenu extends StatelessWidget {
           FontAwesomeIcons.info,
           () => navigator.maybePop().then((value) => navigator.push(MaterialPageRoute<void>(
               builder: (context) =>
-                  MarkdownPage("A propos", "assets/about.txt"))))),
+                  MarkdownPage("A propos", "assets/about.markdown"))))),
       _MenuItemWithLeading(
           "License",
           FontAwesomeIcons.ribbon,
