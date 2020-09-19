@@ -43,7 +43,6 @@ dependencies:
   auto_size_text: ^2.1.0
   slimy_card: ^1.0.4
   flare_flutter: ^2.0.5
-  flutter_map: ^0.10.1
   map_launcher: ^0.12.0
   add_2_calendar: ^1.4.0
   flutter_markdown: ^0.4.3

@@ -1,11 +1,14 @@
+import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_map/flutter_map.dart';
-import 'package:latlong/latlong.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:map_launcher/map_launcher.dart' as mapLauncher;
 import 'package:v34/commons/loading.dart';
 import 'package:v34/models/event.dart';
 import 'package:v34/pages/dashboard/blocs/gymnasium_bloc.dart';
+import 'package:v34/utils/extensions.dart';
 
 class EventPlace extends StatefulWidget {
   final Event event;
@@ -16,58 +19,71 @@ class EventPlace extends StatefulWidget {
   _EventPlaceState createState() => _EventPlaceState();
 }
 
-class _EventPlaceState extends State<EventPlace> with SingleTickerProviderStateMixin {
-  bool isMapOpened = false;
+class _EventPlaceState extends State<EventPlace> {
   GymnasiumBloc _gymnasiumBloc;
-  AnimationController _controller;
+  String _rawMapStyle;
+  String _currentMapStyle;
+  GoogleMapController _mapController;
 
   @override
   void initState() {
     super.initState();
     if (widget.event.type == EventType.Match) {
-      _gymnasiumBloc = GymnasiumBloc(RepositoryProvider.of(context), GymnasiumUninitializedState());
-      _gymnasiumBloc.add(LoadGymnasiumEvent(gymnasiumCode: widget.event.gymnasiumCode));
+      _gymnasiumBloc = GymnasiumBloc(
+          RepositoryProvider.of(context), GymnasiumUninitializedState());
+      _gymnasiumBloc
+          .add(LoadGymnasiumEvent(gymnasiumCode: widget.event.gymnasiumCode));
     }
-    _controller = AnimationController(
-      vsync: this,
-      duration: Duration(milliseconds: 300)
-    );
+    rootBundle.loadString('assets/maps/map_style.txt').then((mapStyle) {
+      _rawMapStyle = mapStyle;
+      _applyMapStyle(context);
+    });
   }
 
   @override
   void dispose() {
+    _mapController.dispose();
     super.dispose();
-    _controller.dispose();
   }
 
-  void _toggleMap() async {
-    if (isMapOpened) await _controller.reverse();
-    else await _controller.forward();
-    setState(() => isMapOpened = !isMapOpened);
+  void _applyMapStyle(BuildContext buildContext) {
+    if (_rawMapStyle != null) {
+      ThemeData themeData = Theme.of(buildContext);
+      _currentMapStyle = _rawMapStyle
+          .replaceAll("{appBarTheme.color}",
+              themeData.appBarTheme.color.toHexWithoutAlpha())
+          .replaceAll(
+              "{canvasColor}", themeData.canvasColor.toHexWithoutAlpha())
+          .replaceAll(
+              "{buttonColor}", themeData.buttonColor.toHexWithoutAlpha())
+          .replaceAll("{labelColor}",
+              themeData.textTheme.bodyText2.color.toHexWithoutAlpha());
+      if (_mapController != null) {
+        _mapController.setMapStyle(_currentMapStyle);
+      }
+    }
   }
 
   void _launchMap(GymnasiumLoadedState state, bool route) async {
     try {
-      final coordinates = mapLauncher.Coords(state.gymnasium.latitude, state.gymnasium.longitude);
+      final coordinates = mapLauncher.Coords(
+          state.gymnasium.latitude, state.gymnasium.longitude);
       final title = state.gymnasium.name;
       final availableMaps = await mapLauncher.MapLauncher.installedMaps;
 
       if (availableMaps.length == 1) {
         if (route) {
           availableMaps.first.showDirections(
-              destination: coordinates,
-              destinationTitle: title
-          );
+              destination: coordinates, destinationTitle: title);
         } else {
-          availableMaps.first.showMarker(
-              coords: coordinates,
-              title: title
-          );
+          availableMaps.first.showMarker(coords: coordinates, title: title);
         }
       } else {
         showModalBottomSheet(
           context: context,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.only(topLeft: Radius.circular(8), topRight: Radius.circular(8))),
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(8), topRight: Radius.circular(8))),
           builder: (BuildContext context) {
             return SafeArea(
               child: SingleChildScrollView(
@@ -80,16 +96,16 @@ class _EventPlaceState extends State<EventPlace> with SingleTickerProviderStateM
                             if (route) {
                               map.showDirections(
                                   destination: coordinates,
-                                  destinationTitle: title
-                              );
+                                  destinationTitle: title);
                             } else {
-                              map.showMarker(
-                                  coords: coordinates,
-                                  title: title
-                              );
+                              map.showMarker(coords: coordinates, title: title);
                             }
                           },
-                          title: Text(map.mapName, style: Theme.of(context).textTheme.bodyText1.apply(fontSizeDelta: 1.5)),
+                          title: Text(map.mapName,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyText1
+                                  .apply(fontSizeDelta: 1.5)),
                           leading: Image(
                             image: map.icon,
                             height: 30.0,
@@ -114,69 +130,50 @@ class _EventPlaceState extends State<EventPlace> with SingleTickerProviderStateM
       children: [
         Container(
           padding: EdgeInsets.symmetric(vertical: 8.0),
-          margin: EdgeInsets.symmetric(horizontal: 16.0),
+          margin: EdgeInsets.symmetric(horizontal: 36.0),
           height: 250,
           child: GestureDetector(
             onTap: () => _launchMap(state, false),
-            child: FlutterMap(
-              options: MapOptions(
-                center: LatLng(state.gymnasium.latitude, state.gymnasium.longitude),
-                zoom: 13.0,
-                interactive: false,
-              ),
-              layers: [
-                TileLayerOptions(
-                    urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-                    subdomains: ['a', 'b', 'c']
-                ),
-                MarkerLayerOptions(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(20),
+              child: GoogleMap(
                   markers: [
                     Marker(
-                      width: 50.0,
-                      height: 50.0,
-                      point: LatLng(state.gymnasium.latitude, state.gymnasium.longitude),
-                      builder: (ctx) => Container(child: Image(image: AssetImage('assets/gymnasium_marker.png'))),
-                    ),
-                  ],
-                ),
-              ],
+                      markerId: MarkerId(state.gymnasium.gymnasiumCode),
+                      position: LatLng(
+                          state.gymnasium.latitude, state.gymnasium.longitude),
+                    )
+                  ].toSet(),
+                  initialCameraPosition: CameraPosition(
+                      target: LatLng(
+                          state.gymnasium.latitude, state.gymnasium.longitude),
+                      zoom: 11),
+                  myLocationEnabled: true,
+                  myLocationButtonEnabled: false,
+                  mapType: MapType.normal,
+                  zoomGesturesEnabled: true,
+                  zoomControlsEnabled: false,
+                  mapToolbarEnabled: false,
+                  onMapCreated: _onMapCreated,
+                  gestureRecognizers: [
+                    Factory<OneSequenceGestureRecognizer>(
+                      () => new EagerGestureRecognizer(),
+                    )
+                  ].toSet()),
             ),
           ),
         ),
-        ConstrainedBox(
-          constraints: const BoxConstraints(minWidth: double.infinity),
-          child: OutlineButton.icon(
-            onPressed: () => _launchMap(state, true),
-            icon: Icon(Icons.directions),
-            label: Text("Itinéraire"),
-            borderSide: BorderSide(color: Theme.of(context).textTheme.bodyText1.color, width: 0.5),
-          ),
+        RaisedButton.icon(
+          onPressed: () => _launchMap(state, true),
+          icon: Icon(Icons.directions),
+          label: Text("Itinéraire"),
         ),
       ],
     );
   }
 
-  Widget _buildContent(BuildContext context, Widget map) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 8.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          if (!isMapOpened) OutlineButton.icon(
-            onPressed: () => _toggleMap(),
-            icon: Icon(Icons.keyboard_arrow_down, color: Theme.of(context).accentColor.withOpacity(0.5)),
-            label: Text("Ouvrir la carte"),
-            borderSide: BorderSide(color: Theme.of(context).textTheme.bodyText1.color, width: 0.5),
-          ) else OutlineButton.icon(
-            onPressed: () => _toggleMap(),
-            icon: Icon(Icons.keyboard_arrow_up, color: Theme.of(context).accentColor.withOpacity(0.5)),
-            label: Text("Fermer la carte"),
-            borderSide: BorderSide(color: Theme.of(context).textTheme.bodyText1.color, width: 0.5),
-          ),
-          SizeTransition(axis: Axis.vertical, sizeFactor: _controller, child: map)
-        ],
-      ),
-    );
+  _onMapCreated(GoogleMapController controller) {
+    _mapController = controller..setMapStyle(_currentMapStyle);
   }
 
   @override
@@ -186,12 +183,15 @@ class _EventPlaceState extends State<EventPlace> with SingleTickerProviderStateM
         cubit: _gymnasiumBloc,
         builder: (context, state) {
           if (state is GymnasiumLoadedState) {
-            return _buildContent(context, _buildGymnasiumLocationLoaded(state));
+            return Padding(
+                padding: const EdgeInsets.only(top: 8.0),
+                child: _buildGymnasiumLocationLoaded(state));
           } else {
             return Loading();
           }
         },
       );
-    } else return Container();
+    } else
+      return Container();
   }
 }
