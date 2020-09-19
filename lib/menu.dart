@@ -58,11 +58,12 @@ class _MenuItemWithLeading extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    TextStyle textStyle = Theme.of(context).textTheme.headline5;
+    TextStyle textStyle = Theme.of(context).textTheme.headline1;
     return ListTile(
       leading: Icon(leadingIcon, color: textStyle.color),
       title: Text(data, style: textStyle),
       onTap: onTap,
+      trailing: Icon(Icons.keyboard_arrow_right, color: textStyle.color,),
     );
   }
 }
