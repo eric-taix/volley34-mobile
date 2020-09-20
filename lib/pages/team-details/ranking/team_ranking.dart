@@ -354,6 +354,8 @@ class _TeamRankingState extends State<TeamRanking> {
       BuildContext context, ClassificationTeamSynthesis teamStats) {
     List<double> setsDiffEvolution =
         TeamBloc.computePointsDiffs(widget.results, widget.team.code);
+    DateTime startDate = widget.results.first.matchDate;
+    DateTime endDate = widget.results.last.matchDate;
     List<double> cumulativeSetsDiffEvolution =
         TeamBloc.computeCumulativePointsDiffs(setsDiffEvolution);
     return Column(
@@ -369,10 +371,16 @@ class _TeamRankingState extends State<TeamRanking> {
           wonPoints: teamStats.wonSets,
           maxPoints: teamStats.wonSets + teamStats.lostSets,
         ),
-        EvolutionWidget(title: "Diff.\nde sets", evolution: setsDiffEvolution),
+        EvolutionWidget(
+            title: "Diff.\nde sets",
+            evolution: setsDiffEvolution,
+            startDate: startDate,
+            endDate: endDate),
         EvolutionWidget(
             title: "Cumul diff.\nde sets",
-            evolution: cumulativeSetsDiffEvolution),
+            evolution: cumulativeSetsDiffEvolution,
+            startDate: startDate,
+            endDate: endDate),
         StatisticsWidget(
           title: "Points pris",
           wonPoints: teamStats.wonPoints,
