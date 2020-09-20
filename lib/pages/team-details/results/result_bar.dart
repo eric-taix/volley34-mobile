@@ -50,12 +50,6 @@ class _BarPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     double offset = isHost ? widthOffset : -widthOffset;
-    Paint roundedLinePaint = Paint()
-      ..color = (offset > 0 ? Colors.green : Colors.red)
-      ..strokeWidth = height
-      ..strokeCap = StrokeCap.round
-      ..style = PaintingStyle.stroke;
-
     Paint verticalLine = Paint()
       ..color = color
       ..strokeWidth = 3

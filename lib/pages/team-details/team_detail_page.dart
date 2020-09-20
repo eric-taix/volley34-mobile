@@ -5,13 +5,14 @@ import 'package:v34/commons/favorite/favorite.dart';
 import 'package:v34/commons/loading.dart';
 import 'package:v34/commons/text_tab_bar.dart';
 import 'package:v34/models/classication.dart';
-import 'package:v34/models/match_result.dart';
 import 'package:v34/models/club.dart';
+import 'package:v34/models/match_result.dart';
 import 'package:v34/models/team.dart';
 import 'package:v34/pages/club-details/blocs/club_team.bloc.dart';
 import 'package:v34/pages/dashboard/blocs/team_classification_bloc.dart';
-import 'package:v34/pages/team-details/results/team_results.dart';
+import 'package:v34/pages/team-details/agenda/team_agenda.dart';
 import 'package:v34/pages/team-details/ranking/team_ranking.dart';
+import 'package:v34/pages/team-details/results/team_results.dart';
 import 'package:v34/repositories/repository.dart';
 
 class TeamDetailPage extends StatefulWidget {
@@ -53,6 +54,7 @@ class TeamDetailPageState extends State<TeamDetailPage> {
           classification.label, _buildTab(_buildTeamRanking, classification));
     }).toList();
     tabs.add(TextTab("Résultats", _buildTab(_buildTeamResults, null)));
+    tabs.add(TextTab("Agenda", _buildTab(_buildTeamAgenda, null)));
     return tabs;
   }
 
@@ -83,6 +85,11 @@ class TeamDetailPageState extends State<TeamDetailPage> {
     return TeamResults(team: widget.team, results: results);
   }
 
+  Widget _buildTeamAgenda(
+      ClassificationSynthesis classification, List<MatchResult> results) {
+    return TeamAgenda(team: widget.team);
+  }
+
   Widget _buildTeamDetailPage(String key, List<TextTab> tabs) {
     return AppBarWithImage(
       widget.team.name,
@@ -109,15 +116,9 @@ class TeamDetailPageState extends State<TeamDetailPage> {
               return _buildTeamDetailPage(
                   "teamDetailPageLoaded", _getTabs(state.classifications));
             } else {
-              return _buildTeamDetailPage("teamDetailPageLoading", [
-                TextTab(
-                    "Chargement",
-                    SliverList(
-                        delegate: SliverChildListDelegate([
-                      Padding(
-                          padding: EdgeInsets.only(top: 16.0), child: Loading())
-                    ])))
-              ]);
+              return Center(
+                child: Loading(),
+              );
             }
           });
     } else {

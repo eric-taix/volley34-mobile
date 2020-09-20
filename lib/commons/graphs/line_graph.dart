@@ -1,5 +1,3 @@
-import 'dart:math' as math;
-
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -36,8 +34,6 @@ class LineGraph extends StatelessWidget {
   }
 
   LineChartData mainData(BuildContext context, List<double> results) {
-    double max2 = results.fold(0.0, math.max);
-    double min2 = results.fold(0.0, math.min);
     DateFormat _dateFormat = DateFormat('dd MMM', "FR");
     return LineChartData(
       lineTouchData: LineTouchData(enabled: false),

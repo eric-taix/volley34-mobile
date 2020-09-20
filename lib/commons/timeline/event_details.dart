@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:v34/commons/rounded_network_image.dart';
+import 'package:v34/commons/timeline/details/event_info.dart';
 import 'package:v34/models/event.dart';
-import 'package:v34/pages/dashboard/widgets/timeline/details/event_info.dart';
 import 'package:v34/repositories/repository.dart';
 
 class EventDetails extends StatefulWidget {
@@ -144,29 +144,5 @@ class _EventDetailsState extends State<EventDetails> {
         ),
       ),
     );
-  }
-}
-
-class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
-  _SliverAppBarDelegate(this._tabBar);
-
-  final TabBar _tabBar;
-
-  @override
-  double get minExtent => _tabBar.preferredSize.height;
-
-  @override
-  double get maxExtent => _tabBar.preferredSize.height;
-
-  @override
-  Widget build(
-      BuildContext context, double shrinkOffset, bool overlapsContent) {
-    return Container(
-        color: Theme.of(context).scaffoldBackgroundColor, child: _tabBar);
-  }
-
-  @override
-  bool shouldRebuild(_SliverAppBarDelegate oldDelegate) {
-    return false;
   }
 }

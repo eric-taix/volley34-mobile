@@ -46,8 +46,9 @@ class LoadWeekAgenda extends AgendaEvent {
 
 class LoadTeamMonthAgenda extends AgendaEvent {
   final String teamCode;
+  final int days;
 
-  LoadTeamMonthAgenda({@required this.teamCode});
+  LoadTeamMonthAgenda({@required this.teamCode, this.days = 30});
 
   @override
   List<Object> get props => [teamCode];
@@ -55,8 +56,9 @@ class LoadTeamMonthAgenda extends AgendaEvent {
 
 class LoadTeamsMonthAgenda extends AgendaEvent {
   final List<String> teamCodes;
+  final int days;
 
-  LoadTeamsMonthAgenda({@required this.teamCodes});
+  LoadTeamsMonthAgenda({@required this.teamCodes, this.days = 30});
 
   @override
   List<Object> get props => [teamCodes];
@@ -67,7 +69,7 @@ class LoadTeamsMonthAgenda extends AgendaEvent {
 class AgendaBloc extends Bloc<AgendaEvent, AgendaState> {
   final Repository repository;
 
-  AgendaBloc({this.repository}) : super(AgendaUninitialized());
+  AgendaBloc({@required this.repository}) : super(AgendaUninitialized());
 
   @override
   Stream<AgendaState> mapEventToState(AgendaEvent event) async* {
@@ -81,13 +83,15 @@ class AgendaBloc extends Bloc<AgendaEvent, AgendaState> {
         ..addAll(state.events)
         ..sort((event1, event2) => event1.date.compareTo(event2.date)));
     } else if (event is LoadTeamMonthAgenda) {
-      List<Event> events = await repository.loadTeamMonthAgenda(event.teamCode);
+      List<Event> events =
+          await repository.loadTeamAgenda(event.teamCode, event.days);
       events.sort((event1, event2) => event1.date.compareTo(event2.date));
       yield AgendaLoaded(events);
     } else if (event is LoadTeamsMonthAgenda) {
       Set<Event> allEvents = Set();
       for (String teamCode in event.teamCodes) {
-        List<Event> events = await repository.loadTeamMonthAgenda(teamCode);
+        List<Event> events =
+            await repository.loadTeamAgenda(teamCode, event.days);
         allEvents.addAll(events);
       }
       List<Event> eventList = allEvents.toList();
