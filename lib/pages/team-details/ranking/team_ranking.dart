@@ -107,7 +107,14 @@ class _TeamRankingState extends State<TeamRanking> {
     else if (widget.classification.teamsClassifications.length -
             teamStats.rank <
         widget.classification.relegated) title = "Reléguée";
+
+    ClassificationTeamSynthesis currentTeamClassification = widget
+        .classification.teamsClassifications
+        .firstWhere((teamClassification) =>
+            teamClassification.teamCode == widget.team.code);
+
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         FractionallySizedBox(
           widthFactor: 0.8,
@@ -146,82 +153,185 @@ class _TeamRankingState extends State<TeamRanking> {
           ),
         ),
         Align(
-          child: GestureDetector(
-            onTap: () {
-              setState(() {
-                _openClassificationList = !_openClassificationList;
-              });
-            },
-            child: Padding(
-              padding: const EdgeInsets.only(right: 18.0, top: 12, bottom: 8),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Text(
-                      _openClassificationList
-                          ? "Cacher le détail"
-                          : "Voir le détail",
-                      style: Theme.of(context).textTheme.bodyText2),
-                  Icon(
-                    _openClassificationList
-                        ? Icons.arrow_drop_up
-                        : Icons.arrow_drop_down,
-                    color: Theme.of(context).textTheme.bodyText2.color,
-                  )
-                ],
+          alignment: Alignment.bottomRight,
+          child: Padding(
+            padding: const EdgeInsets.only(right: 18.0, top: 12, bottom: 8),
+            child: SizedBox(
+              width: 180,
+              child: OutlineButton(
+                borderSide: BorderSide(
+                    color: Theme.of(context).textTheme.bodyText1.color),
+                highlightedBorderColor:
+                    Theme.of(context).textTheme.bodyText2.color,
+                onPressed: () => setState(() {
+                  _openClassificationList = !_openClassificationList;
+                }),
+                child: AnimatedCrossFade(
+                  duration: Duration(milliseconds: 500),
+                  crossFadeState: _openClassificationList
+                      ? CrossFadeState.showFirst
+                      : CrossFadeState.showSecond,
+                  firstChild: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Expanded(
+                        child: Text("Cacher le détail",
+                            style: Theme.of(context).textTheme.bodyText2),
+                      ),
+                      Icon(
+                        Icons.arrow_drop_up,
+                        color: Theme.of(context).textTheme.bodyText2.color,
+                      )
+                    ],
+                  ),
+                  secondChild: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Expanded(
+                        child: Text("Voir le détail",
+                            style: Theme.of(context).textTheme.bodyText2),
+                      ),
+                      Icon(
+                        Icons.arrow_drop_down,
+                        color: Theme.of(context).textTheme.bodyText2.color,
+                      )
+                    ],
+                  ),
+                ),
               ),
             ),
           ),
-          alignment: Alignment.bottomRight,
         ),
-        AnimatedOpacity(
-          curve: Curves.easeInOut,
+        AnimatedCrossFade(
+          crossFadeState: _openClassificationList
+              ? CrossFadeState.showSecond
+              : CrossFadeState.showFirst,
           duration: Duration(milliseconds: 800),
-          opacity: _openClassificationList ? 1.0 : 0.0,
-          child: _openClassificationList
-              ? Column(
-                  children: [
-                    ...widget.classification.teamsClassifications.reversed
-                        .map((classificationSynthesis) {
-                      return Padding(
-                        padding: const EdgeInsets.only(
-                            left: 28.0, right: 28, top: 6, bottom: 6),
-                        child: Container(
-                            alignment: Alignment.centerLeft,
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  flex: 5,
-                                  child: Text(
-                                    classificationSynthesis.name,
-                                    overflow: TextOverflow.fade,
-                                    maxLines: 1,
-                                    style: classificationSynthesis.teamCode ==
-                                            widget.team.code
-                                        ? Theme.of(context).textTheme.bodyText2
-                                        : Theme.of(context).textTheme.bodyText1,
+          firstChild: SizedBox(
+            width: double.infinity,
+          ),
+          secondChild: Column(
+            children: [
+              ...widget.classification.teamsClassifications.reversed
+                  .toList()
+                  .asMap()
+                  .map(
+                    (index, classificationSynthesis) {
+                      return MapEntry(
+                        index,
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              left: 28.0, right: 28, top: 6, bottom: 6),
+                          child: Container(
+                              alignment: Alignment.centerLeft,
+                              child: Row(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.only(right: 8.0),
+                                    child: SizedBox(
+                                      width: 20,
+                                      height: 20,
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(4)),
+                                            color: classificationSynthesis
+                                                        .teamCode ==
+                                                    widget.team.code
+                                                ? Theme.of(context)
+                                                    .textTheme
+                                                    .bodyText2
+                                                    .color
+                                                : Theme.of(context)
+                                                    .textTheme
+                                                    .bodyText1
+                                                    .color),
+                                        child: Center(
+                                          child: Text(
+                                            "${index + 1}",
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodyText1
+                                                .copyWith(
+                                                    color: Theme.of(context)
+                                                        .canvasColor,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
                                   ),
-                                ),
-                                Expanded(
-                                    flex: 1,
+                                  Expanded(
+                                    flex: 100,
                                     child: Text(
-                                      "${classificationSynthesis.wonSets} pts",
+                                      classificationSynthesis.name,
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 1,
                                       style: classificationSynthesis.teamCode ==
                                               widget.team.code
                                           ? Theme.of(context)
                                               .textTheme
                                               .bodyText2
+                                              .copyWith(
+                                                  fontWeight: FontWeight.bold)
                                           : Theme.of(context)
                                               .textTheme
                                               .bodyText1,
-                                    ))
-                              ],
-                            )),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    flex: 52,
+                                    child: Row(
+                                      children: [
+                                        Text(
+                                          "${classificationSynthesis.wonSets} pts",
+                                          style: classificationSynthesis
+                                                      .teamCode ==
+                                                  widget.team.code
+                                              ? Theme.of(context)
+                                                  .textTheme
+                                                  .bodyText2
+                                                  .copyWith(
+                                                      fontWeight:
+                                                          FontWeight.bold)
+                                              : Theme.of(context)
+                                                  .textTheme
+                                                  .bodyText1,
+                                        ),
+                                        classificationSynthesis.teamCode !=
+                                                widget.team.code
+                                            ? Text(
+                                                " (${classificationSynthesis.totalPoints - currentTeamClassification.totalPoints > 0 ? "+" : ""}${classificationSynthesis.totalPoints - currentTeamClassification.totalPoints})",
+                                                style: classificationSynthesis
+                                                            .teamCode ==
+                                                        widget.team.code
+                                                    ? Theme.of(context)
+                                                        .textTheme
+                                                        .bodyText2
+                                                        .copyWith(
+                                                            fontWeight:
+                                                                FontWeight.bold)
+                                                    : Theme.of(context)
+                                                        .textTheme
+                                                        .bodyText1,
+                                              )
+                                            : SizedBox()
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              )),
+                        ),
                       );
-                    }).toList()
-                  ],
-                )
-              : null,
+                    },
+                  )
+                  .values
+                  .toList()
+            ],
+          ),
         ),
       ],
     );
