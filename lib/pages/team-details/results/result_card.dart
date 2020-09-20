@@ -69,42 +69,46 @@ class ResultCard extends StatelessWidget {
           .asMap()
           .map((index, set) => MapEntry(
               index,
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Expanded(
-                    flex: 3,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: <Widget>[
-                        Text(
-                          "Set n°",
-                          style: Theme.of(context).textTheme.bodyText1,
-                        ),
-                        Icon(_setIcons[index],
-                            color: Theme.of(context).accentColor),
-                      ],
-                    ),
-                  ),
-                  Expanded(
-                    flex: 5,
-                    child: Center(
-                      child: _buildPoints(
-                        context,
-                        set,
-                        minMax,
-                        team.code == result.hostTeamCode,
-                        true,
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 4.0),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      flex: 3,
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: <Widget>[
+                          Text(
+                            "Set n°",
+                            style: Theme.of(context).textTheme.bodyText1,
+                          ),
+                          Icon(_setIcons[index],
+                              color: Theme.of(context).accentColor),
+                        ],
                       ),
                     ),
-                  ),
-                  Expanded(
-                      flex: 2,
-                      child: ResultBar(
-                          minMax: minMax,
-                          diffValue: set.hostPoint - set.visitorpoint,
-                          isHost: team.code == result.hostTeamCode))
-                ],
+                    Expanded(
+                      flex: 5,
+                      child: Center(
+                        child: _buildPoints(
+                          context,
+                          set,
+                          minMax,
+                          team.code == result.hostTeamCode,
+                          true,
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                        flex: 2,
+                        child: ResultBar(
+                            minMax: minMax,
+                            diffValue: set.hostPoint - set.visitorpoint,
+                            isHost: team.code == result.hostTeamCode))
+                  ],
+                ),
               )))
           .values
           .toList(),
@@ -213,6 +217,8 @@ class ResultCard extends StatelessWidget {
             children: [
               Text(
                 "${result.hostName}",
+                textAlign: TextAlign.center,
+                overflow: TextOverflow.ellipsis,
                 style: Theme.of(context).textTheme.bodyText2.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
@@ -226,6 +232,8 @@ class ResultCard extends StatelessWidget {
               ),
               Text(
                 "${result.visitorName}",
+                textAlign: TextAlign.center,
+                overflow: TextOverflow.ellipsis,
                 style: Theme.of(context).textTheme.bodyText2.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
@@ -242,11 +250,11 @@ class ResultCard extends StatelessWidget {
       {bool colored = true}) {
     double fontSize = 20.0;
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
           padding:
-              const EdgeInsets.only(top: 8.0, bottom: 4.0, left: 18, right: 18),
+              const EdgeInsets.only(top: 4.0, bottom: 4.0, left: 18, right: 18),
           child: RichText(
             text: TextSpan(
                 text: "${matchSet.hostPoint}",

@@ -55,21 +55,49 @@ class _BarPainter extends CustomPainter {
       ..strokeWidth = height
       ..strokeCap = StrokeCap.round
       ..style = PaintingStyle.stroke;
+
     Paint verticalLine = Paint()
       ..color = color
-      ..strokeWidth = height / 2
+      ..strokeWidth = 3
       ..strokeCap = StrokeCap.square
       ..style = PaintingStyle.stroke;
     if (offset > 0) {
-      canvas.drawLine(
-          Offset(size.width / 2 + (height / 2), height / 4),
-          Offset(size.width / 2 + ((size.width / 2) * offset), height / 4),
-          roundedLinePaint);
+      final linePath = Path()
+        ..moveTo(size.width / 2 + (height / 2), height / 4)
+        ..lineTo(size.width / 2 + ((size.width / 2) * offset), height / 4);
+
+      final colors = [Colors.lightBlueAccent, Colors.blue, Colors.green];
+      final stops = [0.0, 0.4, 0.8];
+      final gradient = LinearGradient(colors: colors, stops: stops);
+      final paint = Paint()
+        ..shader = gradient.createShader(
+            Rect.fromLTRB(size.width / 2, 0, size.width, size.height))
+        ..strokeWidth = height
+        ..strokeCap = StrokeCap.round
+        ..style = PaintingStyle.stroke;
+
+      canvas.drawPath(linePath, paint);
     } else {
-      canvas.drawLine(
-          Offset(size.width / 2 + ((size.width / 2) * offset), height / 4),
-          Offset((size.width) / 2 - (height / 2), height / 4),
-          roundedLinePaint);
+      final linePath = Path()
+        ..moveTo(size.width / 2 + ((size.width / 2) * offset), height / 4)
+        ..lineTo((size.width) / 2 - (height / 2), height / 4);
+
+      final colors = [
+        Colors.red,
+        Colors.orange,
+        Colors.yellow,
+      ];
+
+      final stops = [0.2, 0.6, 1.0];
+      final gradient = LinearGradient(colors: colors, stops: stops);
+      final paint = Paint()
+        ..shader = gradient
+            .createShader(Rect.fromLTRB(0, 0, size.width / 2, size.height))
+        ..strokeWidth = height
+        ..strokeCap = StrokeCap.round
+        ..style = PaintingStyle.stroke;
+
+      canvas.drawPath(linePath, paint);
     }
     canvas.drawLine(
         Offset(size.width / 2, -5), Offset(size.width / 2, 10), verticalLine);
