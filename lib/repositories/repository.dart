@@ -2,10 +2,10 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:v34/commons/favorite/favorite.dart';
 import 'package:v34/models/classication.dart';
 import 'package:v34/models/club.dart';
-import 'package:v34/models/slot.dart';
 import 'package:v34/models/event.dart';
 import 'package:v34/models/gymnasium.dart';
 import 'package:v34/models/match_result.dart';
+import 'package:v34/models/slot.dart';
 import 'package:v34/models/team.dart';
 import 'package:v34/models/team_stats.dart';
 import 'package:v34/repositories/providers/agenda_provider.dart';
@@ -63,6 +63,11 @@ class Repository {
   }
 
   //------ TEAM -------
+
+  /// Load a team's club
+  Future<Club> loadTeamClub(String teamCode) async {
+    return _teamProvider.loadTeamClub(teamCode);
+  }
 
   /// Load a club's teams
   Future<List<Team>> loadClubTeams(String clubCode) async {
