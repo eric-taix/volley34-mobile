@@ -2,10 +2,10 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:v34/commons/loading.dart';
+import 'package:v34/commons/timeline/timeline.dart';
+import 'package:v34/commons/timeline/timeline_items.dart';
 import 'package:v34/models/team.dart';
 import 'package:v34/pages/dashboard/blocs/agenda_bloc.dart';
-import 'package:v34/pages/dashboard/widgets/timeline/timeline.dart';
-import 'package:v34/pages/dashboard/widgets/timeline/timeline_items.dart';
 import 'package:v34/repositories/repository.dart';
 
 class DashboardAgenda extends StatefulWidget {

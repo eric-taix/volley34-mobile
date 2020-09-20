@@ -47,6 +47,7 @@ class SummaryWidget extends StatelessWidget {
       Color barColor, ClassificationTeamSynthesis teamStats) {
     return BarChartGroupData(
       x: x,
+      showingTooltipIndicators: [0],
       barRods: [
         BarChartRodData(
           y: y,
@@ -55,10 +56,7 @@ class SummaryWidget extends StatelessWidget {
           backDrawRodData: BackgroundBarChartRodData(
             show: true,
             y: (teamStats.wonMatches + teamStats.lostMatches).toDouble(),
-            color: Theme.of(context)
-                .cardTheme
-                .color
-                .tiny(10), //barBackgroundColor,
+            color: Theme.of(context).cardTheme.color.tiny(10),
           ),
         ),
       ],
@@ -71,38 +69,38 @@ class SummaryWidget extends StatelessWidget {
       child: FractionallySizedBox(
         widthFactor: 0.8,
         child: BarChart(BarChartData(
+          barTouchData: BarTouchData(
+            enabled: false,
+            touchTooltipData: BarTouchTooltipData(
+              tooltipBgColor: Colors.transparent,
+              tooltipPadding: const EdgeInsets.only(bottom: 2),
+              tooltipBottomMargin: 0,
+              getTooltipItem: (
+                BarChartGroupData group,
+                int groupIndex,
+                BarChartRodData rod,
+                int rodIndex,
+              ) {
+                return rod.y.toInt() == 0
+                    ? null
+                    : BarTooltipItem(
+                        "${rod.y.toInt()}",
+                        TextStyle(
+                            color: Theme.of(context).textTheme.bodyText2.color,
+                            fontSize: 10,
+                            fontFamily: "Raleway",
+                            fontWeight: FontWeight.bold),
+                      );
+              },
+            ),
+          ),
           borderData: FlBorderData(show: false),
           titlesData: FlTitlesData(
             show: true,
-            topTitles: SideTitles(
-              reservedSize: 0,
-              margin: 0,
-              showTitles: true,
-              textStyle: Theme.of(context).textTheme.bodyText2,
-              getTitles: (double value) {
-                switch (value.toInt()) {
-                  case 0:
-                    return '${teamStats.nbSets30 > 0 ? teamStats.nbSets30.toString() : ""}';
-                  case 1:
-                    return '${teamStats.nbSets31 > 0 ? teamStats.nbSets31.toString() : ""}';
-                  case 2:
-                    return '${teamStats.nbSets32 > 0 ? teamStats.nbSets32.toString() : ""}';
-                  case 3:
-                    return '${teamStats.nbSets23 > 0 ? teamStats.nbSets23.toString() : ""}';
-                  case 4:
-                    return '${teamStats.nbSets13 > 0 ? teamStats.nbSets13.toString() : ""}';
-                  case 5:
-                    return '${teamStats.nbSets03 > 0 ? teamStats.nbSets03.toString() : ""}';
-                  case 6:
-                    return '${teamStats.nbSetsMI > 0 ? teamStats.nbSetsMI.toString() : ""}';
-                  default:
-                    return '';
-                }
-              },
-            ),
             bottomTitles: SideTitles(
               showTitles: true,
-              textStyle: Theme.of(context).textTheme.bodyText1,
+              textStyle:
+                  Theme.of(context).textTheme.bodyText1.copyWith(fontSize: 12),
               margin: 2,
               getTitles: (double value) {
                 switch (value.toInt()) {

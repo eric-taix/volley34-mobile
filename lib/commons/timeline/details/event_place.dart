@@ -42,7 +42,7 @@ class _EventPlaceState extends State<EventPlace> {
 
   @override
   void dispose() {
-    _mapController.dispose();
+    if (_mapController != null) _mapController.dispose();
     super.dispose();
   }
 

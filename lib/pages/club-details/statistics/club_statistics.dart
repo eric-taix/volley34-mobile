@@ -157,7 +157,7 @@ class _ClubStatisticsState extends State<ClubStatistics> {
           backDrawRodData: BackgroundBarChartRodData(
             show: true,
             y: maxRodY,
-            color: Theme.of(context).primaryColor, //barBackgroundColor,
+            color: Theme.of(context).primaryColor,
           ),
         ),
       ],

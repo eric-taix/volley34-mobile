@@ -2,8 +2,8 @@ import 'package:add_2_calendar/add_2_calendar.dart' as addToCalendar;
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
+import 'package:v34/commons/timeline/details/event_place.dart';
 import 'package:v34/models/event.dart';
-import 'package:v34/pages/dashboard/widgets/timeline/details/event_place.dart';
 import 'package:v34/utils/launch.dart';
 
 import 'event_date.dart';
