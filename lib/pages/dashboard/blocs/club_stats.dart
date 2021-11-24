@@ -39,8 +39,8 @@ abstract class ClubStatsEvent extends Equatable {
 
 class ClubStatsLoadEvent extends ClubStatsEvent {
   final String? clubCode;
-
-  const ClubStatsLoadEvent(this.clubCode);
+  final int days;
+  const ClubStatsLoadEvent(this.clubCode, {this.days = 7});
 }
 
 //---- BLOC
@@ -57,7 +57,7 @@ class ClubStatsBloc extends Bloc<ClubStatsEvent, ClubStatsState> {
       List<Team> teams = await _repository.loadClubTeams(event.clubCode);
 
       var to = new DateTime.now();
-      var from = to.subtract(Duration(days: 7));
+      var from = to.subtract(Duration(days: event.days));
 
       var teamsResults = (await Future.wait(teams.map((team) => _repository.loadTeamMatchResults(team.code))))
           .expand((element) => element)

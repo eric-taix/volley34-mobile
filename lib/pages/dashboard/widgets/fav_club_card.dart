@@ -18,13 +18,14 @@ class FavoriteClubCard extends StatefulWidget {
 }
 
 class _FavoriteClubCardState extends State<FavoriteClubCard> {
-  ClubStatsBloc? _clubStatsBloc;
+  static const int STAT_DAYS = 14;
 
+  ClubStatsBloc? _clubStatsBloc;
   @override
   void initState() {
     super.initState();
     _clubStatsBloc = ClubStatsBloc(RepositoryProvider.of<Repository>(context))
-      ..add(ClubStatsLoadEvent(widget.club.code));
+      ..add(ClubStatsLoadEvent(widget.club.code, days: STAT_DAYS));
   }
 
   @override
@@ -64,7 +65,7 @@ class _FavoriteClubCardState extends State<FavoriteClubCard> {
                   child: Padding(
                     padding: const EdgeInsets.only(right: 8.0),
                     child: Text(
-                      "Les 7 derniers jours",
+                      "Les $STAT_DAYS derniers jours",
                       style: Theme.of(context).textTheme.bodyText2,
                       textAlign: TextAlign.center,
                     ),
