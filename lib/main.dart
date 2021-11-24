@@ -42,11 +42,22 @@ class V34 extends StatefulWidget {
 }
 
 class _V34State extends State<V34> {
-  PreferencesBloc _preferencesBloc = PreferencesBloc();
+  late Repository _repository;
+  late PreferencesBloc _preferencesBloc;
 
   @override
   void initState() {
     super.initState();
+    _repository = Repository(
+      ClubProvider(),
+      TeamProvider(),
+      FavoriteProvider(),
+      AgendaProvider(),
+      GymnasiumProvider(),
+      MapProvider(),
+    );
+    _preferencesBloc = PreferencesBloc(_repository);
+    _preferencesBloc.add(PreferencesLoadEvent());
     _preferencesBloc.add(PreferencesLoadEvent());
   }
 
@@ -61,8 +72,8 @@ class _V34State extends State<V34> {
     bool dark = state.useDarkTheme;
     return MaterialApp(
       title: 'Volley34',
-      theme: AppTheme.getNormalThemeFromPreferences(automatic, dark),
-      darkTheme: AppTheme.getDarkThemeFromPreferences(automatic),
+      theme: AppTheme.getNormalThemeFromPreferences(automatic, dark, state.dominantColor),
+      darkTheme: AppTheme.getDarkThemeFromPreferences(automatic, state.dominantColor),
       home: _MainPage(),
     );
   }
@@ -75,14 +86,7 @@ class _V34State extends State<V34> {
         builder: (context, state) {
           if (state is PreferencesUpdatedState) {
             return RepositoryProvider(
-              create: (context) => Repository(
-                ClubProvider(),
-                TeamProvider(),
-                FavoriteProvider(),
-                AgendaProvider(),
-                GymnasiumProvider(),
-                MapProvider(),
-              ),
+              create: (context) => _repository,
               child: FeatureDiscovery(child: _buildMaterialApp(state)),
             );
           } else {

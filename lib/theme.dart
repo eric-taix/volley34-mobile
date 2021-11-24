@@ -5,20 +5,20 @@ import 'commons/text_tab_bar.dart';
 const double CARD_BORDER_RADIUS = 18.0;
 
 class AppTheme {
-  static ThemeData darkTheme() {
+  static ThemeData darkTheme(Color? dominantColor) {
     return ThemeData(
       canvasColor: Color(0xFF262C41),
       scaffoldBackgroundColor: Color(0xFF262C41),
       highlightColor: Colors.transparent,
       primarySwatch: MaterialColor(
-        0xFFC9334F,
+        dominantColor?.value ?? 0xFFC9334F,
         <int, Color>{
           50: Color(0xFFE3F2FD),
           100: Color(0xFFBBDEFB),
           200: Color(0xFF90CAF9),
           300: Color(0xFF64B5F6),
           400: Color(0xFF42A5F5),
-          500: Color(0xFFC9334F),
+          500: dominantColor ?? Color(0xFFC9334F),
           600: Color(0xFF1E88E5),
           700: Color(0xFF1976D2),
           800: Color(0xFF1565C0),
@@ -114,7 +114,20 @@ class AppTheme {
         contentTextStyle:
             TextStyle(fontSize: 12, fontWeight: FontWeight.normal, color: Colors.white70, fontFamily: "Raleway"),
       ),
-      //elevatedButtonTheme: ElevatedButtonThemeData(style: ButtonStyle(backgroundColor: Color(0xFFC9334F))),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ButtonStyle(
+          shape: ButtonStateProperty(),
+          foregroundColor: ButtonForegroundStateColor(),
+          backgroundColor: ButtonBackgroundStateColor(color: dominantColor),
+          padding: ButtonPaddingProperty(),
+        ),
+      ),
+      outlinedButtonTheme: OutlinedButtonThemeData(
+        style: ButtonStyle(
+          shape: ButtonStateProperty(),
+          padding: ButtonPaddingProperty(),
+        ),
+      ),
     );
   }
 
@@ -208,14 +221,61 @@ class AppTheme {
             textTheme: ButtonTextTheme.accent));
   }
 
-  static ThemeData getNormalThemeFromPreferences(bool isAutomatic, bool isDark) {
+  static ThemeData getNormalThemeFromPreferences(bool isAutomatic, bool isDark, Color? dominantColor) {
     if (isAutomatic)
       return lightTheme();
     else
-      return isDark ? darkTheme() : lightTheme();
+      return isDark ? darkTheme(dominantColor) : lightTheme();
   }
 
-  static ThemeData? getDarkThemeFromPreferences(bool isAutomatic) {
-    return isAutomatic ? darkTheme() : null;
+  static ThemeData? getDarkThemeFromPreferences(bool isAutomatic, Color? dominantColor) {
+    return isAutomatic ? darkTheme(dominantColor) : null;
+  }
+}
+
+class ButtonForegroundStateColor extends MaterialStateColor {
+  static const int _defaultColor = 0xFFFFFFFF;
+
+  const ButtonForegroundStateColor() : super(_defaultColor);
+
+  @override
+  Color resolve(Set<MaterialState> states) =>
+      states.contains(MaterialState.disabled) ? Colors.white30 : Color(_defaultColor);
+}
+
+class ButtonBackgroundStateColor extends MaterialStateColor {
+  final Color? color;
+  static const int _defaultColor = 0xFFC9334F;
+
+  const ButtonBackgroundStateColor({this.color}) : super(_defaultColor);
+
+  @override
+  Color resolve(Set<MaterialState> states) =>
+      states.contains(MaterialState.disabled) ? Color(0xff3c404d) : color ?? Color(_defaultColor);
+}
+
+class ButtonStateProperty extends MaterialStateProperty<OutlinedBorder> {
+  static final _defaultBorder = RoundedRectangleBorder(
+    side: BorderSide(color: Color(0xFFC9334F), width: 2),
+    borderRadius: BorderRadius.circular(80.0),
+  );
+
+  final Color? color;
+
+  ButtonStateProperty({this.color});
+
+  @override
+  OutlinedBorder resolve(Set<MaterialState> states) => states.contains(MaterialState.disabled)
+      ? RoundedRectangleBorder(
+          side: BorderSide(color: Color(0xff3c404d), width: 2),
+          borderRadius: BorderRadius.circular(80.0),
+        )
+      : _defaultBorder;
+}
+
+class ButtonPaddingProperty extends MaterialStateProperty<EdgeInsetsGeometry> {
+  @override
+  EdgeInsetsGeometry resolve(Set<MaterialState> states) {
+    return EdgeInsets.symmetric(horizontal: 18);
   }
 }

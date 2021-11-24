@@ -1,106 +1,120 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:tinycolor2/tinycolor2.dart';
-import 'package:v34/commons/favorite/favorite.dart';
+import 'package:v34/commons/blocs/preferences_bloc.dart';
+import 'package:v34/commons/rounded_outlined_button.dart';
 import 'package:v34/models/club.dart';
+import 'package:v34/models/team.dart';
+import 'package:v34/pages/favorite/favorite_club.dart';
+import 'package:v34/pages/favorite/favorite_team.dart';
 import 'package:v34/repositories/repository.dart';
-import 'package:v34/theme.dart';
 
-class SelectFavoriteClub extends StatefulWidget {
-  const SelectFavoriteClub({Key? key}) : super(key: key);
+class SelectFavoriteTeam extends StatefulWidget {
+  const SelectFavoriteTeam({Key? key}) : super(key: key);
 
   @override
-  State<SelectFavoriteClub> createState() => _SelectFavoriteClubState();
+  State<SelectFavoriteTeam> createState() => _SelectFavoriteTeamState();
 }
 
-class _SelectFavoriteClubState extends State<SelectFavoriteClub> {
-  List<Club> _clubs = [];
-  int? _selectedIndex;
+class _SelectFavoriteTeamState extends State<SelectFavoriteTeam> {
+  Team? _selectedTeam;
+  Club? _selectedClub;
   late Repository _repository;
+
+  late final PageController _pageController;
+  late final PreferencesBloc _preferencesBloc;
 
   @override
   void initState() {
     super.initState();
     _repository = RepositoryProvider.of<Repository>(context);
-    _repository.loadAllClubs().then(
-          (clubs) => setState(
-            () {
-              _clubs = clubs;
-            },
-          ),
-        );
+    _pageController = PageController();
+    _preferencesBloc = BlocProvider.of<PreferencesBloc>(context);
   }
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      title: Text("Sélectionnez votre club"),
-      contentPadding: EdgeInsets.only(left: 10, top: 28),
-      content: Container(
-        width: double.minPositive,
+    String selectionType = _pageController.hasClients && _pageController.page == 1 ? "équipe" : "club";
+    return SafeArea(
+      child: Container(
+        color: Theme.of(context).canvasColor,
         child: Column(
-          mainAxisSize: MainAxisSize.min,
           children: [
-            Expanded(
-              child: ListView.builder(
-                itemCount: _clubs.length,
-                itemBuilder: (BuildContext context, int index) => Card(
-                  color: _selectedIndex == index
-                      ? TinyColor(Theme.of(context).cardTheme.color!).mix(input: Colors.white, amount: 20).color
-                      : null,
-                  margin: EdgeInsets.only(top: 4.0, bottom: 4.0, right: 8.0),
-                  child: InkWell(
-                    borderRadius: BorderRadius.circular(CARD_BORDER_RADIUS),
-                    onTap: () => setState(() => _selectedIndex = index),
-                    child: Row(
-                      children: [
-                        _clubs[index].logoUrl != null
-                            ? Padding(
-                                padding: const EdgeInsets.all(6.0),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(25),
-                                  child: CachedNetworkImage(
-                                    imageUrl: _clubs[index].logoUrl!,
-                                    width: 50,
-                                    errorWidget: (_, __, ___) => SizedBox(width: 50, height: 50),
-                                  ),
-                                ),
-                              )
-                            : SizedBox(width: 50, height: 50),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(_clubs[index].shortName!),
-                              Text(
-                                _clubs[index].name!,
-                                overflow: TextOverflow.ellipsis,
-                                style: Theme.of(context).textTheme.bodyText1,
-                              )
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
+            Container(
+              color: Theme.of(context).appBarTheme.backgroundColor,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 18.0),
+                    child: Text("Sélectionnez votre $selectionType", style: Theme.of(context).textTheme.headline4),
                   ),
+                ],
+              ),
+            ),
+            Expanded(
+              child: PageView(
+                controller: _pageController,
+                children: [
+                  FavoriteClubSelection(
+                      onClubChange: (club) => setState(() {
+                            _selectedClub = club;
+                            _selectedTeam = null;
+                          })),
+                  if (_selectedClub != null)
+                    FavoriteTeamSelection(
+                        club: _selectedClub!, onTeamChange: (team) => setState(() => _selectedTeam = team)),
+                ],
+              ),
+            ),
+            Container(
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    ElevatedButton(
+                      onPressed: _selectedTeam != null && _selectedClub != null ? () => _save(context) : null,
+                      child: Text("Enregistrer"),
+                    ),
+                    RoundedOutlinedButton(
+                      onPressed: _pageController.hasClients && _pageController.page == 1 ? () => _back() : null,
+                      leadingIcon: Icons.arrow_back_ios_rounded,
+                      child: Text("Préc."),
+                    ),
+                    RoundedOutlinedButton(
+                      onPressed: _selectedClub != null && _pageController.hasClients && _pageController.page == 0
+                          ? () => _next()
+                          : null,
+                      trailingIcon: Icons.arrow_forward_ios_rounded,
+                      child: Text("Suiv."),
+                    ),
+                    TextButton(onPressed: () => _close(context), child: Text("Annuler")),
+                  ],
                 ),
               ),
             ),
           ],
         ),
       ),
-      actions: [
-        ElevatedButton(
-            onPressed: _selectedIndex != null ? () => _saveAndClose(context, _clubs[_selectedIndex!]) : null,
-            child: Text("OK")),
-        TextButton(onPressed: () => _close(context), child: Text("Annuler")),
-      ],
     );
   }
 
-  _saveAndClose(BuildContext context, Club club) async {
-    await _repository.setFavorite(club.code, FavoriteType.Club);
+  _back() async {
+    if (_pageController.page == 1) {
+      await _pageController.animateToPage(0, duration: Duration(milliseconds: 500), curve: Curves.easeInOut);
+      setState(() {});
+    }
+  }
+
+  _next() async {
+    if (_pageController.page == 0) {
+      await _pageController.animateToPage(1, duration: Duration(milliseconds: 500), curve: Curves.easeInOut);
+      setState(() {});
+    }
+  }
+
+  _save(BuildContext context) async {
+    _preferencesBloc.add(PreferencesSaveEvent(favoriteClub: _selectedClub, favoriteTeam: _selectedTeam));
     _close(context);
   }
 

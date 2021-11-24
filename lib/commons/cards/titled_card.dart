@@ -22,8 +22,7 @@ class TitledCard extends StatelessWidget {
       this.buttonBar,
       this.bodyPadding,
       this.elevation = 0,
-      this.margin})
-      : assert(title != null);
+      this.margin});
 
   @override
   Widget build(BuildContext context) {

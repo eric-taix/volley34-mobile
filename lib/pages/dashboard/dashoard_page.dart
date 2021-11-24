@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:v34/commons/blocs/preferences_bloc.dart';
 import 'package:v34/commons/loading.dart';
 import 'package:v34/commons/page/main_page.dart';
 import 'package:v34/commons/paragraph.dart';
@@ -8,8 +9,6 @@ import 'package:v34/pages/club-details/blocs/club_teams.bloc.dart';
 import 'package:v34/pages/dashboard/widgets/dashboard_agenda.dart';
 import 'package:v34/pages/dashboard/widgets/dashboard_club_teams.dart';
 import 'package:v34/pages/dashboard/widgets/dashboard_clubs.dart';
-import 'package:v34/pages/favorite/blocs/favorite_cubit.dart';
-import 'package:v34/pages/favorite/favorite_wizard.dart';
 import 'package:v34/repositories/repository.dart';
 import 'package:v34/state_builder.dart';
 
@@ -21,7 +20,6 @@ class DashboardPage extends StatefulWidget {
 class _DashboardPageState extends State<DashboardPage> {
   Club? _currentClub;
   late final ClubTeamsBloc _clubTeamsBloc;
-  late final FavoriteCubit _favoriteCubit;
 
   @override
   void initState() {
@@ -29,19 +27,11 @@ class _DashboardPageState extends State<DashboardPage> {
       repository: RepositoryProvider.of<Repository>(context),
     );
     super.initState();
-    _favoriteCubit = FavoriteCubit(RepositoryProvider.of<Repository>(context));
-    _favoriteCubit.loadFavoriteClub();
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<FavoriteCubit, FavoriteState>(
-      listener: (_, state) {
-        if (state is FavoriteStateClubNotSet) {
-          showDialog(context: context, builder: (_) => SelectFavoriteClub());
-        }
-      },
-      bloc: _favoriteCubit,
+    return BlocBuilder<PreferencesBloc, PreferencesState>(
       builder: (context, state) {
         return MainPage(
           title: "Volley34",
@@ -53,17 +43,19 @@ class _DashboardPageState extends State<DashboardPage> {
                   state: state,
                   conditionalBuilders: [
                     when(
-                      stateIs<FavoriteStateClubLoading>(),
+                      stateIs<PreferencesLoadingState>(),
                       (_, __) => Loading(),
                     ),
-                    when<FavoriteStateTeamLoading>(
-                      or(
-                        [stateIs<FavoriteStateTeamLoading>(), stateIs<FavoriteStateTeamNotSet>()],
-                      ),
-                      (_, state) => DashboardClub(key: ValueKey("dashboard-clubs"), club: state.club),
+                    when<PreferencesUpdatedState>(
+                      stateIs<PreferencesUpdatedState>(),
+                      (_, state) {
+                        if (state.favoriteClub != null) {
+                          return DashboardClub(key: ValueKey("dashboard-clubs"), club: state.favoriteClub!);
+                        } else {
+                          return _buildNoFavorite("Sélectionnez votre club dans votre profil");
+                        }
+                      },
                     ),
-                    when(stateIs<FavoriteStateClubNotSet>(),
-                        (_, __) => _buildNoFavorite("Sélectionnez votre club dans votre profil")),
                   ],
                   defaultBuilder: (_, state) => Container(height: 250, child: Text("Ooooops")),
                 ),
@@ -72,19 +64,22 @@ class _DashboardPageState extends State<DashboardPage> {
                   state: state,
                   conditionalBuilders: [
                     when(
-                        or(
-                          [stateIs<FavoriteStateClubLoading>(), stateIs<FavoriteStateTeamLoading>()],
-                        ),
-                        (_, __) => Loading()),
-                    when<FavoriteStateTeamLoaded>(
-                      stateIs<FavoriteStateTeamLoaded>(),
-                      (_, state) => DashboardClubTeam(club: state.club, team: state.team),
+                      stateIs<PreferencesLoadingState>(),
+                      (_, __) => Loading(),
                     ),
-                    when(
-                        or(
-                          [stateIs<FavoriteStateClubNotSet>(), stateIs<FavoriteStateTeamNotSet>()],
-                        ),
-                        (_, __) => _buildNoFavorite("Sélectionnez votre équipe dans votre profil")),
+                    when<PreferencesUpdatedState>(
+                      stateIs<PreferencesUpdatedState>(),
+                      (_, state) {
+                        if (state.favoriteTeam != null && state.favoriteClub != null) {
+                          return DashboardClubTeam(
+                            club: state.favoriteClub!,
+                            team: state.favoriteTeam!,
+                          );
+                        } else {
+                          return _buildNoFavorite("Sélectionnez votre équipe dans votre profil");
+                        }
+                      },
+                    ),
                   ],
                   defaultBuilder: (_, state) => Container(height: 250, child: Text("Ooooops")),
                 ),
@@ -92,20 +87,13 @@ class _DashboardPageState extends State<DashboardPage> {
                 StateConditionBuilder(
                   state: state,
                   conditionalBuilders: [
-                    when(
-                        or(
-                          [stateIs<FavoriteStateClubLoading>(), stateIs<FavoriteStateTeamLoading>()],
-                        ),
-                        (_, __) => Loading()),
-                    when<FavoriteStateTeamLoaded>(
-                      stateIs<FavoriteStateTeamLoaded>(),
-                      (_, state) => DashboardAgenda(team: state.team),
+                    when<PreferencesUpdatedState>(stateIs<PreferencesLoadingState>(), (_, __) => Loading()),
+                    when<PreferencesUpdatedState>(
+                      stateIs<PreferencesUpdatedState>(),
+                      (_, state) => state.favoriteTeam != null
+                          ? DashboardAgenda(team: state.favoriteTeam!)
+                          : _buildNoFavorite("Sélectionnez votre équipe dans votre profil"),
                     ),
-                    when(
-                        or(
-                          [stateIs<FavoriteStateClubNotSet>(), stateIs<FavoriteStateTeamNotSet>()],
-                        ),
-                        (_, __) => _buildNoFavorite("Sélectionnez votre équipe dans votre profil")),
                   ],
                   defaultBuilder: (_, state) => Container(height: 250, child: Text("Ooooops")),
                 )
@@ -126,11 +114,6 @@ class _DashboardPageState extends State<DashboardPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: [
-            /*SvgPicture.asset(
-              "assets/error.svg",
-              width: 80,
-            ),*/
-            Icon(Icons.warning_rounded, color: Theme.of(context).textTheme.bodyText1!.color),
             Padding(
               padding: const EdgeInsets.only(top: 8.0, left: 28, right: 28),
               child: Text(

@@ -1,24 +1,91 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:v34/commons/blocs/preferences_bloc.dart';
+import 'package:v34/pages/favorite/favorite_wizard.dart';
 import 'package:v34/pages/markdown_page.dart';
 import 'package:v34/pages/preferences_page.dart';
 
-class AppMenu extends StatelessWidget {
+class AppMenu extends StatefulWidget {
+  @override
+  State<AppMenu> createState() => _AppMenuState();
+}
+
+class _AppMenuState extends State<AppMenu> {
   @override
   Widget build(BuildContext context) {
+    Color textStyleColor = Theme.of(context).textTheme.headline1!.color!;
     NavigatorState navigator = Navigator.of(context);
     return Drawer(
         child: ListView(padding: EdgeInsets.zero, children: <Widget>[
       DrawerHeader(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
+        child: Stack(
           children: [
-            Image(
-              image: AssetImage("assets/logo.png"),
-              width: 80,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                BlocBuilder<PreferencesBloc, PreferencesState>(
+                  builder: (_, state) {
+                    print("XXX: $state");
+                    if (state is PreferencesUpdatedState) {
+                      print("YYY: ${state.favoriteClub}");
+                    }
+                    return Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        state is PreferencesUpdatedState
+                            ? state.favoriteClub != null
+                                ? CachedNetworkImage(
+                                    imageUrl: state.favoriteClub!.logoUrl!,
+                                    width: 80,
+                                    height: 80,
+                                  )
+                                : Image(
+                                    image: AssetImage("assets/logo.png"),
+                                    width: 80,
+                                  )
+                            : SizedBox(),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 8.0),
+                          child: Text(
+                            state is PreferencesUpdatedState && state.favoriteTeam != null
+                                ? state.favoriteTeam!.name!
+                                : "VOLLEY 34",
+                            style: Theme.of(context).textTheme.headline4,
+                            maxLines: 1,
+                          ),
+                        ),
+                        state is PreferencesUpdatedState && state.favoriteClub != null
+                            ? Text(
+                                state.favoriteClub!.name!,
+                                style: Theme.of(context).textTheme.bodyText1,
+                                maxLines: 1,
+                              )
+                            : SizedBox(),
+                      ],
+                    );
+                  },
+                ),
+              ],
             ),
-            Text("VOLLEY 34", style: Theme.of(context).textTheme.headline4),
+            Positioned(
+              right: 0,
+              top: 0,
+              child: FloatingActionButton(
+                mini: true,
+                child: Icon(Icons.edit),
+                onPressed: () => showGeneralDialog(
+                  barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
+                  barrierColor: Colors.black45,
+                  context: context,
+                  pageBuilder:
+                      (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) =>
+                          SelectFavoriteTeam(),
+                ),
+              ),
+            ),
           ],
         ),
         decoration: BoxDecoration(
@@ -26,44 +93,48 @@ class AppMenu extends StatelessWidget {
         ),
       ),
       SizedBox(
-        height: 30,
+        height: 10,
       ),
       _MenuItemWithLeading(
           "Préférences",
-          Icons.settings,
-          () => navigator.maybePop().then((value) => navigator.push(MaterialPageRoute<void>(
-              builder: (context) => PreferencesPage())))),
+          Icon(Icons.settings, color: textStyleColor),
+          () => navigator
+              .maybePop()
+              .then((value) => navigator.push(MaterialPageRoute<void>(builder: (context) => PreferencesPage())))),
       _MenuItemWithLeading(
           "A propos",
-          FontAwesomeIcons.info,
-          () => navigator.maybePop().then((value) => navigator.push(MaterialPageRoute<void>(
-              builder: (context) =>
-                  MarkdownPage("A propos", "assets/about.markdown"))))),
+          Icon(FontAwesomeIcons.info, color: textStyleColor),
+          () => navigator.maybePop().then((value) => navigator
+              .push(MaterialPageRoute<void>(builder: (context) => MarkdownPage("A propos", "assets/about.markdown"))))),
       _MenuItemWithLeading(
           "License",
-          FontAwesomeIcons.ribbon,
-          () => navigator.maybePop().then((value) => navigator.push(MaterialPageRoute<void>(
-              builder: (context) =>
-                  MarkdownPage("Licence", "assets/gpl_licence.txt"))))),
+          Icon(FontAwesomeIcons.ribbon, color: textStyleColor),
+          () => navigator.maybePop().then((value) => navigator
+              .push(MaterialPageRoute<void>(builder: (context) => MarkdownPage("Licence", "assets/gpl_licence.txt"))))),
     ]));
   }
 }
 
 class _MenuItemWithLeading extends StatelessWidget {
-  final String data;
-  final IconData leadingIcon;
-  final Function() onTap;
+  final String title;
+  final String? subTitle;
+  final Widget leadingIcon;
+  final Function()? onTap;
 
-  _MenuItemWithLeading(this.data, this.leadingIcon, this.onTap);
+  _MenuItemWithLeading(this.title, this.leadingIcon, this.onTap, {this.subTitle});
 
   @override
   Widget build(BuildContext context) {
     TextStyle textStyle = Theme.of(context).textTheme.headline1!;
     return ListTile(
-      leading: Icon(leadingIcon, color: textStyle.color),
-      title: Text(data, style: textStyle),
+      leading: leadingIcon,
+      title: Text(title, style: textStyle),
+      subtitle: subTitle != null ? Text(subTitle!) : null,
       onTap: onTap,
-      trailing: Icon(Icons.keyboard_arrow_right, color: textStyle.color,),
+      trailing: Icon(
+        Icons.keyboard_arrow_right,
+        color: textStyle.color,
+      ),
     );
   }
 }

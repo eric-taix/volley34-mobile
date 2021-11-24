@@ -45,8 +45,9 @@ class Repository {
   }
 
   /// Load favorite team
-  Future<Team?> loadFavoriteTeam(String clubCode) async {
-    List<Team> teams = await _teamProvider.loadClubTeams(clubCode);
+  Future<Team?> loadFavoriteTeam() async {
+    var favoriteClubCode = await loadFavoriteClubCode();
+    List<Team> teams = await _teamProvider.loadClubTeams(favoriteClubCode);
     var favoriteTeamCode = await loadFavoriteTeamCode();
     if (favoriteTeamCode != null) {
       return teams.firstWhereOrNull((team) => team.code == favoriteTeamCode);
@@ -62,7 +63,7 @@ class Repository {
 
   /// Load all favorite club codes
   Future<String?> loadFavoriteClubCode() async {
-    return loadFavoriteClub().then((club) => club?.code);
+    return _favoriteProvider.loadFavoriteClubs().then((favoriteClubs) => favoriteClubs.firstOrNull);
   }
 
   Future<Club> loadClub(String? clubCode) async {
