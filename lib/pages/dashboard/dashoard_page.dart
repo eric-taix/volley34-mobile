@@ -4,31 +4,12 @@ import 'package:v34/commons/blocs/preferences_bloc.dart';
 import 'package:v34/commons/loading.dart';
 import 'package:v34/commons/page/main_page.dart';
 import 'package:v34/commons/paragraph.dart';
-import 'package:v34/models/club.dart';
-import 'package:v34/pages/club-details/blocs/club_teams.bloc.dart';
 import 'package:v34/pages/dashboard/widgets/dashboard_agenda.dart';
 import 'package:v34/pages/dashboard/widgets/dashboard_club_teams.dart';
 import 'package:v34/pages/dashboard/widgets/dashboard_clubs.dart';
-import 'package:v34/repositories/repository.dart';
 import 'package:v34/state_builder.dart';
 
-class DashboardPage extends StatefulWidget {
-  @override
-  _DashboardPageState createState() => _DashboardPageState();
-}
-
-class _DashboardPageState extends State<DashboardPage> {
-  Club? _currentClub;
-  late final ClubTeamsBloc _clubTeamsBloc;
-
-  @override
-  void initState() {
-    _clubTeamsBloc = ClubTeamsBloc(
-      repository: RepositoryProvider.of<Repository>(context),
-    );
-    super.initState();
-  }
-
+class DashboardPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<PreferencesBloc, PreferencesState>(
@@ -55,7 +36,7 @@ class _DashboardPageState extends State<DashboardPage> {
                             child: DashboardClub(key: ValueKey("dashboard-clubs"), club: state.favoriteClub!),
                           );
                         } else {
-                          return _buildNoFavorite("Sélectionnez votre club dans votre profil");
+                          return _buildNoFavorite(context, "Sélectionnez votre club dans votre profil");
                         }
                       },
                     ),
@@ -82,7 +63,7 @@ class _DashboardPageState extends State<DashboardPage> {
                             ),
                           );
                         } else {
-                          return _buildNoFavorite("Sélectionnez votre équipe dans votre profil");
+                          return _buildNoFavorite(context, "Sélectionnez votre équipe dans votre profil");
                         }
                       },
                     ),
@@ -98,7 +79,7 @@ class _DashboardPageState extends State<DashboardPage> {
                       stateIs<PreferencesUpdatedState>(),
                       (_, state) => state.favoriteTeam != null
                           ? DashboardAgenda(team: state.favoriteTeam!)
-                          : _buildNoFavorite("Sélectionnez votre équipe dans votre profil"),
+                          : _buildNoFavorite(context, "Sélectionnez votre équipe dans votre profil"),
                     ),
                   ],
                   defaultBuilder: (_, state) => Container(height: 250, child: Text("Ooooops")),
@@ -111,7 +92,7 @@ class _DashboardPageState extends State<DashboardPage> {
     );
   }
 
-  Widget _buildNoFavorite(String message) {
+  Widget _buildNoFavorite(BuildContext context, String message) {
     return Center(
       child: Container(
         height: 250,

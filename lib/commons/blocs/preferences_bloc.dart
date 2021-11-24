@@ -77,10 +77,10 @@ class PreferencesBloc extends Bloc<PreferencesEvent, PreferencesState> {
       if (event.useAutomaticTheme != null) preferences.setBool("automatic_theme", event.useAutomaticTheme!);
       if (event.useDarkTheme != null) preferences.setBool("dark_theme", event.useDarkTheme!);
       if (event.favoriteClub?.code != null) {
-        repository.setFavorite(event.favoriteClub!.code, FavoriteType.Club);
+        await repository.setFavorite(event.favoriteClub!.code, FavoriteType.Club);
       }
       if (event.favoriteTeam?.code != null) {
-        repository.setFavorite(event.favoriteTeam!.code, FavoriteType.Team);
+        await repository.setFavorite(event.favoriteTeam!.code, FavoriteType.Team);
       }
       yield PreferencesUpdatedState(
         useAutomaticTheme: preferences.getBool("automatic_theme") ?? true,

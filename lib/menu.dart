@@ -28,10 +28,6 @@ class _AppMenuState extends State<AppMenu> {
               children: [
                 BlocBuilder<PreferencesBloc, PreferencesState>(
                   builder: (_, state) {
-                    print("XXX: $state");
-                    if (state is PreferencesUpdatedState) {
-                      print("YYY: ${state.favoriteClub}");
-                    }
                     return Column(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
