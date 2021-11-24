@@ -24,9 +24,15 @@ class Podium extends StatefulWidget {
   final int? highlightedIndex;
   final int? promoted;
   final int? relegated;
+  final Widget? trailing;
 
   Podium(this.placeValues,
-      {this.title = "", this.active = true, this.highlightedIndex, this.promoted = 0, this.relegated = 0});
+      {this.title = "",
+      this.active = true,
+      this.highlightedIndex,
+      this.promoted = 0,
+      this.relegated = 0,
+      this.trailing});
 
   @override
   _PodiumState createState() => _PodiumState();
@@ -58,7 +64,8 @@ class _PodiumState extends State<Podium> {
   _updatePlaces() {
     placeValues = widget.placeValues;
     highlightedValue = placeValues![widget.highlightedIndex!];
-    max = placeValues!.fold(new PlaceValue("", 0), (max, placeValue) => placeValue.value > max.value ? placeValue : max);
+    max =
+        placeValues!.fold(new PlaceValue("", 0), (max, placeValue) => placeValue.value > max.value ? placeValue : max);
     if (widget.active) {
       Future.delayed(Duration(milliseconds: 200), () {
         var length = placeValues!.length;
@@ -120,7 +127,7 @@ class _PodiumState extends State<Podium> {
                       fontFamily: "Roboto",
                       fontSize: 108,
                       fontWeight: FontWeight.w500,
-                      color: _getColor(placeValues!.length - position!, context).tiny(5).withAlpha(70),
+                      color: _getColor(placeValues!.length - position!, context),
                     ),
                   ),
                 )
@@ -149,14 +156,20 @@ class _PodiumState extends State<Podium> {
         Align(
           alignment: Alignment.center,
           child: Padding(
-            padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 38.0, bottom: 0),
+            padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 18.0, bottom: 0),
             child: Container(
               child: Column(
                 children: <Widget>[
                   Expanded(child: _buildBarChart(context)),
                   Padding(
-                    padding: const EdgeInsets.only(top: 8.0),
-                    child: Text(widget.title, style: Theme.of(context).textTheme.bodyText1),
+                    padding: const EdgeInsets.only(top: 18.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(widget.title, style: Theme.of(context).textTheme.bodyText1),
+                        if (widget.trailing != null) widget.trailing!,
+                      ],
+                    ),
                   ),
                 ],
               ),
@@ -229,7 +242,7 @@ class _PodiumState extends State<Podium> {
 
   Color _getColor(int placeIndex, BuildContext context) {
     var podiumLength = placeValues!.length;
-    if (placeIndex >= podiumLength - widget.promoted!) return Colors.lightGreenAccent;
+    if (placeIndex >= podiumLength - widget.promoted!) return Colors.green;
     if (placeIndex <= widget.relegated!) return Colors.deepOrangeAccent;
     return Colors.blueAccent;
   }
