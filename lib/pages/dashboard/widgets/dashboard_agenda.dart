@@ -30,7 +30,7 @@ class DashboardAgendaState extends State<DashboardAgenda> with AutomaticKeepAliv
   }
 
   void _loadTeamsMonthAgenda() {
-    _agendaBloc!.add(LoadTeamsMonthAgenda(teamCodes: [widget.team.code]));
+    _agendaBloc!.add(LoadTeamsMonthAgenda(teamCodes: [widget.team.code], days: 60));
   }
 
   @override
@@ -50,7 +50,7 @@ class DashboardAgendaState extends State<DashboardAgenda> with AutomaticKeepAliv
           return [
             TimelineItem(date: entry.key, events: [
               ...entry.value.map((e) {
-                TimelineItemWidget timelineItemWidget = TimelineItemWidget.from(e);
+                TimelineItemWidget timelineItemWidget = TimelineItemWidget.from(e, widget.team);
                 return TimelineEvent(
                   child: timelineItemWidget,
                   color: timelineItemWidget.color(),

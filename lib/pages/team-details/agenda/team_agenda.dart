@@ -10,9 +10,9 @@ import 'package:v34/pages/dashboard/blocs/agenda_bloc.dart';
 import 'package:v34/repositories/repository.dart';
 
 class TeamAgenda extends StatefulWidget {
-  final Team? team;
+  final Team team;
 
-  TeamAgenda({this.team});
+  TeamAgenda({required this.team});
 
   @override
   _TeamAgendaState createState() => _TeamAgendaState();
@@ -25,7 +25,7 @@ class _TeamAgendaState extends State<TeamAgenda> {
   void initState() {
     super.initState();
     _agendaBloc = AgendaBloc(repository: RepositoryProvider.of<Repository>(context));
-    _agendaBloc!.add(LoadTeamMonthAgenda(teamCode: widget.team!.code, days: 120));
+    _agendaBloc!.add(LoadTeamMonthAgenda(teamCode: widget.team.code, days: 120));
   }
 
   @override
@@ -43,13 +43,14 @@ class _TeamAgendaState extends State<TeamAgenda> {
             return SliverToBoxAdapter(
               child: Timeline(
                 [
-                  ...groupBy(state.events, (dynamic event) => DateTime(event.date.year, event.date.month, event.date.day))
+                  ...groupBy(
+                          state.events, (dynamic event) => DateTime(event.date.year, event.date.month, event.date.day))
                       .entries
                       .expand((entry) {
                     return [
                       TimelineItem(date: entry.key, events: [
                         ...entry.value.map((e) {
-                          TimelineItemWidget timelineItemWidget = TimelineItemWidget.from(e);
+                          TimelineItemWidget timelineItemWidget = TimelineItemWidget.from(e, widget.team);
                           return TimelineEvent(
                             child: timelineItemWidget,
                             color: timelineItemWidget.color(),

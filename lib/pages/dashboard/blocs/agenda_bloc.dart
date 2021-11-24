@@ -76,22 +76,26 @@ class AgendaBloc extends Bloc<AgendaEvent, AgendaState> {
     yield AgendaLoading(state.events);
     if (event is LoadWeekAgenda) {
       List<Event> otherEvents = await repository.loadAgendaWeek(event.week);
-      List<Event> favoriteTeamsEvents =
-          await repository.loadFavoriteTeamsMatches();
+      List<Event> favoriteTeamsEvents = await repository.loadFavoriteTeamsMatches();
       yield AgendaLoaded(favoriteTeamsEvents
         ..addAll(otherEvents)
         ..addAll(state.events)
         ..sort((event1, event2) => event1.date!.compareTo(event2.date!)));
     } else if (event is LoadTeamMonthAgenda) {
-      List<Event> events =
-          await repository.loadTeamAgenda(event.teamCode, event.days);
+      var today = DateTime.now();
+      List<Event> events = (await repository.loadTeamAgenda(event.teamCode, event.days))
+          .where((calendarEvent) => calendarEvent.date!.compareTo(today) > 0)
+          .toList();
+
       events.sort((event1, event2) => event1.date!.compareTo(event2.date!));
       yield AgendaLoaded(events);
     } else if (event is LoadTeamsMonthAgenda) {
+      var today = DateTime.now();
       Set<Event> allEvents = Set();
       for (String? teamCode in event.teamCodes) {
-        List<Event> events =
-            await repository.loadTeamAgenda(teamCode, event.days);
+        List<Event> events = (await repository.loadTeamAgenda(teamCode, event.days))
+            .where((calendarEvent) => calendarEvent.date!.compareTo(today) > 0)
+            .toList();
         allEvents.addAll(events);
       }
       List<Event> eventList = allEvents.toList();

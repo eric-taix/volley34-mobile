@@ -6,7 +6,7 @@ import 'line.dart';
 
 const double circleRadius = 8.0;
 const double lineWidth = 2.0;
-const double circleLineWidth = 2.0;
+const double circleLineWidth = 3.0;
 
 class Timeline extends StatelessWidget {
   final List<TimelineItem> items;
@@ -78,8 +78,7 @@ class TimelineGapBuilder {
   TimelineGapBuilder(this.minGapDuration);
 
   Widget createGapIfHigherThanMinDuration(DateTime? dateTime) {
-    if (previousDate == null ||
-        dateTime!.difference(previousDate!) > minGapDuration) {
+    if (previousDate == null || dateTime!.difference(previousDate!) > minGapDuration) {
       previousDate = dateTime;
       return IntrinsicHeight(
         child: Row(
@@ -87,10 +86,7 @@ class TimelineGapBuilder {
           children: [
             Padding(
               padding: const EdgeInsets.only(right: 4.0),
-              child: Container(
-                constraints: BoxConstraints(minWidth: 80),
-                child: SizedBox(height: 50)
-              ),
+              child: Container(constraints: BoxConstraints(minWidth: 80), child: SizedBox(height: 50)),
             ),
             DashedLine(lineWidth),
             Expanded(child: SizedBox()),
@@ -98,6 +94,7 @@ class TimelineGapBuilder {
         ),
       );
     }
+    previousDate = dateTime;
     return SizedBox();
   }
 }

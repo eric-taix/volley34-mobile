@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:v34/commons/router.dart';
 import 'package:v34/commons/timeline/match_title.dart';
 import 'package:v34/models/event.dart';
+import 'package:v34/models/team.dart';
 
 import 'event_details.dart';
 
@@ -18,10 +19,10 @@ abstract class TimelineItemWidget extends StatelessWidget {
 
   Color? color();
 
-  factory TimelineItemWidget.from(Event event) {
+  factory TimelineItemWidget.from(Event event, Team team) {
     switch (event.type) {
       case EventType.Match:
-        return _MatchTimelineItem(event);
+        return _MatchTimelineItem(event, team);
       case EventType.Meeting:
         return _MeetingTimelineItem(event);
       case EventType.Tournament:
@@ -78,14 +79,18 @@ class _MeetingTimelineItem extends _OtherTimelineItem {
 
 class _MatchTimelineItem extends TimelineItemWidget {
   final Event event;
-
-  _MatchTimelineItem(this.event);
+  final Team team;
+  _MatchTimelineItem(this.event, this.team);
 
   @override
   Widget build(BuildContext context) {
     return _TimelineItemCard(
-        children: <Widget>[MatchTitle(event: event), _Place(event.place, event.date)],
-        onTap: () => showEventDetails(context, event));
+      children: <Widget>[MatchTitle(event: event), _Place(event.place, event.date)],
+      onTap: () => showEventDetails(context, event),
+      topRightWidget: team.code == event.hostCode
+          ? Icon(Icons.login_rounded, color: Theme.of(context).textTheme.bodyText1!.color)
+          : Icon(Icons.logout_rounded, color: Theme.of(context).textTheme.bodyText1!.color),
+    );
   }
 
   @override
@@ -95,8 +100,9 @@ class _MatchTimelineItem extends TimelineItemWidget {
 class _TimelineItemCard extends StatelessWidget {
   final List<Widget> children;
   final Function? onTap;
+  final Widget? topRightWidget;
 
-  _TimelineItemCard({required this.children, this.onTap});
+  _TimelineItemCard({required this.children, this.onTap, this.topRightWidget});
 
   @override
   Widget build(BuildContext context) {
@@ -105,11 +111,17 @@ class _TimelineItemCard extends StatelessWidget {
         child: InkWell(
           onTap: () => onTap!(),
           borderRadius: BorderRadius.circular(16.0),
-          child: Padding(
-              padding: const EdgeInsets.only(left: 12.0, right: 12, bottom: 12, top: 12),
-              child: Column(
-                children: children,
-              )),
+          child: Stack(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(left: 12.0, right: 12, bottom: 12, top: 12),
+                child: Column(
+                  children: children,
+                ),
+              ),
+              if (topRightWidget != null) Positioned(child: topRightWidget!, top: 8, right: 8)
+            ],
+          ),
         ));
   }
 }
