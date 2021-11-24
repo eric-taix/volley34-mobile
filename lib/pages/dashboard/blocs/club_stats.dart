@@ -3,7 +3,6 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tuple/tuple.dart';
-import 'package:v34/models/match_result.dart';
 import 'package:v34/models/team.dart';
 import 'package:v34/repositories/repository.dart';
 
@@ -56,20 +55,24 @@ class ClubStatsBloc extends Bloc<ClubStatsEvent, ClubStatsState> {
     if (event is ClubStatsLoadEvent) {
       yield ClubStatsLoadingState();
       List<Team> teams = await _repository.loadClubTeams(event.clubCode);
-      List<MatchResult?> teamsResults = await Future.wait(teams.expand((team) {
-        var lastMatch = _repository.loadTeamLastMatchResult(team.code);
-        if (lastMatch != null)
-          return [lastMatch];
-        else
-          return [];
-      }));
+
+      var to = new DateTime.now();
+      var from = to.subtract(Duration(days: 7));
+
+      var teamsResults = (await Future.wait(teams.map((team) => _repository.loadTeamMatchResults(team.code))))
+          .expand((element) => element)
+          .where((matchResult) =>
+              matchResult.matchDate!.compareTo(from) >= 0 && matchResult.matchDate!.compareTo(to) <= 0);
+
+      teamsResults;
+
       var stats = teamsResults.fold(Tuple2<int, int>(0, 0), (dynamic acc, matchResult) {
         acc = acc.withItem2(acc.item2 + 1);
-        bool hostedByClubTeam = (teams.firstWhereOrNull((team) => team.code == matchResult?.hostTeamCode) != null);
+        bool hostedByClubTeam = (teams.firstWhereOrNull((team) => team.code == matchResult.hostTeamCode) != null);
         if (hostedByClubTeam) {
-          acc = matchResult!.totalSetsHost! > matchResult.totalSetsVisitor! ? acc.withItem1(acc.item1 + 1) : acc;
+          acc = matchResult.totalSetsHost! > matchResult.totalSetsVisitor! ? acc.withItem1(acc.item1 + 1) : acc;
         } else {
-          acc = (matchResult?.totalSetsVisitor ?? 0) > (matchResult?.totalSetsHost ?? 0)
+          acc = (matchResult.totalSetsVisitor ?? 0) > (matchResult.totalSetsHost ?? 0)
               ? acc.withItem1(acc.item1 + 1)
               : acc;
         }

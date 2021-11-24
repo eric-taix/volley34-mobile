@@ -97,7 +97,6 @@ class _DashboardPageState extends State<DashboardPage> {
                   ],
                   defaultBuilder: (_, state) => Container(height: 250, child: Text("Ooooops")),
                 )
-                //   DashboardAgenda(_agendaElement)
               ],
             ),
           ),

@@ -6,7 +6,7 @@ import 'package:flutter/painting.dart';
 
 typedef Widget ValueBuilder(double value, double min, double max);
 
-class ArcGraph extends StatelessWidget {
+class ArcGraph extends StatefulWidget {
   final double minValue;
   final double maxValue;
   final double value;
@@ -16,6 +16,8 @@ class ArcGraph extends StatelessWidget {
   final List<Color> colors;
   final List<double> stops;
   final ValueBuilder? valueBuilder;
+  final Duration? animationDuration;
+  final Curve? animationCurve;
 
   ArcGraph({
     required this.minValue,
@@ -26,42 +28,88 @@ class ArcGraph extends StatelessWidget {
     LeftTitle? leftTitle,
     List<Color>? colors,
     List<double>? stops,
+    this.animationDuration,
+    this.animationCurve,
     this.valueBuilder,
-  })  : assert(minValue != null),
-        assert(maxValue != null),
-        assert(value != null),
-        assert(maxValue >= minValue),
+  })  : assert(maxValue >= minValue),
         assert(value >= minValue && value <= maxValue),
-        assert((colors == null && stops == null) || (colors!.length == stops!.length)),
+        assert((colors == null && stops == null) ||
+            (colors ?? [Colors.redAccent, Colors.orangeAccent, Colors.greenAccent]).length == stops?.length),
         this.leftTitle = leftTitle ?? LeftTitle(show: false),
         this.colors = colors ?? [Colors.redAccent, Colors.orangeAccent, Colors.greenAccent],
         this.stops = stops ?? [0.1, 0.5, 0.95];
 
   @override
+  _ArcGraphState createState() => _ArcGraphState();
+}
+
+class _ArcGraphState extends State<ArcGraph> with SingleTickerProviderStateMixin {
+  late AnimationController _animationController;
+  late Animation _arcAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+        vsync: this, lowerBound: 0, upperBound: 1, duration: widget.animationDuration ?? Duration(milliseconds: 800));
+    _animationController.addListener(() {
+      setState(() {});
+    });
+    _arcAnimation = CurvedAnimation(parent: _animationController, curve: widget.animationCurve ?? Curves.easeInOut);
+    Future.delayed(Duration(milliseconds: 500), () {
+      _animateTo(widget.value);
+    });
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  void _animateTo(double value) {
+    if (mounted) {
+      double arcValue = (widget.maxValue - widget.minValue) != 0
+          ? (value - widget.minValue) / (widget.maxValue - widget.minValue)
+          : 0;
+      _animationController.animateTo(arcValue);
+    }
+  }
+
+  @override
+  void didUpdateWidget(ArcGraph oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.value != widget.value ||
+        oldWidget.minValue != widget.minValue ||
+        oldWidget.maxValue != widget.maxValue) {
+      _animateTo(widget.value);
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Stack(
-      alignment: Alignment.bottomRight,
+      alignment: Alignment.center,
       fit: StackFit.expand,
       children: [
         Transform.rotate(
           angle: math.pi / 2,
           child: CustomPaint(
             painter: _ArcPainter(
-              (maxValue - minValue) != 0 ? (value - minValue) / (maxValue - minValue): null,
-              lineWidth,
-              openedAngle,
-              Theme.of(context).primaryColor,
-              leftTitle,
-              colors,
-              stops,
+              _arcAnimation.value,
+              widget.lineWidth,
+              widget.openedAngle,
+              Theme.of(context).cardTheme.color ?? Colors.white38,
+              widget.leftTitle,
+              widget.colors,
+              widget.stops,
             ),
           ),
         ),
         Center(
-          child: Padding(
-            padding: const EdgeInsets.only(left: 18.0),
-            child: valueBuilder != null ? valueBuilder!(value, minValue, maxValue) : Text("$value"),
-          ),
+          child: widget.valueBuilder != null
+              ? widget.valueBuilder!(_arcAnimation.value, widget.minValue, widget.maxValue)
+              : Text("${_arcAnimation.value}"),
         ),
       ],
     );
@@ -69,31 +117,32 @@ class ArcGraph extends StatelessWidget {
 }
 
 class LeftTitle {
-  final bool? show;
+  final bool show;
   final String? text;
   final TextStyle? style;
 
-  LeftTitle({this.show, this.text, this.style}) : assert(show == true || (text != null && text.isNotEmpty));
+  LeftTitle({this.show = false, this.text, this.style}) : assert((show && text!.isNotEmpty) || !show);
 }
 
 class _ArcPainter extends CustomPainter {
   final double lineWidth;
   final double openedAngle;
-  final double? value;
+  final double value;
   final Color pointBackground;
   final LeftTitle leftTitle;
   final List<Color> colors;
   final List<double> stops;
-  _ArcPainter(this.value, this.lineWidth, this.openedAngle, this.pointBackground, this.leftTitle, this.colors, this.stops);
+  _ArcPainter(
+      this.value, this.lineWidth, this.openedAngle, this.pointBackground, this.leftTitle, this.colors, this.stops);
 
   @override
   void paint(Canvas canvas, Size size) {
-    var min = math.min(size.width, size.height);
-    Rect rect = new Rect.fromLTWH(0.0 + (size.width - min) / 2, 0.0, min, min);
-
+    var min = math.min(size.width - lineWidth, size.height - lineWidth);
+    Rect rect = new Rect.fromLTWH(0.0 + (size.width - min) / 2, (size.height - min) / 2, min, min);
     var startAngle = openedAngle;
     var endAngle = 2 * math.pi - openedAngle;
-    final gradient = new SweepGradient(startAngle: startAngle, endAngle: endAngle, tileMode: TileMode.clamp, colors: colors, stops: stops);
+    final gradient = new SweepGradient(
+        startAngle: startAngle, endAngle: endAngle, tileMode: TileMode.clamp, colors: colors, stops: stops);
 
     Paint arcPaint = new Paint()
       ..shader = gradient.createShader(rect)
@@ -101,21 +150,27 @@ class _ArcPainter extends CustomPainter {
       ..style = PaintingStyle.stroke
       ..strokeWidth = lineWidth;
 
-    Color pointColor = lerpGradient(gradient.colors, gradient.stops!, value ?? 0)!;
+    Color pointColor = lerpGradient(gradient.colors, gradient.stops, value);
 
-    Paint valueForegroundPaint = new Paint()
+    Paint valueForegroundPaint = Paint()
       ..color = pointColor
       ..strokeCap = StrokeCap.round
       ..style = PaintingStyle.fill
       ..strokeWidth = lineWidth;
-    Paint valueBackgroundPaint = new Paint()
+    Paint valueBackgroundPaint = Paint()
       ..color = pointBackground
       ..strokeCap = StrokeCap.round
       ..style = PaintingStyle.fill
       ..strokeWidth = lineWidth;
 
+    Paint arcBackgroundPaint = Paint()
+      ..color = Colors.grey
+      ..strokeCap = StrokeCap.round
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = lineWidth;
+
     var radius = min / 2;
-    var valueAngle = (endAngle - startAngle) * (value ?? 0) + startAngle;
+    var valueAngle = (endAngle - startAngle) * value + startAngle;
     var dx = math.sin(valueAngle) * radius;
     var dy = math.cos(valueAngle) * radius;
 
@@ -128,8 +183,9 @@ class _ArcPainter extends CustomPainter {
     )..layout();
 
     canvas.save();
-    canvas.translate(0, -leftTp.height / 2);
+    //canvas.translate(0, -leftTp.height / 2);
     canvas.drawArc(rect, startAngle, endAngle - openedAngle, false, arcPaint);
+    canvas.drawArc(rect, valueAngle, endAngle - valueAngle, false, arcBackgroundPaint);
     canvas.drawCircle(Offset(0 + size.width / 2 + dy, 0 + size.height / 2 + dx), 8, valueBackgroundPaint);
     canvas.drawCircle(Offset(0 + size.width / 2 + dy, 0 + size.height / 2 + dx), 6, valueForegroundPaint);
     canvas.restore();
@@ -147,15 +203,16 @@ class _ArcPainter extends CustomPainter {
     return true;
   }
 
-  Color? lerpGradient(List<Color> colors, List<double> stops, double t) {
-    for (var s = 0; s < stops.length - 1; s++) {
-      final leftStop = stops[s], rightStop = stops[s + 1];
+  Color lerpGradient(List<Color> colors, List<double>? stops, double t) {
+    if (value == 0) return Colors.grey;
+    for (var s = 0; s < (stops?.length ?? 0) - 1; s++) {
+      final leftStop = stops?[s], rightStop = stops?[s + 1];
       final leftColor = colors[s], rightColor = colors[s + 1];
-      if (t <= leftStop) {
+      if (t <= leftStop!) {
         return leftColor;
-      } else if (t < rightStop) {
+      } else if (t < rightStop!) {
         final sectionT = (t - leftStop) / (rightStop - leftStop);
-        return Color.lerp(leftColor, rightColor, sectionT);
+        return Color.lerp(leftColor, rightColor, sectionT)!;
       }
     }
     return colors.last;

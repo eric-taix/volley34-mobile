@@ -90,9 +90,11 @@ class Repository {
   }
 
   /// Load the last N matches result of a team
-  Future<List<MatchResult>> loadTeamLastMatchesResult(String? teamCode, int nbLastMatches) async {
+  Future<List<MatchResult>> loadTeamLastMatchesResult(String? teamCode, int? nbLastMatches) async {
     List<MatchResult> matches = await _teamProvider.lastTeamMatchesResult(teamCode);
-    return matches.sublist(matches.length > nbLastMatches ? matches.length - nbLastMatches : 0).toList();
+    return nbLastMatches != null
+        ? matches.sublist(matches.length > nbLastMatches ? matches.length - nbLastMatches : 0).toList()
+        : matches;
   }
 
   /// Load all favorite teams matches
@@ -115,6 +117,12 @@ class Repository {
   Future<MatchResult?> loadTeamLastMatchResult(String? teamCode) async {
     var matches = await loadTeamLastMatchesResult(teamCode, 1);
     return matches.isNotEmpty ? matches.last : null;
+  }
+
+  /// Load all results for a team
+  Future<List<MatchResult>> loadTeamMatchResults(String? teamCode) async {
+    var matches = await loadTeamLastMatchesResult(teamCode, null);
+    return matches;
   }
 
   /// Load the general agenda for a week number
