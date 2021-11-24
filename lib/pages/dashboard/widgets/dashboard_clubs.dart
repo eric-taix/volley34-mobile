@@ -7,7 +7,7 @@ import 'package:v34/pages/dashboard/widgets/fav_club_card.dart';
 import '../../../commons/router.dart';
 
 class DashboardClub extends StatelessWidget {
-  final double cardHeight = 250;
+  final double cardHeight = 210;
   final Club club;
   const DashboardClub({Key? key, required this.club}) : super(key: key);
 

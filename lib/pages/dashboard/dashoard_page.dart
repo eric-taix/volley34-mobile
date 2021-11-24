@@ -50,7 +50,10 @@ class _DashboardPageState extends State<DashboardPage> {
                       stateIs<PreferencesUpdatedState>(),
                       (_, state) {
                         if (state.favoriteClub != null) {
-                          return DashboardClub(key: ValueKey("dashboard-clubs"), club: state.favoriteClub!);
+                          return Padding(
+                            padding: const EdgeInsets.only(top: 12.0),
+                            child: DashboardClub(key: ValueKey("dashboard-clubs"), club: state.favoriteClub!),
+                          );
                         } else {
                           return _buildNoFavorite("Sélectionnez votre club dans votre profil");
                         }
@@ -71,9 +74,12 @@ class _DashboardPageState extends State<DashboardPage> {
                       stateIs<PreferencesUpdatedState>(),
                       (_, state) {
                         if (state.favoriteTeam != null && state.favoriteClub != null) {
-                          return DashboardClubTeam(
-                            club: state.favoriteClub!,
-                            team: state.favoriteTeam!,
+                          return Padding(
+                            padding: const EdgeInsets.only(top: 12.0),
+                            child: DashboardClubTeam(
+                              club: state.favoriteClub!,
+                              team: state.favoriteTeam!,
+                            ),
                           );
                         } else {
                           return _buildNoFavorite("Sélectionnez votre équipe dans votre profil");

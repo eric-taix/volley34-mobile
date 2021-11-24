@@ -128,6 +128,7 @@ class AppTheme {
           padding: ButtonPaddingProperty(),
         ),
       ),
+      dividerTheme: DividerThemeData(thickness: 0.3),
     );
   }
 
