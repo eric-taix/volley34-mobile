@@ -2,9 +2,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:v34/commons/cards/titled_card.dart';
-import 'package:v34/commons/loading.dart';
+import 'package:v34/commons/stat_row.dart';
 import 'package:v34/models/club.dart';
 import 'package:v34/models/team_stats.dart';
 import 'package:v34/pages/club-details/blocs/club_stats.bloc.dart';
@@ -39,48 +37,53 @@ class _ClubStatisticsState extends State<ClubStatistics> {
 
   @override
   Widget build(BuildContext context) {
-    return SliverList(
-      delegate: SliverChildListDelegate([
-        BlocBuilder(
-            bloc: _clubStatsBloc,
-            builder: (context, dynamic state) {
-              return TitledCard(
-                  icon: FaIcon(FontAwesomeIcons.layerGroup, color: Theme.of(context).textTheme.headline6!.color),
-                  title: "Résultats",
-                  body: SizedBox(
-                      height: 120,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 18.0),
-                        child: Stack(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 18.0),
-                              child: BarChart(
-                                computeSetsRepartitionChartData(context,
-                                    (state is ClubStatsLoadedState) ? state.setsDistribution! : SetsDistribution()),
-                                swapAnimationDuration: Duration(milliseconds: 2000),
-                              ),
-                            ),
-                            if (state is ClubStatsLoadingState) Loading(),
-                          ],
-                        ),
-                      )));
-            })
-      ]),
+    return BlocBuilder(
+      bloc: _clubStatsBloc,
+      builder: (context, state) {
+        return SliverList(
+          delegate: SliverChildListDelegate(
+            [
+              SizedBox(height: 20),
+              StatRow(
+                title: "Matchs gagnés",
+                child: Container(color: Colors.red),
+              ),
+              StatRow(
+                title: "Scores",
+                child: BarChart(
+                  computeSetsRepartitionChartData(
+                      context, (state is ClubStatsLoadedState) ? state.setsDistribution! : SetsDistribution()),
+                  swapAnimationDuration: Duration(milliseconds: 600),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 
   BarChartData computeSetsRepartitionChartData(BuildContext context, SetsDistribution setsDistribution) {
     return BarChartData(
       barTouchData: BarTouchData(
-        enabled: false,
+        enabled: true,
+        touchTooltipData: BarTouchTooltipData(
+            fitInsideVertically: false,
+            tooltipMargin: 0,
+            tooltipBgColor: Colors.transparent,
+            getTooltipItem: (barChartGroupData, index, barChartRodData, rodIndex) {
+              return BarTooltipItem("${barChartRodData.y.toInt()}", Theme.of(context).textTheme.bodyText2!);
+            }),
       ),
+      alignment: BarChartAlignment.center,
+      gridData: FlGridData(show: false),
+      axisTitleData: FlAxisTitleData(show: false),
       titlesData: FlTitlesData(
         show: true,
         bottomTitles: SideTitles(
           showTitles: true,
           getTextStyles: (_, __) => Theme.of(context).textTheme.bodyText1,
-          margin: 16,
+          margin: 12,
           getTitles: (double value) {
             switch (value.toInt()) {
               case 0:
@@ -103,6 +106,15 @@ class _ClubStatisticsState extends State<ClubStatistics> {
         leftTitles: SideTitles(
           showTitles: false,
         ),
+        rightTitles: SideTitles(
+          showTitles: false,
+        ),
+        topTitles: SideTitles(
+          margin: 2,
+          reservedSize: 0,
+          showTitles: false,
+          getTitles: (value) => "${value.toInt()}",
+        ),
       ),
       borderData: FlBorderData(
         show: false,
@@ -112,7 +124,8 @@ class _ClubStatisticsState extends State<ClubStatistics> {
   }
 
   List<BarChartGroupData> showingGroups(SetsDistribution setsDistribution) => [
-        makeGroupData(0, setsDistribution.s30!.toDouble(), setsDistribution.maxValue.toDouble(), barColor: Colors.green),
+        makeGroupData(0, setsDistribution.s30!.toDouble(), setsDistribution.maxValue.toDouble(),
+            barColor: Colors.green),
         makeGroupData(1, setsDistribution.s31!.toDouble(), setsDistribution.maxValue.toDouble(),
             barColor: Colors.greenAccent),
         makeGroupData(2, setsDistribution.s32!.toDouble(), setsDistribution.maxValue.toDouble(),
@@ -134,6 +147,7 @@ class _ClubStatisticsState extends State<ClubStatistics> {
   }) {
     return BarChartGroupData(
       x: x,
+      showingTooltipIndicators: y != 0 ? [0] : null,
       barRods: [
         BarChartRodData(
           y: y,
@@ -141,8 +155,8 @@ class _ClubStatisticsState extends State<ClubStatistics> {
           width: width,
           backDrawRodData: BackgroundBarChartRodData(
             show: true,
-            y: maxRodY,
-            colors: [Theme.of(context).primaryColor],
+            y: maxRodY == 0 ? 10 : maxRodY,
+            colors: [Theme.of(context).appBarTheme.color!],
           ),
         ),
       ],
