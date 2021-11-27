@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 
 class Slot {
-  final String teamCode;
-  final String competitionCode;
-  final String slotId;
-  final String competitionType;
-  final int dayOfWeek;
-  final TimeOfDay startTime;
-  final String gymnasiumCode;
-  final bool principalSlot;
-  final String clubCode;
+  final String? teamCode;
+  final String? competitionCode;
+  final String? slotId;
+  final String? competitionType;
+  final int? dayOfWeek;
+  final TimeOfDay? startTime;
+  final String? gymnasiumCode;
+  final bool? principalSlot;
+  final String? clubCode;
 
   Slot({
     this.teamCode,

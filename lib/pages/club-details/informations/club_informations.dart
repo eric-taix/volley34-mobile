@@ -5,7 +5,7 @@ import 'package:v34/pages/club-details/informations/club_contact.dart';
 import 'package:v34/pages/club-details/informations/club_gymnasiums_slots.dart';
 
 class ClubInformations extends StatelessWidget {
-  final Club club;
+  final Club? club;
 
   ClubInformations(this.club);
 
@@ -14,7 +14,7 @@ class ClubInformations extends StatelessWidget {
     return SliverList(
       delegate: SliverChildListDelegate([
         ClubContact(club: club),
-        ClubGymnasiumsSlots(clubCode: club.code),
+        ClubGymnasiumsSlots(clubCode: club!.code),
       ]),
     );
   }

@@ -10,8 +10,8 @@ import 'particle.dart';
 class ParticleController with ChangeNotifier {
   List<Particle> particles = [];
   int lastT = 0;
-  Ticker _ticker;
-  SpriteSheet spriteSheet;
+  late Ticker _ticker;
+  SpriteSheet? spriteSheet;
 
   ParticleController(SingleTickerProviderStateMixin tickerProvider, String package) {
     _ticker = tickerProvider.createTicker(tick)..start();
@@ -32,7 +32,7 @@ class ParticleController with ChangeNotifier {
 
   // Creates the "delete" effect: red particles exploding from a horizontal line
   void lineExplosion(GlobalKey key, BuildContext context, Color color, [count = 150]) {
-    final RenderBox box = key.currentContext.findRenderObject();
+    final RenderBox box = key.currentContext!.findRenderObject() as RenderBox;
     Offset position = box.localToGlobal(Offset.zero, ancestor: context.findRenderObject());
     double x = (box.size.width / 2) + position.dx;
     double y = (box.size.width / 2) + position.dy;
@@ -51,7 +51,7 @@ class ParticleController with ChangeNotifier {
 
   // Creates the "favorite" effect: blue particles exploding out from a central point (like a firework)
   void pointExplosion(GlobalKey key, BuildContext context, Color color, [count = 55]) {
-    final RenderBox box = key.currentContext.findRenderObject();
+    final RenderBox box = key.currentContext!.findRenderObject() as RenderBox;
     Offset position = box.localToGlobal(Offset.zero, ancestor: context.findRenderObject());
     double x = (box.size.width / 2) + position.dx;
     double y = (box.size.width / 2) + position.dy;

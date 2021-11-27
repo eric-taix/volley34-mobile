@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 class ClubSetsReparitionData extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return  BarChart(
+    return BarChart(
       buildData(context),
       swapAnimationDuration: Duration(milliseconds: 2000),
     );
@@ -17,7 +17,7 @@ class ClubSetsReparitionData extends StatelessWidget {
         show: true,
         bottomTitles: SideTitles(
           showTitles: true,
-          textStyle: TextStyle(color: Colors.white, fontSize: 14),
+          getTextStyles: (_, __) => TextStyle(color: Colors.white, fontSize: 14),
           margin: 16,
           getTitles: (double value) {
             switch (value.toInt()) {
@@ -45,49 +45,49 @@ class ClubSetsReparitionData extends StatelessWidget {
       borderData: FlBorderData(
         show: false,
       ),
-      barGroups: showingGroups(context),
+      barGroups: showingGroups(context) as List<BarChartGroupData>?,
     );
   }
 
-  List<BarChartGroupData> showingGroups(BuildContext context) => List.generate(6, (i) {
-    switch (i) {
-      case 0:
-        return makeGroupData(context, 0, 10, barColor: Colors.green);
-      case 1:
-        return makeGroupData(context, 1, 16, barColor: Colors.greenAccent);
-      case 2:
-        return makeGroupData(context, 2, 5, barColor: Colors.yellowAccent);
-      case 3:
-        return makeGroupData(context, 3, 7.5, barColor: Colors.orangeAccent);
-      case 4:
-        return makeGroupData(context, 4, 9, barColor: Colors.deepOrangeAccent);
-      case 5:
-        return makeGroupData(context, 5, 1, barColor: Colors.redAccent);
-      default:
-        return null;
-    }
-  });
+  List<BarChartGroupData?> showingGroups(BuildContext context) => List.generate(6, (i) {
+        switch (i) {
+          case 0:
+            return makeGroupData(context, 0, 10, barColor: Colors.green);
+          case 1:
+            return makeGroupData(context, 1, 16, barColor: Colors.greenAccent);
+          case 2:
+            return makeGroupData(context, 2, 5, barColor: Colors.yellowAccent);
+          case 3:
+            return makeGroupData(context, 3, 7.5, barColor: Colors.orangeAccent);
+          case 4:
+            return makeGroupData(context, 4, 9, barColor: Colors.deepOrangeAccent);
+          case 5:
+            return makeGroupData(context, 5, 1, barColor: Colors.redAccent);
+          default:
+            return null;
+        }
+      });
 
   BarChartGroupData makeGroupData(
-      BuildContext context,
-      int x,
-      double y, {
-        bool isTouched = false,
-        Color barColor = Colors.white,
-        double width = 15,
-        List<int> showTooltips = const [],
-      }) {
+    BuildContext context,
+    int x,
+    double y, {
+    bool isTouched = false,
+    Color barColor = Colors.white,
+    double width = 15,
+    List<int> showTooltips = const [],
+  }) {
     return BarChartGroupData(
       x: x,
       barRods: [
         BarChartRodData(
           y: y,
-          color: barColor,
+          colors: [barColor],
           width: width,
           backDrawRodData: BackgroundBarChartRodData(
             show: true,
             y: 30,
-            color: Theme.of(context).primaryColor, //barBackgroundColor,
+            colors: [Theme.of(context).primaryColor], //barBackgroundColor,
           ),
         ),
       ],

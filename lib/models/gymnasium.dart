@@ -1,15 +1,15 @@
 class Gymnasium {
-  final String gymnasiumCode;
-  final String name;
-  final String address;
-  final String postalCode;
-  final String district;
-  final String town;
-  final String phone;
-  final int courtCount;
-  final double latitude;
-  final double longitude;
-  final String fullname;
+  final String? gymnasiumCode;
+  final String? name;
+  final String? address;
+  final String? postalCode;
+  final String? district;
+  final String? town;
+  final String? phone;
+  final int? courtCount;
+  final double? latitude;
+  final double? longitude;
+  final String? fullname;
 
   Gymnasium({
     this.gymnasiumCode,
@@ -26,7 +26,7 @@ class Gymnasium {
   });
   
   factory Gymnasium.fromJson(Map<String, dynamic> json) {
-    var gps = (json["GPS"] as String)?.split("|");
+    var gps = (json["GPS"] as String?)?.split("|");
     return Gymnasium(
       gymnasiumCode: json["GymnaseCode"],
       name: json["Nom"],

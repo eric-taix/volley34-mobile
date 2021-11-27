@@ -10,7 +10,7 @@ import 'informations/club_informations.dart';
 import 'statistics/club_statistics.dart';
 
 class ClubDetailPage extends StatefulWidget {
-  final Club club;
+  final Club? club;
 
   ClubDetailPage(this.club);
 
@@ -27,18 +27,18 @@ class _ClubDetailPageState extends State<ClubDetailPage> {
   @override
   Widget build(BuildContext context) {
     return AppBarWithImage(
-      widget.club.shortName,
-      "hero-logo-${widget.club.code}",
-      subTitle: widget.club.name,
-      logoUrl: widget.club.logoUrl,
+      widget.club!.shortName,
+      "hero-logo-${widget.club!.code}",
+      subTitle: widget.club!.name,
+      logoUrl: widget.club!.logoUrl,
       tabs: [
         TextTab("Statistiques", ClubStatistics(widget.club)),
         TextTab("Equipes", ClubTeams(widget.club)),
         TextTab("Informations", ClubInformations(widget.club)),
       ],
       favorite: Favorite(
-        widget.club.favorite,
-        widget.club.code,
+        widget.club!.favorite,
+        widget.club!.code,
         FavoriteType.Club,
       ),
     );

@@ -2,12 +2,12 @@ import 'package:flutter/cupertino.dart';
 
 @immutable
 class SetsDistribution {
-  final int s30;
-  final int s31;
-  final int s32;
-  final int s23;
-  final int s13;
-  final int s03;
+  final int? s30;
+  final int? s31;
+  final int? s32;
+  final int? s23;
+  final int? s13;
+  final int? s03;
 
   SetsDistribution({this.s30 = 0, this.s31 = 0, this.s32 = 0, this.s23 = 0, this.s13 = 0, this.s03 = 0});
 
@@ -23,58 +23,58 @@ class SetsDistribution {
 
   operator +(SetsDistribution other) {
     return SetsDistribution(
-      s30: s30 + other.s30,
-      s31: s31 + other.s31,
-      s32: s32 + other.s32,
-      s23: s23 + other.s23,
-      s13: s13 + other.s13,
-      s03: s03 + other.s03,
+      s30: s30! + other.s30!,
+      s31: s31! + other.s31!,
+      s32: s32! + other.s32!,
+      s23: s23! + other.s23!,
+      s13: s13! + other.s13!,
+      s03: s03! + other.s03!,
     );
   }
 
   int get maxValue {
     int max = 0;
-    if (s30 > max) max = s30;
-    if (s31 > max) max = s31;
-    if (s32 > max) max = s32;
-    if (s23 > max) max = s23;
-    if (s13 > max) max = s13;
-    if (s03 > max) max = s03;
+    if (s30! > max) max = s30!;
+    if (s31! > max) max = s31!;
+    if (s32! > max) max = s32!;
+    if (s23! > max) max = s23!;
+    if (s13! > max) max = s13!;
+    if (s03! > max) max = s03!;
     return max;
   }
 }
 
 @immutable
 class TeamStat {
-  final String codeTeam;
-  final String teamName;
+  final String? codeTeam;
+  final String? teamName;
 
-  final int matchs;
-  final int matchsPlayed;
-  final int matchsPlayedHome;
-  final int matchsPlayedOutside;
-  final int bestMatchsVictorySerie;
-  final int worseMatchsDefeatSerie;
+  final int? matchs;
+  final int? matchsPlayed;
+  final int? matchsPlayedHome;
+  final int? matchsPlayedOutside;
+  final int? bestMatchsVictorySerie;
+  final int? worseMatchsDefeatSerie;
 
-  final int victories;
-  final int victoriesHome;
-  final int victoriesOutside;
-  final int victoriesForfeit;
-  final SetsDistribution setsDistribution;
+  final int? victories;
+  final int? victoriesHome;
+  final int? victoriesOutside;
+  final int? victoriesForfeit;
+  final SetsDistribution? setsDistribution;
 
-  final int defeats;
-  final int defeatsHome;
-  final int defeatsOutside;
+  final int? defeats;
+  final int? defeatsHome;
+  final int? defeatsOutside;
 
-  final int forfeits;
-  final int forfeitsHome;
-  final int forfeitsOutside;
+  final int? forfeits;
+  final int? forfeitsHome;
+  final int? forfeitsOutside;
 
-  final int setsWon;
-  final int setsLost;
+  final int? setsWon;
+  final int? setsLost;
 
-  final int pointsWon;
-  final int pointsLost;
+  final int? pointsWon;
+  final int? pointsLost;
 
   TeamStat(this.codeTeam, this.teamName,
       {this.matchs,

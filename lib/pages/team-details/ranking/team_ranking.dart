@@ -10,6 +10,7 @@ import 'package:v34/models/team.dart';
 import 'package:v34/pages/club-details/blocs/club_team.bloc.dart';
 import 'package:v34/pages/team-details/ranking/statistics_widget.dart';
 import 'package:v34/pages/team-details/ranking/summary_widget.dart';
+import 'package:v34/utils/competition_text.dart';
 
 import 'evolution_widget.dart';
 
@@ -18,11 +19,7 @@ class TeamRanking extends StatefulWidget {
   final ClassificationSynthesis classification;
   final List<MatchResult> results;
 
-  const TeamRanking(
-      {Key key,
-      @required this.team,
-      @required this.classification,
-      @required this.results})
+  const TeamRanking({Key? key, required this.team, required this.classification, required this.results})
       : super(key: key);
 
   @override
@@ -45,10 +42,9 @@ class _TeamRankingState extends State<TeamRanking> {
 
   @override
   Widget build(BuildContext context) {
-    int teamIndex = widget.classification.teamsClassifications
-        .indexWhere((element) => element.teamCode == widget.team.code);
-    ClassificationTeamSynthesis stats =
-        widget.classification.teamsClassifications[teamIndex];
+    int teamIndex =
+        widget.classification.teamsClassifications.indexWhere((element) => element.teamCode == widget.team.code);
+    ClassificationTeamSynthesis stats = widget.classification.teamsClassifications[teamIndex];
     return SliverList(
         delegate: SliverChildListDelegate([
       _buildCompetitionDescription(context),
@@ -65,49 +61,25 @@ class _TeamRankingState extends State<TeamRanking> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          Text(_getClassificationCategory(),
-              style: Theme.of(context).textTheme.headline4),
-          CompetitionBadge(
-              competitionCode: widget.classification.competitionCode,
-              deltaSize: 0.8),
+          Text(getClassificationCategory(widget.classification.division), style: Theme.of(context).textTheme.headline4),
+          CompetitionBadge(competitionCode: widget.classification.competitionCode, deltaSize: 0.8),
         ],
       ),
     );
   }
 
-  String _getClassificationCategory() {
-    switch (widget.classification.division) {
-      case "EX":
-        return "Excellence";
-      case "HO":
-        return "Honneur";
-      case "PR":
-        return "Promotion";
-      case "AC":
-        return "Accession";
-      case "L1":
-        return "Loisirs 1";
-      default:
-        return _getPool();
-    }
-  }
-
-  String _getPool() {
-    if (widget.classification.pool == "0")
-      return "";
-    else
-      return "Poule ${widget.classification.pool}";
-  }
-
-  Widget _buildPodium(
-      BuildContext context, ClassificationTeamSynthesis teamStats) {
+  Widget _buildPodium(BuildContext context, ClassificationTeamSynthesis teamStats) {
     String title = "";
-    if (teamStats.rank <= widget.classification.promoted)
+    if (teamStats.rank! <= widget.classification.promoted!)
       title = "Promue";
-    else if (widget.classification.teamsClassifications.length -
-            teamStats.rank <
-        widget.classification.relegated) title = "Reléguée";
+    else if (widget.classification.teamsClassifications.length - teamStats.rank! < widget.classification.relegated!)
+      title = "Reléguée";
+
+    ClassificationTeamSynthesis currentTeamClassification = widget.classification.teamsClassifications
+        .firstWhere((teamClassification) => teamClassification.teamCode == widget.team.code);
+
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         FractionallySizedBox(
           widthFactor: 0.8,
@@ -146,88 +118,147 @@ class _TeamRankingState extends State<TeamRanking> {
           ),
         ),
         Align(
-          child: GestureDetector(
-            onTap: () {
-              setState(() {
-                _openClassificationList = !_openClassificationList;
-              });
-            },
-            child: Padding(
-              padding: const EdgeInsets.only(right: 18.0, top: 12, bottom: 8),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Text(
-                      _openClassificationList
-                          ? "Cacher le détail"
-                          : "Voir le détail",
-                      style: Theme.of(context).textTheme.bodyText2),
-                  Icon(
-                    _openClassificationList
-                        ? Icons.arrow_drop_up
-                        : Icons.arrow_drop_down,
-                    color: Theme.of(context).textTheme.bodyText2.color,
-                  )
-                ],
+          alignment: Alignment.bottomRight,
+          child: Padding(
+            padding: const EdgeInsets.only(right: 18.0, top: 12, bottom: 8),
+            child: SizedBox(
+              width: 180,
+              child: OutlineButton(
+                borderSide: BorderSide(color: Theme.of(context).textTheme.bodyText1!.color!),
+                highlightedBorderColor: Theme.of(context).textTheme.bodyText2!.color,
+                onPressed: () => setState(() {
+                  _openClassificationList = !_openClassificationList;
+                }),
+                child: AnimatedCrossFade(
+                  duration: Duration(milliseconds: 500),
+                  crossFadeState: _openClassificationList ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+                  firstChild: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Expanded(
+                        child: Text("Cacher le détail", style: Theme.of(context).textTheme.bodyText2),
+                      ),
+                      Icon(
+                        Icons.arrow_drop_up,
+                        color: Theme.of(context).textTheme.bodyText2!.color,
+                      )
+                    ],
+                  ),
+                  secondChild: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Expanded(
+                        child: Text("Voir le détail", style: Theme.of(context).textTheme.bodyText2),
+                      ),
+                      Icon(
+                        Icons.arrow_drop_down,
+                        color: Theme.of(context).textTheme.bodyText2!.color,
+                      )
+                    ],
+                  ),
+                ),
               ),
             ),
           ),
-          alignment: Alignment.bottomRight,
         ),
-        AnimatedOpacity(
-          curve: Curves.easeInOut,
+        AnimatedCrossFade(
+          crossFadeState: _openClassificationList ? CrossFadeState.showSecond : CrossFadeState.showFirst,
           duration: Duration(milliseconds: 800),
-          opacity: _openClassificationList ? 1.0 : 0.0,
-          child: _openClassificationList
-              ? Column(
-                  children: [
-                    ...widget.classification.teamsClassifications.reversed
-                        .map((classificationSynthesis) {
-                      return Padding(
-                        padding: const EdgeInsets.only(
-                            left: 28.0, right: 28, top: 6, bottom: 6),
-                        child: Container(
-                            alignment: Alignment.centerLeft,
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  flex: 5,
-                                  child: Text(
-                                    classificationSynthesis.name,
-                                    overflow: TextOverflow.fade,
-                                    maxLines: 1,
-                                    style: classificationSynthesis.teamCode ==
-                                            widget.team.code
-                                        ? Theme.of(context).textTheme.bodyText2
-                                        : Theme.of(context).textTheme.bodyText1,
+          firstChild: SizedBox(
+            width: double.infinity,
+          ),
+          secondChild: Column(
+            children: [
+              ...widget.classification.teamsClassifications.reversed
+                  .toList()
+                  .asMap()
+                  .map(
+                    (index, classificationSynthesis) {
+                      return MapEntry(
+                        index,
+                        Padding(
+                          padding: const EdgeInsets.only(left: 28.0, right: 28, top: 6, bottom: 6),
+                          child: Container(
+                              alignment: Alignment.centerLeft,
+                              child: Row(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.only(right: 8.0),
+                                    child: SizedBox(
+                                      width: 20,
+                                      height: 20,
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.all(Radius.circular(4)),
+                                            color: classificationSynthesis.teamCode == widget.team.code
+                                                ? Theme.of(context).textTheme.bodyText2!.color
+                                                : Theme.of(context).textTheme.bodyText1!.color),
+                                        child: Center(
+                                          child: Text(
+                                            "${index + 1}",
+                                            style: Theme.of(context).textTheme.bodyText1!.copyWith(
+                                                color: Theme.of(context).canvasColor, fontWeight: FontWeight.bold),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
                                   ),
-                                ),
-                                Expanded(
-                                    flex: 1,
+                                  Expanded(
+                                    flex: 100,
                                     child: Text(
-                                      "${classificationSynthesis.wonSets} pts",
-                                      style: classificationSynthesis.teamCode ==
-                                              widget.team.code
-                                          ? Theme.of(context)
-                                              .textTheme
-                                              .bodyText2
-                                          : Theme.of(context)
-                                              .textTheme
-                                              .bodyText1,
-                                    ))
-                              ],
-                            )),
+                                      classificationSynthesis.name!,
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 1,
+                                      style: classificationSynthesis.teamCode == widget.team.code
+                                          ? Theme.of(context).textTheme.bodyText2!.copyWith(fontWeight: FontWeight.bold)
+                                          : Theme.of(context).textTheme.bodyText1,
+                                    ),
+                                  ),
+                                  Expanded(
+                                    flex: 52,
+                                    child: Row(
+                                      children: [
+                                        Text(
+                                          "${classificationSynthesis.wonSets} pts",
+                                          style: classificationSynthesis.teamCode == widget.team.code
+                                              ? Theme.of(context)
+                                                  .textTheme
+                                                  .bodyText2!
+                                                  .copyWith(fontWeight: FontWeight.bold)
+                                              : Theme.of(context).textTheme.bodyText1,
+                                        ),
+                                        classificationSynthesis.teamCode != widget.team.code
+                                            ? Text(
+                                                " (${classificationSynthesis.totalPoints! - currentTeamClassification.totalPoints! > 0 ? "+" : ""}${classificationSynthesis.totalPoints! - currentTeamClassification.totalPoints!})",
+                                                style: classificationSynthesis.teamCode == widget.team.code
+                                                    ? Theme.of(context)
+                                                        .textTheme
+                                                        .bodyText2!
+                                                        .copyWith(fontWeight: FontWeight.bold)
+                                                    : Theme.of(context).textTheme.bodyText1,
+                                              )
+                                            : SizedBox()
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              )),
+                        ),
                       );
-                    }).toList()
-                  ],
-                )
-              : null,
+                    },
+                  )
+                  .values
+                  .toList()
+            ],
+          ),
         ),
       ],
     );
   }
 
-  Color _getRankColor(int rank) {
+  Color _getRankColor(int? rank) {
     switch (rank) {
       case 1:
         return Color(0xffFFD700);
@@ -240,33 +271,34 @@ class _TeamRankingState extends State<TeamRanking> {
     }
   }
 
-  Widget _buildStats(
-      BuildContext context, ClassificationTeamSynthesis teamStats) {
-    List<double> setsDiffEvolution =
-        TeamBloc.computePointsDiffs(widget.results, widget.team.code);
-    List<double> cumulativeSetsDiffEvolution =
-        TeamBloc.computeCumulativePointsDiffs(setsDiffEvolution);
+  Widget _buildStats(BuildContext context, ClassificationTeamSynthesis teamStats) {
+    List<double> setsDiffEvolution = TeamBloc.computePointsDiffs(widget.results, widget.team.code);
+    DateTime? startDate = widget.results.first.matchDate;
+    DateTime? endDate = widget.results.last.matchDate;
+    List<double?> cumulativeSetsDiffEvolution = TeamBloc.computeCumulativePointsDiffs(setsDiffEvolution);
     return Column(
       children: <Widget>[
         StatisticsWidget(
           title: "Matchs\ngagnés",
           wonPoints: teamStats.wonMatches,
-          maxPoints: teamStats.wonMatches + teamStats.lostMatches,
+          maxPoints: teamStats.wonMatches! + teamStats.lostMatches!,
         ),
         SummaryWidget(title: "Scores", teamStats: teamStats),
         StatisticsWidget(
           title: "Sets pris",
           wonPoints: teamStats.wonSets,
-          maxPoints: teamStats.wonSets + teamStats.lostSets,
+          maxPoints: teamStats.wonSets! + teamStats.lostSets!,
         ),
-        EvolutionWidget(title: "Diff.\nde sets", evolution: setsDiffEvolution),
+        EvolutionWidget(title: "Diff.\nde sets", evolution: setsDiffEvolution, startDate: startDate, endDate: endDate),
         EvolutionWidget(
             title: "Cumul diff.\nde sets",
-            evolution: cumulativeSetsDiffEvolution),
+            evolution: cumulativeSetsDiffEvolution,
+            startDate: startDate,
+            endDate: endDate),
         StatisticsWidget(
           title: "Points pris",
           wonPoints: teamStats.wonPoints,
-          maxPoints: teamStats.wonPoints + teamStats.lostPoints,
+          maxPoints: teamStats.wonPoints! + teamStats.lostPoints!,
         ),
       ],
     );

@@ -39,7 +39,7 @@ class FavoriteLoadEvent extends FavoriteEvent {
 //---- BLOC
 class FavoriteBloc extends Bloc<FavoriteEvent, FavoriteState> {
   final Repository repository;
-  final String favoriteId;
+  final String? favoriteId;
   final FavoriteType favoriteType;
 
   FavoriteBloc(this.repository, this.favoriteId, this.favoriteType)

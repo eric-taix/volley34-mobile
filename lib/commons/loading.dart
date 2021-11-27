@@ -9,7 +9,7 @@ enum LoaderType {
 class Loading extends StatelessWidget {
 
   final double size;
-  final LoaderType loaderType;
+  final LoaderType? loaderType;
 
   Loading({this.size = 30, this.loaderType});
 
@@ -18,14 +18,14 @@ class Loading extends StatelessWidget {
     switch (loaderType) {
       case LoaderType.THREE_BOUNCE:
         return new SpinKitThreeBounce(
-          color: Theme.of(context).textTheme.headline6.color,
+          color: Theme.of(context).textTheme.headline6!.color,
           size: size,
         );
         break;
       case LoaderType.CHASING_DOTS:
       default:
       return new SpinKitChasingDots(
-        color: Theme.of(context).textTheme.headline6.color,
+        color: Theme.of(context).textTheme.headline6!.color,
         size: size,
       );
     }

@@ -1,5 +1,3 @@
-
-
 import 'package:localstorage/localstorage.dart';
 
 class FavoriteProvider {
@@ -8,28 +6,27 @@ class FavoriteProvider {
 
   final LocalStorage _localeStorage = LocalStorage("v34");
 
-  Future<List<String>> loadFavoriteClubs() async {
+  Future<List<String?>> loadFavoriteClubs() async {
     await _localeStorage.ready;
-    var clubs = (_localeStorage.getItem(FavoriteClubKey) as List)?.cast<String>() ?? List();
+    var clubs = (_localeStorage.getItem(FavoriteClubKey) as List?)?.cast<String>() ?? [];
     print("Load favorite clubs $clubs");
     return clubs;
   }
 
-  Future<List<String>> loadFavoriteTeams() async {
+  Future<List<String?>> loadFavoriteTeams() async {
     await _localeStorage.ready;
-    return (_localeStorage.getItem(FavoriteTeamKey) as List)?.cast<String>() ?? List();
+    return (_localeStorage.getItem(FavoriteTeamKey) as List?)?.cast<String>() ?? [];
   }
 
-  Future<void> saveFavoriteClubs(List<String> favoriteClubs) async {
+  Future<void> saveFavoriteClubs(List<String?> favoriteClubs) async {
     await _localeStorage.ready;
     print("Saved favorite clubs: $favoriteClubs");
     await _localeStorage.setItem(FavoriteClubKey, favoriteClubs);
   }
 
-  Future<void> saveFavoriteTeams(List<String> favoriteTeams) async {
+  Future<void> saveFavoriteTeams(List<String?> favoriteTeams) async {
     await _localeStorage.ready;
     print("Saved favorite teams: $favoriteTeams");
     await _localeStorage.setItem(FavoriteTeamKey, favoriteTeams);
   }
-
 }

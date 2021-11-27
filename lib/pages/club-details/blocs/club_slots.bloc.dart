@@ -4,12 +4,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:v34/repositories/repository.dart';
 
 class GymnasiumSlot {
-  final String name;
-  final String day;
-  final TimeOfDay time;
-  final String town;
-  final String postalCode;
-  final String address;
+  final String? name;
+  final String? day;
+  final TimeOfDay? time;
+  final String? town;
+  final String? postalCode;
+  final String? address;
 
   GymnasiumSlot(
       {this.name,
@@ -35,12 +35,12 @@ class ClubSlotsLoading extends ClubSlotsState {
 }
 
 class ClubSlotsLoaded extends ClubSlotsState {
-  final List<GymnasiumSlot> slots;
+  final List<GymnasiumSlot>? slots;
 
   ClubSlotsLoaded({this.slots});
 
   @override
-  List<Object> get props => [slots];
+  List<Object?> get props => [slots];
 }
 
 //----- EVENT
@@ -49,17 +49,17 @@ class ClubSlotsLoaded extends ClubSlotsState {
 abstract class ClubSlotsEvent extends Equatable {}
 
 class ClubSlotsLoadEvent extends ClubSlotsEvent {
-  final String clubCode;
+  final String? clubCode;
 
   ClubSlotsLoadEvent({this.clubCode});
 
   @override
-  List<Object> get props => [clubCode];
+  List<Object?> get props => [clubCode];
 }
 
 //---- BLOC
 class ClubSlotsBloc extends Bloc<ClubSlotsEvent, ClubSlotsState> {
-  final Repository repository;
+  final Repository? repository;
 
   ClubSlotsBloc({this.repository}) : super(ClubSlotUninitialized());
 
@@ -67,17 +67,17 @@ class ClubSlotsBloc extends Bloc<ClubSlotsEvent, ClubSlotsState> {
   Stream<ClubSlotsState> mapEventToState(ClubSlotsEvent event) async* {
     if (event is ClubSlotsLoadEvent) {
       yield ClubSlotsLoading();
-      var slots = await repository.loadClubSlots(event.clubCode);
-      var gymnasiums = await repository.loadAllGymnasiums();
+      var slots = await repository!.loadClubSlots(event.clubCode);
+      var gymnasiums = await repository!.loadAllGymnasiums();
       final seen = Set<String>();
-      slots.sort((slot1, slot2) => slot1.dayOfWeek.compareTo(slot2.dayOfWeek));
+      slots.sort((slot1, slot2) => slot1.dayOfWeek!.compareTo(slot2.dayOfWeek!));
       var gyms = slots
           .where((slot) => seen
               .add("${slot.gymnasiumCode}-${slot.dayOfWeek}-${slot.startTime}"))
           .map((slot) {
         var gymnasium = gymnasiums.firstWhere(
             (gymnasium) => gymnasium.gymnasiumCode == slot.gymnasiumCode);
-        String day;
+        String? day;
         switch (slot.dayOfWeek) {
           case 0:
             day = "Dim.";

@@ -1,25 +1,25 @@
 class MatchSet {
-  final int hostPoint;
-  final int visitorpoint;
+  final int? hostPoint;
+  final int? visitorpoint;
 
   MatchSet(this.hostPoint, this.visitorpoint);
 }
 
 class MatchResult {
-  final String matchCode;
-  final int season;
-  final String matchTitle;
-  final List<MatchSet> sets;
-  final int totalSetsHost;
-  final int totalSetsVisitor;
-  final int totalPointsHost;
-  final int totalPointsVisitor;
-  final String hostName;
-  final String visitorName;
-  final String hostTeamCode;
-  final String visitorTeamCode;
-  final DateTime matchDate;
-  final String competitionCode;
+  final String? matchCode;
+  final int? season;
+  final String? matchTitle;
+  final List<MatchSet>? sets;
+  final int? totalSetsHost;
+  final int? totalSetsVisitor;
+  final int? totalPointsHost;
+  final int? totalPointsVisitor;
+  final String? hostName;
+  final String? visitorName;
+  final String? hostTeamCode;
+  final String? visitorTeamCode;
+  final DateTime? matchDate;
+  final String? competitionCode;
 
   MatchResult({
     this.matchCode,

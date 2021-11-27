@@ -9,11 +9,6 @@
 .history
 .svn/
 
-# IOS files which failed the build on CodeMagic !!!
-ios/Flutter/Debug.xcconfig
-ios/Flutter/Release.xcconfig
-ios/PodFile
-
 # IntelliJ related
 *.iml
 *.ipr
@@ -27,6 +22,7 @@ ios/PodFile
 
 # Flutter/Dart/Pub related
 **/doc/api/
+**/ios/Flutter/.last_build_id
 .dart_tool/
 .flutter-plugins
 .flutter-plugins-dependencies
@@ -34,11 +30,18 @@ ios/PodFile
 .pub-cache/
 .pub/
 /build/
+/android/app/build/
 
 # Web related
 lib/generated_plugin_registrant.dart
 
-# Exceptions to above rules.
-!/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
-/android/key.properties
-/ios/Flutter/.last_build_id
+# Symbolication related
+app.*.symbols
+
+# Obfuscation related
+app.*.map.json
+
+# Android Studio will place build artifacts here
+/android/app/debug
+/android/app/profile
+/android/app/release

@@ -11,7 +11,7 @@ import 'package:v34/pages/club-details/blocs/club_stats.bloc.dart';
 import 'package:v34/repositories/repository.dart';
 
 class ClubStatistics extends StatefulWidget {
-  final Club club;
+  final Club? club;
 
   ClubStatistics(this.club);
 
@@ -20,22 +20,21 @@ class ClubStatistics extends StatefulWidget {
 }
 
 class _ClubStatisticsState extends State<ClubStatistics> {
-  ClubStatsBloc _clubStatsBloc;
+  ClubStatsBloc? _clubStatsBloc;
 
   @override
   void initState() {
     super.initState();
-    _clubStatsBloc =
-        ClubStatsBloc(repository: RepositoryProvider.of<Repository>(context))
-          ..add(ClubStatsLoadEvent(
-            clubCode: widget.club.code,
-          ));
+    _clubStatsBloc = ClubStatsBloc(repository: RepositoryProvider.of<Repository>(context))
+      ..add(ClubStatsLoadEvent(
+        clubCode: widget.club!.code,
+      ));
   }
 
   @override
   void dispose() {
     super.dispose();
-    _clubStatsBloc.close();
+    _clubStatsBloc!.close();
   }
 
   @override
@@ -43,11 +42,10 @@ class _ClubStatisticsState extends State<ClubStatistics> {
     return SliverList(
       delegate: SliverChildListDelegate([
         BlocBuilder(
-            cubit: _clubStatsBloc,
-            builder: (context, state) {
+            bloc: _clubStatsBloc,
+            builder: (context, dynamic state) {
               return TitledCard(
-                  icon: FaIcon(FontAwesomeIcons.layerGroup,
-                      color: Theme.of(context).textTheme.headline6.color),
+                  icon: FaIcon(FontAwesomeIcons.layerGroup, color: Theme.of(context).textTheme.headline6!.color),
                   title: "Résultats",
                   body: SizedBox(
                       height: 120,
@@ -56,16 +54,11 @@ class _ClubStatisticsState extends State<ClubStatistics> {
                         child: Stack(
                           children: [
                             Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 18.0),
+                              padding: const EdgeInsets.symmetric(horizontal: 18.0),
                               child: BarChart(
-                                computeSetsRepartitionChartData(
-                                    context,
-                                    (state is ClubStatsLoadedState)
-                                        ? state.setsDistribution
-                                        : SetsDistribution()),
-                                swapAnimationDuration:
-                                    Duration(milliseconds: 2000),
+                                computeSetsRepartitionChartData(context,
+                                    (state is ClubStatsLoadedState) ? state.setsDistribution! : SetsDistribution()),
+                                swapAnimationDuration: Duration(milliseconds: 2000),
                               ),
                             ),
                             if (state is ClubStatsLoadingState) Loading(),
@@ -77,8 +70,7 @@ class _ClubStatisticsState extends State<ClubStatistics> {
     );
   }
 
-  BarChartData computeSetsRepartitionChartData(
-      BuildContext context, SetsDistribution setsDistribution) {
+  BarChartData computeSetsRepartitionChartData(BuildContext context, SetsDistribution setsDistribution) {
     return BarChartData(
       barTouchData: BarTouchData(
         enabled: false,
@@ -87,7 +79,7 @@ class _ClubStatisticsState extends State<ClubStatistics> {
         show: true,
         bottomTitles: SideTitles(
           showTitles: true,
-          textStyle: Theme.of(context).textTheme.bodyText1,
+          getTextStyles: (_, __) => Theme.of(context).textTheme.bodyText1,
           margin: 16,
           getTitles: (double value) {
             switch (value.toInt()) {
@@ -120,23 +112,16 @@ class _ClubStatisticsState extends State<ClubStatistics> {
   }
 
   List<BarChartGroupData> showingGroups(SetsDistribution setsDistribution) => [
-        makeGroupData(0, setsDistribution.s30.toDouble(),
-            setsDistribution.maxValue.toDouble(),
-            barColor: Colors.green),
-        makeGroupData(1, setsDistribution.s31.toDouble(),
-            setsDistribution.maxValue.toDouble(),
+        makeGroupData(0, setsDistribution.s30!.toDouble(), setsDistribution.maxValue.toDouble(), barColor: Colors.green),
+        makeGroupData(1, setsDistribution.s31!.toDouble(), setsDistribution.maxValue.toDouble(),
             barColor: Colors.greenAccent),
-        makeGroupData(2, setsDistribution.s32.toDouble(),
-            setsDistribution.maxValue.toDouble(),
+        makeGroupData(2, setsDistribution.s32!.toDouble(), setsDistribution.maxValue.toDouble(),
             barColor: Colors.yellowAccent),
-        makeGroupData(3, setsDistribution.s23.toDouble(),
-            setsDistribution.maxValue.toDouble(),
+        makeGroupData(3, setsDistribution.s23!.toDouble(), setsDistribution.maxValue.toDouble(),
             barColor: Colors.orangeAccent),
-        makeGroupData(4, setsDistribution.s13.toDouble(),
-            setsDistribution.maxValue.toDouble(),
+        makeGroupData(4, setsDistribution.s13!.toDouble(), setsDistribution.maxValue.toDouble(),
             barColor: Colors.deepOrangeAccent),
-        makeGroupData(5, setsDistribution.s03.toDouble(),
-            setsDistribution.maxValue.toDouble(),
+        makeGroupData(5, setsDistribution.s03!.toDouble(), setsDistribution.maxValue.toDouble(),
             barColor: Colors.redAccent),
       ];
 
@@ -152,12 +137,12 @@ class _ClubStatisticsState extends State<ClubStatistics> {
       barRods: [
         BarChartRodData(
           y: y,
-          color: barColor,
+          colors: [barColor],
           width: width,
           backDrawRodData: BackgroundBarChartRodData(
             show: true,
             y: maxRodY,
-            color: Theme.of(context).primaryColor, //barBackgroundColor,
+            colors: [Theme.of(context).primaryColor],
           ),
         ),
       ],

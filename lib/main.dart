@@ -38,15 +38,26 @@ class V34 extends StatefulWidget {
 
   static String _pkg = "mobile";
 
-  static String get pkg => Env.getPackage(_pkg);
+  static String? get pkg => Env.getPackage(_pkg);
 }
 
 class _V34State extends State<V34> {
-  PreferencesBloc _preferencesBloc = PreferencesBloc();
+  late Repository _repository;
+  late PreferencesBloc _preferencesBloc;
 
   @override
   void initState() {
     super.initState();
+    _repository = Repository(
+      ClubProvider(),
+      TeamProvider(),
+      FavoriteProvider(),
+      AgendaProvider(),
+      GymnasiumProvider(),
+      MapProvider(),
+    );
+    _preferencesBloc = PreferencesBloc(_repository);
+    _preferencesBloc.add(PreferencesLoadEvent());
     _preferencesBloc.add(PreferencesLoadEvent());
   }
 
@@ -61,8 +72,8 @@ class _V34State extends State<V34> {
     bool dark = state.useDarkTheme;
     return MaterialApp(
       title: 'Volley34',
-      theme: AppTheme.getNormalThemeFromPreferences(automatic, dark),
-      darkTheme: AppTheme.getDarkThemeFromPreferences(automatic),
+      theme: AppTheme.getNormalThemeFromPreferences(automatic, dark, state.dominantColor),
+      darkTheme: AppTheme.getDarkThemeFromPreferences(automatic, state.dominantColor),
       home: _MainPage(),
     );
   }
@@ -75,14 +86,7 @@ class _V34State extends State<V34> {
         builder: (context, state) {
           if (state is PreferencesUpdatedState) {
             return RepositoryProvider(
-              create: (context) => Repository(
-                ClubProvider(),
-                TeamProvider(),
-                FavoriteProvider(),
-                AgendaProvider(),
-                GymnasiumProvider(),
-                MapProvider(),
-              ),
+              create: (context) => _repository,
               child: FeatureDiscovery(child: _buildMaterialApp(state)),
             );
           } else {
@@ -108,18 +112,18 @@ class _MainPage extends StatefulWidget {
 }
 
 class __MainPageState extends State<_MainPage> {
-  Widget _child;
-  Repository _repository;
+  Widget? _child;
+  late Repository _repository;
 
   @override
   void initState() {
     super.initState();
     _child = DashboardPage();
     initializeDateFormatting();
-    SchedulerBinding.instance.addPostFrameCallback((Duration duration) {
+    SchedulerBinding.instance!.addPostFrameCallback((Duration duration) {
       _repository = RepositoryProvider.of<Repository>(context);
-      _repository.loadFavoriteClubs().then((clubs) {
-        if (clubs.isEmpty) {
+      _repository.loadFavoriteClub().then((club) {
+        if (club != null) {
           Future.delayed(Duration(seconds: 1)).then((_) {
             FeatureDiscovery.discoverFeatures(
               context,
@@ -145,15 +149,15 @@ class __MainPageState extends State<_MainPage> {
       body: _child,
       bottomNavigationBar: FluidNavBar(
         icons: [
-          FluidNavBarIcon(iconPath: "assets/dashboard.svg", extras: {
+          FluidNavBarIcon(svgPath: "assets/dashboard.svg", extras: {
             "featureId": "dashboard_feature_id",
             "title": "Tableau de bord",
             "paragraphs": [
-              "L'ensemble de vos clubs et équipes favorites toujours à portée.",
+              "Votre club et votre équipe favorite toujours à portée.",
               "Retrouvez votre agenda, des statistiques et l'ensemble des informations utiles au jour le jour."
             ],
           }),
-          FluidNavBarIcon(iconPath: "assets/competition-filled.svg", extras: {
+          FluidNavBarIcon(svgPath: "assets/competition-filled.svg", extras: {
             "featureId": "competition_feature_id",
             "title": "Compétitions",
             "paragraphs": [
@@ -161,39 +165,36 @@ class __MainPageState extends State<_MainPage> {
               "L'ensemble des résultats, classements par catégorie, poule et type de compétition."
             ],
           }),
-          FluidNavBarIcon(iconPath: "assets/shield.svg", extras: {
+          FluidNavBarIcon(svgPath: "assets/shield.svg", extras: {
             "featureId": "clubs_feature_id",
             "title": "Liste des clubs",
             "paragraphs": [
               "Accédez à l'ensemble des clubs inscrits aux compétitions.",
-              "Sélectionnez un ou plusieurs favoris, ainsi accédez rapidement depuis le tableau de bord à des informations importantes sur vos favoris."
             ],
           }),
-          FluidNavBarIcon(iconPath: "assets/gymnasium.svg", extras: {
+          FluidNavBarIcon(svgPath: "assets/gymnasium.svg", extras: {
             "featureId": "gymnasiums_feature_id",
             "title": "Liste des gymnases",
             "paragraphs": [
-              "Trouvez l'ensemble des gymnases.",
-              "Horaires, téléphone ou itinéraire pour aller à un gymnase."
+              "Trouvez les Horaires, téléphone ou itinéraire pour aller à un gymnase ou celui le plus près de chez vous."
             ],
           }),
         ],
         style: FluidNavBarStyle(
           barBackgroundColor: Theme.of(context).bottomAppBarColor,
-          iconSelectedForegroundColor: Color(0xFF313852),
-          iconUnselectedForegroundColor:
-              Theme.of(context).tabBarTheme.unselectedLabelColor,
+          iconSelectedForegroundColor: Theme.of(context).canvasColor,
+          iconUnselectedForegroundColor: Theme.of(context).tabBarTheme.unselectedLabelColor,
         ),
         scaleFactor: 1.4,
         onChange: _handleNavigationChange,
         itemBuilder: (icon, item) {
           return FeatureTour(
             child: item,
-            featureId: icon.extras["featureId"],
-            title: icon.extras["title"],
-            paragraphs: icon.extras["paragraphs"] ?? [],
+            featureId: icon.extras!["featureId"],
+            title: icon.extras!["title"],
+            paragraphs: icon.extras!["paragraphs"] ?? [],
             target: SvgPicture.asset(
-              icon.iconPath,
+              icon.svgPath!,
               height: 30,
               color: Theme.of(context).appBarTheme.color,
             ),

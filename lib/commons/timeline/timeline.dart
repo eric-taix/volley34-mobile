@@ -6,7 +6,7 @@ import 'line.dart';
 
 const double circleRadius = 8.0;
 const double lineWidth = 2.0;
-const double circleLineWidth = 2.0;
+const double circleLineWidth = 3.0;
 
 class Timeline extends StatelessWidget {
   final List<TimelineItem> items;
@@ -37,14 +37,14 @@ class Timeline extends StatelessWidget {
                           circleRadius: circleRadius,
                           lineWidth: lineWidth,
                           circleLineWidth: circleLineWidth,
-                          circleColor: item.events.first.color,
+                          circleColor: item.events!.first.color,
                         ),
                       ),
-                      Expanded(child: item.events.first.child),
+                      Expanded(child: item.events!.first.child!),
                     ],
                   ),
                 ),
-                ...item.events.skip(1).map((event) {
+                ...item.events!.skip(1).map((event) {
                   return IntrinsicHeight(
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -56,10 +56,10 @@ class Timeline extends StatelessWidget {
                             circleRadius: circleRadius,
                             lineWidth: lineWidth,
                             circleLineWidth: circleLineWidth,
-                            circleColor: item.events.first.color,
+                            circleColor: item.events!.first.color,
                           ),
                         ),
-                        Expanded(child: event.child),
+                        Expanded(child: event.child!),
                       ],
                     ),
                   );
@@ -72,14 +72,13 @@ class Timeline extends StatelessWidget {
 }
 
 class TimelineGapBuilder {
-  DateTime previousDate;
+  DateTime? previousDate;
   final Duration minGapDuration;
 
   TimelineGapBuilder(this.minGapDuration);
 
-  Widget createGapIfHigherThanMinDuration(DateTime dateTime) {
-    if (previousDate == null ||
-        dateTime.difference(previousDate) > minGapDuration) {
+  Widget createGapIfHigherThanMinDuration(DateTime? dateTime) {
+    if (previousDate == null || dateTime!.difference(previousDate!) > minGapDuration) {
       previousDate = dateTime;
       return IntrinsicHeight(
         child: Row(
@@ -87,10 +86,7 @@ class TimelineGapBuilder {
           children: [
             Padding(
               padding: const EdgeInsets.only(right: 4.0),
-              child: Container(
-                constraints: BoxConstraints(minWidth: 80),
-                child: SizedBox(height: 50)
-              ),
+              child: Container(constraints: BoxConstraints(minWidth: 80), child: SizedBox(height: 50)),
             ),
             DashedLine(lineWidth),
             Expanded(child: SizedBox()),
@@ -98,20 +94,21 @@ class TimelineGapBuilder {
         ),
       );
     }
+    previousDate = dateTime;
     return SizedBox();
   }
 }
 
 class TimelineItem {
-  final DateTime date;
-  final List<TimelineEvent> events;
+  final DateTime? date;
+  final List<TimelineEvent>? events;
 
   TimelineItem({this.date, this.events});
 }
 
 class TimelineEvent {
-  final Widget child;
-  final Color color;
+  final Widget? child;
+  final Color? color;
 
   TimelineEvent({this.child, this.color});
 }

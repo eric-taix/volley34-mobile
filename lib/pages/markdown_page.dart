@@ -25,13 +25,13 @@ class MarkdownPage extends StatelessWidget {
                 styleSheet: MarkdownStyleSheet(
                     h1: Theme.of(context)
                         .textTheme
-                        .headline5
+                        .headline5!
                         .copyWith(height: 4),
                 h2: Theme.of(context)
                     .textTheme
-                    .headline4
+                    .headline4!
                     .copyWith(height: 3, fontSize: 18, fontWeight: FontWeight.bold)),
-                data: snapshot.data,
+                data: snapshot.data!,
               ),
             );
           } else if (snapshot.hasError) {

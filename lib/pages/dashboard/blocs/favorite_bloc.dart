@@ -8,7 +8,7 @@ import 'package:v34/repositories/repository.dart';
 @immutable
 abstract class FavoriteState extends Equatable {
   @override
-  List<Object> get props => [];
+  List<Object?> get props => [];
 }
 
 class FavoriteUninitializedState extends FavoriteState {}
@@ -16,18 +16,16 @@ class FavoriteUninitializedState extends FavoriteState {}
 class FavoriteLoadingState extends FavoriteState {}
 
 class FavoriteLoadedState extends FavoriteState {
-  final List<String> teamCodes;
-  final List<Club> clubs;
+  final String? teamCode;
+  final Club? club;
 
-  FavoriteLoadedState(this.teamCodes, this.clubs)
-      : assert(teamCodes != null),
-        assert(clubs != null);
+  FavoriteLoadedState(this.teamCode, this.club);
 
   @override
-  List<Object> get props => [teamCodes, clubs];
+  List<Object?> get props => [teamCode, club];
 
   @override
-  String toString() => "FavoriteState(teams: $teamCodes, clubs: $clubs)";
+  String toString() => "FavoriteState(teams: $teamCode, clubs: $club)";
 }
 
 //--- Events
@@ -46,16 +44,15 @@ class FavoriteLoadEvent extends FavoriteEvent {}
 class FavoriteBloc extends Bloc<FavoriteEvent, FavoriteState> {
   final Repository repository;
 
-  FavoriteBloc({@required this.repository})
-      : super(FavoriteUninitializedState());
+  FavoriteBloc({required this.repository}) : super(FavoriteUninitializedState());
 
   @override
   Stream<FavoriteState> mapEventToState(FavoriteEvent event) async* {
     if (event is FavoriteLoadEvent) {
       yield FavoriteLoadingState();
-      var favClubs = await repository.loadFavoriteClubs();
-      var favTeamsCodes = await repository.loadFavoriteTeamCodes();
-      yield FavoriteLoadedState(favTeamsCodes, favClubs);
+      var favClub = await repository.loadFavoriteClub();
+      var favTeamsCode = await repository.loadFavoriteTeamCode();
+      yield FavoriteLoadedState(favTeamsCode, favClub);
     }
   }
 }

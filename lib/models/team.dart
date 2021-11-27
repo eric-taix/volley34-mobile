@@ -1,14 +1,14 @@
 class Team {
-  String code;
-  String competition;
-  String clubCode;
-  String name;
-  String division;
-  String pool;
-  int season;
-  String competitionType;
-  String clubLogoUrl;
-  String mailing;
+  String? code;
+  String? competition;
+  String? clubCode;
+  String? name;
+  String? division;
+  String? pool;
+  int? season;
+  String? competitionType;
+  String? clubLogoUrl;
+  String? mailing;
   bool favorite = false;
 
   Team({
@@ -25,15 +25,16 @@ class Team {
     this.favorite = false,
   });
 
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) || other is Team && runtimeType == other.runtimeType && code == other.code;
 
   @override
-  bool operator ==(other) => this.code == other.code;
-
-  @override
-  int get hashCode => this.code.hashCode;
+  int get hashCode => code.hashCode;
 
   factory Team.fromJson(Map<String, dynamic> json) {
-    return Team(code: json["EquipeCode"],
+    return Team(
+        code: json["EquipeCode"],
         competition: json["CompetitionCode"],
         clubCode: json["ClubCode"],
         name: json["NomEquipe"],

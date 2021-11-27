@@ -3,12 +3,12 @@ import 'package:intl/intl.dart';
 
 class EventDate extends StatelessWidget {
 
-  final DateTime date;
-  final DateTime endDate;
+  final DateTime? date;
+  final DateTime? endDate;
   final bool fullFormat;
   final bool hour;
 
-  const EventDate({Key key, @required this.date, this.endDate, this.fullFormat = false, this.hour = false}) : super(key: key);
+  const EventDate({Key? key, required this.date, this.endDate, this.fullFormat = false, this.hour = false}) : super(key: key);
 
   String _capitalize(String input) {
     return "${input[0].toUpperCase()}${input.substring(1)}";
@@ -23,9 +23,9 @@ class EventDate extends StatelessWidget {
     DateFormat toHourFormat = DateFormat("'à 'HH:mm", "FR");
     String dateStr;
     if (hour) {
-      dateStr = (endDate == null) ? hourFormat.format(date) : fromHourFormat.format(date) + toHourFormat.format(endDate);
+      dateStr = (endDate == null) ? hourFormat.format(date!) : fromHourFormat.format(date!) + toHourFormat.format(endDate!);
     } else {
-      dateStr = fullFormat ? fullDateFormat.format(date) : dateFormat.format(date);
+      dateStr = fullFormat ? fullDateFormat.format(date!) : dateFormat.format(date!);
     }
     dateStr = _capitalize(dateStr);
     return  Padding(
@@ -35,7 +35,7 @@ class EventDate extends StatelessWidget {
           child: Text(
             dateStr,
             textAlign: fullFormat || hour ? TextAlign.left : TextAlign.right,
-            style: Theme.of(context).textTheme.bodyText1.copyWith(color: Theme.of(context).textTheme.bodyText2.color),
+            style: Theme.of(context).textTheme.bodyText1!.copyWith(color: Theme.of(context).textTheme.bodyText2!.color),
           )),
     );
   }

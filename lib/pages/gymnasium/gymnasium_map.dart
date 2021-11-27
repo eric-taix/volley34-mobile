@@ -13,12 +13,13 @@ import 'package:v34/utils/extensions.dart';
 typedef GymnasiumSelectedCallback = void Function(Gymnasium gymnasiumCode);
 
 class GymnasiumMap extends StatefulWidget {
-  final List<Gymnasium> gymnasiums;
-  final String currentGymnasiumCode;
+  final List<Gymnasium>? gymnasiums;
+  final String? currentGymnasiumCode;
   final GymnasiumSelectedCallback onGymnasiumSelected;
 
-  GymnasiumMap({Key key, @required this.gymnasiums, @required String currentGymnasiumCode, @required this.onGymnasiumSelected})
-      : this.currentGymnasiumCode = currentGymnasiumCode ?? gymnasiums[0].gymnasiumCode,
+  GymnasiumMap(
+      {Key? key, required this.gymnasiums, required String? currentGymnasiumCode, required this.onGymnasiumSelected})
+      : this.currentGymnasiumCode = currentGymnasiumCode ?? gymnasiums![0].gymnasiumCode,
         super(key: key);
 
   @override
@@ -27,13 +28,13 @@ class GymnasiumMap extends StatefulWidget {
 
 class _GymnasiumMapState extends State<GymnasiumMap> {
   final Geolocator _geolocator = Geolocator();
-  Repository _repository;
-  GoogleMapController _mapController;
+  late Repository _repository;
+  GoogleMapController? _mapController;
 
   CameraPosition _initialLocation = CameraPosition(target: LatLng(43.6101248, 3.8039496), zoom: 11);
 
-  String _rawMapStyle;
-  String _currentMapStyle;
+  String? _rawMapStyle;
+  String? _currentMapStyle;
 
   @override
   void initState() {
@@ -43,26 +44,25 @@ class _GymnasiumMapState extends State<GymnasiumMap> {
       _rawMapStyle = mapStyle;
       _applyMapStyle(context);
     });
-
   }
 
   void _applyMapStyle(BuildContext buildContext) {
     if (_rawMapStyle != null) {
       ThemeData themeData = Theme.of(buildContext);
-      _currentMapStyle = _rawMapStyle
-          .replaceAll("{appBarTheme.color}", themeData.appBarTheme.color.toHexWithoutAlpha())
+      _currentMapStyle = _rawMapStyle!
+          .replaceAll("{appBarTheme.color}", themeData.appBarTheme.color!.toHexWithoutAlpha())
           .replaceAll("{canvasColor}", themeData.canvasColor.toHexWithoutAlpha())
           .replaceAll("{buttonColor}", themeData.buttonColor.toHexWithoutAlpha())
-          .replaceAll("{labelColor}", themeData.textTheme.bodyText2.color.toHexWithoutAlpha());
+          .replaceAll("{labelColor}", themeData.textTheme.bodyText2!.color!.toHexWithoutAlpha());
       if (_mapController != null) {
-        _mapController.setMapStyle(_currentMapStyle);
+        _mapController!.setMapStyle(_currentMapStyle);
       }
     }
   }
 
   @override
   void dispose() {
-    _mapController.dispose();
+    _mapController!.dispose();
     super.dispose();
   }
 
@@ -76,9 +76,11 @@ class _GymnasiumMapState extends State<GymnasiumMap> {
 
   void _showCurrentGymnasium() {
     if (widget.gymnasiums != null) {
-      Gymnasium currentGymnasium =
-          widget.gymnasiums.firstWhere((gymnasium) => gymnasium.gymnasiumCode == widget.currentGymnasiumCode, orElse: () => widget.gymnasiums[0]);
-      _mapController.animateCamera(CameraUpdate.newLatLng(LatLng(currentGymnasium.latitude, currentGymnasium.longitude)));
+      Gymnasium currentGymnasium = widget.gymnasiums!.firstWhere(
+          (gymnasium) => gymnasium.gymnasiumCode == widget.currentGymnasiumCode,
+          orElse: () => widget.gymnasiums![0]);
+      _mapController!
+          .animateCamera(CameraUpdate.newLatLng(LatLng(currentGymnasium.latitude!, currentGymnasium.longitude!)));
     }
   }
 
@@ -87,10 +89,10 @@ class _GymnasiumMapState extends State<GymnasiumMap> {
   }
 
   _gotoCurrentLocation() async {
-    await _geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high).then((Position position) async {
-      double currentZoomLevel = await _mapController.getZoomLevel();
+    await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high).then((Position position) async {
+      double currentZoomLevel = await _mapController!.getZoomLevel();
       setState(() {
-        _mapController.animateCamera(
+        _mapController!.animateCamera(
           CameraUpdate.newCameraPosition(
             CameraPosition(
               target: LatLng(position.latitude, position.longitude),
@@ -106,7 +108,7 @@ class _GymnasiumMapState extends State<GymnasiumMap> {
     _mapController = controller..setMapStyle(_currentMapStyle);
     _repository.loadCameraPosition("gymnasiums").then((savedCameraPosition) {
       if (savedCameraPosition != null) {
-        _mapController.moveCamera(CameraUpdate.zoomTo(savedCameraPosition.zoom)).then((_) => _showCurrentGymnasium());
+        _mapController!.moveCamera(CameraUpdate.zoomTo(savedCameraPosition.zoom)).then((_) => _showCurrentGymnasium());
       }
     });
     _showCurrentGymnasium();
@@ -124,13 +126,13 @@ class _GymnasiumMapState extends State<GymnasiumMap> {
         child: Stack(
           children: <Widget>[
             GoogleMap(
-                markers: widget.gymnasiums
+                markers: widget.gymnasiums!
                     .map(
                       (gymnasium) => Marker(
-                        markerId: MarkerId(gymnasium.gymnasiumCode),
+                        markerId: MarkerId(gymnasium.gymnasiumCode!),
                         position: LatLng(
-                          gymnasium.latitude,
-                          gymnasium.longitude,
+                          gymnasium.latitude!,
+                          gymnasium.longitude!,
                         ),
                         alpha: gymnasium.gymnasiumCode == widget.currentGymnasiumCode ? 1.0 : 0.35,
                         onTap: () => _onMarkerTap(gymnasium),
@@ -153,16 +155,15 @@ class _GymnasiumMapState extends State<GymnasiumMap> {
                   )
                 ].toSet()),
             Positioned(
-              right: 8,
-              top: 53,
-              child: FloatingActionButton(
-                mini: true,
-                child: Icon(Icons.my_location),
-                onPressed: () {
-                  _gotoCurrentLocation();
-                },
-              )
-            ),
+                right: 8,
+                top: 53,
+                child: FloatingActionButton(
+                  mini: true,
+                  child: Icon(Icons.my_location),
+                  onPressed: () {
+                    _gotoCurrentLocation();
+                  },
+                )),
           ],
         ),
       ),

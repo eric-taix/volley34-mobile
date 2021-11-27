@@ -5,12 +5,12 @@ import 'package:v34/commons/rounded_network_image.dart';
 import 'package:v34/utils/extensions.dart';
 
 class RoundedTitledCard extends StatelessWidget {
-  final String title;
-  final VoidCallback onTap;
-  final Widget body;
-  final String heroTag;
-  final String logoUrl;
-  final ButtonBar buttonBar;
+  final String? title;
+  final VoidCallback? onTap;
+  final Widget? body;
+  final String? heroTag;
+  final String? logoUrl;
+  final ButtonBar? buttonBar;
 
   RoundedTitledCard(
       {this.title,
@@ -26,7 +26,7 @@ class RoundedTitledCard extends StatelessWidget {
       children: <Widget>[
         TitledCard(
           icon: SizedBox(width: 10),
-          title: title,
+          title: title!,
           onTap: onTap,
           body: body,
           buttonBar: buttonBar,
@@ -34,7 +34,7 @@ class RoundedTitledCard extends StatelessWidget {
         Positioned(
           top: 16,
           child: Hero(
-            tag: heroTag,
+            tag: heroTag!,
             child: RoundedNetworkImage(40, logoUrl,
                 circleColor:
                     Theme.of(context).cardTheme.titleBackgroundColor(context)),

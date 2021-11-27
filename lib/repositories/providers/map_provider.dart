@@ -6,7 +6,7 @@ class MapProvider {
 
   final LocalStorage _localeStorage = LocalStorage("v34");
 
-  Future<CameraPosition> loadCameraPosition(String mapName) async {
+  Future<CameraPosition?> loadCameraPosition(String mapName) async {
     await _localeStorage.ready;
     return CameraPosition.fromMap(_localeStorage.getItem("${mapName}_map"));
   }

@@ -18,7 +18,7 @@ class GymnasiumLoadingState extends GymnasiumState {}
 class GymnasiumLoadedState extends GymnasiumState {
   final Gymnasium gymnasium;
 
-  GymnasiumLoadedState({@required this.gymnasium});
+  GymnasiumLoadedState({required this.gymnasium});
 
   @override
   List<Object> get props => [gymnasium];
@@ -28,16 +28,16 @@ class GymnasiumLoadedState extends GymnasiumState {
 
 abstract class GymnasiumEvent extends Equatable {
   @override
-  List<Object> get props => [];
+  List<Object?> get props => [];
 }
 
 class LoadGymnasiumEvent extends GymnasiumEvent {
-  final String gymnasiumCode;
+  final String? gymnasiumCode;
 
-  LoadGymnasiumEvent({@required this.gymnasiumCode});
+  LoadGymnasiumEvent({required this.gymnasiumCode});
 
   @override
-  List<Object> get props => [gymnasiumCode];
+  List<Object?> get props => [gymnasiumCode];
 }
 
 // BLOC

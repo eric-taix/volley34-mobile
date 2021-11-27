@@ -1,26 +1,26 @@
 
 
 class Club {
-  String code;
-  String name;
-  String contact;
-  String phone;
-  String websiteUrl;
-  String email;
-  String acronym;
-  String logoUrl;
-  String shortName;
-  String address1;
-  String address2;
-  String address3;
-  String postalCode;
-  String town;
-  String facebook;
-  String twitter;
-  String instagram;
-  String snapchat;
-  bool active;
-  bool ffvb;
+  String? code;
+  String? name;
+  String? contact;
+  String? phone;
+  String? websiteUrl;
+  String? email;
+  String? acronym;
+  String? logoUrl;
+  String? shortName;
+  String? address1;
+  String? address2;
+  String? address3;
+  String? postalCode;
+  String? town;
+  String? facebook;
+  String? twitter;
+  String? instagram;
+  String? snapchat;
+  bool? active;
+  bool? ffvb;
   bool favorite = false;
   Club();
   

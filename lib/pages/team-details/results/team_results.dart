@@ -8,8 +8,8 @@ class TeamResults extends StatelessWidget {
   final Team team;
   final List<MatchResult> results;
 
-  TeamResults({Key key, @required this.team, @required this.results}) : super(key: key) {
-    results.sort((result1, result2) => result1.matchDate.compareTo(result2.matchDate) * -1);
+  TeamResults({Key? key, required this.team, required this.results}) : super(key: key) {
+    results.sort((result1, result2) => result1.matchDate!.compareTo(result2.matchDate!) * -1);
   }
 
   @override

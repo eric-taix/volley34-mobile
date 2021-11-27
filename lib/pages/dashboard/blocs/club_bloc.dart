@@ -8,16 +8,16 @@ import 'package:v34/repositories/repository.dart';
 
 abstract class ClubEvent extends Equatable {
   @override
-  List<Object> get props => [];
+  List<Object?> get props => [];
 }
 
 class LoadClubEvent extends ClubEvent {
-  final String clubCode;
+  final String? clubCode;
 
-  LoadClubEvent({@required this.clubCode});
+  LoadClubEvent({required this.clubCode});
 
   @override
-  List<Object> get props => [clubCode];
+  List<Object?> get props => [clubCode];
 }
 
 // STATES
@@ -34,7 +34,7 @@ class ClubLoadingState extends ClubState {}
 class ClubLoadedState extends ClubState {
   final Club club;
 
-  ClubLoadedState({@required this.club});
+  ClubLoadedState({required this.club});
 }
 
 // BLOC
@@ -42,7 +42,7 @@ class ClubLoadedState extends ClubState {
 class ClubBloc extends Bloc<ClubEvent, ClubState> {
   final Repository repository;
 
-  ClubBloc(ClubState initialState, {@required this.repository}) : super(initialState);
+  ClubBloc(ClubState initialState, {required this.repository}) : super(initialState);
 
   @override
   Stream<ClubState> mapEventToState(ClubEvent event) async* {

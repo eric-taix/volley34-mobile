@@ -9,56 +9,45 @@ class SummaryWidget extends StatelessWidget {
 
   static final double miniGraphHeight = 100;
 
-  const SummaryWidget({Key key, @required this.title, @required this.teamStats})
-      : super(key: key);
+  const SummaryWidget({Key? key, required this.title, required this.teamStats}) : super(key: key);
 
-  List<BarChartGroupData> showingGroups(
-      BuildContext context, ClassificationTeamSynthesis teamStats) {
+  List<BarChartGroupData?> showingGroups(BuildContext context, ClassificationTeamSynthesis teamStats) {
     return List.generate(7, (i) {
       switch (i) {
         case 0:
-          return makeGroupData(context, 0, teamStats.nbSets30.toDouble(),
-              Colors.green, teamStats);
+          return makeGroupData(context, 0, teamStats.nbSets30!.toDouble(), Colors.green, teamStats);
         case 1:
-          return makeGroupData(context, 1, teamStats.nbSets31.toDouble(),
-              Colors.greenAccent, teamStats);
+          return makeGroupData(context, 1, teamStats.nbSets31!.toDouble(), Colors.greenAccent, teamStats);
         case 2:
-          return makeGroupData(context, 2, teamStats.nbSets32.toDouble(),
-              Colors.yellowAccent, teamStats);
+          return makeGroupData(context, 2, teamStats.nbSets32!.toDouble(), Colors.yellowAccent, teamStats);
         case 3:
-          return makeGroupData(context, 3, teamStats.nbSets23.toDouble(),
-              Colors.orangeAccent, teamStats);
+          return makeGroupData(context, 3, teamStats.nbSets23!.toDouble(), Colors.orangeAccent, teamStats);
         case 4:
-          return makeGroupData(context, 4, teamStats.nbSets13.toDouble(),
-              Colors.deepOrangeAccent, teamStats);
+          return makeGroupData(context, 4, teamStats.nbSets13!.toDouble(), Colors.deepOrangeAccent, teamStats);
         case 5:
-          return makeGroupData(context, 5, teamStats.nbSets03.toDouble(),
-              Colors.redAccent, teamStats);
+          return makeGroupData(context, 5, teamStats.nbSets03!.toDouble(), Colors.redAccent, teamStats);
         case 6:
-          return makeGroupData(context, 6, teamStats.nbSetsMI.toDouble(),
-              Theme.of(context).accentColor, teamStats);
+          return makeGroupData(context, 6, teamStats.nbSetsMI!.toDouble(), Theme.of(context).accentColor, teamStats);
         default:
           return null;
       }
     });
   }
 
-  BarChartGroupData makeGroupData(BuildContext context, int x, double y,
-      Color barColor, ClassificationTeamSynthesis teamStats) {
+  BarChartGroupData makeGroupData(
+      BuildContext context, int x, double y, Color barColor, ClassificationTeamSynthesis teamStats) {
     return BarChartGroupData(
       x: x,
+      showingTooltipIndicators: [0],
       barRods: [
         BarChartRodData(
           y: y,
-          color: barColor,
+          colors: [barColor],
           width: 12,
           backDrawRodData: BackgroundBarChartRodData(
             show: true,
-            y: (teamStats.wonMatches + teamStats.lostMatches).toDouble(),
-            color: Theme.of(context)
-                .cardTheme
-                .color
-                .tiny(10), //barBackgroundColor,
+            y: (teamStats.wonMatches! + teamStats.lostMatches!).toDouble(),
+            colors: [Theme.of(context).cardTheme.color!.tiny(10)],
           ),
         ),
       ],
@@ -71,38 +60,37 @@ class SummaryWidget extends StatelessWidget {
       child: FractionallySizedBox(
         widthFactor: 0.8,
         child: BarChart(BarChartData(
+          barTouchData: BarTouchData(
+            enabled: false,
+            touchTooltipData: BarTouchTooltipData(
+              tooltipBgColor: Colors.transparent,
+              tooltipPadding: const EdgeInsets.only(bottom: 2),
+              tooltipMargin: 0,
+              getTooltipItem: (
+                BarChartGroupData group,
+                int groupIndex,
+                BarChartRodData rod,
+                int rodIndex,
+              ) {
+                return rod.y.toInt() == 0
+                    ? null
+                    : BarTooltipItem(
+                        "${rod.y.toInt()}",
+                        TextStyle(
+                            color: Theme.of(context).textTheme.bodyText2!.color,
+                            fontSize: 10,
+                            fontFamily: "Raleway",
+                            fontWeight: FontWeight.bold),
+                      );
+              },
+            ),
+          ),
           borderData: FlBorderData(show: false),
           titlesData: FlTitlesData(
             show: true,
-            topTitles: SideTitles(
-              reservedSize: 0,
-              margin: 0,
-              showTitles: true,
-              textStyle: Theme.of(context).textTheme.bodyText2,
-              getTitles: (double value) {
-                switch (value.toInt()) {
-                  case 0:
-                    return '${teamStats.nbSets30 > 0 ? teamStats.nbSets30.toString() : ""}';
-                  case 1:
-                    return '${teamStats.nbSets31 > 0 ? teamStats.nbSets31.toString() : ""}';
-                  case 2:
-                    return '${teamStats.nbSets32 > 0 ? teamStats.nbSets32.toString() : ""}';
-                  case 3:
-                    return '${teamStats.nbSets23 > 0 ? teamStats.nbSets23.toString() : ""}';
-                  case 4:
-                    return '${teamStats.nbSets13 > 0 ? teamStats.nbSets13.toString() : ""}';
-                  case 5:
-                    return '${teamStats.nbSets03 > 0 ? teamStats.nbSets03.toString() : ""}';
-                  case 6:
-                    return '${teamStats.nbSetsMI > 0 ? teamStats.nbSetsMI.toString() : ""}';
-                  default:
-                    return '';
-                }
-              },
-            ),
             bottomTitles: SideTitles(
               showTitles: true,
-              textStyle: Theme.of(context).textTheme.bodyText1,
+              getTextStyles: (_, __) => Theme.of(context).textTheme.bodyText1!.copyWith(fontSize: 12),
               margin: 2,
               getTitles: (double value) {
                 switch (value.toInt()) {
@@ -127,7 +115,7 @@ class SummaryWidget extends StatelessWidget {
             ),
             leftTitles: SideTitles(showTitles: false),
           ),
-          barGroups: showingGroups(context, teamStats),
+          barGroups: showingGroups(context, teamStats) as List<BarChartGroupData>?,
         )),
       ),
     );
@@ -140,10 +128,7 @@ class SummaryWidget extends StatelessWidget {
       child: Row(
         children: <Widget>[
           Expanded(
-              flex: 1,
-              child: Text(title,
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.bodyText1)),
+              flex: 1, child: Text(title, textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodyText1)),
           Expanded(flex: 2, child: _buildGraph(context)),
         ],
       ),

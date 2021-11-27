@@ -4,22 +4,22 @@ import 'package:v34/models/team_stats.dart';
 import 'package:v34/repositories/repository.dart';
 
 class ClubStats extends Equatable {
-  final List<int> setsDistribution;
+  final List<int>? setsDistribution;
 
   ClubStats({this.setsDistribution});
 
   @override
-  List<Object> get props => [setsDistribution];
+  List<Object?> get props => [setsDistribution];
 }
 
 //----- STATE
 abstract class ClubStatsState extends Equatable {
-  final ClubStats stats;
+  final ClubStats? stats;
 
   ClubStatsState({this.stats});
 
   @override
-  List<Object> get props => [stats];
+  List<Object?> get props => [stats];
 }
 
 class ClubStatsUninitializedState extends ClubStatsState {}
@@ -27,7 +27,7 @@ class ClubStatsUninitializedState extends ClubStatsState {}
 class ClubStatsLoadingState extends ClubStatsState {}
 
 class ClubStatsLoadedState extends ClubStatsState {
-  final SetsDistribution setsDistribution;
+  final SetsDistribution? setsDistribution;
   ClubStatsLoadedState({this.setsDistribution});
 }
 
@@ -35,12 +35,12 @@ class ClubStatsLoadedState extends ClubStatsState {
 abstract class ClubStatsEvent extends Equatable {}
 
 class ClubStatsLoadEvent extends ClubStatsEvent {
-  final String clubCode;
+  final String? clubCode;
 
   ClubStatsLoadEvent({this.clubCode});
 
   @override
-  List<Object> get props => [clubCode];
+  List<Object?> get props => [clubCode];
 }
 
 //------ BLOC
@@ -53,7 +53,7 @@ class ClubStatsBloc extends Bloc<ClubStatsEvent, ClubStatsState> {
   final int index_13 = 4;
   final int index_03 = 5;
 
-  final Repository repository;
+  final Repository? repository;
 
   ClubStatsBloc({this.repository}) : super(ClubStatsUninitializedState());
 
@@ -61,8 +61,8 @@ class ClubStatsBloc extends Bloc<ClubStatsEvent, ClubStatsState> {
   Stream<ClubStatsState> mapEventToState(ClubStatsEvent event) async* {
     if (event is ClubStatsLoadEvent) {
       yield ClubStatsLoadingState();
-      var stats = await repository.loadClubStats(event.clubCode);
-      var setsDistribution = stats.fold(SetsDistribution(), (acc, stat) {
+      var stats = await repository!.loadClubStats(event.clubCode);
+      var setsDistribution = stats.fold(SetsDistribution(), (dynamic acc, stat) {
         return acc + stat.setsDistribution;
       });
       yield ClubStatsLoadedState(setsDistribution: setsDistribution);

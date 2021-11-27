@@ -1,6 +1,7 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class LineGraph extends StatelessWidget {
   final List<Color> gradientColorsAboveCutOff = [
@@ -12,11 +13,14 @@ class LineGraph extends StatelessWidget {
     Colors.orangeAccent,
   ];
 
-  final List<double> results;
+  final List<double?> results;
   final bool thumbnail;
   final bool showTitle;
+  final DateTime? startDate;
+  final DateTime? endDate;
 
-  LineGraph(this.results, {this.thumbnail = false, this.showTitle = true});
+  LineGraph(List<double?> results, {this.thumbnail = false, this.showTitle = true, this.startDate, this.endDate})
+      : this.results = results.toList()..insert(0, 0.0);
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +29,8 @@ class LineGraph extends StatelessWidget {
     );
   }
 
-  LineChartData mainData(BuildContext context, List<double> results) {
+  LineChartData mainData(BuildContext context, List<double?> results) {
+    DateFormat _dateFormat = DateFormat('dd MMM', "FR");
     return LineChartData(
       lineTouchData: LineTouchData(enabled: false),
       gridData: FlGridData(
@@ -43,34 +48,46 @@ class LineGraph extends StatelessWidget {
       titlesData: FlTitlesData(
         show: true,
         bottomTitles: SideTitles(
-          showTitles: false,
+          showTitles: startDate != null && endDate != null,
+          reservedSize: 0,
+          getTextStyles: (_, __) => TextStyle(color: Theme.of(context).textTheme.bodyText1!.color, fontSize: 10),
+          getTitles: (value) {
+            if (value.toInt() == 0) return _dateFormat.format(startDate!).toUpperCase();
+            if (value.toInt() == results.length - 1) return _dateFormat.format(endDate!).toUpperCase();
+            if (value.toInt() == results.length / 2)
+              return _dateFormat
+                  .format(startDate!.add(Duration(seconds: endDate!.difference(startDate!).inSeconds ~/ 2)))
+                  .toUpperCase();
+            return '';
+          },
+          margin: 8,
         ),
         leftTitles: SideTitles(
           showTitles: !thumbnail,
-          textStyle: const TextStyle(
-            color: Color(0xff67727d),
-            fontSize: 8,
-          ),
+          getTextStyles: (_, __) =>
+              TextStyle(color: Theme.of(context).textTheme.bodyText2!.color, fontSize: 10, fontWeight: FontWeight.bold),
           getTitles: (value) {
             if (value.floor().toDouble() == value)
               return "${value.toInt()}";
             else
               return "";
           },
-          reservedSize: 0,
+          checkToShowTitle:
+              (double minValue, double maxValue, SideTitles sideTitles, double appliedInterval, double value) {
+            return (value == minValue || value == maxValue || value == 0);
+          },
+          reservedSize: 10,
           margin: 12,
         ),
       ),
-      borderData: FlBorderData(
-          show: false,
-          border: Border.all(color: const Color(0xff37434d), width: 1)),
+      borderData: FlBorderData(show: false, border: Border.all(color: const Color(0xff37434d), width: 1)),
       minX: 0,
       maxX: (results.length - 1).toDouble(),
       lineBarsData: [
         LineChartBarData(
           spots: [
             ...results.asMap().entries.map((entry) {
-              return FlSpot(entry.key.toDouble(), entry.value.toDouble());
+              return FlSpot(entry.key.toDouble(), entry.value!.toDouble());
             })
           ],
           isCurved: true,
@@ -82,17 +99,13 @@ class LineGraph extends StatelessWidget {
           ),
           belowBarData: BarAreaData(
             show: true,
-            colors: gradientColorsAboveCutOff
-                .map((color) => color.withOpacity(0.3))
-                .toList(),
+            colors: gradientColorsAboveCutOff.map((color) => color.withOpacity(0.3)).toList(),
             cutOffY: 0,
             applyCutOffY: true,
           ),
           aboveBarData: BarAreaData(
             show: true,
-            colors: gradientColorsBelowCutOff
-                .map((color) => color.withOpacity(0.3))
-                .toList(),
+            colors: gradientColorsBelowCutOff.map((color) => color.withOpacity(0.3)).toList(),
             cutOffY: 0,
             applyCutOffY: true,
           ),

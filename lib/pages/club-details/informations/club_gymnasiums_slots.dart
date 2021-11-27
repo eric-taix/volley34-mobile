@@ -7,7 +7,7 @@ import 'package:v34/pages/club-details/blocs/club_slots.bloc.dart';
 import 'package:v34/repositories/repository.dart';
 
 class ClubGymnasiumsSlots extends StatefulWidget {
-  final String clubCode;
+  final String? clubCode;
 
   ClubGymnasiumsSlots({this.clubCode});
 
@@ -16,37 +16,33 @@ class ClubGymnasiumsSlots extends StatefulWidget {
 }
 
 class _ClubGymnasiumsSlotsState extends State<ClubGymnasiumsSlots> {
-  ClubSlotsBloc _slotsBloc;
+  ClubSlotsBloc? _slotsBloc;
 
   @override
   void initState() {
     super.initState();
-    _slotsBloc =
-        ClubSlotsBloc(repository: RepositoryProvider.of<Repository>(context))
-          ..add(ClubSlotsLoadEvent(clubCode: widget.clubCode));
+    _slotsBloc = ClubSlotsBloc(repository: RepositoryProvider.of<Repository>(context))
+      ..add(ClubSlotsLoadEvent(clubCode: widget.clubCode));
   }
 
   @override
   void dispose() {
     super.dispose();
-    _slotsBloc.close();
+    _slotsBloc!.close();
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder(
-        cubit: _slotsBloc,
-        builder: (context, state) {
+        bloc: _slotsBloc,
+        builder: (context, dynamic state) {
           return TitledCard(
-              icon: Icon(Icons.date_range,
-                  color: Theme.of(context).textTheme.headline6.color),
-              title: (state is ClubSlotsLoaded && state.slots.length > 1)
-                  ? "Créneaux"
-                  : "Créneau",
+              icon: Icon(Icons.date_range, color: Theme.of(context).textTheme.headline6!.color),
+              title: (state is ClubSlotsLoaded && state.slots!.length > 1) ? "Créneaux" : "Créneau",
               body: (state is ClubSlotsLoaded)
                   ? Column(
                       children: <Widget>[
-                        ...state.slots.map((slot) {
+                        ...state.slots!.map((slot) {
                           return Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Row(
@@ -54,8 +50,7 @@ class _ClubGymnasiumsSlotsState extends State<ClubGymnasiumsSlots> {
                                 Padding(
                                   padding: const EdgeInsets.only(right: 18.0),
                                   child: ClipRRect(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(8)),
+                                    borderRadius: BorderRadius.all(Radius.circular(8)),
                                     child: Container(
                                       decoration: BoxDecoration(
                                         color: Theme.of(context).primaryColor,
@@ -70,14 +65,8 @@ class _ClubGymnasiumsSlotsState extends State<ClubGymnasiumsSlots> {
                                       padding: EdgeInsets.all(8.0),
                                       child: Column(
                                         children: <Widget>[
-                                          Text(slot.day,
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .headline4),
-                                          Text(slot.time.format(context),
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .headline5),
+                                          Text(slot.day!, style: Theme.of(context).textTheme.headline4),
+                                          Text(slot.time!.format(context), style: Theme.of(context).textTheme.headline5),
                                         ],
                                       ),
                                     ),
@@ -85,14 +74,11 @@ class _ClubGymnasiumsSlotsState extends State<ClubGymnasiumsSlots> {
                                 ),
                                 Expanded(
                                   child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: <Widget>[
-                                      Text(slot.name),
+                                      Text(slot.name!),
                                       Text("${slot.postalCode} - ${slot.town}",
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .bodyText1),
+                                          style: Theme.of(context).textTheme.bodyText1),
                                     ],
                                   ),
                                 ),

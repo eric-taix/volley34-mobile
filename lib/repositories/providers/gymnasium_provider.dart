@@ -16,7 +16,7 @@ class GymnasiumProvider {
     }
   }
 
-  Future<Gymnasium> loadGymnasium(String gymnasiumCode) async {
+  Future<Gymnasium> loadGymnasium(String? gymnasiumCode) async {
     Response response = await dio.get("/gymnases/$gymnasiumCode", options: buildConfigurableCacheOptions());
     if (response.statusCode == 200) {
       return Gymnasium.fromJson(response.data);

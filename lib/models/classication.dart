@@ -1,13 +1,13 @@
 class ClassificationTeamSynthesis {
-  final String name;
-  final String teamCode;
-  final int rank, totalPoints;
-  final int wonMatches, lostMatches;
-  final int wonSets, lostSets;
-  final int wonPoints, lostPoints;
-  final int nbSets30, nbSets31, nbSets32;
-  final int nbSets03, nbSets13, nbSets23;
-  final int nbSetsMI;
+  final String? name;
+  final String? teamCode;
+  final int? rank, totalPoints;
+  final int? wonMatches, lostMatches;
+  final int? wonSets, lostSets;
+  final int? wonPoints, lostPoints;
+  final int? nbSets30, nbSets31, nbSets32;
+  final int? nbSets03, nbSets13, nbSets23;
+  final int? nbSetsMI;
 
   ClassificationTeamSynthesis(
     this.name,
@@ -52,13 +52,13 @@ class ClassificationTeamSynthesis {
 }
 
 class ClassificationSynthesis {
-  final String competitionCode;
-  final int promoted;
-  final int relegated;
+  final String? competitionCode;
+  final int? promoted;
+  final int? relegated;
   final String label;
-  final String fullLabel;
-  final String division;
-  final String pool;
+  final String? fullLabel;
+  final String? division;
+  final String? pool;
   final List<ClassificationTeamSynthesis> teamsClassifications;
 
   ClassificationSynthesis(

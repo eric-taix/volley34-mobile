@@ -4,23 +4,25 @@ import 'package:flutter/cupertino.dart';
 @immutable
 class Event extends Equatable {
   // Common
-  final DateTime date;
-  final String place;
-  final EventType type;
-  final String name;
+  final DateTime? date;
+  final String? place;
+  final EventType? type;
+  final String? name;
 
   // Match
-  final String hostName;
-  final String visitorName;
-  final String gymnasiumCode;
+  final String? hostName;
+  final String? hostCode;
+  final String? visitorName;
+  final String? visitorCode;
+  final String? gymnasiumCode;
 
   // Tournament & Meeting
-  final DateTime endDate;
-  final String contactName, contactPhone, contactEmail;
-  final String description;
-  final String clubCode;
+  final DateTime? endDate;
+  final String? contactName, contactPhone, contactEmail;
+  final String? description;
+  final String? clubCode;
 
-  final String imageUrl;
+  final String? imageUrl;
 
   Event(
       {this.date,
@@ -29,7 +31,9 @@ class Event extends Equatable {
       this.gymnasiumCode,
       this.type,
       this.hostName,
+      this.hostCode,
       this.visitorName,
+      this.visitorCode,
       this.endDate,
       this.contactName,
       this.contactPhone,
@@ -44,9 +48,11 @@ class Event extends Equatable {
         date: DateTime.parse(json["DateMatch"]),
         name: json["CalendarEventName"] ?? json["LibelleMatch"],
         place: json["NomGymnase"],
-        gymnasiumCode : json["GymnaseCode"],
+        gymnasiumCode: json["GymnaseCode"],
         hostName: json["NomLocaux"],
+        hostCode: json["EquipeLocauxCode"],
         visitorName: json["NomVisiteurs"],
+        visitorCode: json["EquipeVisiteursCode"],
         type: EventType.Match,
       );
     } else {
@@ -66,7 +72,7 @@ class Event extends Equatable {
     }
   }
 
-  static EventType _toEnumType(String enumType) {
+  static EventType _toEnumType(String? enumType) {
     switch (enumType) {
       case "T":
         return EventType.Tournament;
@@ -80,8 +86,7 @@ class Event extends Equatable {
   }
 
   @override
-  List<Object> get props => [name, date];
-
+  List<Object?> get props => [name, date];
 }
 
 enum EventType { Match, Tournament, Meeting, Unknown }

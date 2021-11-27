@@ -2,8 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class Paragraph extends StatelessWidget {
-  final String title;
-  final Widget child;
+  final String? title;
+  final Widget? child;
   final double topPadding;
   final double bottomPadding;
 
@@ -27,18 +27,18 @@ class Paragraph extends StatelessWidget {
               Expanded(
                   flex: 1,
                   child: Divider(
-                      color: Theme.of(context).textTheme.headline6.color)),
+                      color: Theme.of(context).textTheme.headline6!.color)),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
                 child:
-                    Text(title, style: Theme.of(context).textTheme.headline6),
+                    Text(title!, style: Theme.of(context).textTheme.headline6),
               ),
               Expanded(
                   flex: 8,
                   child: Padding(
                     padding: const EdgeInsets.only(right: 8.0),
                     child: Divider(
-                        color: Theme.of(context).textTheme.headline6.color),
+                        color: Theme.of(context).textTheme.headline6!.color),
                   )),
             ],
           ),

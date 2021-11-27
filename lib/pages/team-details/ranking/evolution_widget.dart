@@ -3,21 +3,36 @@ import 'package:v34/commons/graphs/line_graph.dart';
 
 class EvolutionWidget extends StatelessWidget {
   final String title;
-  final List<double> evolution;
+  final List<double?> evolution;
 
-  static final double miniGraphHeight = 60;
+  /// If startDate and endDate are provided then the widget display some dates
+  final DateTime? startDate;
+  final DateTime? endDate;
 
-  const EvolutionWidget({Key key, @required this.title, @required this.evolution}) : super(key: key);
+  final double miniGraphHeight;
+
+  const EvolutionWidget(
+      {Key? key,
+      required this.title,
+      required this.evolution,
+      this.startDate,
+      this.endDate})
+      : this.miniGraphHeight = (startDate != null && endDate != null) ? 80 : 60,
+        super(key: key);
 
   Widget _buildGraph(BuildContext context) {
     if (evolution.length > 1) {
-      return FractionallySizedBox(
-        widthFactor: 0.8,
-        child: SizedBox(
-          height: miniGraphHeight,
-          child: LineGraph(
-            evolution,
-            showTitle: false,
+      return SizedBox(
+        height: miniGraphHeight,
+        child: FractionallySizedBox(
+          widthFactor: 0.8,
+          child: SizedBox(
+            child: LineGraph(
+              evolution,
+              showTitle: false,
+              startDate: startDate,
+              endDate: endDate,
+            ),
           ),
         ),
       );
@@ -34,11 +49,14 @@ class EvolutionWidget extends StatelessWidget {
       padding: EdgeInsets.symmetric(vertical: 20.0),
       child: Row(
         children: <Widget>[
-          Expanded(flex: 1, child: Text(title, textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodyText1)),
+          Expanded(
+              flex: 1,
+              child: Text(title,
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.bodyText1)),
           Expanded(flex: 2, child: _buildGraph(context)),
         ],
       ),
     );
   }
-
 }

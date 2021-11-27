@@ -2,26 +2,27 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:v34/commons/router.dart';
+import 'package:v34/commons/timeline/match_title.dart';
 import 'package:v34/models/event.dart';
-import 'package:v34/pages/dashboard/widgets/timeline/match_title.dart';
+import 'package:v34/models/team.dart';
 
 import 'event_details.dart';
 
 const double CardMargin = 19.0;
 
 void showEventDetails(BuildContext context, Event event) {
-  Router.push(context: context, builder: (context) => EventDetails(event: event));
+  RouterFacade.push(context: context, builder: (context) => EventDetails(event: event));
 }
 
 abstract class TimelineItemWidget extends StatelessWidget {
   TimelineItemWidget();
 
-  Color color();
+  Color? color();
 
-  factory TimelineItemWidget.from(Event event) {
+  factory TimelineItemWidget.from(Event event, Team team) {
     switch (event.type) {
       case EventType.Match:
-        return _MatchTimelineItem(event);
+        return _MatchTimelineItem(event, team);
       case EventType.Meeting:
         return _MeetingTimelineItem(event);
       case EventType.Tournament:
@@ -39,7 +40,7 @@ class _UnknownTimelineItem extends TimelineItemWidget {
   }
 
   @override
-  Color color() => null;
+  Color? color() => null;
 }
 
 abstract class _OtherTimelineItem extends TimelineItemWidget {
@@ -49,33 +50,28 @@ abstract class _OtherTimelineItem extends TimelineItemWidget {
 
   @override
   Widget build(BuildContext context) {
-    return _TimelineItemCard(
-      children: [
-        Text(
-          event.name,
-          textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.bodyText2.copyWith(
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        _Place(event.place, event.date),
-      ],
-      onTap: () => showEventDetails(context, event)
-    );
+    return _TimelineItemCard(children: [
+      Text(
+        event.name!,
+        textAlign: TextAlign.center,
+        style: Theme.of(context).textTheme.bodyText2!.copyWith(
+              fontWeight: FontWeight.bold,
+            ),
+      ),
+      _Place(event.place, event.date),
+    ], onTap: () => showEventDetails(context, event));
   }
 }
 
 class _TournamentTimelineItem extends _OtherTimelineItem {
-
-  _TournamentTimelineItem(Event event): super(event);
+  _TournamentTimelineItem(Event event) : super(event);
 
   @override
   Color color() => Colors.green;
 }
 
 class _MeetingTimelineItem extends _OtherTimelineItem {
-
-  _MeetingTimelineItem(Event event): super(event);
+  _MeetingTimelineItem(Event event) : super(event);
 
   @override
   Color color() => Colors.blueAccent;
@@ -83,17 +79,17 @@ class _MeetingTimelineItem extends _OtherTimelineItem {
 
 class _MatchTimelineItem extends TimelineItemWidget {
   final Event event;
-
-  _MatchTimelineItem(this.event);
+  final Team team;
+  _MatchTimelineItem(this.event, this.team);
 
   @override
   Widget build(BuildContext context) {
     return _TimelineItemCard(
-      children: <Widget>[
-        MatchTitle(event: event),
-        _Place(event.place, event.date)
-      ],
-      onTap: () => showEventDetails(context, event)
+      children: <Widget>[MatchTitle(event: event), _Place(event.place, event.date)],
+      onTap: () => showEventDetails(context, event),
+      topRightWidget: team.code == event.hostCode
+          ? Icon(Icons.login_rounded, color: Theme.of(context).textTheme.bodyText1!.color)
+          : Icon(Icons.logout_rounded, color: Theme.of(context).textTheme.bodyText1!.color),
     );
   }
 
@@ -103,35 +99,38 @@ class _MatchTimelineItem extends TimelineItemWidget {
 
 class _TimelineItemCard extends StatelessWidget {
   final List<Widget> children;
-  final Function onTap;
+  final Function? onTap;
+  final Widget? topRightWidget;
 
-  _TimelineItemCard({@required this.children, this.onTap});
+  _TimelineItemCard({required this.children, this.onTap, this.topRightWidget});
 
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: EdgeInsets.only(
-          left: 0, right: 0, top: 0, bottom: CardMargin),
-      child: InkWell(
-        onTap: () => onTap(),
-        borderRadius: BorderRadius.circular(16.0),
-        child: Padding(
-            padding: const EdgeInsets.only(
-                left: 12.0, right: 12, bottom: 12, top: 12),
-            child: Column(
-              children: children,
-            )),
-      )
-    );
+        margin: EdgeInsets.only(left: 0, right: 0, top: 0, bottom: CardMargin),
+        child: InkWell(
+          onTap: () => onTap!(),
+          borderRadius: BorderRadius.circular(16.0),
+          child: Stack(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(left: 12.0, right: 12, bottom: 12, top: 12),
+                child: Column(
+                  children: children,
+                ),
+              ),
+              if (topRightWidget != null) Positioned(child: topRightWidget!, top: 8, right: 8)
+            ],
+          ),
+        ));
   }
 }
 
 class _Place extends StatelessWidget {
-  final String place;
-  final DateTime dateTime;
+  final String? place;
+  final DateTime? dateTime;
 
   final DateFormat _dateFormat = DateFormat('HH:mm', "FR");
-
 
   _Place(this.place, this.dateTime);
 
@@ -143,7 +142,7 @@ class _Place extends StatelessWidget {
         children: [
           Expanded(
             child: Text(
-              "${_dateFormat.format(dateTime)} - $place",
+              "${_dateFormat.format(dateTime!)} - $place",
               style: Theme.of(context).textTheme.bodyText1,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,

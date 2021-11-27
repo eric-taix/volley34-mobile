@@ -2,13 +2,29 @@ import 'package:flutter/material.dart';
 
 import 'commons/text_tab_bar.dart';
 
+const double CARD_BORDER_RADIUS = 18.0;
+
 class AppTheme {
-  static ThemeData darkTheme() {
+  static ThemeData darkTheme(Color? dominantColor) {
     return ThemeData(
       canvasColor: Color(0xFF262C41),
       scaffoldBackgroundColor: Color(0xFF262C41),
       highlightColor: Colors.transparent,
-      primarySwatch: Colors.blue,
+      primarySwatch: MaterialColor(
+        dominantColor?.value ?? 0xFFC9334F,
+        <int, Color>{
+          50: Color(0xFFE3F2FD),
+          100: Color(0xFFBBDEFB),
+          200: Color(0xFF90CAF9),
+          300: Color(0xFF64B5F6),
+          400: Color(0xFF42A5F5),
+          500: dominantColor ?? Color(0xFFC9334F),
+          600: Color(0xFF1E88E5),
+          700: Color(0xFF1976D2),
+          800: Color(0xFF1565C0),
+          900: Color(0xFF0D47A1),
+        },
+      ),
       accentColor: Color(0xFF979DB2),
       primaryColor: Color(0xFF262C41),
       bottomAppBarColor: Color(0xFFF7FBFE),
@@ -18,11 +34,11 @@ class AppTheme {
         margin: EdgeInsets.only(top: 30, left: 20, right: 20, bottom: 0),
         elevation: 0.0,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(18)),
+          borderRadius: BorderRadius.all(Radius.circular(CARD_BORDER_RADIUS)),
         ),
       ),
       appBarTheme: AppBarTheme(
-        color: Color(0xFF373E5D),
+        backgroundColor: Color(0xFF373E5D),
         textTheme: TextTheme(
           headline6: TextStyle(
             color: Color(0xFFF7FBFE),
@@ -43,53 +59,25 @@ class AppTheme {
         ),
       ),
       textTheme: TextTheme(
-        button: TextStyle(
-            color: Color(0xFFF7FBFE),
-            fontSize: 14.0,
-            fontFamily: "Raleway",
-            fontWeight: FontWeight.normal),
-        headline1: TextStyle(
-            color: Color(0xFFF7FBFE),
-            fontSize: 16.0,
-            fontFamily: "Raleway",
-            fontWeight: FontWeight.normal),
-        headline4: TextStyle(
-            color: Color(0xFFF7FBFE),
-            fontSize: 20.0,
-            fontFamily: "Raleway",
-            fontWeight: FontWeight.normal),
-        headline5: TextStyle(
-            color: Color(0xFF979DB2),
-            fontSize: 20,
-            fontFamily: "Raleway",
-            fontWeight: FontWeight.w300),
-        headline6: TextStyle(
-            color: Color(0xFF979DB2),
-            fontSize: 20,
-            fontFamily: "Raleway",
-            fontWeight: FontWeight.w300),
-        subtitle1: TextStyle(
-            color: Color(0xFFF7FBFE),
-            fontSize: 20,
-            fontFamily: "Raleway",
-            fontWeight: FontWeight.bold),
-        subtitle2: TextStyle(
-            color: Color(0xFFF7FBFE),
-            fontSize: 14,
-            fontFamily: "Raleway",
-            fontWeight: FontWeight.bold),
-        bodyText2: TextStyle(
-            color: Color(0xFFF7FBFE),
-            fontSize: 14,
-            fontFamily: "Raleway",
-            fontWeight: FontWeight.w400),
-        bodyText1: TextStyle(
-            color: Color(0xFF979DB2),
-            fontSize: 14,
-            fontFamily: "Raleway",
-            fontWeight: FontWeight.w400),
-        caption: TextStyle(
-            color: Color(0xFF979DB2), fontSize: 16, fontFamily: "Raleway"),
+        button:
+            TextStyle(color: Color(0xFFF7FBFE), fontSize: 14.0, fontFamily: "Raleway", fontWeight: FontWeight.normal),
+        headline1:
+            TextStyle(color: Color(0xFFF7FBFE), fontSize: 16.0, fontFamily: "Raleway", fontWeight: FontWeight.normal),
+        headline4:
+            TextStyle(color: Color(0xFFF7FBFE), fontSize: 20.0, fontFamily: "Raleway", fontWeight: FontWeight.normal),
+        headline5:
+            TextStyle(color: Color(0xFF979DB2), fontSize: 20, fontFamily: "Raleway", fontWeight: FontWeight.w300),
+        headline6:
+            TextStyle(color: Color(0xFF979DB2), fontSize: 20, fontFamily: "Raleway", fontWeight: FontWeight.w300),
+        subtitle1:
+            TextStyle(color: Color(0xFFF7FBFE), fontSize: 20, fontFamily: "Raleway", fontWeight: FontWeight.bold),
+        subtitle2:
+            TextStyle(color: Color(0xFFF7FBFE), fontSize: 14, fontFamily: "Raleway", fontWeight: FontWeight.bold),
+        bodyText2:
+            TextStyle(color: Color(0xFFF7FBFE), fontSize: 14, fontFamily: "Raleway", fontWeight: FontWeight.w400),
+        bodyText1:
+            TextStyle(color: Color(0xFF979DB2), fontSize: 14, fontFamily: "Raleway", fontWeight: FontWeight.w400),
+        caption: TextStyle(color: Color(0xFF979DB2), fontSize: 16, fontFamily: "Raleway"),
       ),
       tabBarTheme: TabBarTheme(
         labelColor: Color(0xFFF7FBFE),
@@ -120,18 +108,39 @@ class AppTheme {
             ),
           ),
           textTheme: ButtonTextTheme.accent),
+      dialogTheme: DialogTheme(
+        backgroundColor: Color(0xFF262C41),
+        titleTextStyle: TextStyle(color: Colors.white, fontSize: 22, fontFamily: "Raleway"),
+        contentTextStyle:
+            TextStyle(fontSize: 12, fontWeight: FontWeight.normal, color: Colors.white70, fontFamily: "Raleway"),
+      ),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ButtonStyle(
+          shape: ButtonStateProperty(),
+          foregroundColor: ButtonForegroundStateColor(),
+          backgroundColor: ButtonBackgroundStateColor(color: dominantColor),
+          padding: ButtonPaddingProperty(),
+        ),
+      ),
+      outlinedButtonTheme: OutlinedButtonThemeData(
+        style: ButtonStyle(
+          shape: ButtonStateProperty(),
+          padding: ButtonPaddingProperty(),
+        ),
+      ),
+      dividerTheme: DividerThemeData(thickness: 0.3),
     );
   }
 
   static ThemeData lightTheme() {
     return ThemeData(
-        canvasColor: Color(0xfff3f5ff),
+        canvasColor: Colors.white, //(0xfff3f5ff),
         scaffoldBackgroundColor: Color(0xfff3f5ff),
         highlightColor: Colors.transparent,
         primarySwatch: Colors.blue,
         accentColor: Color(0xff4c4f59),
         primaryColor: Color(0xfff3f5ff),
-        bottomAppBarColor: Color(0xffe2e5f3),
+        bottomAppBarColor: Color(0xff44485d),
         cardTheme: CardTheme(
           color: Color(0xffeceef8),
           margin: EdgeInsets.only(top: 30, left: 20, right: 20, bottom: 0),
@@ -141,7 +150,7 @@ class AppTheme {
           ),
         ),
         appBarTheme: AppBarTheme(
-          color: Color(0xffe2e5f3),
+          color: Color(0xffa1a5bf),
           textTheme: TextTheme(
             headline6: TextStyle(
               color: Color(0xff080401),
@@ -162,61 +171,32 @@ class AppTheme {
           ),
         ),
         textTheme: TextTheme(
-          button: TextStyle(
-              color: Color(0xff020202),
-              fontSize: 14.0,
-              fontFamily: "Raleway",
-              fontWeight: FontWeight.normal),
-          headline1: TextStyle(
-              color: Color(0xff020202),
-              fontSize: 16.0,
-              fontFamily: "Raleway",
-              fontWeight: FontWeight.normal),
-          headline4: TextStyle(
-              color: Color(0xff020202),
-              fontSize: 20.0,
-              fontFamily: "Raleway",
-              fontWeight: FontWeight.normal),
-          headline5: TextStyle(
-              color: Color(0xff8c8f99),
-              fontSize: 20,
-              fontFamily: "Raleway",
-              fontWeight: FontWeight.w300),
-          headline6: TextStyle(
-              color: Color(0xff8c8f99),
-              fontSize: 20,
-              fontFamily: "Raleway",
-              fontWeight: FontWeight.w300),
-          subtitle1: TextStyle(
-              color: Color(0xff020202),
-              fontSize: 20,
-              fontFamily: "Raleway",
-              fontWeight: FontWeight.bold),
-          subtitle2: TextStyle(
-              color: Color(0xff020202),
-              fontSize: 14,
-              fontFamily: "Raleway",
-              fontWeight: FontWeight.bold),
-          bodyText2: TextStyle(
-              color: Color(0xff020202),
-              fontSize: 14,
-              fontFamily: "Raleway",
-              fontWeight: FontWeight.w400),
-          bodyText1: TextStyle(
-              color: Color(0xff8c8f99),
-              fontSize: 14,
-              fontFamily: "Raleway",
-              fontWeight: FontWeight.w400),
-          caption: TextStyle(
-              color: Color(0xff8c8f99), fontSize: 16, fontFamily: "Raleway"),
+          button:
+              TextStyle(color: Color(0xff020202), fontSize: 14.0, fontFamily: "Raleway", fontWeight: FontWeight.normal),
+          headline1:
+              TextStyle(color: Color(0xff020202), fontSize: 16.0, fontFamily: "Raleway", fontWeight: FontWeight.normal),
+          headline4:
+              TextStyle(color: Color(0xff020202), fontSize: 20.0, fontFamily: "Raleway", fontWeight: FontWeight.normal),
+          headline5:
+              TextStyle(color: Color(0xff8c8f99), fontSize: 20, fontFamily: "Raleway", fontWeight: FontWeight.w300),
+          headline6:
+              TextStyle(color: Color(0xff8c8f99), fontSize: 20, fontFamily: "Raleway", fontWeight: FontWeight.w300),
+          subtitle1:
+              TextStyle(color: Color(0xff020202), fontSize: 20, fontFamily: "Raleway", fontWeight: FontWeight.bold),
+          subtitle2:
+              TextStyle(color: Color(0xff020202), fontSize: 14, fontFamily: "Raleway", fontWeight: FontWeight.bold),
+          bodyText2:
+              TextStyle(color: Color(0xff020202), fontSize: 14, fontFamily: "Raleway", fontWeight: FontWeight.w400),
+          bodyText1:
+              TextStyle(color: Color(0xff8c8f99), fontSize: 14, fontFamily: "Raleway", fontWeight: FontWeight.w400),
+          caption: TextStyle(color: Color(0xff8c8f99), fontSize: 16, fontFamily: "Raleway"),
         ),
         tabBarTheme: TabBarTheme(
           labelColor: Color(0xff080401),
-          unselectedLabelColor: Color(0xff4c4f59),
+          unselectedLabelColor: Color(0xffacb0c6),
           labelPadding: const EdgeInsets.fromLTRB(18.0, 0.0, 18.0, 10.0),
           labelStyle: TextStyle(fontSize: 15.0, fontFamily: "Raleway"),
-          unselectedLabelStyle:
-              TextStyle(fontSize: 15.0, fontFamily: "Raleway"),
+          unselectedLabelStyle: TextStyle(fontSize: 15.0, fontFamily: "Raleway"),
           indicatorSize: TabBarIndicatorSize.label,
           indicator: DashedUnderlineIndicator(
             width: 30.0,
@@ -242,15 +222,61 @@ class AppTheme {
             textTheme: ButtonTextTheme.accent));
   }
 
-  static ThemeData getNormalThemeFromPreferences(
-      bool isAutomatic, bool isDark) {
+  static ThemeData getNormalThemeFromPreferences(bool isAutomatic, bool isDark, Color? dominantColor) {
     if (isAutomatic)
       return lightTheme();
     else
-      return isDark ? darkTheme() : lightTheme();
+      return isDark ? darkTheme(dominantColor) : lightTheme();
   }
 
-  static ThemeData getDarkThemeFromPreferences(bool isAutomatic) {
-    return isAutomatic ? darkTheme() : null;
+  static ThemeData? getDarkThemeFromPreferences(bool isAutomatic, Color? dominantColor) {
+    return isAutomatic ? darkTheme(dominantColor) : null;
+  }
+}
+
+class ButtonForegroundStateColor extends MaterialStateColor {
+  static const int _defaultColor = 0xFFFFFFFF;
+
+  const ButtonForegroundStateColor() : super(_defaultColor);
+
+  @override
+  Color resolve(Set<MaterialState> states) =>
+      states.contains(MaterialState.disabled) ? Colors.white30 : Color(_defaultColor);
+}
+
+class ButtonBackgroundStateColor extends MaterialStateColor {
+  final Color? color;
+  static const int _defaultColor = 0xFFC9334F;
+
+  const ButtonBackgroundStateColor({this.color}) : super(_defaultColor);
+
+  @override
+  Color resolve(Set<MaterialState> states) =>
+      states.contains(MaterialState.disabled) ? Color(0xff3c404d) : color ?? Color(_defaultColor);
+}
+
+class ButtonStateProperty extends MaterialStateProperty<OutlinedBorder> {
+  static final _defaultBorder = RoundedRectangleBorder(
+    side: BorderSide(color: Color(0xFFC9334F), width: 2),
+    borderRadius: BorderRadius.circular(80.0),
+  );
+
+  final Color? color;
+
+  ButtonStateProperty({this.color});
+
+  @override
+  OutlinedBorder resolve(Set<MaterialState> states) => states.contains(MaterialState.disabled)
+      ? RoundedRectangleBorder(
+          side: BorderSide(color: Color(0xff3c404d), width: 2),
+          borderRadius: BorderRadius.circular(80.0),
+        )
+      : _defaultBorder;
+}
+
+class ButtonPaddingProperty extends MaterialStateProperty<EdgeInsetsGeometry> {
+  @override
+  EdgeInsetsGeometry resolve(Set<MaterialState> states) {
+    return EdgeInsets.symmetric(horizontal: 18);
   }
 }

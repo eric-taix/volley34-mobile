@@ -19,7 +19,7 @@ class ClubProvider {
     }
   }
 
-  Future<Club> loadClub(String clubCode) async {
+  Future<Club> loadClub(String? clubCode) async {
     Response response = await dio.get("/clubs/$clubCode", options: buildConfigurableCacheOptions());
     if (response.statusCode == 200) {
       return Club.fromJson(response.data);
@@ -28,7 +28,7 @@ class ClubProvider {
     }
   }
 
-  Future<List<TeamStat>> loadClubStats(String clubCode) async {
+  Future<List<TeamStat>> loadClubStats(String? clubCode) async {
     Response response = await dio.get("/clubs/$clubCode/stats", options: buildConfigurableCacheOptions());
     if (response.statusCode == 200) {
       return (response.data as List<dynamic>).map((teamStatJson) => TeamStat.fromJson(teamStatJson)).toList();
@@ -37,7 +37,7 @@ class ClubProvider {
     }
   }
 
-  Future<List<Slot>> loadClubSlots(String clubCode) async {
+  Future<List<Slot>> loadClubSlots(String? clubCode) async {
     Response response = await dio.get("/clubs/$clubCode/creneaux", options: buildConfigurableCacheOptions());
     if (response.statusCode == 200) {
         return (response.data as List).map((json) => Slot.fromJson(json)).toList();

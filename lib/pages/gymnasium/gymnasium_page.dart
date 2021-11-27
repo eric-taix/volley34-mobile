@@ -14,16 +14,16 @@ class GymnasiumPage extends StatefulWidget {
 }
 
 class _GymnasiumPageState extends State<GymnasiumPage> {
-  List<Gymnasium> _gymnasiums;
-  PageController _pageController;
-  String _currentGymnasiumCode;
+  List<Gymnasium>? _gymnasiums;
+  PageController? _pageController;
+  String? _currentGymnasiumCode;
 
   @override
   void initState() {
     super.initState();
     _pageController = PageController(viewportFraction: 0.8)
       ..addListener(() {
-        setState(() => _currentGymnasiumCode = _gymnasiums[_pageController.page.toInt()].gymnasiumCode);
+        setState(() => _currentGymnasiumCode = _gymnasiums![_pageController!.page!.toInt()].gymnasiumCode);
       });
     RepositoryProvider.of<Repository>(context)
       ..loadAllGymnasiums().then((gymnasiums) => setState(() {
@@ -33,7 +33,7 @@ class _GymnasiumPageState extends State<GymnasiumPage> {
 
   @override
   void dispose() {
-    _pageController.dispose();
+    _pageController!.dispose();
     super.dispose();
   }
 
@@ -55,8 +55,8 @@ class _GymnasiumPageState extends State<GymnasiumPage> {
                   gymnasiums: _gymnasiums,
                   currentGymnasiumCode: _currentGymnasiumCode,
                   onGymnasiumSelected: (selectedGymnasiumCode) {
-                    int selectedGymnasiumIndex = _gymnasiums.indexOf(selectedGymnasiumCode);
-                    _pageController.jumpToPage(selectedGymnasiumIndex);
+                    int selectedGymnasiumIndex = _gymnasiums!.indexOf(selectedGymnasiumCode);
+                    _pageController!.jumpToPage(selectedGymnasiumIndex);
                   },
                 ),
                 Align(
@@ -67,9 +67,9 @@ class _GymnasiumPageState extends State<GymnasiumPage> {
                     child: PageView.builder(
                       controller: _pageController,
                       itemBuilder: (context, index) {
-                        return GymnasiumCard(gymnasium: _gymnasiums[index]);
+                        return GymnasiumCard(gymnasium: _gymnasiums![index]);
                       },
-                      itemCount: _gymnasiums.length,
+                      itemCount: _gymnasiums!.length,
                     ),
                   ),
                 )

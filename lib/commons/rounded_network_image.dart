@@ -5,9 +5,9 @@ import 'package:v34/utils/extensions.dart';
 
 class RoundedNetworkImage extends StatelessWidget {
   final double size;
-  final String imageUrl;
+  final String? imageUrl;
   final double borderSize;
-  final Color circleColor;
+  final Color? circleColor;
 
   RoundedNetworkImage(this.size, this.imageUrl, {this.borderSize = 7, this.circleColor});
 
@@ -18,7 +18,7 @@ class RoundedNetworkImage extends StatelessWidget {
       height: size + (2 * borderSize) - 1,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        border: Border.all(color: circleColor ?? Theme.of(context).appBarTheme.color, width: borderSize)
+        border: Border.all(color: circleColor ?? Theme.of(context).appBarTheme.color!, width: borderSize)
       ),
       child: Container(
         decoration: BoxDecoration(
@@ -27,7 +27,7 @@ class RoundedNetworkImage extends StatelessWidget {
         ),
         child: Padding(
           padding: const EdgeInsets.all(4.0),
-          child: CachedNetworkImage(fit: BoxFit.fill, imageUrl: imageUrl),
+          child: CachedNetworkImage(fit: BoxFit.fill, imageUrl: imageUrl!),
         ),
       ),
     );

@@ -15,9 +15,9 @@ class ClubPage extends StatefulWidget {
 }
 
 class _ClubPageState extends State<ClubPage> with SingleTickerProviderStateMixin {
-  Repository _repository;
+  late Repository _repository;
 
-  List<Club> _clubs;
+  late List<Club> _clubs;
   bool _loading = false;
 
   @override
@@ -38,16 +38,15 @@ class _ClubPageState extends State<ClubPage> with SingleTickerProviderStateMixin
       _loading = true;
     });
     _repository.loadAllClubs().then((clubs) {
-      _repository.loadFavoriteClubCodes().then((favorites) {
-        setState(() {
-          _loading = false;
-          clubs.sort((c1, c2) {
-            if (favorites.contains(c1.code) && !favorites.contains(c2.code)) return -1;
-            if (!favorites.contains(c1.code) && favorites.contains(c2.code)) return 1;
-            return c1.shortName.toUpperCase().compareTo(c2.shortName.toUpperCase());
-          });
-          _clubs = clubs;
+      setState(() {
+        _loading = false;
+        clubs.sort((c1, c2) {
+          if (c1.favorite && !c2.favorite) return -1;
+          if (!c1.favorite && c2.favorite) return 1;
+          return c1.shortName!.toUpperCase().compareTo(c2.shortName!.toUpperCase());
         });
+        _clubs = clubs;
+        print(_loading);
       });
     });
   }
@@ -75,23 +74,27 @@ class _ClubPageState extends State<ClubPage> with SingleTickerProviderStateMixin
               ],
               builder: (club) => ClubCard(club, 1),
               barTheme: Theme.of(context).copyWith(
-                textTheme: TextTheme(
-                  headline6: Theme.of(context).textTheme.headline4
-                ),
-                inputDecorationTheme: InputDecorationTheme(
-                  hintStyle: Theme.of(context).textTheme.headline5
-                ),
+                textTheme: TextTheme(headline6: Theme.of(context).textTheme.headline4),
+                inputDecorationTheme: InputDecorationTheme(hintStyle: Theme.of(context).textTheme.headline5),
               ),
             ),
           ),
         ),
       ],
       sliver: _loading
-          ? SliverToBoxAdapter(child: Center(child: Loading()))
+          ? SliverToBoxAdapter(
+              child: Center(
+                  child: Column(
+              children: [
+                Loading(),
+                Text("Hello"),
+              ],
+            )))
           : AnimationLimiter(
               child: SliverList(
                 delegate: SliverChildBuilderDelegate(
                   (context, index) {
+                    print(_clubs.length);
                     return index < _clubs.length
                         ? AnimationConfiguration.staggeredList(
                             position: index,

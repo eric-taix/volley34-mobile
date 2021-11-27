@@ -10,7 +10,7 @@ import 'favorite_bloc.dart';
 class FavoriteIcon extends StatefulWidget {
   final bool favorite;
   final FavoriteType favoriteType;
-  final String favoriteId;
+  final String? favoriteId;
   final EdgeInsetsGeometry padding;
   final bool reloadFavoriteWhenUpdate;
 
@@ -27,27 +27,25 @@ class FavoriteIcon extends StatefulWidget {
   _FavoriteIconState createState() => _FavoriteIconState();
 }
 
-class _FavoriteIconState extends State<FavoriteIcon>
-    with SingleTickerProviderStateMixin {
-  FavoriteBloc _favoriteBloc;
+class _FavoriteIconState extends State<FavoriteIcon> with SingleTickerProviderStateMixin {
+  FavoriteBloc? _favoriteBloc;
 
   @override
   void initState() {
     super.initState();
-    _favoriteBloc = FavoriteBloc(RepositoryProvider.of<Repository>(context),
-        widget.favoriteId, widget.favoriteType);
-    _favoriteBloc.add(FavoriteLoadEvent());
+    _favoriteBloc = FavoriteBloc(RepositoryProvider.of<Repository>(context), widget.favoriteId, widget.favoriteType);
+    _favoriteBloc!.add(FavoriteLoadEvent());
   }
 
   @override
   void didUpdateWidget(FavoriteIcon oldWidget) {
-    if (widget.reloadFavoriteWhenUpdate) _favoriteBloc.add(FavoriteLoadEvent());
+    if (widget.reloadFavoriteWhenUpdate) _favoriteBloc!.add(FavoriteLoadEvent());
     super.didUpdateWidget(oldWidget);
   }
 
   @override
   void dispose() {
-    _favoriteBloc.close();
+    _favoriteBloc!.close();
     super.dispose();
   }
 
@@ -57,15 +55,13 @@ class _FavoriteIconState extends State<FavoriteIcon>
       child: Padding(
         padding: widget.padding,
         child: BlocBuilder(
-          cubit: _favoriteBloc,
-          buildWhen: (previousState, currentState) =>
-              previousState is FavoriteUninitialized ||
-              currentState is FavoriteLoaded,
-          builder: (context, state) => LikeButton(
+          bloc: _favoriteBloc,
+          buildWhen: (dynamic previousState, dynamic currentState) =>
+              previousState is FavoriteUninitialized || currentState is FavoriteLoaded,
+          builder: (context, dynamic state) => LikeButton(
             onTap: (fav) => _performToggleFavorite(fav),
             size: 35,
-            circleColor:
-                CircleColor(start: Colors.yellowAccent, end: Colors.redAccent),
+            circleColor: CircleColor(start: Colors.yellowAccent, end: Colors.redAccent),
             bubblesColor: BubblesColor(
               dotPrimaryColor: Colors.redAccent,
               dotSecondaryColor: Colors.yellowAccent,
@@ -74,9 +70,7 @@ class _FavoriteIconState extends State<FavoriteIcon>
             likeBuilder: (bool isLiked) {
               return Icon(
                 isLiked ? Icons.star : Icons.star_border,
-                color: isLiked
-                    ? Colors.orangeAccent
-                    : Theme.of(context).textTheme.bodyText1.color,
+                color: isLiked ? Colors.orangeAccent : Theme.of(context).textTheme.bodyText1!.color,
                 size: 26,
               );
             },
@@ -87,7 +81,7 @@ class _FavoriteIconState extends State<FavoriteIcon>
   }
 
   Future<bool> _performToggleFavorite(bool favorite) async {
-    _favoriteBloc.add(FavoriteUpdateEvent(!favorite));
+    _favoriteBloc!.add(FavoriteUpdateEvent(!favorite));
     return !favorite;
   }
 }

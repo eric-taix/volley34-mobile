@@ -8,13 +8,13 @@ import 'package:flutter/material.dart';
 StatusBloc fluidExpansionCard = StatusBloc();
 
 class FluidExpansionCard extends StatefulWidget {
-  final Color color;
+  final Color? color;
   final double width;
   final double topCardHeight;
   final double bottomCardHeight;
   final double borderRadius;
-  final Widget topCardWidget;
-  final Widget bottomCardWidget;
+  final Widget? topCardWidget;
+  final Widget? bottomCardWidget;
   final bool slimeEnabled;
 
   FluidExpansionCard({
@@ -27,36 +27,33 @@ class FluidExpansionCard extends StatefulWidget {
     this.bottomCardWidget,
     this.slimeEnabled = true,
   })  : assert(topCardHeight >= 80, 'Height of Top Card must be atleast 150.'),
-        assert(bottomCardHeight >= 100,
-            'Height of Bottom Card must be atleast 100.'),
+        assert(bottomCardHeight >= 100, 'Height of Bottom Card must be atleast 100.'),
         assert(width >= 100, 'Width must be atleast 100.'),
-        assert(borderRadius <= 30 && borderRadius >= 0,
-            'Border Radius must neither exceed 30 nor be negative');
+        assert(borderRadius <= 30 && borderRadius >= 0, 'Border Radius must neither exceed 30 nor be negative');
 
   @override
   _FluidExpansionCardState createState() => _FluidExpansionCardState();
 }
 
-class _FluidExpansionCardState extends State<FluidExpansionCard>
-    with TickerProviderStateMixin {
-  bool isSeparated;
+class _FluidExpansionCardState extends State<FluidExpansionCard> with TickerProviderStateMixin {
+  late bool isSeparated;
 
-  double bottomDimension;
-  double initialBottomDimension;
-  double finalBottomDimension;
-  double gap;
-  double gapInitial;
-  double gapFinal;
-  double x;
-  double y;
-  String activeAnimation;
-  Widget topCardWidget;
-  Widget bottomCardWidget;
+  double? bottomDimension;
+  double? initialBottomDimension;
+  double? finalBottomDimension;
+  double? gap;
+  double? gapInitial;
+  double? gapFinal;
+  late double x;
+  double? y;
+  String? activeAnimation;
+  Widget? topCardWidget;
+  Widget? bottomCardWidget;
 
-  Animation<double> arrowAnimation;
-  AnimationController arrowAnimController;
-  AnimationController detailsController;
-  Animation<double> detailsAnimation;
+  late Animation<double> arrowAnimation;
+  late AnimationController arrowAnimController;
+  late AnimationController detailsController;
+  late Animation<double> detailsAnimation;
 
   /// `action` is the main function that triggers the process of separation of
   /// the cards and vice-versa.
@@ -92,18 +89,15 @@ class _FluidExpansionCardState extends State<FluidExpansionCard>
     initialBottomDimension = widget.topCardHeight;
     finalBottomDimension = widget.bottomCardHeight;
     bottomDimension = initialBottomDimension;
-    topCardWidget = (widget.topCardWidget != null)
-        ? widget.topCardWidget
-        : simpleTextWidget('This is Top Card Widget.');
-    bottomCardWidget = (widget.bottomCardWidget != null)
-        ? widget.bottomCardWidget
-        : simpleTextWidget('This is Bottom Card Widget.');
+    topCardWidget =
+        (widget.topCardWidget != null) ? widget.topCardWidget : simpleTextWidget('This is Top Card Widget.');
+    bottomCardWidget =
+        (widget.bottomCardWidget != null) ? widget.bottomCardWidget : simpleTextWidget('This is Bottom Card Widget.');
     arrowAnimController = AnimationController(
       vsync: this,
       duration: Duration(milliseconds: 200),
     );
-    arrowAnimation =
-        Tween<double>(begin: 0, end: 0.5).animate(arrowAnimController);
+    arrowAnimation = Tween<double>(begin: 0, end: 0.5).animate(arrowAnimController);
 
     const cardsMargin = 15;
     x = (widget.borderRadius < 10) ? 10 : widget.borderRadius;
@@ -111,22 +105,15 @@ class _FluidExpansionCardState extends State<FluidExpansionCard>
     gapInitial = ((widget.topCardHeight - x - widget.bottomCardHeight / 4) > 0)
         ? (widget.topCardHeight - x - widget.bottomCardHeight / 4)
         : 0;
-    gapFinal = ((widget.topCardHeight +
-                x -
-                widget.bottomCardHeight / 4 +
-                cardsMargin) >
-            0)
+    gapFinal = ((widget.topCardHeight + x - widget.bottomCardHeight / 4 + cardsMargin) > 0)
         ? (widget.topCardHeight + x - widget.bottomCardHeight / 4 + cardsMargin)
         : 2 * x + cardsMargin;
     gapInitial = 0;
     gapFinal = widget.topCardHeight;
     gap = gapInitial;
     detailsController = AnimationController(
-        vsync: this,
-        duration: Duration(milliseconds: 1800),
-        reverseDuration: Duration(milliseconds: 400));
-    detailsAnimation =
-        Tween<double>(begin: gapInitial, end: gapFinal).animate(CurvedAnimation(
+        vsync: this, duration: Duration(milliseconds: 1800), reverseDuration: Duration(milliseconds: 400));
+    detailsAnimation = Tween<double>(begin: gapInitial, end: gapFinal).animate(CurvedAnimation(
       parent: detailsController,
       curve: Curves.elasticOut,
       reverseCurve: Curves.easeInOut,
@@ -171,7 +158,7 @@ class _FluidExpansionCardState extends State<FluidExpansionCard>
                 children: <Widget>[
                   AnimatedBuilder(
                     animation: detailsController,
-                    builder: (BuildContext context, Widget child) {
+                    builder: (BuildContext context, Widget? child) {
                       return Container(
                         height: detailsAnimation.value,
                       );
@@ -188,8 +175,7 @@ class _FluidExpansionCardState extends State<FluidExpansionCard>
                           width: widget.width,
                           decoration: BoxDecoration(
                             color: widget.color,
-                            borderRadius:
-                                BorderRadius.circular(widget.borderRadius),
+                            borderRadius: BorderRadius.circular(widget.borderRadius),
                           ),
                           alignment: Alignment.center,
                           child: AnimatedOpacity(
@@ -197,8 +183,7 @@ class _FluidExpansionCardState extends State<FluidExpansionCard>
                             curve: Curves.easeInOut,
                             opacity: (isSeparated) ? 1.0 : 0,
                             child: ClipRect(
-                              clipper: BottomClip(initialBottomDimension,
-                                  finalBottomDimension, !isSeparated),
+                              clipper: BottomClip(initialBottomDimension, finalBottomDimension, !isSeparated),
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: bottomCardWidget,
@@ -214,8 +199,7 @@ class _FluidExpansionCardState extends State<FluidExpansionCard>
                           Container(
                             child: FlareActor(
                               'assets/flare/bottomSlime.flr',
-                              color: widget.color
-                                  .withOpacity((widget.slimeEnabled) ? 1 : 0),
+                              color: widget.color!.withOpacity((widget.slimeEnabled) ? 1 : 0),
                               animation: activeAnimation,
                               sizeFromArtboard: true,
                               alignment: Alignment.bottomCenter,
@@ -226,7 +210,7 @@ class _FluidExpansionCardState extends State<FluidExpansionCard>
                           ),
                           SizedBox(
                             // Determine the height of the topCard
-                            height: bottomDimension - 4,
+                            height: bottomDimension! - 4,
                           ),
                         ],
                       ),
@@ -259,8 +243,7 @@ class _FluidExpansionCardState extends State<FluidExpansionCard>
                         width: slimeWidth,
                         child: FlareActor(
                           'assets/flare/topSlime.flr',
-                          color: widget.color
-                              .withOpacity((widget.slimeEnabled) ? 1 : 0),
+                          color: widget.color!.withOpacity((widget.slimeEnabled) ? 1 : 0),
                           animation: activeAnimation,
                           sizeFromArtboard: true,
                           alignment: Alignment.topCenter,
@@ -275,9 +258,7 @@ class _FluidExpansionCardState extends State<FluidExpansionCard>
               Column(
                 children: <Widget>[
                   SizedBox(
-                    height: widget.topCardHeight -
-                        switchRadius / 2 +
-                        detailsDistance / 2,
+                    height: widget.topCardHeight - switchRadius / 2 + detailsDistance / 2,
                   ),
                   Container(
                     height: switchRadius,
@@ -289,8 +270,7 @@ class _FluidExpansionCardState extends State<FluidExpansionCard>
                         height: switchRadius - switchPadding,
                         width: switchRadius - switchPadding,
                         alignment: Alignment.center,
-                        child: Icon(Icons.keyboard_arrow_down,
-                            color: Theme.of(context).accentColor),
+                        child: Icon(Icons.keyboard_arrow_down, color: Theme.of(context).accentColor),
                         decoration: BoxDecoration(
                           color: Theme.of(context).buttonColor,
                           borderRadius: BorderRadius.circular(switchRadius / 2),
@@ -337,23 +317,20 @@ class StatusBloc {
   Stream<bool> get stream => statusController.stream;
 
   dispose() {
-    statusController?.close();
+    statusController.close();
   }
 }
 
 class BottomClip extends CustomClipper<Rect> {
-  final double minheight;
-  final double maxheight;
+  final double? minheight;
+  final double? maxheight;
   final bool clip;
 
   BottomClip(this.minheight, this.maxheight, this.clip);
 
   @override
   Rect getClip(Size size) {
-    return Offset.zero &
-        (clip
-            ? Size(size.width, minheight - 105)
-            : Size(size.width, maxheight));
+    return Offset.zero & (clip ? Size(size.width, minheight! - 105) : Size(size.width, maxheight!));
   }
 
   @override

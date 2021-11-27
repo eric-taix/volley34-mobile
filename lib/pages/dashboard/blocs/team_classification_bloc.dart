@@ -24,7 +24,7 @@ class LoadTeamClassificationEvent extends TeamClassificationEvent {
 
 class TeamClassificationState extends Equatable {
   @override
-  List<Object> get props => [];
+  List<Object?> get props => [];
 }
 
 class TeamClassificationUninitializedState extends TeamClassificationState {}
@@ -32,13 +32,13 @@ class TeamClassificationUninitializedState extends TeamClassificationState {}
 class TeamClassificationLoadingState extends TeamClassificationState {}
 
 class TeamClassificationLoadedState extends TeamClassificationState {
-  final String highlightedTeamCode;
+  final String? highlightedTeamCode;
   final List<ClassificationSynthesis> classifications;
 
   TeamClassificationLoadedState(this.highlightedTeamCode, this.classifications);
 
   @override
-  List<Object> get props => [highlightedTeamCode, classifications];
+  List<Object?> get props => [highlightedTeamCode, classifications];
 }
 
 // -- Bloc
@@ -47,7 +47,7 @@ class TeamClassificationBloc
     extends Bloc<TeamClassificationEvent, TeamClassificationState> {
   final Repository repository;
 
-  TeamClassificationBloc({@required this.repository})
+  TeamClassificationBloc({required this.repository})
       : super(TeamClassificationUninitializedState());
 
   @override
@@ -59,7 +59,7 @@ class TeamClassificationBloc
           await repository.loadTeamClassificationSynthesis(event.team.code);
       classifications = classifications.map((classification) {
         classification.teamsClassifications.sort((tc1, tc2) {
-          return tc1.rank.compareTo(tc2.rank) * -1;
+          return tc1.rank!.compareTo(tc2.rank!) * -1;
         });
         return classification;
       }).toList();
