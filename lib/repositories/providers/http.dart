@@ -7,8 +7,17 @@ var dio = Dio(BaseOptions(
   ..interceptors.add(DioCacheManager(
     CacheConfig(
       baseUrl: "http://api.volley34.fr",
-      defaultMaxAge: Duration(hours: 6),
-      defaultMaxStale: Duration(hours: 24),
+      defaultMaxAge: Duration.zero,
+      defaultMaxStale: Duration(days: 7),
     ),
   ).interceptor)
-  ..interceptors.add(LogInterceptor(requestBody: false, requestHeader: false, responseBody: false, responseHeader: false));
+  ..interceptors.add(DebugCacheInterceptor());
+
+class DebugCacheInterceptor extends InterceptorsWrapper {
+  @override
+  void onResponse(Response response, ResponseInterceptorHandler handler) {
+    List<String>? responseSource = response.headers["dio_cache_header_key_data_source"];
+    print("Request: ${response.realUri} ${responseSource?[0] ?? "from_network"}");
+    super.onResponse(response, handler);
+  }
+}

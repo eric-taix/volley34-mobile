@@ -34,9 +34,9 @@ class ArcGraph extends StatefulWidget {
   })  : assert(maxValue >= minValue),
         assert(value >= minValue && value <= maxValue),
         assert((colors == null && stops == null) ||
-            (colors ?? [Colors.redAccent, Colors.orangeAccent, Colors.greenAccent]).length == stops?.length),
+            (colors ?? [Colors.red, Colors.orangeAccent, Colors.green]).length == (stops ?? [0.1, 0.5, 0.95]).length),
         this.leftTitle = leftTitle ?? LeftTitle(show: false),
-        this.colors = colors ?? [Colors.redAccent, Colors.orangeAccent, Colors.greenAccent],
+        this.colors = colors ?? [Colors.red, Colors.orangeAccent, Colors.green],
         this.stops = stops ?? [0.1, 0.5, 0.95];
 
   @override

@@ -7,7 +7,6 @@ import 'package:v34/models/team_stats.dart';
 import 'http.dart';
 
 class ClubProvider {
-
   ClubProvider();
 
   Future<List<Club>> loadAllClubs<T>() async {
@@ -29,7 +28,7 @@ class ClubProvider {
   }
 
   Future<List<TeamStat>> loadClubStats(String? clubCode) async {
-    Response response = await dio.get("/clubs/$clubCode/stats", options: buildConfigurableCacheOptions());
+    Response response = await dio.get("/clubs/$clubCode/stats");
     if (response.statusCode == 200) {
       return (response.data as List<dynamic>).map((teamStatJson) => TeamStat.fromJson(teamStatJson)).toList();
     } else {
@@ -40,10 +39,9 @@ class ClubProvider {
   Future<List<Slot>> loadClubSlots(String? clubCode) async {
     Response response = await dio.get("/clubs/$clubCode/creneaux", options: buildConfigurableCacheOptions());
     if (response.statusCode == 200) {
-        return (response.data as List).map((json) => Slot.fromJson(json)).toList();
+      return (response.data as List).map((json) => Slot.fromJson(json)).toList();
     } else {
       throw Exception('Impossible de récupérer les créneaux du club $clubCode');
     }
   }
-
 }

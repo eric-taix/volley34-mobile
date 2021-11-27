@@ -2,6 +2,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:v34/commons/graphs/arc.dart';
 import 'package:v34/commons/stat_row.dart';
 import 'package:v34/models/club.dart';
 import 'package:v34/models/team_stats.dart';
@@ -43,16 +44,44 @@ class _ClubStatisticsState extends State<ClubStatistics> {
         return SliverList(
           delegate: SliverChildListDelegate(
             [
-              SizedBox(height: 20),
+              SizedBox(height: 40),
               StatRow(
                 title: "Matchs gagnés",
-                child: Container(color: Colors.red),
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(maxWidth: 100, maxHeight: 80),
+                  child: ArcGraph(
+                    lineWidth: 8,
+                    minValue: 0,
+                    maxValue: 1,
+                    animationDuration: Duration(milliseconds: 1200),
+                    value: state is ClubStatsLoadedState && state.matchesPlayed.total != 0
+                        ? state.matchesPlayed.won.toDouble() / state.matchesPlayed.total
+                        : 0.0,
+                    valueBuilder: (value, _, max) => RichText(
+                      textScaleFactor: 1.0,
+                      textAlign: TextAlign.center,
+                      text: new TextSpan(
+                        text: state is ClubStatsLoadedState ? "${(value * state.matchesPlayed.total).toInt()}" : "0",
+                        style: new TextStyle(
+                          fontSize: 24.0,
+                          fontWeight: FontWeight.bold,
+                          color: Theme.of(context).textTheme.bodyText2!.color,
+                        ),
+                        children: <TextSpan>[
+                          new TextSpan(
+                              text: " / ${state is ClubStatsLoadedState ? state.matchesPlayed.total : "0"}",
+                              style: TextStyle(fontSize: 12, fontWeight: FontWeight.normal)),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
               ),
               StatRow(
                 title: "Scores",
                 child: BarChart(
                   computeSetsRepartitionChartData(
-                      context, (state is ClubStatsLoadedState) ? state.setsDistribution! : SetsDistribution()),
+                      context, (state is ClubStatsLoadedState) ? state.setsDistribution : SetsDistribution()),
                   swapAnimationDuration: Duration(milliseconds: 600),
                 ),
               ),
