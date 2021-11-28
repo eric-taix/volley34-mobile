@@ -33,16 +33,17 @@ class _ClubGymnasiumsSlotsState extends State<ClubGymnasiumsSlots> {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder(
-        bloc: _slotsBloc,
-        builder: (context, dynamic state) {
-          return Column(
-            children: [
-              Paragraph(
-                title: (state is ClubSlotsLoaded && state.slots!.length > 1) ? "Créneaux" : "Créneau",
-                topPadding: 60,
-              ),
-              if (state is ClubSlotsLoaded)
-                ...state.slots!.map((slot) {
+      bloc: _slotsBloc,
+      builder: (context, dynamic state) {
+        return Column(
+          children: [
+            Paragraph(
+              title: (state is ClubSlotsLoaded && state.slots!.length > 1) ? "Créneaux" : "Créneau",
+              topPadding: 60,
+            ),
+            if (state is ClubSlotsLoaded)
+              ...state.slots!.map(
+                (slot) {
                   return Padding(
                     padding: const EdgeInsets.only(top: 28.0, right: 8.0, bottom: 8.0, left: 28.0),
                     child: Row(
@@ -57,7 +58,7 @@ class _ClubGymnasiumsSlotsState extends State<ClubGymnasiumsSlots> {
                                 border: Border(
                                   left: BorderSide(
                                     width: 5,
-                                    color: Colors.red, //TinyColor(Theme.of(context).cardTheme.color).lighten(3).color
+                                    color: Colors.red,
                                   ),
                                 ),
                               ),
@@ -87,22 +88,11 @@ class _ClubGymnasiumsSlotsState extends State<ClubGymnasiumsSlots> {
                       ],
                     ),
                   );
-                }),
-              Padding(
-                padding: const EdgeInsets.only(top: 28.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    FloatingActionButton(
-                      mini: true,
-                      onPressed: null,
-                      child: Icon(Icons.map),
-                    ),
-                  ],
-                ),
+                },
               ),
-            ],
-          );
-        });
+          ],
+        );
+      },
+    );
   }
 }
