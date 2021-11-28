@@ -91,7 +91,9 @@ class Repository {
 
   /// Load the last N matches result of a team
   Future<List<MatchResult>> loadTeamLastMatchesResult(String? teamCode, int? nbLastMatches) async {
-    List<MatchResult> matches = await _teamProvider.lastTeamMatchesResult(teamCode);
+    List<MatchResult> matches = (await _teamProvider.lastTeamMatchesResult(teamCode))
+        .where((matchResult) => VALID_RESULT_TYPES.contains(matchResult.resultType))
+        .toList();
     return nbLastMatches != null
         ? matches.sublist(matches.length > nbLastMatches ? matches.length - nbLastMatches : 0).toList()
         : matches;
