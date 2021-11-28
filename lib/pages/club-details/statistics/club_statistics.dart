@@ -87,12 +87,12 @@ class _ClubStatisticsState extends State<ClubStatistics> {
                 ),
               ),
               StatRow(
-                title: "Répartition à domicile",
+                title: "A domicile",
                 child: _buildPieChart(
                     context, state is ClubStatsLoadedState, state is ClubStatsLoadedState ? state.homeMatches : null),
               ),
               StatRow(
-                title: "Répartition à l'extérieur",
+                title: "A l'extérieur",
                 child: _buildPieChart(context, state is ClubStatsLoadedState,
                     state is ClubStatsLoadedState ? state.outsideMatches : null),
               ),
@@ -104,30 +104,30 @@ class _ClubStatisticsState extends State<ClubStatistics> {
   }
 
   Widget _buildPieChart(BuildContext context, bool loaded, MatchesPlayed? matchesPlayed) {
-    const double POSITION_OFFSET = 3.8;
+    const double POSITION_OFFSET = 3.2;
     return AspectRatio(
       aspectRatio: 1,
       child: PieChart(
         PieChartData(
-          sectionsSpace: 10,
-          centerSpaceRadius: 25,
+          sectionsSpace: 8,
+          centerSpaceRadius: 20,
           sections: [
             PieChartSectionData(
-              radius: 10,
+              radius: 15,
               value: loaded ? matchesPlayed!.won.toDouble() : 1,
-              title: "Gagnés (${loaded ? matchesPlayed!.won : 0})",
-              titlePositionPercentageOffset: POSITION_OFFSET,
-              titleStyle: Theme.of(context).textTheme.bodyText1,
+              title: "${loaded ? matchesPlayed!.won : 0} Vict.",
+              titlePositionPercentageOffset: POSITION_OFFSET - 0.8,
+              titleStyle: Theme.of(context).textTheme.bodyText2,
               color: loaded
                   ? _getSectionColor(matchesPlayed!.won, matchesPlayed.total)
                   : Theme.of(context).colorScheme.primaryVariant,
             ),
             PieChartSectionData(
-              radius: 10,
+              radius: 8,
               value: loaded ? matchesPlayed!.lost.toDouble() : 1,
-              title: "Perdus (${loaded ? matchesPlayed!.lost : 0})",
-              titleStyle: Theme.of(context).textTheme.bodyText1,
-              titlePositionPercentageOffset: POSITION_OFFSET,
+              title: "${loaded ? matchesPlayed!.lost : 0} Déf.",
+              titleStyle: Theme.of(context).textTheme.bodyText2,
+              titlePositionPercentageOffset: POSITION_OFFSET + 0.3,
               color: loaded
                   ? _getSectionColor(matchesPlayed!.lost, matchesPlayed.total, invert: true)
                   : Theme.of(context).colorScheme.primaryVariant,
