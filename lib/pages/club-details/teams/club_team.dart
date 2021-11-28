@@ -62,9 +62,6 @@ class _ClubTeamState extends State<ClubTeam> {
             child: FavoriteIcon(
               widget.team.code,
               FavoriteType.Team,
-              false,
-              padding: EdgeInsets.zero,
-              reloadFavoriteWhenUpdate: true,
             ),
           ),
         ],

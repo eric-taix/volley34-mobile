@@ -7,6 +7,7 @@ const double CARD_BORDER_RADIUS = 18.0;
 class AppTheme {
   static ThemeData darkTheme(Color? dominantColor) {
     return ThemeData(
+      splashColor: (dominantColor ?? Color(0xFFC9334F)).withOpacity(0.2),
       canvasColor: Color(0xFF262C41),
       scaffoldBackgroundColor: Color(0xFF262C41),
       highlightColor: Colors.transparent,
@@ -122,9 +123,21 @@ class AppTheme {
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ButtonStyle(
+          overlayColor: OverlayStateColor(Colors.white.withOpacity(0.2)),
           shape: ButtonStateProperty(),
           foregroundColor: ButtonForegroundStateColor(),
           backgroundColor: ButtonBackgroundStateColor(color: dominantColor),
+          padding: ButtonPaddingProperty(),
+        ),
+      ),
+      floatingActionButtonTheme: FloatingActionButtonThemeData(
+        splashColor: Colors.white.withOpacity(0.2),
+      ),
+      textButtonTheme: TextButtonThemeData(
+        style: ButtonStyle(
+          overlayColor: OverlayStateColor(Color(0xFFC9334F).withOpacity(0.2)),
+          shape: ButtonStateProperty(color: Colors.transparent),
+          foregroundColor: ButtonForegroundStateColor(color: Color(0xFFC9334F)),
           padding: ButtonPaddingProperty(),
         ),
       ),
@@ -232,14 +245,28 @@ class AppTheme {
   }
 }
 
-class ButtonForegroundStateColor extends MaterialStateColor {
-  static const int _defaultColor = 0xFFFFFFFF;
+class OverlayStateColor extends MaterialStateColor {
+  static const int _defaultColor = 0x50FFFFFF;
 
-  const ButtonForegroundStateColor() : super(_defaultColor);
+  final Color? color;
+
+  OverlayStateColor(this.color) : super(_defaultColor);
 
   @override
   Color resolve(Set<MaterialState> states) =>
-      states.contains(MaterialState.disabled) ? Colors.white30 : Color(_defaultColor);
+      states.contains(MaterialState.disabled) ? Colors.transparent : color ?? Color(_defaultColor);
+}
+
+class ButtonForegroundStateColor extends MaterialStateColor {
+  static const int _defaultColor = 0xFFFFFFFF;
+
+  final Color? color;
+
+  const ButtonForegroundStateColor({this.color}) : super(_defaultColor);
+
+  @override
+  Color resolve(Set<MaterialState> states) =>
+      states.contains(MaterialState.disabled) ? Colors.white30 : color ?? Color(_defaultColor);
 }
 
 class ButtonBackgroundStateColor extends MaterialStateColor {
@@ -254,22 +281,21 @@ class ButtonBackgroundStateColor extends MaterialStateColor {
 }
 
 class ButtonStateProperty extends MaterialStateProperty<OutlinedBorder> {
-  static final _defaultBorder = RoundedRectangleBorder(
-    side: BorderSide(color: Color(0xFFC9334F), width: 2),
-    borderRadius: BorderRadius.circular(80.0),
-  );
-
   final Color? color;
+  final Color? disableColor;
 
-  ButtonStateProperty({this.color});
+  ButtonStateProperty({this.color, this.disableColor});
 
   @override
   OutlinedBorder resolve(Set<MaterialState> states) => states.contains(MaterialState.disabled)
       ? RoundedRectangleBorder(
-          side: BorderSide(color: Color(0xff3c404d), width: 2),
+          side: BorderSide(color: disableColor ?? Color(0xff3c404d), width: 2),
           borderRadius: BorderRadius.circular(80.0),
         )
-      : _defaultBorder;
+      : RoundedRectangleBorder(
+          side: BorderSide(color: color ?? Color(0xff3c404d), width: 2),
+          borderRadius: BorderRadius.circular(80.0),
+        );
 }
 
 class ButtonPaddingProperty extends MaterialStateProperty<EdgeInsetsGeometry> {

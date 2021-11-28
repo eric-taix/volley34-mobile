@@ -119,8 +119,7 @@ class _AppBarHeaderDelegate extends SliverPersistentHeaderDelegate {
                   FavoriteIcon(
                     favorite!.id,
                     favorite!.type,
-                    favorite!.value,
-                    padding: EdgeInsets.only(left: 12, bottom: compute(0.0, 22.0)),
+                    padding: EdgeInsets.only(left: 12, bottom: compute(0.0, 22.0), right: 8),
                   ),
                 ],
               ),

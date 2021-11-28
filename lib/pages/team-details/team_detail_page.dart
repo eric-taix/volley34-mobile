@@ -88,7 +88,6 @@ class TeamDetailPageState extends State<TeamDetailPage> {
       logoUrl: widget.team.clubLogoUrl,
       tabs: tabs,
       favorite: Favorite(
-        widget.team.favorite,
         widget.team.code,
         FavoriteType.Team,
       ),
