@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:v34/commons/graphs/arc.dart';
 import 'package:v34/commons/stat_row.dart';
 import 'package:v34/models/club.dart';
+import 'package:v34/models/matches_played.dart';
 import 'package:v34/models/team_stats.dart';
 import 'package:v34/pages/club-details/blocs/club_stats.bloc.dart';
 import 'package:v34/repositories/repository.dart';
@@ -85,11 +86,81 @@ class _ClubStatisticsState extends State<ClubStatistics> {
                   swapAnimationDuration: Duration(milliseconds: 600),
                 ),
               ),
+              StatRow(
+                title: "Répartition à domicile",
+                child: _buildPieChart(
+                    context, state is ClubStatsLoadedState, state is ClubStatsLoadedState ? state.homeMatches : null),
+              ),
+              StatRow(
+                title: "Répartition à l'extérieur",
+                child: _buildPieChart(context, state is ClubStatsLoadedState,
+                    state is ClubStatsLoadedState ? state.outsideMatches : null),
+              ),
             ],
           ),
         );
       },
     );
+  }
+
+  Widget _buildPieChart(BuildContext context, bool loaded, MatchesPlayed? matchesPlayed) {
+    const double POSITION_OFFSET = 3.8;
+    return AspectRatio(
+      aspectRatio: 1,
+      child: PieChart(
+        PieChartData(
+          sectionsSpace: 10,
+          centerSpaceRadius: 25,
+          sections: [
+            PieChartSectionData(
+              radius: 10,
+              value: loaded ? matchesPlayed!.won.toDouble() : 1,
+              title: "Gagnés (${loaded ? matchesPlayed!.won : 0})",
+              titlePositionPercentageOffset: POSITION_OFFSET,
+              titleStyle: Theme.of(context).textTheme.bodyText1,
+              color: loaded
+                  ? _getSectionColor(matchesPlayed!.won, matchesPlayed.total)
+                  : Theme.of(context).colorScheme.primaryVariant,
+            ),
+            PieChartSectionData(
+              radius: 10,
+              value: loaded ? matchesPlayed!.lost.toDouble() : 1,
+              title: "Perdus (${loaded ? matchesPlayed!.lost : 0})",
+              titleStyle: Theme.of(context).textTheme.bodyText1,
+              titlePositionPercentageOffset: POSITION_OFFSET,
+              color: loaded
+                  ? _getSectionColor(matchesPlayed!.lost, matchesPlayed.total, invert: true)
+                  : Theme.of(context).colorScheme.primaryVariant,
+            ),
+          ],
+          borderData: FlBorderData(show: false),
+        ),
+        swapAnimationDuration: Duration(milliseconds: 800),
+      ),
+    );
+  }
+
+  Color _getSectionColor(int nb, int total, {bool invert = false}) {
+    const int NB_COLOR = 6;
+    var colorGroup = (((nb * 100) / total) / (100 / NB_COLOR)).ceil();
+    if (invert) {
+      colorGroup = NB_COLOR - 1 - colorGroup;
+    }
+    switch (colorGroup) {
+      case 0:
+        return Colors.redAccent;
+      case 1:
+        return Colors.deepOrangeAccent;
+      case 2:
+        return Colors.orangeAccent;
+      case 3:
+        return Colors.yellowAccent;
+      case 4:
+        return Colors.greenAccent;
+      case 5:
+        return Colors.green;
+    }
+    return Colors.grey;
   }
 
   BarChartData computeSetsRepartitionChartData(BuildContext context, SetsDistribution setsDistribution) {
@@ -185,7 +256,7 @@ class _ClubStatisticsState extends State<ClubStatistics> {
           backDrawRodData: BackgroundBarChartRodData(
             show: true,
             y: maxRodY == 0 ? 10 : maxRodY,
-            colors: [Theme.of(context).appBarTheme.color!],
+            colors: [Theme.of(context).appBarTheme.backgroundColor!],
           ),
         ),
       ],

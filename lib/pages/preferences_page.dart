@@ -49,7 +49,7 @@ class _PreferencesPageState extends State<PreferencesPage> {
         title: Text("Mode sombre", style: Theme.of(context).textTheme.bodyText2),
         leading: Icon(
           Icons.brightness_6,
-          color: Theme.of(context).accentColor,
+          color: Theme.of(context).colorScheme.secondary,
         ),
         subtitle: Text(
           "Mode sombre automatique",
@@ -63,7 +63,7 @@ class _PreferencesPageState extends State<PreferencesPage> {
               style: TextStyle(color: Theme.of(context).textTheme.bodyText2!.color, fontSize: 10)),
           secondary: Icon(
             Icons.brightness_6,
-            color: Theme.of(context).accentColor,
+            color: Theme.of(context).colorScheme.secondary,
           ),
           value: state.useDarkTheme,
           onChanged: (isDark) {
@@ -79,7 +79,7 @@ class _PreferencesPageState extends State<PreferencesPage> {
       subtitle: Text(
           "Cette option active automatiquement le mode sombre en fonction des préférences de votre appareil.",
           style: TextStyle(color: Theme.of(context).textTheme.bodyText2!.color, fontSize: 10)),
-      secondary: Icon(Icons.access_time, color: Theme.of(context).accentColor),
+      secondary: Icon(Icons.access_time, color: Theme.of(context).colorScheme.secondary),
       value: state.useAutomaticTheme,
       onChanged: (isAutomatic) {
         BlocProvider.of<PreferencesBloc>(context).add(PreferencesSaveEvent(useAutomaticTheme: isAutomatic));

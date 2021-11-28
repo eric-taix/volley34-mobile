@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:v34/commons/cards/rounded_title_card.dart';
 import 'package:v34/commons/graphs/arc.dart';
+import 'package:v34/commons/loading.dart';
 import 'package:v34/models/club.dart';
 import 'package:v34/pages/dashboard/blocs/club_stats.dart';
 import 'package:v34/repositories/repository.dart';
@@ -79,23 +80,25 @@ class _FavoriteClubCardState extends State<FavoriteClubCard> {
                     maxValue: 1,
                     animationDuration: Duration(milliseconds: 1200),
                     value: state is ClubStatsLoadedState ? state.wonMatches.toDouble() / state.totalMatches : 0.0,
-                    valueBuilder: (value, _, max) => RichText(
-                      textScaleFactor: 1.0,
-                      textAlign: TextAlign.center,
-                      text: new TextSpan(
-                        text: "${(value * state.totalMatches).toInt()}",
-                        style: new TextStyle(
-                          fontSize: 24.0,
-                          fontWeight: FontWeight.bold,
-                          color: Theme.of(context).textTheme.bodyText2!.color,
-                        ),
-                        children: <TextSpan>[
-                          new TextSpan(
-                              text: ' / ${state.totalMatches}',
-                              style: TextStyle(fontSize: 12, fontWeight: FontWeight.normal)),
-                        ],
-                      ),
-                    ),
+                    valueBuilder: (value, _, max) => state is ClubStatsLoadedState
+                        ? RichText(
+                            textScaleFactor: 1.0,
+                            textAlign: TextAlign.center,
+                            text: new TextSpan(
+                              text: "${(value * state.totalMatches).toInt()}",
+                              style: new TextStyle(
+                                fontSize: 24.0,
+                                fontWeight: FontWeight.bold,
+                                color: Theme.of(context).textTheme.bodyText2!.color,
+                              ),
+                              children: <TextSpan>[
+                                new TextSpan(
+                                    text: ' / ${state.totalMatches}',
+                                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.normal)),
+                              ],
+                            ),
+                          )
+                        : Loading.small(),
                   ),
                 ),
               ],

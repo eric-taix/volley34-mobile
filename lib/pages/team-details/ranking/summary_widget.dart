@@ -27,7 +27,8 @@ class SummaryWidget extends StatelessWidget {
         case 5:
           return makeGroupData(context, 5, teamStats.nbSets03!.toDouble(), Colors.redAccent, teamStats);
         case 6:
-          return makeGroupData(context, 6, teamStats.nbSetsMI!.toDouble(), Theme.of(context).accentColor, teamStats);
+          return makeGroupData(
+              context, 6, teamStats.nbSetsMI!.toDouble(), Theme.of(context).colorScheme.secondary, teamStats);
         default:
           return null;
       }

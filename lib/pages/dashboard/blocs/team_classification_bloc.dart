@@ -1,6 +1,5 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:v34/models/classication.dart';
 import 'package:v34/models/team.dart';
 import 'package:v34/repositories/repository.dart';
@@ -10,7 +9,7 @@ import 'package:v34/repositories/repository.dart';
 class TeamClassificationEvent extends Equatable {
   final Team team;
 
-  const TeamClassificationEvent(this.team) : assert(team != null);
+  const TeamClassificationEvent(this.team);
 
   @override
   List<Object> get props => [team];
@@ -43,20 +42,16 @@ class TeamClassificationLoadedState extends TeamClassificationState {
 
 // -- Bloc
 
-class TeamClassificationBloc
-    extends Bloc<TeamClassificationEvent, TeamClassificationState> {
+class TeamClassificationBloc extends Bloc<TeamClassificationEvent, TeamClassificationState> {
   final Repository repository;
 
-  TeamClassificationBloc({required this.repository})
-      : super(TeamClassificationUninitializedState());
+  TeamClassificationBloc({required this.repository}) : super(TeamClassificationUninitializedState());
 
   @override
-  Stream<TeamClassificationState> mapEventToState(
-      TeamClassificationEvent event) async* {
+  Stream<TeamClassificationState> mapEventToState(TeamClassificationEvent event) async* {
     if (event is LoadTeamClassificationEvent) {
       yield TeamClassificationLoadingState();
-      List<ClassificationSynthesis> classifications =
-          await repository.loadTeamClassificationSynthesis(event.team.code);
+      List<ClassificationSynthesis> classifications = await repository.loadTeamClassificationSynthesis(event.team.code);
       classifications = classifications.map((classification) {
         classification.teamsClassifications.sort((tc1, tc2) {
           return tc1.rank!.compareTo(tc2.rank!) * -1;

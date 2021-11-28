@@ -43,15 +43,9 @@ class _EventDetailsState extends State<EventDetails> {
           text: TextSpan(
             text: "",
             children: [
-              TextSpan(
-                  text: widget.event.hostName,
-                  style: Theme.of(context).appBarTheme.textTheme!.headline6),
-              TextSpan(
-                  text: "  reçoit  ",
-                  style: Theme.of(context).textTheme.bodyText1),
-              TextSpan(
-                  text: widget.event.visitorName,
-                  style: Theme.of(context).appBarTheme.textTheme!.headline6),
+              TextSpan(text: widget.event.hostName, style: Theme.of(context).appBarTheme.titleTextStyle),
+              TextSpan(text: "  reçoit  ", style: Theme.of(context).textTheme.bodyText1),
+              TextSpan(text: widget.event.visitorName, style: Theme.of(context).appBarTheme.titleTextStyle),
             ],
           ),
         ),
@@ -103,7 +97,7 @@ class _EventDetailsState extends State<EventDetails> {
     } else if (widget.event.imageUrl != null && widget.event.imageUrl != "") {
       return Image.network(widget.event.imageUrl!, fit: BoxFit.cover);
     } else {
-      return Container(color: Theme.of(context).appBarTheme.color);
+      return Container(color: Theme.of(context).appBarTheme.backgroundColor);
     }
   }
 

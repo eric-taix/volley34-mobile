@@ -4,6 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:v34/commons/competition_badge.dart';
 import 'package:v34/commons/paragraph.dart';
 import 'package:v34/commons/podium_widget.dart';
+import 'package:v34/commons/rounded_outlined_button.dart';
 import 'package:v34/models/classication.dart';
 import 'package:v34/models/match_result.dart';
 import 'package:v34/models/team.dart';
@@ -123,9 +124,7 @@ class _TeamRankingState extends State<TeamRanking> {
             padding: const EdgeInsets.only(right: 18.0, top: 12, bottom: 8),
             child: SizedBox(
               width: 180,
-              child: OutlineButton(
-                borderSide: BorderSide(color: Theme.of(context).textTheme.bodyText1!.color!),
-                highlightedBorderColor: Theme.of(context).textTheme.bodyText2!.color,
+              child: RoundedOutlinedButton(
                 onPressed: () => setState(() {
                   _openClassificationList = !_openClassificationList;
                 }),

@@ -111,7 +111,6 @@ class TeamBloc extends Bloc<TeamEvent, TeamState> {
   }
 
   ValuePerMaxMin _computePointsDiffWithFactor(String? teamCode, List<MatchResult> results, List<double> factors) {
-    assert(factors != null);
     assert(factors.length == 5);
 
     var pointPerMaxWithFactor = results.fold(ValuePerMaxMin(), (dynamic acc, result) {

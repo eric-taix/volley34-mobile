@@ -64,8 +64,6 @@ class ClubStatsBloc extends Bloc<ClubStatsEvent, ClubStatsState> {
           .where((matchResult) =>
               matchResult.matchDate!.compareTo(from) >= 0 && matchResult.matchDate!.compareTo(to) <= 0);
 
-      teamsResults;
-
       var stats = teamsResults.fold(Tuple2<int, int>(0, 0), (dynamic acc, matchResult) {
         acc = acc.withItem2(acc.item2 + 1);
         bool hostedByClubTeam = (teams.firstWhereOrNull((team) => team.code == matchResult.hostTeamCode) != null);

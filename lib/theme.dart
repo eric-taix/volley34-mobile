@@ -25,10 +25,23 @@ class AppTheme {
           900: Color(0xFF0D47A1),
         },
       ),
-      accentColor: Color(0xFF979DB2),
+      colorScheme: ColorScheme(
+        primary: Color(0xFF262C41),
+        primaryVariant: Color(0xFF313852),
+        secondary: Color(0xFFC9334F),
+        secondaryVariant: Color(0xFFC9334F),
+        surface: Color(0xFF262C41),
+        background: Color(0xFF262C41),
+        error: Color(0xFFC9334F),
+        onPrimary: Colors.white,
+        onSecondary: Colors.white,
+        onSurface: Colors.white,
+        onBackground: Colors.white,
+        onError: Colors.white,
+        brightness: Brightness.dark,
+      ),
       primaryColor: Color(0xFF262C41),
       bottomAppBarColor: Color(0xFFF7FBFE),
-      buttonColor: Color(0xFF373E5D),
       cardTheme: CardTheme(
         color: Color(0xFF313852),
         margin: EdgeInsets.only(top: 30, left: 20, right: 20, bottom: 0),
@@ -39,23 +52,16 @@ class AppTheme {
       ),
       appBarTheme: AppBarTheme(
         backgroundColor: Color(0xFF373E5D),
-        textTheme: TextTheme(
-          headline6: TextStyle(
-            color: Color(0xFFF7FBFE),
-            fontSize: 22.0,
-            fontFamily: "Raleway",
-            fontWeight: FontWeight.w600,
-          ),
-          subtitle2: TextStyle(
-            color: Color(0xFF979DB2),
-            fontSize: 12.0,
-            fontFamily: "Raleway",
-          ),
-          button: TextStyle(
-            color: Color(0xFFF7FBFE),
-            fontSize: 17.0,
-            fontFamily: "Raleway",
-          ),
+        titleTextStyle: TextStyle(
+          color: Color(0xFFF7FBFE),
+          fontSize: 22.0,
+          fontFamily: "Raleway",
+          fontWeight: FontWeight.w600,
+        ),
+        toolbarTextStyle: TextStyle(
+          color: Color(0xFF979DB2),
+          fontSize: 12.0,
+          fontFamily: "Raleway",
         ),
       ),
       textTheme: TextTheme(
@@ -138,7 +144,6 @@ class AppTheme {
         scaffoldBackgroundColor: Color(0xfff3f5ff),
         highlightColor: Colors.transparent,
         primarySwatch: Colors.blue,
-        accentColor: Color(0xff4c4f59),
         primaryColor: Color(0xfff3f5ff),
         bottomAppBarColor: Color(0xff44485d),
         cardTheme: CardTheme(
@@ -151,23 +156,16 @@ class AppTheme {
         ),
         appBarTheme: AppBarTheme(
           color: Color(0xffa1a5bf),
-          textTheme: TextTheme(
-            headline6: TextStyle(
-              color: Color(0xff080401),
-              fontSize: 22.0,
-              fontFamily: "Raleway",
-              fontWeight: FontWeight.w600,
-            ),
-            subtitle2: TextStyle(
-              color: Color(0xff4c4f59),
-              fontSize: 12.0,
-              fontFamily: "Raleway",
-            ),
-            button: TextStyle(
-              color: Color(0xff080401),
-              fontSize: 17.0,
-              fontFamily: "Raleway",
-            ),
+          titleTextStyle: TextStyle(
+            color: Color(0xff080401),
+            fontSize: 22.0,
+            fontFamily: "Raleway",
+            fontWeight: FontWeight.w600,
+          ),
+          toolbarTextStyle: TextStyle(
+            color: Color(0xff4c4f59),
+            fontSize: 12.0,
+            fontFamily: "Raleway",
           ),
         ),
         textTheme: TextTheme(

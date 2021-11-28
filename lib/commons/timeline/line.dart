@@ -15,7 +15,7 @@ class Line extends StatelessWidget {
       constraints: BoxConstraints.expand(width: 12),
       child: CustomPaint(
         painter: _LinePainter(
-          color: Theme.of(context).accentColor,
+          color: Theme.of(context).colorScheme.secondary,
           circleRadius: circleRadius,
           lineWidth: lineWidth,
           circleLineWidth: circleLineWidth,
@@ -74,7 +74,7 @@ class DashedLine extends StatelessWidget {
         child: CustomPaint(
           painter: _DashedLinePainter(
             lineWidth,
-            Theme.of(context).accentColor,
+            Theme.of(context).colorScheme.secondary,
           ),
         ));
   }

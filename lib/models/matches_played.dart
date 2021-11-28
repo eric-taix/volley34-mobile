@@ -10,4 +10,6 @@ class MatchesPlayed {
 
   operator +(MatchesPlayed matchesPlayed) =>
       MatchesPlayed(won: won + matchesPlayed.won, total: total + matchesPlayed.total);
+
+  int get lost => total - won;
 }
