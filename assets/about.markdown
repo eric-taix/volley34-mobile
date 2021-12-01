@@ -28,10 +28,13 @@ _Un grand merci aux personnes suivantes, qui ont joué les cobayes pour nous rem
 
 * Christophe Lapoujade
 * Davis Dos Santos
+* Karine Verbard
 * Julien Aquilina
 * Julien Bonnefond
 * Magali Jaoul Grammare
 * Marianne Le Goc
+* Matthieu Aubert
+
 
 
 
