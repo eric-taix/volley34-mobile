@@ -87,8 +87,8 @@ class PreferencesBloc extends Bloc<PreferencesEvent, PreferencesState> {
       yield PreferencesUpdatedState(
         useAutomaticTheme: preferences.getBool("automatic_theme") ?? true,
         useDarkTheme: preferences.getBool("dark_theme") ?? false,
-        favoriteClub: event.favoriteClub,
-        favoriteTeam: event.favoriteTeam,
+        favoriteClub: event.favoriteClub ?? await repository.loadFavoriteClub(),
+        favoriteTeam: event.favoriteTeam ?? await repository.loadFavoriteTeam(),
       );
     }
   }
