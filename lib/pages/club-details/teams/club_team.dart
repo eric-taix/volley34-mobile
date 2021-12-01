@@ -124,8 +124,11 @@ class _ClubTeamState extends State<ClubTeam> {
                                                       minValue: 0,
                                                       maxValue: 1,
                                                       backgroundColor: Theme.of(context).cardTheme.color,
-                                                      value: (competition.wonMatches?.toDouble() ?? 0.0) /
-                                                          (competition.totalMatches?.toDouble() ?? 1.0),
+                                                      value: competition.totalMatches != null &&
+                                                              competition.totalMatches != 0
+                                                          ? (competition.wonMatches?.toDouble() ?? 0.0) /
+                                                              (competition.totalMatches?.toDouble() ?? 1)
+                                                          : 0,
                                                       leftTitle: LeftTitle(
                                                           text: "Victoires",
                                                           style: Theme.of(context).textTheme.bodyText1),
