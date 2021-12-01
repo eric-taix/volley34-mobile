@@ -41,8 +41,6 @@ class _ClubPageState extends State<ClubPage> with SingleTickerProviderStateMixin
       setState(() {
         _loading = false;
         clubs.sort((c1, c2) {
-          if (c1.favorite && !c2.favorite) return -1;
-          if (!c1.favorite && c2.favorite) return 1;
           return c1.shortName!.toUpperCase().compareTo(c2.shortName!.toUpperCase());
         });
         _clubs = clubs;

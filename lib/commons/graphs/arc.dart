@@ -161,11 +161,11 @@ class _ArcPainter extends CustomPainter {
       ..style = PaintingStyle.fill
       ..strokeWidth = lineWidth;
 
-    Paint arcBackgroundPaint = Paint()
+    /*Paint arcBackgroundPaint = Paint()
       ..color = Colors.grey
       ..strokeCap = StrokeCap.round
       ..style = PaintingStyle.stroke
-      ..strokeWidth = lineWidth;
+      ..strokeWidth = lineWidth;*/
 
     var radius = min / 2;
     var maxAngle = endAngle - startAngle;
