@@ -32,7 +32,7 @@ class AppTheme {
         primary: Color(0xFF262C41),
         primaryVariant: Color(0xFF313852),
         secondary: _mainColor,
-        secondaryVariant: _mainColor,
+        secondaryVariant: _mainColor.withOpacity(0.7),
         surface: Color(0xFF262C41),
         background: Color(0xFF262C41),
         error: _mainColor,
