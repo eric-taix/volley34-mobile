@@ -31,6 +31,7 @@ class _ClubCardState extends State<ClubCard> {
           child: Text(
             widget.club.name!,
             textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.bodyText1,
           ),
         ),
         onTap: () =>
