@@ -4,9 +4,12 @@ import 'commons/text_tab_bar.dart';
 
 const double CARD_BORDER_RADIUS = 18.0;
 
+const Color _mainColor = Color(0xFFC9334F);
+
 class AppTheme {
   static ThemeData darkTheme(Color? dominantColor) {
     return ThemeData(
+      splashColor: (dominantColor ?? _mainColor).withOpacity(0.2),
       canvasColor: Color(0xFF262C41),
       scaffoldBackgroundColor: Color(0xFF262C41),
       highlightColor: Colors.transparent,
@@ -18,17 +21,30 @@ class AppTheme {
           200: Color(0xFF90CAF9),
           300: Color(0xFF64B5F6),
           400: Color(0xFF42A5F5),
-          500: dominantColor ?? Color(0xFFC9334F),
+          500: dominantColor ?? _mainColor,
           600: Color(0xFF1E88E5),
           700: Color(0xFF1976D2),
           800: Color(0xFF1565C0),
           900: Color(0xFF0D47A1),
         },
       ),
-      accentColor: Color(0xFF979DB2),
+      colorScheme: ColorScheme(
+        primary: Color(0xFF262C41),
+        primaryVariant: Color(0xFF313852),
+        secondary: _mainColor,
+        secondaryVariant: _mainColor,
+        surface: Color(0xFF262C41),
+        background: Color(0xFF262C41),
+        error: _mainColor,
+        onPrimary: Colors.white,
+        onSecondary: Colors.white,
+        onSurface: Colors.white,
+        onBackground: Colors.white,
+        onError: Colors.white,
+        brightness: Brightness.dark,
+      ),
       primaryColor: Color(0xFF262C41),
       bottomAppBarColor: Color(0xFFF7FBFE),
-      buttonColor: Color(0xFF373E5D),
       cardTheme: CardTheme(
         color: Color(0xFF313852),
         margin: EdgeInsets.only(top: 30, left: 20, right: 20, bottom: 0),
@@ -39,23 +55,16 @@ class AppTheme {
       ),
       appBarTheme: AppBarTheme(
         backgroundColor: Color(0xFF373E5D),
-        textTheme: TextTheme(
-          headline6: TextStyle(
-            color: Color(0xFFF7FBFE),
-            fontSize: 22.0,
-            fontFamily: "Raleway",
-            fontWeight: FontWeight.w600,
-          ),
-          subtitle2: TextStyle(
-            color: Color(0xFF979DB2),
-            fontSize: 12.0,
-            fontFamily: "Raleway",
-          ),
-          button: TextStyle(
-            color: Color(0xFFF7FBFE),
-            fontSize: 17.0,
-            fontFamily: "Raleway",
-          ),
+        titleTextStyle: TextStyle(
+          color: Color(0xFFF7FBFE),
+          fontSize: 22.0,
+          fontFamily: "Raleway",
+          fontWeight: FontWeight.w600,
+        ),
+        toolbarTextStyle: TextStyle(
+          color: Color(0xFF979DB2),
+          fontSize: 12.0,
+          fontFamily: "Raleway",
         ),
       ),
       textTheme: TextTheme(
@@ -89,7 +98,7 @@ class AppTheme {
         indicator: DashedUnderlineIndicator(
           width: 30.0,
           dashSpace: 0,
-          borderSide: BorderSide(width: 6.0, color: Color(0xFF7E88A2)),
+          borderSide: BorderSide(width: 6.0, color: _mainColor),
           insets: EdgeInsets.only(
             left: 30.0,
             right: 30,
@@ -116,14 +125,27 @@ class AppTheme {
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ButtonStyle(
-          shape: ButtonStateProperty(),
+          overlayColor: OverlayStateColor(Colors.white.withOpacity(0.2)),
+          shape: ButtonStateProperty(color: Colors.transparent),
           foregroundColor: ButtonForegroundStateColor(),
           backgroundColor: ButtonBackgroundStateColor(color: dominantColor),
           padding: ButtonPaddingProperty(),
         ),
       ),
+      floatingActionButtonTheme: FloatingActionButtonThemeData(
+        splashColor: Colors.white.withOpacity(0.2),
+      ),
+      textButtonTheme: TextButtonThemeData(
+        style: ButtonStyle(
+          overlayColor: OverlayStateColor(_mainColor.withOpacity(0.2)),
+          shape: ButtonStateProperty(color: Colors.transparent),
+          foregroundColor: ButtonForegroundStateColor(color: _mainColor),
+          padding: ButtonPaddingProperty(),
+        ),
+      ),
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: ButtonStyle(
+          overlayColor: OverlayStateColor(_mainColor.withOpacity(0.2)),
           shape: ButtonStateProperty(),
           padding: ButtonPaddingProperty(),
         ),
@@ -138,7 +160,6 @@ class AppTheme {
         scaffoldBackgroundColor: Color(0xfff3f5ff),
         highlightColor: Colors.transparent,
         primarySwatch: Colors.blue,
-        accentColor: Color(0xff4c4f59),
         primaryColor: Color(0xfff3f5ff),
         bottomAppBarColor: Color(0xff44485d),
         cardTheme: CardTheme(
@@ -151,23 +172,16 @@ class AppTheme {
         ),
         appBarTheme: AppBarTheme(
           color: Color(0xffa1a5bf),
-          textTheme: TextTheme(
-            headline6: TextStyle(
-              color: Color(0xff080401),
-              fontSize: 22.0,
-              fontFamily: "Raleway",
-              fontWeight: FontWeight.w600,
-            ),
-            subtitle2: TextStyle(
-              color: Color(0xff4c4f59),
-              fontSize: 12.0,
-              fontFamily: "Raleway",
-            ),
-            button: TextStyle(
-              color: Color(0xff080401),
-              fontSize: 17.0,
-              fontFamily: "Raleway",
-            ),
+          titleTextStyle: TextStyle(
+            color: Color(0xff080401),
+            fontSize: 22.0,
+            fontFamily: "Raleway",
+            fontWeight: FontWeight.w600,
+          ),
+          toolbarTextStyle: TextStyle(
+            color: Color(0xff4c4f59),
+            fontSize: 12.0,
+            fontFamily: "Raleway",
           ),
         ),
         textTheme: TextTheme(
@@ -201,7 +215,7 @@ class AppTheme {
           indicator: DashedUnderlineIndicator(
             width: 30.0,
             dashSpace: 0,
-            borderSide: BorderSide(width: 6.0, color: Color(0xff3c404d)),
+            borderSide: BorderSide(width: 6.0, color: _mainColor),
             insets: EdgeInsets.only(
               left: 30.0,
               right: 30,
@@ -234,14 +248,28 @@ class AppTheme {
   }
 }
 
-class ButtonForegroundStateColor extends MaterialStateColor {
-  static const int _defaultColor = 0xFFFFFFFF;
+class OverlayStateColor extends MaterialStateColor {
+  static const int _defaultColor = 0x50FFFFFF;
 
-  const ButtonForegroundStateColor() : super(_defaultColor);
+  final Color? color;
+
+  OverlayStateColor(this.color) : super(_defaultColor);
 
   @override
   Color resolve(Set<MaterialState> states) =>
-      states.contains(MaterialState.disabled) ? Colors.white30 : Color(_defaultColor);
+      states.contains(MaterialState.disabled) ? Colors.transparent : color ?? Color(_defaultColor);
+}
+
+class ButtonForegroundStateColor extends MaterialStateColor {
+  static const int _defaultColor = 0xFFFFFFFF;
+
+  final Color? color;
+
+  const ButtonForegroundStateColor({this.color}) : super(_defaultColor);
+
+  @override
+  Color resolve(Set<MaterialState> states) =>
+      states.contains(MaterialState.disabled) ? Colors.white30 : color ?? Color(_defaultColor);
 }
 
 class ButtonBackgroundStateColor extends MaterialStateColor {
@@ -256,22 +284,21 @@ class ButtonBackgroundStateColor extends MaterialStateColor {
 }
 
 class ButtonStateProperty extends MaterialStateProperty<OutlinedBorder> {
-  static final _defaultBorder = RoundedRectangleBorder(
-    side: BorderSide(color: Color(0xFFC9334F), width: 2),
-    borderRadius: BorderRadius.circular(80.0),
-  );
-
   final Color? color;
+  final Color? disableColor;
 
-  ButtonStateProperty({this.color});
+  ButtonStateProperty({this.color, this.disableColor});
 
   @override
   OutlinedBorder resolve(Set<MaterialState> states) => states.contains(MaterialState.disabled)
       ? RoundedRectangleBorder(
-          side: BorderSide(color: Color(0xff3c404d), width: 2),
+          side: BorderSide(color: disableColor ?? Color(0xff3c404d), width: 2),
           borderRadius: BorderRadius.circular(80.0),
         )
-      : _defaultBorder;
+      : RoundedRectangleBorder(
+          side: BorderSide(color: color ?? Color(0xff3c404d), width: 2),
+          borderRadius: BorderRadius.circular(80.0),
+        );
 }
 
 class ButtonPaddingProperty extends MaterialStateProperty<EdgeInsetsGeometry> {

@@ -17,8 +17,10 @@ import 'package:v34/pages/gymnasium/gymnasium_page.dart';
 import 'package:v34/repositories/providers/agenda_provider.dart';
 import 'package:v34/repositories/providers/club_provider.dart';
 import 'package:v34/repositories/providers/favorite_provider.dart';
+import 'package:v34/repositories/providers/global_provider.dart';
 import 'package:v34/repositories/providers/gymnasium_provider.dart';
 import 'package:v34/repositories/providers/map_provider.dart';
+import 'package:v34/repositories/providers/result_provider.dart';
 import 'package:v34/repositories/providers/team_provider.dart';
 import 'package:v34/repositories/repository.dart';
 import 'package:v34/theme.dart';
@@ -55,6 +57,8 @@ class _V34State extends State<V34> {
       AgendaProvider(),
       GymnasiumProvider(),
       MapProvider(),
+      ResultProvider(),
+      GlobalProvider(),
     );
     _preferencesBloc = PreferencesBloc(_repository);
     _preferencesBloc.add(PreferencesLoadEvent());
@@ -196,7 +200,7 @@ class __MainPageState extends State<_MainPage> {
             target: SvgPicture.asset(
               icon.svgPath!,
               height: 30,
-              color: Theme.of(context).appBarTheme.color,
+              color: Theme.of(context).appBarTheme.backgroundColor,
             ),
           );
         },

@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:v34/commons/app_bar/app_bar_with_image.dart';
+import 'package:v34/commons/favorite/favorite.dart';
 import 'package:v34/commons/text_tab_bar.dart';
 import 'package:v34/models/club.dart';
-import 'package:v34/commons/favorite/favorite.dart';
 import 'package:v34/pages/club-details/teams/club_teams.dart';
 
 import 'informations/club_informations.dart';
@@ -37,7 +37,6 @@ class _ClubDetailPageState extends State<ClubDetailPage> {
         TextTab("Informations", ClubInformations(widget.club)),
       ],
       favorite: Favorite(
-        widget.club!.favorite,
         widget.club!.code,
         FavoriteType.Club,
       ),

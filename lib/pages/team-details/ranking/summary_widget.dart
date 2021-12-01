@@ -1,17 +1,17 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:v34/models/classication.dart';
+import 'package:v34/models/ranking.dart';
 import 'package:v34/utils/extensions.dart';
 
 class SummaryWidget extends StatelessWidget {
   final String title;
-  final ClassificationTeamSynthesis teamStats;
+  final RankingTeamSynthesis teamStats;
 
   static final double miniGraphHeight = 100;
 
   const SummaryWidget({Key? key, required this.title, required this.teamStats}) : super(key: key);
 
-  List<BarChartGroupData?> showingGroups(BuildContext context, ClassificationTeamSynthesis teamStats) {
+  List<BarChartGroupData?> showingGroups(BuildContext context, RankingTeamSynthesis teamStats) {
     return List.generate(7, (i) {
       switch (i) {
         case 0:
@@ -27,7 +27,8 @@ class SummaryWidget extends StatelessWidget {
         case 5:
           return makeGroupData(context, 5, teamStats.nbSets03!.toDouble(), Colors.redAccent, teamStats);
         case 6:
-          return makeGroupData(context, 6, teamStats.nbSetsMI!.toDouble(), Theme.of(context).accentColor, teamStats);
+          return makeGroupData(
+              context, 6, teamStats.nbSetsMI!.toDouble(), Theme.of(context).colorScheme.secondary, teamStats);
         default:
           return null;
       }
@@ -35,7 +36,7 @@ class SummaryWidget extends StatelessWidget {
   }
 
   BarChartGroupData makeGroupData(
-      BuildContext context, int x, double y, Color barColor, ClassificationTeamSynthesis teamStats) {
+      BuildContext context, int x, double y, Color barColor, RankingTeamSynthesis teamStats) {
     return BarChartGroupData(
       x: x,
       showingTooltipIndicators: [0],

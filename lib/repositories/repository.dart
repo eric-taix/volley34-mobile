@@ -1,19 +1,21 @@
 import 'package:collection/collection.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:v34/commons/favorite/favorite.dart';
-import 'package:v34/models/classication.dart';
 import 'package:v34/models/club.dart';
 import 'package:v34/models/event.dart';
 import 'package:v34/models/gymnasium.dart';
 import 'package:v34/models/match_result.dart';
+import 'package:v34/models/ranking.dart';
 import 'package:v34/models/slot.dart';
 import 'package:v34/models/team.dart';
 import 'package:v34/models/team_stats.dart';
 import 'package:v34/repositories/providers/agenda_provider.dart';
 import 'package:v34/repositories/providers/club_provider.dart';
 import 'package:v34/repositories/providers/favorite_provider.dart';
+import 'package:v34/repositories/providers/global_provider.dart';
 import 'package:v34/repositories/providers/gymnasium_provider.dart';
 import 'package:v34/repositories/providers/map_provider.dart';
+import 'package:v34/repositories/providers/result_provider.dart';
 import 'package:v34/repositories/providers/team_provider.dart';
 
 class Repository {
@@ -23,9 +25,21 @@ class Repository {
   final AgendaProvider _agendaProvider;
   final GymnasiumProvider _gymnasiumProvider;
   final MapProvider _mapProvider;
+  final ResultProvider _resultProvider;
+  final GlobalProvider _globalProvider;
 
   Repository(this._clubProvider, this._teamProvider, this._favoriteProvider, this._agendaProvider,
-      this._gymnasiumProvider, this._mapProvider);
+      this._gymnasiumProvider, this._mapProvider, this._resultProvider, this._globalProvider);
+
+  /// Loads match results
+  Future<List<MatchResult>> loadResults(String competition, String? divisionCode, String? pool) async {
+    var divisions = await _globalProvider.loadDivisions();
+    var divisionFilter = divisions.firstWhereOrNull((division) => division.code == divisionCode);
+    return (await _resultProvider.loadResults(competition, divisionFilter?.id, pool))
+        .where((matchResult) => VALID_MATCH_RESULT_TYPES.contains(matchResult.resultType))
+        .sorted((m1, m2) => m1.matchDate!.compareTo(m2.matchDate!))
+        .toList();
+  }
 
   /// Load all clubs
   Future<List<Club>> loadAllClubs() async {
@@ -91,7 +105,9 @@ class Repository {
 
   /// Load the last N matches result of a team
   Future<List<MatchResult>> loadTeamLastMatchesResult(String? teamCode, int? nbLastMatches) async {
-    List<MatchResult> matches = await _teamProvider.lastTeamMatchesResult(teamCode);
+    List<MatchResult> matches = (await _teamProvider.lastTeamMatchesResult(teamCode))
+        .where((matchResult) => VALID_MATCH_RESULT_TYPES.contains(matchResult.resultType))
+        .toList();
     return nbLastMatches != null
         ? matches.sublist(matches.length > nbLastMatches ? matches.length - nbLastMatches : 0).toList()
         : matches;
@@ -108,7 +124,7 @@ class Repository {
   }
 
   /// Load classification synthesis
-  Future<List<ClassificationSynthesis>> loadTeamClassificationSynthesis(String? teamCode) async {
+  Future<List<RankingSynthesis>> loadTeamRankingSynthesis(String? teamCode) async {
     return await _teamProvider.loadClassificationSynthesis(teamCode);
   }
 

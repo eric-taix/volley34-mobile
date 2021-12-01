@@ -4,9 +4,9 @@ import 'package:v34/commons/app_bar/app_bar_with_image.dart';
 import 'package:v34/commons/favorite/favorite.dart';
 import 'package:v34/commons/loading.dart';
 import 'package:v34/commons/text_tab_bar.dart';
-import 'package:v34/models/classication.dart';
 import 'package:v34/models/club.dart';
 import 'package:v34/models/match_result.dart';
+import 'package:v34/models/ranking.dart';
 import 'package:v34/models/team.dart';
 import 'package:v34/pages/club-details/blocs/club_team.bloc.dart';
 import 'package:v34/pages/dashboard/blocs/team_classification_bloc.dart';
@@ -17,7 +17,7 @@ import 'package:v34/repositories/repository.dart';
 
 class TeamDetailPage extends StatefulWidget {
   final Team team;
-  final List<ClassificationSynthesis>? classifications;
+  final List<RankingSynthesis>? classifications;
 
   final Club? club;
 
@@ -30,7 +30,7 @@ class TeamDetailPage extends StatefulWidget {
 
 class TeamDetailPageState extends State<TeamDetailPage> {
   TeamBloc? _teamBloc;
-  TeamClassificationBloc? _classificationBloc;
+  TeamRankingBloc? _classificationBloc;
 
   @override
   void initState() {
@@ -39,21 +39,21 @@ class TeamDetailPageState extends State<TeamDetailPage> {
     _teamBloc = TeamBloc(repository: repository);
     _teamBloc!.add(TeamLoadResults(code: widget.team.code, last: 50));
     if (widget.classifications == null) {
-      _classificationBloc = TeamClassificationBloc(repository: repository);
-      _classificationBloc!.add(LoadTeamClassificationEvent(widget.team));
+      _classificationBloc = TeamRankingBloc(repository: repository);
+      _classificationBloc!.add(LoadTeamRankingEvent(widget.team));
     }
   }
 
-  List<TextTab> _getTabs(List<ClassificationSynthesis> classifications) {
+  List<TextTab> _getTabs(List<RankingSynthesis> classifications) {
     List<TextTab> tabs = classifications.map((classification) {
-      return TextTab(classification.label, _buildTab(_buildTeamRanking, classification));
+      return TextTab(classification.label ?? "", _buildTab(_buildTeamRanking, classification));
     }).toList();
     tabs.add(TextTab("Résultats", _buildTab(_buildTeamResults, null)));
     tabs.add(TextTab("Agenda", _buildTab(_buildTeamAgenda, null)));
     return tabs;
   }
 
-  Widget _buildTab(Function element, ClassificationSynthesis? classification) {
+  Widget _buildTab(Function element, RankingSynthesis? classification) {
     return BlocBuilder<TeamBloc, TeamState>(
         bloc: _teamBloc,
         builder: (context, state) {
@@ -64,18 +64,18 @@ class TeamDetailPageState extends State<TeamDetailPage> {
         });
   }
 
-  Widget _buildTeamRanking(ClassificationSynthesis classification, List<MatchResult> results) {
+  Widget _buildTeamRanking(RankingSynthesis classification, List<MatchResult> results) {
     return TeamRanking(
         team: widget.team,
         classification: classification,
         results: results.where((result) => result.competitionCode == classification.competitionCode).toList());
   }
 
-  Widget _buildTeamResults(ClassificationSynthesis classification, List<MatchResult> results) {
+  Widget _buildTeamResults(RankingSynthesis classification, List<MatchResult> results) {
     return TeamResults(team: widget.team, results: results);
   }
 
-  Widget _buildTeamAgenda(ClassificationSynthesis classification, List<MatchResult> results) {
+  Widget _buildTeamAgenda(RankingSynthesis classification, List<MatchResult> results) {
     return TeamAgenda(team: widget.team);
   }
 
@@ -88,7 +88,6 @@ class TeamDetailPageState extends State<TeamDetailPage> {
       logoUrl: widget.team.clubLogoUrl,
       tabs: tabs,
       favorite: Favorite(
-        widget.team.favorite,
         widget.team.code,
         FavoriteType.Team,
       ),
@@ -98,11 +97,11 @@ class TeamDetailPageState extends State<TeamDetailPage> {
   @override
   Widget build(BuildContext context) {
     if (widget.classifications == null) {
-      return BlocBuilder<TeamClassificationBloc, TeamClassificationState>(
+      return BlocBuilder<TeamRankingBloc, TeamRankingState>(
           bloc: _classificationBloc,
           builder: (context, state) {
-            if (state is TeamClassificationLoadedState) {
-              return _buildTeamDetailPage("teamDetailPageLoaded", _getTabs(state.classifications));
+            if (state is TeamRankingLoadedState) {
+              return _buildTeamDetailPage("teamDetailPageLoaded", _getTabs(state.rankins));
             } else {
               return Center(
                 child: Loading(),

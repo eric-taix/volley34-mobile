@@ -21,7 +21,7 @@ dependencies:
   equatable: ^2.0.3
   cached_network_image: ^3.1.0+1
   tuple: ^2.0.0
-  dio_http_cache: ^0.3.0
+  dio_cache_interceptor: ^3.0.3
   collection: ^1.15.0
   like_button: ^2.0.3
   smooth_page_indicator: ^1.0.0+2
@@ -43,6 +43,7 @@ dependencies:
   flutter_widget_from_html: ^0.6.2
   tinycolor2: ^2.0.0
   scrollable_positioned_list: ^0.2.3
+  page_view_indicators: ^2.0.0
 dev_dependencies:
   dependency_validator: ^3.0.0
   flutter_test:

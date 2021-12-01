@@ -20,19 +20,16 @@ class EventInfo extends StatelessWidget {
       ListTile(
           leading: Icon(
             Icons.date_range,
-            color: Theme.of(context).accentColor,
+            color: Theme.of(context).colorScheme.secondary,
             size: _iconSize,
           ),
-          title: EventDate(
-              date: event.date, endDate: event.endDate, fullFormat: true)),
+          title: EventDate(date: event.date, endDate: event.endDate, fullFormat: true)),
       ListTile(
-          leading: Icon(Icons.access_time,
-              color: Theme.of(context).accentColor, size: _iconSize),
-          title:
-              EventDate(date: event.date, endDate: event.endDate, hour: true)),
+          leading: Icon(Icons.access_time, color: Theme.of(context).colorScheme.secondary, size: _iconSize),
+          title: EventDate(date: event.date, endDate: event.endDate, hour: true)),
       ListTile(
           title: Center(
-        child: RaisedButton.icon(
+        child: ElevatedButton.icon(
           onPressed: () => _addEventToCalendar(),
           icon: Icon(
             Icons.calendar_today,
@@ -48,15 +45,13 @@ class EventInfo extends StatelessWidget {
       ListTile(
         leading: Icon(
           Icons.location_on,
-          color: Theme.of(context).accentColor,
+          color: Theme.of(context).colorScheme.secondary,
           size: _iconSize,
         ),
         title: Text(event.place!,
             textAlign: TextAlign.left,
-            style: Theme.of(context)
-                .textTheme
-                .bodyText1!
-                .copyWith(color: Theme.of(context).textTheme.bodyText2!.color)),
+            style:
+                Theme.of(context).textTheme.bodyText1!.copyWith(color: Theme.of(context).textTheme.bodyText2!.color)),
       )
     ];
   }
@@ -64,9 +59,7 @@ class EventInfo extends StatelessWidget {
   Widget _buildOrganizerClub(BuildContext context) {
     return ListTile(
       leading: SvgPicture.asset('assets/shield.svg',
-          width: _iconSize,
-          height: _iconSize,
-          color: Theme.of(context).accentColor),
+          width: _iconSize, height: _iconSize, color: Theme.of(context).colorScheme.secondary),
       title: OrganizerClub(clubCode: event.clubCode),
     );
   }
@@ -75,14 +68,12 @@ class EventInfo extends StatelessWidget {
     return ListTile(
         leading: Icon(
           Icons.description,
-          color: Theme.of(context).accentColor,
+          color: Theme.of(context).colorScheme.secondary,
           size: _iconSize,
         ),
         title: HtmlWidget(event.description!,
-            textStyle: Theme.of(context)
-                .textTheme
-                .bodyText1!
-                .copyWith(color: Theme.of(context).textTheme.bodyText2!.color)));
+            textStyle:
+                Theme.of(context).textTheme.bodyText1!.copyWith(color: Theme.of(context).textTheme.bodyText2!.color)));
   }
 
   Widget _buildContact(BuildContext context) {
@@ -99,16 +90,14 @@ class EventInfo extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             if (event.contactPhone != null)
-              RaisedButton.icon(
-                icon: Icon(Icons.phone,
-                    color: Theme.of(context).accentColor.withOpacity(0.5)),
+              ElevatedButton.icon(
+                icon: Icon(Icons.phone, color: Theme.of(context).colorScheme.secondary.withOpacity(0.5)),
                 onPressed: () => launchURL("tel:${event.contactPhone}"),
                 label: Text("Appeler"),
               ),
             if (event.contactEmail != null)
-              RaisedButton.icon(
-                icon: Icon(Icons.mail,
-                    color: Theme.of(context).accentColor.withOpacity(0.5)),
+              ElevatedButton.icon(
+                icon: Icon(Icons.mail, color: Theme.of(context).colorScheme.secondary.withOpacity(0.5)),
                 onPressed: () => launchURL(params.toString()),
                 label: Text("Envoyer un mail"),
               )
@@ -119,15 +108,12 @@ class EventInfo extends StatelessWidget {
     return ListTile(
       leading: Icon(
         Icons.person,
-        color: Theme.of(context).accentColor,
+        color: Theme.of(context).colorScheme.secondary,
         size: _iconSize,
       ),
       title: Text(event.contactName!,
           textAlign: TextAlign.left,
-          style: Theme.of(context)
-              .textTheme
-              .bodyText1!
-              .copyWith(color: Theme.of(context).textTheme.bodyText2!.color)),
+          style: Theme.of(context).textTheme.bodyText1!.copyWith(color: Theme.of(context).textTheme.bodyText2!.color)),
       subtitle: subtitle,
     );
   }
@@ -147,28 +133,26 @@ class EventInfo extends StatelessWidget {
       child: ListView(
         children: [
           ..._buildDateAndHour(context),
-          Divider(color: Theme.of(context).accentColor.withOpacity(0.2)),
+          Divider(color: Theme.of(context).colorScheme.secondary.withOpacity(0.2)),
           ..._buildPlace(context),
           EventPlace(event: event),
           if (event.clubCode != null) ...[
-            Divider(color: Theme.of(context).accentColor.withOpacity(0.2)),
+            Divider(color: Theme.of(context).colorScheme.secondary.withOpacity(0.2)),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 4.0),
               child: _buildOrganizerClub(context),
             ),
           ],
           if (event.description != null) ...[
-            Divider(color: Theme.of(context).accentColor.withOpacity(0.2)),
+            Divider(color: Theme.of(context).colorScheme.secondary.withOpacity(0.2)),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 4.0),
               child: _buildDescription(context),
             ),
           ],
           if (event.contactName != null) ...[
-            Divider(color: Theme.of(context).accentColor.withOpacity(0.2)),
-            Padding(
-                padding: const EdgeInsets.symmetric(vertical: 4.0),
-                child: _buildContact(context)),
+            Divider(color: Theme.of(context).colorScheme.secondary.withOpacity(0.2)),
+            Padding(padding: const EdgeInsets.symmetric(vertical: 4.0), child: _buildContact(context)),
           ],
         ],
       ),

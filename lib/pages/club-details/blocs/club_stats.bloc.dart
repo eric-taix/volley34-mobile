@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:v34/models/matches_played.dart';
 import 'package:v34/models/team_stats.dart';
 import 'package:v34/repositories/repository.dart';
 
@@ -27,8 +28,17 @@ class ClubStatsUninitializedState extends ClubStatsState {}
 class ClubStatsLoadingState extends ClubStatsState {}
 
 class ClubStatsLoadedState extends ClubStatsState {
-  final SetsDistribution? setsDistribution;
-  ClubStatsLoadedState({this.setsDistribution});
+  final SetsDistribution setsDistribution;
+  final MatchesPlayed matchesPlayed;
+  final MatchesPlayed homeMatches;
+  final MatchesPlayed outsideMatches;
+
+  ClubStatsLoadedState({
+    required this.setsDistribution,
+    required this.matchesPlayed,
+    required this.homeMatches,
+    required this.outsideMatches,
+  });
 }
 
 //----- EVENT
@@ -62,10 +72,24 @@ class ClubStatsBloc extends Bloc<ClubStatsEvent, ClubStatsState> {
     if (event is ClubStatsLoadEvent) {
       yield ClubStatsLoadingState();
       var stats = await repository!.loadClubStats(event.clubCode);
-      var setsDistribution = stats.fold(SetsDistribution(), (dynamic acc, stat) {
-        return acc + stat.setsDistribution;
+      var setsDistribution = stats.fold<SetsDistribution>(SetsDistribution(), (acc, stat) {
+        return acc + (stat.setsDistribution ?? SetsDistribution());
       });
-      yield ClubStatsLoadedState(setsDistribution: setsDistribution);
+      var matchesPlayed = stats.fold<MatchesPlayed>(MatchesPlayed.empty(), (acc, stat) {
+        return acc + MatchesPlayed(won: stat.victories ?? 0, total: stat.matchsPlayed ?? 0);
+      });
+      var homeMatches = stats.fold<MatchesPlayed>(MatchesPlayed.empty(), (acc, stat) {
+        return acc + MatchesPlayed(won: stat.victoriesHome ?? 0, total: stat.matchsPlayedHome ?? 0);
+      });
+      var outsideMatches = stats.fold<MatchesPlayed>(MatchesPlayed.empty(), (acc, stat) {
+        return acc + MatchesPlayed(won: stat.victoriesOutside ?? 0, total: stat.matchsPlayedOutside ?? 0);
+      });
+      yield ClubStatsLoadedState(
+        setsDistribution: setsDistribution,
+        matchesPlayed: matchesPlayed,
+        homeMatches: homeMatches,
+        outsideMatches: outsideMatches,
+      );
     }
   }
 }

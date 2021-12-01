@@ -1,16 +1,18 @@
-# test
+# Volley34
 
-A new Flutter project.
+Application mobile pour le Volley34
 
-## Getting Started
+## Version béta
 
-This project is a starting point for a Flutter application.
+Pour tester la version béta, cliquez sur l'icone çi-après quand celui est vert (le build a réussi). En bas à gauche vous trouverez les différents artifacts pour Android et iOS
 
-A few resources to get you started if this is your first Flutter project:
+[![Codemagic build status](https://api.codemagic.io/apps/5e9a2bf718efc220e89ca590/5e9a2bf718efc220e89ca58f/status_badge.svg)](https://codemagic.io/apps/5e9a2bf718efc220e89ca590/5e9a2bf718efc220e89ca58f/latest_build)
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Contributions
+
+Nous sommes à l'écoute de toutes vos idées, donc n'hésitez pas à créer un issue pour exprimer vos idées.
+Privilégiez des idées courtes qui se résument en quelques phrases.
+
+
+

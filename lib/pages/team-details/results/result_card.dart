@@ -18,16 +18,12 @@ class ResultCard extends StatelessWidget {
     Icons.looks_5
   ];
 
-  const ResultCard({Key? key, required this.team, required this.result})
-      : super(key: key);
+  const ResultCard({Key? key, required this.team, required this.result}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    int countSet = result.sets!.fold(
-        0,
-        (count, set) => set.visitorpoint != null && set.hostPoint != null
-            ? count + 1
-            : count);
+    int countSet =
+        result.sets!.fold(0, (count, set) => set.visitorpoint != null && set.hostPoint != null ? count + 1 : count);
     return Padding(
       padding: const EdgeInsets.only(top: 8.0, bottom: 18.0),
       child: FluidExpansionCard(
@@ -46,23 +42,17 @@ class ResultCard extends StatelessWidget {
   }
 
   Widget _buildResultDetails(BuildContext context) {
-    List<MatchSet> sets = result.sets!
-        .where((set) => set.hostPoint != null && set.visitorpoint != null)
-        .toList();
+    List<MatchSet> sets = result.sets!.where((set) => set.hostPoint != null && set.visitorpoint != null).toList();
     MatchSet totalMatchSet = sets.fold(
       MatchSet(0, 0),
-      (total, matchSet) => MatchSet(matchSet.hostPoint! + total.hostPoint!,
-          matchSet.visitorpoint! + total.visitorpoint!),
+      (total, matchSet) =>
+          MatchSet(matchSet.hostPoint! + total.hostPoint!, matchSet.visitorpoint! + total.visitorpoint!),
     );
     MinMax minMax = sets.fold(
         MinMax(0, 0),
         (minMax, set) => MinMax(
-              set.hostPoint! - set.visitorpoint! < minMax.min
-                  ? set.hostPoint! - set.visitorpoint!
-                  : minMax.min,
-              set.hostPoint! - set.visitorpoint! > minMax.max
-                  ? set.hostPoint! - set.visitorpoint!
-                  : minMax.max,
+              set.hostPoint! - set.visitorpoint! < minMax.min ? set.hostPoint! - set.visitorpoint! : minMax.min,
+              set.hostPoint! - set.visitorpoint! > minMax.max ? set.hostPoint! - set.visitorpoint! : minMax.max,
             ));
     return Column(children: [
       ...sets
@@ -84,8 +74,7 @@ class ResultCard extends StatelessWidget {
                             "Set n°",
                             style: Theme.of(context).textTheme.bodyText1,
                           ),
-                          Icon(_setIcons[index],
-                              color: Theme.of(context).accentColor),
+                          Icon(_setIcons[index], color: Theme.of(context).colorScheme.secondary),
                         ],
                       ),
                     ),
@@ -149,8 +138,7 @@ class ResultCard extends StatelessWidget {
     Color scoreColor;
     String resultString;
 
-    if ((diffSets > 0) ||
-        (diffSets == 0 && result.totalPointsHost! > result.totalPointsVisitor!)) {
+    if ((diffSets > 0) || (diffSets == 0 && result.totalPointsHost! > result.totalPointsVisitor!)) {
       scoreColor = team.code == result.hostTeamCode ? Colors.green : Colors.red;
       resultString = "gagne contre";
     } else {
@@ -163,13 +151,10 @@ class ResultCard extends StatelessWidget {
       child: Row(children: [
         Container(
           decoration: BoxDecoration(
-              border: Border(
-                  right: BorderSide(
-                      color: Theme.of(context).accentColor, width: 0))),
+              border: Border(right: BorderSide(color: Theme.of(context).colorScheme.secondary, width: 0))),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 18.0),
-            child:
-                Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+            child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
               Expanded(
                 child: Center(
                   child: RichText(
@@ -187,8 +172,7 @@ class ResultCard extends StatelessWidget {
                               text: " - ",
                               style: TextStyle(
                                 fontSize: 28.0,
-                                color:
-                                    Theme.of(context).textTheme.bodyText1!.color,
+                                color: Theme.of(context).textTheme.bodyText1!.color,
                               )),
                           TextSpan(
                               text: "${result.totalSetsVisitor}",
@@ -196,17 +180,13 @@ class ResultCard extends StatelessWidget {
                                 fontSize: 28.0,
                                 color: (team.code == result.visitorTeamCode)
                                     ? scoreColor
-                                    : Theme.of(context)
-                                        .textTheme
-                                        .bodyText2!
-                                        .color,
+                                    : Theme.of(context).textTheme.bodyText2!.color,
                               )),
                         ]),
                   ),
                 ),
               ),
-              Text("${_dateFormat.format(result.matchDate!)}",
-                  style: Theme.of(context).textTheme.bodyText1),
+              Text("${_dateFormat.format(result.matchDate!)}", style: Theme.of(context).textTheme.bodyText1),
             ]),
           ),
         ),
@@ -245,25 +225,21 @@ class ResultCard extends StatelessWidget {
     );
   }
 
-  Widget _buildPoints(BuildContext context, MatchSet matchSet, MinMax minMax,
-      bool isHost, bool showBar,
+  Widget _buildPoints(BuildContext context, MatchSet matchSet, MinMax minMax, bool isHost, bool showBar,
       {bool colored = true}) {
     double fontSize = 20.0;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding:
-              const EdgeInsets.only(top: 4.0, bottom: 4.0, left: 18, right: 18),
+          padding: const EdgeInsets.only(top: 4.0, bottom: 4.0, left: 18, right: 18),
           child: RichText(
             text: TextSpan(
                 text: "${matchSet.hostPoint}",
                 style: TextStyle(
                   fontSize: fontSize,
                   color: (team.code == result.hostTeamCode && colored)
-                      ? (matchSet.hostPoint! > matchSet.visitorpoint!
-                          ? Colors.green
-                          : Colors.red)
+                      ? (matchSet.hostPoint! > matchSet.visitorpoint! ? Colors.green : Colors.red)
                       : Theme.of(context).textTheme.bodyText2!.color,
                 ),
                 children: [
@@ -277,9 +253,7 @@ class ResultCard extends StatelessWidget {
                       style: TextStyle(
                         fontSize: fontSize,
                         color: (team.code == result.visitorTeamCode && colored)
-                            ? (matchSet.visitorpoint! > matchSet.hostPoint!
-                                ? Colors.green
-                                : Colors.red)
+                            ? (matchSet.visitorpoint! > matchSet.hostPoint! ? Colors.green : Colors.red)
                             : Theme.of(context).textTheme.bodyText2!.color,
                       )),
                 ]),

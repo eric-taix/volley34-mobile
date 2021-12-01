@@ -6,7 +6,6 @@ import 'package:v34/models/club.dart';
 import 'package:v34/models/team.dart';
 import 'package:v34/pages/favorite/favorite_club.dart';
 import 'package:v34/pages/favorite/favorite_team.dart';
-import 'package:v34/repositories/repository.dart';
 
 class SelectFavoriteTeam extends StatefulWidget {
   const SelectFavoriteTeam({Key? key}) : super(key: key);
@@ -18,7 +17,6 @@ class SelectFavoriteTeam extends StatefulWidget {
 class _SelectFavoriteTeamState extends State<SelectFavoriteTeam> {
   Team? _selectedTeam;
   Club? _selectedClub;
-  late Repository _repository;
 
   late final PageController _pageController;
   late final PreferencesBloc _preferencesBloc;
@@ -26,9 +24,14 @@ class _SelectFavoriteTeamState extends State<SelectFavoriteTeam> {
   @override
   void initState() {
     super.initState();
-    _repository = RepositoryProvider.of<Repository>(context);
     _pageController = PageController();
     _preferencesBloc = BlocProvider.of<PreferencesBloc>(context);
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
   }
 
   @override

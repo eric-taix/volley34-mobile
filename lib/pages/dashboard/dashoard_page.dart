@@ -113,15 +113,4 @@ class DashboardPage extends StatelessWidget {
       ),
     );
   }
-
-  Widget _buildLoadingOrEmpty(bool loading, Widget orElse) {
-    return loading
-        ? Container(
-            height: 240,
-            child: Center(
-              child: Loading(),
-            ),
-          )
-        : orElse;
-  }
 }
