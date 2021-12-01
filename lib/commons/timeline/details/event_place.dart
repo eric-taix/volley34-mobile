@@ -48,9 +48,9 @@ class _EventPlaceState extends State<EventPlace> {
     if (_rawMapStyle != null) {
       ThemeData themeData = Theme.of(buildContext);
       _currentMapStyle = _rawMapStyle!
-          .replaceAll("{appBarTheme.color}", themeData.appBarTheme.color!.toHexWithoutAlpha())
+          .replaceAll("{appBarTheme.color}", themeData.appBarTheme.backgroundColor!.toHexWithoutAlpha())
           .replaceAll("{canvasColor}", themeData.canvasColor.toHexWithoutAlpha())
-          .replaceAll("{buttonColor}", themeData.buttonColor.toHexWithoutAlpha())
+          .replaceAll("{buttonColor}", themeData.colorScheme.primaryVariant.toHexWithoutAlpha())
           .replaceAll("{labelColor}", themeData.textTheme.bodyText2!.color!.toHexWithoutAlpha());
       if (_mapController != null) {
         _mapController!.setMapStyle(_currentMapStyle);
@@ -90,8 +90,8 @@ class _EventPlaceState extends State<EventPlace> {
                               map.showMarker(coords: coordinates, title: title!);
                             }
                           },
-                          title:
-                              Text(map.mapName, style: Theme.of(context).textTheme.bodyText1!.apply(fontSizeDelta: 1.5)),
+                          title: Text(map.mapName,
+                              style: Theme.of(context).textTheme.bodyText1!.apply(fontSizeDelta: 1.5)),
                           leading: Image(
                             image: AssetImage(map.icon),
                             height: 30.0,
@@ -146,7 +146,7 @@ class _EventPlaceState extends State<EventPlace> {
             ),
           ),
         ),
-        RaisedButton.icon(
+        ElevatedButton.icon(
           onPressed: () => _launchMap(state, true),
           icon: Icon(Icons.directions),
           label: Text("Itinéraire"),

@@ -21,7 +21,6 @@ class FavoriteTeamSelection extends StatefulWidget {
 class _FavoriteTeamSelectionState extends State<FavoriteTeamSelection> {
   final ItemScrollController itemScrollController = ItemScrollController();
   late Repository _repository;
-  Team? _favoriteTeam;
   int? _selectedIndex;
   List<Team> _teams = [];
 

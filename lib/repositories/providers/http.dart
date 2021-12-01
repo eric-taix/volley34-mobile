@@ -1,14 +1,29 @@
 import 'package:dio/dio.dart';
-import 'package:dio_http_cache/dio_http_cache.dart';
+import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
+
+final defaultCacheOptions = CacheOptions(
+  store: MemCacheStore(),
+  policy: CachePolicy.forceCache,
+  hitCacheOnErrorExcept: [401, 403],
+  maxStale: const Duration(minutes: 30),
+  priority: CachePriority.normal,
+  cipher: null,
+  keyBuilder: CacheOptions.defaultCacheKeyBuilder,
+  allowPostMethod: false,
+);
 
 var dio = Dio(BaseOptions(
   baseUrl: "http://api.volley34.fr/v1/",
 ))
-  ..interceptors.add(DioCacheManager(
-    CacheConfig(
-      baseUrl: "http://api.volley34.fr",
-      defaultMaxAge: Duration(hours: 6),
-      defaultMaxStale: Duration(hours: 24),
-    ),
-  ).interceptor)
-  ..interceptors.add(LogInterceptor(requestBody: false, requestHeader: false, responseBody: false, responseHeader: false));
+  ..interceptors.add(DioCacheInterceptor(
+    options: defaultCacheOptions,
+  ))
+  ..interceptors.add(DebugCacheInterceptor());
+
+class DebugCacheInterceptor extends InterceptorsWrapper {
+  @override
+  void onResponse(Response response, ResponseInterceptorHandler handler) {
+    print("Request: ${response.realUri}");
+    super.onResponse(response, handler);
+  }
+}

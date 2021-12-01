@@ -4,8 +4,9 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:v34/commons/competition_badge.dart';
 import 'package:v34/commons/paragraph.dart';
 import 'package:v34/commons/podium_widget.dart';
-import 'package:v34/models/classication.dart';
+import 'package:v34/commons/rounded_outlined_button.dart';
 import 'package:v34/models/match_result.dart';
+import 'package:v34/models/ranking.dart';
 import 'package:v34/models/team.dart';
 import 'package:v34/pages/club-details/blocs/club_team.bloc.dart';
 import 'package:v34/pages/team-details/ranking/statistics_widget.dart';
@@ -16,7 +17,7 @@ import 'evolution_widget.dart';
 
 class TeamRanking extends StatefulWidget {
   final Team team;
-  final ClassificationSynthesis classification;
+  final RankingSynthesis classification;
   final List<MatchResult> results;
 
   const TeamRanking({Key? key, required this.team, required this.classification, required this.results})
@@ -43,8 +44,8 @@ class _TeamRankingState extends State<TeamRanking> {
   @override
   Widget build(BuildContext context) {
     int teamIndex =
-        widget.classification.teamsClassifications.indexWhere((element) => element.teamCode == widget.team.code);
-    ClassificationTeamSynthesis stats = widget.classification.teamsClassifications[teamIndex];
+        widget.classification.teamsRankings?.indexWhere((element) => element.teamCode == widget.team.code) ?? -1;
+    RankingTeamSynthesis stats = widget.classification.teamsRankings?[teamIndex] ?? RankingTeamSynthesis.empty();
     return SliverList(
         delegate: SliverChildListDelegate([
       _buildCompetitionDescription(context),
@@ -68,15 +69,20 @@ class _TeamRankingState extends State<TeamRanking> {
     );
   }
 
-  Widget _buildPodium(BuildContext context, ClassificationTeamSynthesis teamStats) {
+  Widget _buildPodium(BuildContext context, RankingTeamSynthesis teamStats) {
     String title = "";
-    if (teamStats.rank! <= widget.classification.promoted!)
+    if (teamStats.rank! <= widget.classification.promoted!) {
       title = "Promue";
-    else if (widget.classification.teamsClassifications.length - teamStats.rank! < widget.classification.relegated!)
+    } else if (widget.classification.teamsRankings != null &&
+        widget.classification.teamsRankings!.length - teamStats.rank! < widget.classification.relegated!) {
       title = "Reléguée";
+    } else {
+      title = "";
+    }
 
-    ClassificationTeamSynthesis currentTeamClassification = widget.classification.teamsClassifications
-        .firstWhere((teamClassification) => teamClassification.teamCode == widget.team.code);
+    RankingTeamSynthesis currentTeamClassification = widget.classification.teamsRankings
+            ?.firstWhere((teamClassification) => teamClassification.teamCode == widget.team.code) ??
+        RankingTeamSynthesis.empty();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -123,9 +129,7 @@ class _TeamRankingState extends State<TeamRanking> {
             padding: const EdgeInsets.only(right: 18.0, top: 12, bottom: 8),
             child: SizedBox(
               width: 180,
-              child: OutlineButton(
-                borderSide: BorderSide(color: Theme.of(context).textTheme.bodyText1!.color!),
-                highlightedBorderColor: Theme.of(context).textTheme.bodyText2!.color,
+              child: RoundedOutlinedButton(
                 onPressed: () => setState(() {
                   _openClassificationList = !_openClassificationList;
                 }),
@@ -171,86 +175,90 @@ class _TeamRankingState extends State<TeamRanking> {
           ),
           secondChild: Column(
             children: [
-              ...widget.classification.teamsClassifications.reversed
-                  .toList()
-                  .asMap()
-                  .map(
-                    (index, classificationSynthesis) {
-                      return MapEntry(
-                        index,
-                        Padding(
-                          padding: const EdgeInsets.only(left: 28.0, right: 28, top: 6, bottom: 6),
-                          child: Container(
-                              alignment: Alignment.centerLeft,
-                              child: Row(
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(right: 8.0),
-                                    child: SizedBox(
-                                      width: 20,
-                                      height: 20,
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.all(Radius.circular(4)),
-                                            color: classificationSynthesis.teamCode == widget.team.code
-                                                ? Theme.of(context).textTheme.bodyText2!.color
-                                                : Theme.of(context).textTheme.bodyText1!.color),
-                                        child: Center(
-                                          child: Text(
-                                            "${index + 1}",
-                                            style: Theme.of(context).textTheme.bodyText1!.copyWith(
-                                                color: Theme.of(context).canvasColor, fontWeight: FontWeight.bold),
+              if (widget.classification.teamsRankings != null)
+                ...widget.classification.teamsRankings!.reversed
+                    .toList()
+                    .asMap()
+                    .map(
+                      (index, classificationSynthesis) {
+                        return MapEntry(
+                          index,
+                          Padding(
+                            padding: const EdgeInsets.only(left: 28.0, right: 28, top: 6, bottom: 6),
+                            child: Container(
+                                alignment: Alignment.centerLeft,
+                                child: Row(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(right: 8.0),
+                                      child: SizedBox(
+                                        width: 20,
+                                        height: 20,
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.all(Radius.circular(4)),
+                                              color: classificationSynthesis.teamCode == widget.team.code
+                                                  ? Theme.of(context).textTheme.bodyText2!.color
+                                                  : Theme.of(context).textTheme.bodyText1!.color),
+                                          child: Center(
+                                            child: Text(
+                                              "${index + 1}",
+                                              style: Theme.of(context).textTheme.bodyText1!.copyWith(
+                                                  color: Theme.of(context).canvasColor, fontWeight: FontWeight.bold),
+                                            ),
                                           ),
                                         ),
                                       ),
                                     ),
-                                  ),
-                                  Expanded(
-                                    flex: 100,
-                                    child: Text(
-                                      classificationSynthesis.name!,
-                                      overflow: TextOverflow.ellipsis,
-                                      maxLines: 1,
-                                      style: classificationSynthesis.teamCode == widget.team.code
-                                          ? Theme.of(context).textTheme.bodyText2!.copyWith(fontWeight: FontWeight.bold)
-                                          : Theme.of(context).textTheme.bodyText1,
+                                    Expanded(
+                                      flex: 100,
+                                      child: Text(
+                                        classificationSynthesis.name!,
+                                        overflow: TextOverflow.ellipsis,
+                                        maxLines: 1,
+                                        style: classificationSynthesis.teamCode == widget.team.code
+                                            ? Theme.of(context)
+                                                .textTheme
+                                                .bodyText2!
+                                                .copyWith(fontWeight: FontWeight.bold)
+                                            : Theme.of(context).textTheme.bodyText1,
+                                      ),
                                     ),
-                                  ),
-                                  Expanded(
-                                    flex: 52,
-                                    child: Row(
-                                      children: [
-                                        Text(
-                                          "${classificationSynthesis.wonSets} pts",
-                                          style: classificationSynthesis.teamCode == widget.team.code
-                                              ? Theme.of(context)
-                                                  .textTheme
-                                                  .bodyText2!
-                                                  .copyWith(fontWeight: FontWeight.bold)
-                                              : Theme.of(context).textTheme.bodyText1,
-                                        ),
-                                        classificationSynthesis.teamCode != widget.team.code
-                                            ? Text(
-                                                " (${classificationSynthesis.totalPoints! - currentTeamClassification.totalPoints! > 0 ? "+" : ""}${classificationSynthesis.totalPoints! - currentTeamClassification.totalPoints!})",
-                                                style: classificationSynthesis.teamCode == widget.team.code
-                                                    ? Theme.of(context)
-                                                        .textTheme
-                                                        .bodyText2!
-                                                        .copyWith(fontWeight: FontWeight.bold)
-                                                    : Theme.of(context).textTheme.bodyText1,
-                                              )
-                                            : SizedBox()
-                                      ],
+                                    Expanded(
+                                      flex: 52,
+                                      child: Row(
+                                        children: [
+                                          Text(
+                                            "${classificationSynthesis.wonSets} pts",
+                                            style: classificationSynthesis.teamCode == widget.team.code
+                                                ? Theme.of(context)
+                                                    .textTheme
+                                                    .bodyText2!
+                                                    .copyWith(fontWeight: FontWeight.bold)
+                                                : Theme.of(context).textTheme.bodyText1,
+                                          ),
+                                          classificationSynthesis.teamCode != widget.team.code
+                                              ? Text(
+                                                  " (${classificationSynthesis.totalPoints! - currentTeamClassification.totalPoints! > 0 ? "+" : ""}${classificationSynthesis.totalPoints! - currentTeamClassification.totalPoints!})",
+                                                  style: classificationSynthesis.teamCode == widget.team.code
+                                                      ? Theme.of(context)
+                                                          .textTheme
+                                                          .bodyText2!
+                                                          .copyWith(fontWeight: FontWeight.bold)
+                                                      : Theme.of(context).textTheme.bodyText1,
+                                                )
+                                              : SizedBox()
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                ],
-                              )),
-                        ),
-                      );
-                    },
-                  )
-                  .values
-                  .toList()
+                                  ],
+                                )),
+                          ),
+                        );
+                      },
+                    )
+                    .values
+                    .toList()
             ],
           ),
         ),
@@ -271,11 +279,11 @@ class _TeamRankingState extends State<TeamRanking> {
     }
   }
 
-  Widget _buildStats(BuildContext context, ClassificationTeamSynthesis teamStats) {
+  Widget _buildStats(BuildContext context, RankingTeamSynthesis teamStats) {
     List<double> setsDiffEvolution = TeamBloc.computePointsDiffs(widget.results, widget.team.code);
     DateTime? startDate = widget.results.first.matchDate;
     DateTime? endDate = widget.results.last.matchDate;
-    List<double?> cumulativeSetsDiffEvolution = TeamBloc.computeCumulativePointsDiffs(setsDiffEvolution);
+    List<double> cumulativeSetsDiffEvolution = TeamBloc.computeCumulativePointsDiffs(setsDiffEvolution);
     return Column(
       children: <Widget>[
         StatisticsWidget(

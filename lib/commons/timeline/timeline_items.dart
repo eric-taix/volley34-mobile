@@ -87,9 +87,6 @@ class _MatchTimelineItem extends TimelineItemWidget {
     return _TimelineItemCard(
       children: <Widget>[MatchTitle(event: event), _Place(event.place, event.date)],
       onTap: () => showEventDetails(context, event),
-      topRightWidget: team.code == event.hostCode
-          ? Icon(Icons.login_rounded, color: Theme.of(context).textTheme.bodyText1!.color)
-          : Icon(Icons.logout_rounded, color: Theme.of(context).textTheme.bodyText1!.color),
     );
   }
 

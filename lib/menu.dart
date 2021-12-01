@@ -85,7 +85,7 @@ class _AppMenuState extends State<AppMenu> {
           ],
         ),
         decoration: BoxDecoration(
-          color: Theme.of(context).appBarTheme.color,
+          color: Theme.of(context).appBarTheme.backgroundColor,
         ),
       ),
       SizedBox(

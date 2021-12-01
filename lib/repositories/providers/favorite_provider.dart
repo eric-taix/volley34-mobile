@@ -9,7 +9,6 @@ class FavoriteProvider {
   Future<List<String?>> loadFavoriteClubs() async {
     await _localeStorage.ready;
     var clubs = (_localeStorage.getItem(FavoriteClubKey) as List?)?.cast<String>() ?? [];
-    print("Load favorite clubs $clubs");
     return clubs;
   }
 
@@ -20,13 +19,11 @@ class FavoriteProvider {
 
   Future<void> saveFavoriteClubs(List<String?> favoriteClubs) async {
     await _localeStorage.ready;
-    print("Saved favorite clubs: $favoriteClubs");
     await _localeStorage.setItem(FavoriteClubKey, favoriteClubs);
   }
 
   Future<void> saveFavoriteTeams(List<String?> favoriteTeams) async {
     await _localeStorage.ready;
-    print("Saved favorite teams: $favoriteTeams");
     await _localeStorage.setItem(FavoriteTeamKey, favoriteTeams);
   }
 }

@@ -85,10 +85,7 @@ class TitledCard extends StatelessWidget {
                           children: actions!
                               .map((action) => SizedBox(
                                     width: 50,
-                                    child: FlatButton(
-                                      splashColor: Colors.white.withOpacity(0.3),
-                                      shape: CircleBorder(),
-                                      padding: EdgeInsets.zero,
+                                    child: TextButton(
                                       child: Icon(action.icon,
                                           color: action.iconColor ?? Theme.of(context).textTheme.headline6!.color),
                                       onPressed: action.onTap,

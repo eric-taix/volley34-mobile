@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:v34/commons/loading.dart';
 import 'package:v34/models/club.dart';
@@ -34,18 +35,22 @@ class _ClubTeamsState extends State<ClubTeams> {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder(
-        bloc: _clubTeamsBloc,
-        builder: (context, dynamic state) {
-          return SliverList(
-            delegate: SliverChildBuilderDelegate((context, index) {
-              return (state is ClubTeamsLoaded)
-                  ? ClubTeam(
+      bloc: _clubTeamsBloc,
+      builder: (context, dynamic state) {
+        return (state is ClubTeamsLoaded)
+            ? SliverList(
+                delegate: SliverChildBuilderDelegate(
+                  (context, index) {
+                    return ClubTeam(
                       team: state.teams![index],
                       club: widget.club,
-                    )
-                  : Loading();
-            }, childCount: (state is ClubTeamsLoaded) ? state.teams!.length : 0),
-          );
-        });
+                    );
+                  },
+                  childCount: state.teams!.length,
+                ),
+              )
+            : SliverFillRemaining(child: Center(child: Loading()));
+      },
+    );
   }
 }

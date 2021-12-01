@@ -67,10 +67,12 @@ class PreferencesBloc extends Bloc<PreferencesEvent, PreferencesState> {
     if (event is PreferencesLoadEvent) {
       yield PreferencesLoadingState();
       Club? club = await repository.loadFavoriteClub();
+      Team? team = await repository.loadFavoriteTeam();
       yield PreferencesUpdatedState(
         useAutomaticTheme: preferences.getBool("automatic_theme") ?? true,
         useDarkTheme: preferences.getBool("dark_theme") ?? false,
         favoriteClub: club,
+        favoriteTeam: team,
       );
     } else if (event is PreferencesSaveEvent) {
       yield PreferencesSavingState();

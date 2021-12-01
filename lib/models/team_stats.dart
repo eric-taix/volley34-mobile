@@ -15,8 +15,18 @@ class SetsDistribution {
     return SetsDistribution(
         s30: json["Victoires_3_0"],
         s31: json["Victoires_3_1"] + json["Victoires_2_0"],
-        s32: json["Victoires_3_2"] + json["Victoires_0_0"] + json["Victoires_1_0"] + json["Victoires_1_1"] + json["Victoires_2_1"] + json["Victoires_2_2"],
-        s23: json["Defaites_2_3"] + json["Defaites_0_0"] + json["Defaites_0_1"] + json["Defaites_1_1"] + json["Defaites_1_2"] + json["Defaites_2_2"],
+        s32: json["Victoires_3_2"] +
+            json["Victoires_0_0"] +
+            json["Victoires_1_0"] +
+            json["Victoires_1_1"] +
+            json["Victoires_2_1"] +
+            json["Victoires_2_2"],
+        s23: json["Defaites_2_3"] +
+            json["Defaites_0_0"] +
+            json["Defaites_0_1"] +
+            json["Defaites_1_1"] +
+            json["Defaites_1_2"] +
+            json["Defaites_2_2"],
         s13: json["Defaites_1_3"] + json["Defaites_0_2"],
         s03: json["Defaites_0_3"]);
   }

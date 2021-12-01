@@ -87,7 +87,7 @@ class _AppBarHeaderDelegate extends SliverPersistentHeaderDelegate {
                 child: Container(
                   child: Text(
                     subTitle!,
-                    style: appBarTheme.textTheme!.subtitle2,
+                    style: appBarTheme.toolbarTextStyle,
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
@@ -108,7 +108,7 @@ class _AppBarHeaderDelegate extends SliverPersistentHeaderDelegate {
                       padding: EdgeInsets.only(left: 14.0, bottom: compute(0.0, 22.0)),
                       child: Text(
                         title!,
-                        style: appBarTheme.textTheme!.headline6,
+                        style: appBarTheme.titleTextStyle,
                         overflow: TextOverflow.fade,
                         textAlign: TextAlign.center,
                         maxLines: 1,
@@ -119,8 +119,7 @@ class _AppBarHeaderDelegate extends SliverPersistentHeaderDelegate {
                   FavoriteIcon(
                     favorite!.id,
                     favorite!.type,
-                    favorite!.value,
-                    padding: EdgeInsets.only(left: 12, bottom: compute(0.0, 22.0)),
+                    padding: EdgeInsets.only(left: 12, bottom: compute(0.0, 22.0), right: 8),
                   ),
                 ],
               ),
@@ -147,7 +146,7 @@ class _AppBarHeaderDelegate extends SliverPersistentHeaderDelegate {
                         padding: const EdgeInsets.all(12.0),
                         child: Icon(
                           _getIconData(Theme.of(context).platform),
-                          color: appBarTheme.textTheme!.button!.color,
+                          color: appBarTheme.titleTextStyle!.color,
                         ),
                       ),
                     ),

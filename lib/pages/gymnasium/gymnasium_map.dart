@@ -27,7 +27,6 @@ class GymnasiumMap extends StatefulWidget {
 }
 
 class _GymnasiumMapState extends State<GymnasiumMap> {
-  final Geolocator _geolocator = Geolocator();
   late Repository _repository;
   GoogleMapController? _mapController;
 
@@ -50,9 +49,9 @@ class _GymnasiumMapState extends State<GymnasiumMap> {
     if (_rawMapStyle != null) {
       ThemeData themeData = Theme.of(buildContext);
       _currentMapStyle = _rawMapStyle!
-          .replaceAll("{appBarTheme.color}", themeData.appBarTheme.color!.toHexWithoutAlpha())
+          .replaceAll("{appBarTheme.color}", themeData.appBarTheme.backgroundColor!.toHexWithoutAlpha())
           .replaceAll("{canvasColor}", themeData.canvasColor.toHexWithoutAlpha())
-          .replaceAll("{buttonColor}", themeData.buttonColor.toHexWithoutAlpha())
+          .replaceAll("{buttonColor}", themeData.colorScheme.primaryVariant.toHexWithoutAlpha())
           .replaceAll("{labelColor}", themeData.textTheme.bodyText2!.color!.toHexWithoutAlpha());
       if (_mapController != null) {
         _mapController!.setMapStyle(_currentMapStyle);

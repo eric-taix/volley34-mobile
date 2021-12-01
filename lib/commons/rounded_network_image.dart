@@ -17,9 +17,8 @@ class RoundedNetworkImage extends StatelessWidget {
       width: size + (2 * borderSize) - 1,
       height: size + (2 * borderSize) - 1,
       decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        border: Border.all(color: circleColor ?? Theme.of(context).appBarTheme.color!, width: borderSize)
-      ),
+          shape: BoxShape.circle,
+          border: Border.all(color: circleColor ?? Theme.of(context).appBarTheme.backgroundColor!, width: borderSize)),
       child: Container(
         decoration: BoxDecoration(
           shape: BoxShape.circle,

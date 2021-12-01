@@ -166,7 +166,7 @@ class _FluidExpansionCardState extends State<FluidExpansionCard> with TickerProv
                   ),
                   Stack(
                     alignment: Alignment.bottomCenter,
-                    overflow: Overflow.clip,
+                    clipBehavior: Clip.hardEdge,
                     children: <Widget>[
                       Padding(
                         padding: const EdgeInsets.only(bottom: 8.0),
@@ -270,9 +270,9 @@ class _FluidExpansionCardState extends State<FluidExpansionCard> with TickerProv
                         height: switchRadius - switchPadding,
                         width: switchRadius - switchPadding,
                         alignment: Alignment.center,
-                        child: Icon(Icons.keyboard_arrow_down, color: Theme.of(context).accentColor),
+                        child: Icon(Icons.keyboard_arrow_down, color: Theme.of(context).colorScheme.secondary),
                         decoration: BoxDecoration(
-                          color: Theme.of(context).buttonColor,
+                          color: Theme.of(context).cardTheme.color,
                           borderRadius: BorderRadius.circular(switchRadius / 2),
                         ),
                       ),

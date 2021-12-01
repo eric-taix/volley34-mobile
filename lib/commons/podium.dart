@@ -42,7 +42,7 @@ class _PodiumState extends State<Podium> {
   late List<Place> places;
   late PlaceValue max;
   List<PlaceValue>? placeValues;
-  late PlaceValue highlightedValue;
+  late PlaceValue? highlightedValue;
   bool showToolTip = false;
   bool showPosition = false;
   int animationDuration = 200;
@@ -62,8 +62,12 @@ class _PodiumState extends State<Podium> {
   }
 
   _updatePlaces() {
-    placeValues = widget.placeValues;
-    highlightedValue = placeValues![widget.highlightedIndex!];
+    placeValues = widget.placeValues.map((placeValue) => PlaceValue(placeValue.id, placeValue.value + 1)).toList();
+    if (widget.highlightedIndex != -1) {
+      highlightedValue = placeValues![widget.highlightedIndex!];
+    } else {
+      highlightedValue = null;
+    }
     max =
         placeValues!.fold(new PlaceValue("", 0), (max, placeValue) => placeValue.value > max.value ? placeValue : max);
     if (widget.active) {
@@ -72,15 +76,19 @@ class _PodiumState extends State<Podium> {
         if (this.mounted) {
           setState(() {
             places = List.generate(length, (index) {
-              var diff = (placeValues![index].value - highlightedValue.value).round();
-              var diffStr = ((index > 0 && placeValues![index - 1].id == highlightedValue.id) ||
-                      (index < placeValues!.length - 1 && placeValues![index + 1].id == highlightedValue.id))
-                  ? (diff > 0 ? "+$diff" : "$diff")
-                  : "";
-              if (placeValues![index].id == highlightedValue.id) {
-                position = placeValues!.length - index;
+              var diffStr = "";
+              if (highlightedValue != null) {
+                var diff = (placeValues![index].value - highlightedValue!.value).round();
+                diffStr = ((index > 0 && placeValues![index - 1].id == highlightedValue!.id) ||
+                        (index < placeValues!.length - 1 && placeValues![index + 1].id == highlightedValue!.id))
+                    ? (diff > 0 ? "+$diff" : "$diff")
+                    : "";
+                if (placeValues![index].id == highlightedValue!.id) {
+                  position = placeValues!.length - index;
+                }
               }
-              return Place(placeValues![index], "$diffStr", placeValues![index].id == highlightedValue.id);
+              return Place(placeValues![index], "$diffStr",
+                  highlightedValue != null && placeValues![index].id == highlightedValue!.id);
             });
             Future.delayed(Duration(milliseconds: animationDuration + 0), () {
               if (this.mounted) {

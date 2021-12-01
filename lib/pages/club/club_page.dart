@@ -46,7 +46,6 @@ class _ClubPageState extends State<ClubPage> with SingleTickerProviderStateMixin
           return c1.shortName!.toUpperCase().compareTo(c2.shortName!.toUpperCase());
         });
         _clubs = clubs;
-        print(_loading);
       });
     });
   }
@@ -94,7 +93,6 @@ class _ClubPageState extends State<ClubPage> with SingleTickerProviderStateMixin
               child: SliverList(
                 delegate: SliverChildBuilderDelegate(
                   (context, index) {
-                    print(_clubs.length);
                     return index < _clubs.length
                         ? AnimationConfiguration.staggeredList(
                             position: index,

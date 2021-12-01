@@ -11,7 +11,7 @@ class CompetitionBadge extends StatelessWidget {
       : super(key: key);
 
   _CompetitionBadgePainter _drawCompetitionBadge(BuildContext context) {
-    String gameType = competitionCode!.substring(competitionCode!.length - 1);
+    String gameType = competitionCode?.substring(competitionCode!.length - 1) ?? "-1";
     TextStyle? subTitleStyle = Theme.of(context).textTheme.bodyText1;
     switch (int.parse(gameType)) {
       case 1:
