@@ -14,7 +14,7 @@ class RoundedOutlinedButton extends StatelessWidget {
     return OutlinedButton(
       onPressed: onPressed,
       style: ButtonStyle(
-        foregroundColor: _ForegroundColorStateProperty(),
+        foregroundColor: _ForegroundColorStateProperty(Theme.of(context).textTheme.headline1!.color!),
         side: _BorderStateProperty(),
       ),
       child: Row(
@@ -39,9 +39,9 @@ class _BorderStateProperty extends MaterialStateProperty<BorderSide> {
 }
 
 class _ForegroundColorStateProperty extends MaterialStateProperty<Color> {
-  _ForegroundColorStateProperty();
+  final Color color;
+  _ForegroundColorStateProperty(this.color);
 
   @override
-  Color resolve(Set<MaterialState> states) =>
-      states.contains(MaterialState.disabled) ? Color(0xFF686B75) : Color(0xFFC9334F);
+  Color resolve(Set<MaterialState> states) => states.contains(MaterialState.disabled) ? Color(0xFF686B75) : color;
 }

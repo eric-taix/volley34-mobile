@@ -126,7 +126,7 @@ class AppTheme {
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ButtonStyle(
           overlayColor: OverlayStateColor(Colors.white.withOpacity(0.2)),
-          shape: ButtonStateProperty(),
+          shape: ButtonStateProperty(color: Colors.transparent),
           foregroundColor: ButtonForegroundStateColor(),
           backgroundColor: ButtonBackgroundStateColor(color: dominantColor),
           padding: ButtonPaddingProperty(),
@@ -145,6 +145,7 @@ class AppTheme {
       ),
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: ButtonStyle(
+          overlayColor: OverlayStateColor(_mainColor.withOpacity(0.2)),
           shape: ButtonStateProperty(),
           padding: ButtonPaddingProperty(),
         ),
