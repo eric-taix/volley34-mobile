@@ -151,6 +151,18 @@ class AppTheme {
         ),
       ),
       dividerTheme: DividerThemeData(thickness: 0.3),
+      switchTheme: SwitchThemeData(
+        trackColor: MultiStateColor(
+          disabledColor: Colors.grey,
+          selectedColor: Colors.white,
+          defaultColor: Colors.white24,
+        ),
+        thumbColor: MultiStateColor(
+          disabledColor: Colors.grey,
+          selectedColor: _mainColor,
+          defaultColor: Colors.white,
+        ),
+      ),
     );
   }
 
@@ -270,6 +282,31 @@ class ButtonForegroundStateColor extends MaterialStateColor {
   @override
   Color resolve(Set<MaterialState> states) =>
       states.contains(MaterialState.disabled) ? Colors.white30 : color ?? Color(_defaultColor);
+}
+
+class MultiStateColor extends MaterialStateColor {
+  static const int _defaultColor = 0xFFFFFFFF;
+
+  final Color disabledColor;
+  final Color selectedColor;
+  final Color defaultColor;
+
+  const MultiStateColor({
+    required this.disabledColor,
+    required this.selectedColor,
+    required this.defaultColor,
+  }) : super(_defaultColor);
+
+  @override
+  Color resolve(Set<MaterialState> states) {
+    if (states.contains(MaterialState.disabled)) {
+      return disabledColor;
+    }
+    if (states.contains(MaterialState.selected)) {
+      return selectedColor;
+    }
+    return defaultColor;
+  }
 }
 
 class ButtonBackgroundStateColor extends MaterialStateColor {
