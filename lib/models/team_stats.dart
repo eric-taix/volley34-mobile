@@ -9,9 +9,7 @@ class SetsDistribution {
   final int? s13;
   final int? s03;
 
-  SetsDistribution({this.s30 = 0, this.s31 = 0, this.s32 = 0, this.s23 = 0, this.s13 = 0, this.s03 = 0}) {
-    print("Empty sets distribution");
-  }
+  SetsDistribution({this.s30 = 0, this.s31 = 0, this.s32 = 0, this.s23 = 0, this.s13 = 0, this.s03 = 0});
 
   factory SetsDistribution.fromJson(Map<String, dynamic> json) {
     return SetsDistribution(

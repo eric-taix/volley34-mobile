@@ -43,6 +43,7 @@ dependencies:
   flutter_widget_from_html: ^0.6.2
   tinycolor2: ^2.0.0
   scrollable_positioned_list: ^0.2.3
+  page_view_indicators: ^2.0.0
 dev_dependencies:
   dependency_validator: ^3.0.0
   flutter_test:

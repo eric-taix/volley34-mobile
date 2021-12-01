@@ -55,6 +55,7 @@ class _ClubStatisticsState extends State<ClubStatistics> {
                     minValue: 0,
                     maxValue: 1,
                     animationDuration: Duration(milliseconds: 1200),
+                    backgroundColor: Theme.of(context).canvasColor,
                     value: state is ClubStatsLoadedState && state.matchesPlayed.total != 0
                         ? state.matchesPlayed.won.toDouble() / state.matchesPlayed.total
                         : 0.0,
@@ -105,43 +106,40 @@ class _ClubStatisticsState extends State<ClubStatistics> {
 
   Widget _buildPieChart(BuildContext context, bool loaded, MatchesPlayed? matchesPlayed) {
     const double POSITION_OFFSET = 3.2;
-    return AspectRatio(
-      aspectRatio: 1,
-      child: PieChart(
-        PieChartData(
-          sectionsSpace: 8,
-          centerSpaceRadius: 20,
-          sections: [
-            PieChartSectionData(
-              radius: 15,
-              value: loaded ? matchesPlayed!.won.toDouble() : 1,
-              title: "${loaded ? matchesPlayed!.won : 0} Vict.",
-              titlePositionPercentageOffset: POSITION_OFFSET - 0.8,
-              titleStyle: Theme.of(context).textTheme.bodyText2,
-              color: loaded
-                  ? _getSectionColor(matchesPlayed!.won, matchesPlayed.total)
-                  : Theme.of(context).colorScheme.primaryVariant,
-            ),
-            PieChartSectionData(
-              radius: 8,
-              value: loaded ? matchesPlayed!.lost.toDouble() : 1,
-              title: "${loaded ? matchesPlayed!.lost : 0} Déf.",
-              titleStyle: Theme.of(context).textTheme.bodyText2,
-              titlePositionPercentageOffset: POSITION_OFFSET + 0.3,
-              color: loaded
-                  ? _getSectionColor(matchesPlayed!.lost, matchesPlayed.total, invert: true)
-                  : Theme.of(context).colorScheme.primaryVariant,
-            ),
-          ],
-          borderData: FlBorderData(show: false),
-        ),
-        swapAnimationDuration: Duration(milliseconds: 800),
+    return PieChart(
+      PieChartData(
+        sectionsSpace: 8,
+        centerSpaceRadius: 20,
+        sections: [
+          PieChartSectionData(
+            radius: 15,
+            value: loaded ? matchesPlayed!.won.toDouble() : 1,
+            title: "${loaded ? matchesPlayed!.won : 0} Vict.",
+            titlePositionPercentageOffset: POSITION_OFFSET - 0.8,
+            titleStyle: Theme.of(context).textTheme.bodyText1,
+            color: loaded
+                ? _getSectionColor(matchesPlayed!.won, matchesPlayed.total)
+                : Theme.of(context).colorScheme.primaryVariant,
+          ),
+          PieChartSectionData(
+            radius: 8,
+            value: loaded ? matchesPlayed!.lost.toDouble() : 1,
+            title: "${loaded ? matchesPlayed!.lost : 0} Déf.",
+            titleStyle: Theme.of(context).textTheme.bodyText1,
+            titlePositionPercentageOffset: POSITION_OFFSET + 0.3,
+            color: loaded
+                ? _getSectionColor(matchesPlayed!.lost, matchesPlayed.total, invert: true)
+                : Theme.of(context).colorScheme.primaryVariant,
+          ),
+        ],
+        borderData: FlBorderData(show: false),
       ),
+      swapAnimationDuration: Duration(milliseconds: 800),
     );
   }
 
   Color _getSectionColor(int nb, int total, {bool invert = false}) {
-    const int NB_COLOR = 6;
+    const int NB_COLOR = 7;
     var colorGroup = (((nb * 100) / total) / (100 / NB_COLOR)).ceil();
     if (invert) {
       colorGroup = NB_COLOR - 1 - colorGroup;
@@ -156,10 +154,14 @@ class _ClubStatisticsState extends State<ClubStatistics> {
       case 3:
         return Colors.yellowAccent;
       case 4:
-        return Colors.greenAccent;
+        return Colors.blueAccent;
       case 5:
+        return Colors.greenAccent;
+      case 6:
         return Colors.green;
     }
+    if (colorGroup < 0) return Colors.redAccent;
+    if (colorGroup >= NB_COLOR) return Colors.green;
     return Colors.grey;
   }
 

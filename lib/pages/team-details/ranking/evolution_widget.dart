@@ -3,7 +3,7 @@ import 'package:v34/commons/graphs/line_graph.dart';
 
 class EvolutionWidget extends StatelessWidget {
   final String title;
-  final List<double?> evolution;
+  final List<double> evolution;
 
   /// If startDate and endDate are provided then the widget display some dates
   final DateTime? startDate;
@@ -11,12 +11,7 @@ class EvolutionWidget extends StatelessWidget {
 
   final double miniGraphHeight;
 
-  const EvolutionWidget(
-      {Key? key,
-      required this.title,
-      required this.evolution,
-      this.startDate,
-      this.endDate})
+  const EvolutionWidget({Key? key, required this.title, required this.evolution, this.startDate, this.endDate})
       : this.miniGraphHeight = (startDate != null && endDate != null) ? 80 : 60,
         super(key: key);
 
@@ -50,10 +45,7 @@ class EvolutionWidget extends StatelessWidget {
       child: Row(
         children: <Widget>[
           Expanded(
-              flex: 1,
-              child: Text(title,
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.bodyText1)),
+              flex: 1, child: Text(title, textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodyText1)),
           Expanded(flex: 2, child: _buildGraph(context)),
         ],
       ),

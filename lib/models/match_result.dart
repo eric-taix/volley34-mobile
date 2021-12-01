@@ -5,7 +5,7 @@ class MatchSet {
   MatchSet(this.hostPoint, this.visitorpoint);
 }
 
-const VALID_RESULT_TYPES = [
+const VALID_MATCH_RESULT_TYPES = [
   MatchResultType.VALID,
   MatchResultType.HOME_FORFEIT,
   MatchResultType.VISITOR_FORFEIT,
@@ -15,6 +15,8 @@ const VALID_RESULT_TYPES = [
 ];
 
 class MatchResult {
+  static const POINT_PER_MATCH = 75.0;
+
   final String? matchCode;
   final int? season;
   final String? matchTitle;
@@ -30,6 +32,7 @@ class MatchResult {
   final DateTime? matchDate;
   final String? competitionCode;
   final MatchResultType resultType;
+  final String? winnerCode;
 
   MatchResult({
     this.matchCode,
@@ -46,6 +49,7 @@ class MatchResult {
     this.visitorTeamCode,
     this.matchDate,
     this.competitionCode,
+    this.winnerCode,
     required this.resultType,
   });
 
@@ -73,7 +77,28 @@ class MatchResult {
         hostTeamCode: match["EquipeLocauxCode"],
         visitorTeamCode: match["EquipeVisiteursCode"],
         matchDate: DateTime.parse(match["DateMatch"].toString()),
-        competitionCode: match["CompetitionCode"]);
+        competitionCode: match["CompetitionCode"],
+        winnerCode: match["EquipeVictorieuseCode"]);
+  }
+
+  double get regularTotalPointsHost {
+    if ((totalPointsHost ?? 0) > (totalPointsVisitor ?? 0)) {
+      return POINT_PER_MATCH;
+    } else if ((totalPointsHost ?? 0) < (totalPointsVisitor ?? 0)) {
+      return (totalPointsHost ?? 0) * POINT_PER_MATCH / (totalPointsVisitor ?? 0);
+    } else {
+      return POINT_PER_MATCH;
+    }
+  }
+
+  double get regularTotalPointsVisitor {
+    if ((totalPointsHost ?? 0) > (totalPointsVisitor ?? 0)) {
+      return (totalPointsVisitor ?? 0) * POINT_PER_MATCH / (totalPointsHost ?? 0);
+    } else if ((totalPointsHost ?? 0) < (totalPointsVisitor ?? 0)) {
+      return POINT_PER_MATCH;
+    } else {
+      return POINT_PER_MATCH;
+    }
   }
 
   static MatchResultType _toEnumType(String? resultType) {

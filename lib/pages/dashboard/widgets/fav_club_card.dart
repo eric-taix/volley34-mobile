@@ -79,7 +79,9 @@ class _FavoriteClubCardState extends State<FavoriteClubCard> {
                     minValue: 0,
                     maxValue: 1,
                     animationDuration: Duration(milliseconds: 1200),
-                    value: state is ClubStatsLoadedState ? state.wonMatches.toDouble() / state.totalMatches : 0.0,
+                    value: state is ClubStatsLoadedState && state.totalMatches != 0
+                        ? state.wonMatches.toDouble() / state.totalMatches
+                        : 0.0,
                     valueBuilder: (value, _, max) => state is ClubStatsLoadedState
                         ? RichText(
                             textScaleFactor: 1.0,

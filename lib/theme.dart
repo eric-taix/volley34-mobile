@@ -4,10 +4,12 @@ import 'commons/text_tab_bar.dart';
 
 const double CARD_BORDER_RADIUS = 18.0;
 
+const Color _mainColor = Color(0xFFC9334F);
+
 class AppTheme {
   static ThemeData darkTheme(Color? dominantColor) {
     return ThemeData(
-      splashColor: (dominantColor ?? Color(0xFFC9334F)).withOpacity(0.2),
+      splashColor: (dominantColor ?? _mainColor).withOpacity(0.2),
       canvasColor: Color(0xFF262C41),
       scaffoldBackgroundColor: Color(0xFF262C41),
       highlightColor: Colors.transparent,
@@ -19,7 +21,7 @@ class AppTheme {
           200: Color(0xFF90CAF9),
           300: Color(0xFF64B5F6),
           400: Color(0xFF42A5F5),
-          500: dominantColor ?? Color(0xFFC9334F),
+          500: dominantColor ?? _mainColor,
           600: Color(0xFF1E88E5),
           700: Color(0xFF1976D2),
           800: Color(0xFF1565C0),
@@ -29,11 +31,11 @@ class AppTheme {
       colorScheme: ColorScheme(
         primary: Color(0xFF262C41),
         primaryVariant: Color(0xFF313852),
-        secondary: Color(0xFFC9334F),
-        secondaryVariant: Color(0xFFC9334F),
+        secondary: _mainColor,
+        secondaryVariant: _mainColor,
         surface: Color(0xFF262C41),
         background: Color(0xFF262C41),
-        error: Color(0xFFC9334F),
+        error: _mainColor,
         onPrimary: Colors.white,
         onSecondary: Colors.white,
         onSurface: Colors.white,
@@ -96,7 +98,7 @@ class AppTheme {
         indicator: DashedUnderlineIndicator(
           width: 30.0,
           dashSpace: 0,
-          borderSide: BorderSide(width: 6.0, color: Color(0xFF7E88A2)),
+          borderSide: BorderSide(width: 6.0, color: _mainColor),
           insets: EdgeInsets.only(
             left: 30.0,
             right: 30,
@@ -135,9 +137,9 @@ class AppTheme {
       ),
       textButtonTheme: TextButtonThemeData(
         style: ButtonStyle(
-          overlayColor: OverlayStateColor(Color(0xFFC9334F).withOpacity(0.2)),
+          overlayColor: OverlayStateColor(_mainColor.withOpacity(0.2)),
           shape: ButtonStateProperty(color: Colors.transparent),
-          foregroundColor: ButtonForegroundStateColor(color: Color(0xFFC9334F)),
+          foregroundColor: ButtonForegroundStateColor(color: _mainColor),
           padding: ButtonPaddingProperty(),
         ),
       ),
@@ -212,7 +214,7 @@ class AppTheme {
           indicator: DashedUnderlineIndicator(
             width: 30.0,
             dashSpace: 0,
-            borderSide: BorderSide(width: 6.0, color: Color(0xff3c404d)),
+            borderSide: BorderSide(width: 6.0, color: _mainColor),
             insets: EdgeInsets.only(
               left: 30.0,
               right: 30,

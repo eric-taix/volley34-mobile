@@ -1,4 +1,4 @@
-class ClassificationTeamSynthesis {
+class RankingTeamSynthesis {
   final String? name;
   final String? teamCode;
   final int? rank, totalPoints;
@@ -9,7 +9,26 @@ class ClassificationTeamSynthesis {
   final int? nbSets03, nbSets13, nbSets23;
   final int? nbSetsMI;
 
-  ClassificationTeamSynthesis(
+  factory RankingTeamSynthesis.empty() => RankingTeamSynthesis(
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+      );
+  RankingTeamSynthesis(
     this.name,
     this.teamCode,
     this.rank,
@@ -29,8 +48,8 @@ class ClassificationTeamSynthesis {
     this.nbSetsMI,
   );
 
-  factory ClassificationTeamSynthesis.fromJson(Map<String, dynamic> json) {
-    return ClassificationTeamSynthesis(
+  factory RankingTeamSynthesis.fromJson(Map<String, dynamic> json) {
+    return RankingTeamSynthesis(
         json["Nom"],
         json["EquipeCode"],
         json["Rang"],
@@ -51,38 +70,37 @@ class ClassificationTeamSynthesis {
   }
 }
 
-class ClassificationSynthesis {
+class RankingSynthesis {
   final String? competitionCode;
   final int? promoted;
   final int? relegated;
-  final String label;
+  final String? label;
   final String? fullLabel;
   final String? division;
   final String? pool;
-  final List<ClassificationTeamSynthesis> teamsClassifications;
+  final List<RankingTeamSynthesis>? teamsRankings;
 
-  ClassificationSynthesis(
-      this.competitionCode,
+  RankingSynthesis(
+      {this.competitionCode,
       this.label,
       this.fullLabel,
       this.promoted,
       this.relegated,
       this.division,
       this.pool,
-      this.teamsClassifications);
+      this.teamsRankings});
 
-  factory ClassificationSynthesis.fromJson(Map<String, dynamic> json) {
-    return ClassificationSynthesis(
-      json["CompetitionCode"],
-      _getLabel(json["Libelle"]),
-      json["Libelle"],
-      json["Promus"],
-      json["Relegue"],
-      json["Division"],
-      json["Poule"],
-      (json["classementDetail"] as List<dynamic>)
-          .map((detail) => ClassificationTeamSynthesis.fromJson(detail))
-          .toList(),
+  factory RankingSynthesis.fromJson(Map<String, dynamic> json) {
+    return RankingSynthesis(
+      competitionCode: json["CompetitionCode"],
+      label: _getLabel(json["Libelle"]),
+      fullLabel: json["Libelle"],
+      promoted: json["Promus"],
+      relegated: json["Relegue"],
+      division: json["Division"],
+      pool: json["Poule"],
+      teamsRankings:
+          (json["classementDetail"] as List<dynamic>).map((detail) => RankingTeamSynthesis.fromJson(detail)).toList(),
     );
   }
 

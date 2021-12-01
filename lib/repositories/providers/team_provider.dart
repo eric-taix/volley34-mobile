@@ -1,8 +1,8 @@
 import 'package:dio/dio.dart';
-import 'package:v34/models/classication.dart';
 import 'package:v34/models/club.dart';
 import 'package:v34/models/event.dart';
 import 'package:v34/models/match_result.dart';
+import 'package:v34/models/ranking.dart';
 import 'package:v34/models/team.dart';
 
 import 'http.dart';
@@ -38,10 +38,10 @@ class TeamProvider {
     }
   }
 
-  Future<List<ClassificationSynthesis>> loadClassificationSynthesis(String? teamCode) async {
+  Future<List<RankingSynthesis>> loadClassificationSynthesis(String? teamCode) async {
     Response response = await dio.get("/Classements/equipes/$teamCode");
     if (response.statusCode == 200 || response.statusCode == 304) {
-      return (response.data as List).map((json) => ClassificationSynthesis.fromJson(json)).toList();
+      return (response.data as List).map((json) => RankingSynthesis.fromJson(json)).toList();
     } else {
       throw Exception("Impossible to retrieve classification synthesis for team  $teamCode");
     }

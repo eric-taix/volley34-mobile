@@ -53,7 +53,7 @@ class DashedUnderlineIndicator extends Decoration {
   final double dashSpace;
 
   const DashedUnderlineIndicator({
-    this.borderSide = const BorderSide(width: 2.0, color: Colors.white),
+    this.borderSide = const BorderSide(width: 2.0, color: Colors.green),
     this.width,
     this.insets = EdgeInsets.zero,
     this.dashWidth = 3,
@@ -91,7 +91,9 @@ class _DashedUnderlinePainter extends BoxPainter {
     final Rect rect = offset & configuration.size!;
     final TextDirection textDirection = configuration.textDirection!;
     final Rect indicator = _indicatorRectFor(rect, textDirection).deflate(borderSide.width / 2.0);
-    final Paint paint = borderSide.toPaint()..strokeCap = StrokeCap.round;
+    final Paint paint = borderSide.toPaint()
+      ..strokeCap = StrokeCap.round
+      ..color = borderSide.color;
 
     // bl.dx     (bl.dx + br.dx)/2        br.dx
     //         <----------w--------->
