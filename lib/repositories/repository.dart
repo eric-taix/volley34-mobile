@@ -58,6 +58,10 @@ class Repository {
     return null;
   }
 
+  Future<Team?> loadTeam(String teamCode) async {
+    return await _teamProvider.loadTeam(teamCode);
+  }
+
   /// Load favorite team
   Future<Team?> loadFavoriteTeam() async {
     var favoriteClubCode = await loadFavoriteClubCode();

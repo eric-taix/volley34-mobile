@@ -11,17 +11,17 @@ import 'package:v34/models/team.dart';
 import 'package:v34/pages/club-details/blocs/club_team.bloc.dart';
 import 'package:v34/pages/team-details/ranking/statistics_widget.dart';
 import 'package:v34/pages/team-details/ranking/summary_widget.dart';
+import 'package:v34/pages/team-details/ranking/team_ranking_table.dart';
 import 'package:v34/utils/competition_text.dart';
 
 import 'evolution_widget.dart';
 
 class TeamRanking extends StatefulWidget {
   final Team team;
-  final RankingSynthesis classification;
+  final RankingSynthesis ranking;
   final List<MatchResult> results;
 
-  const TeamRanking({Key? key, required this.team, required this.classification, required this.results})
-      : super(key: key);
+  const TeamRanking({Key? key, required this.team, required this.ranking, required this.results}) : super(key: key);
 
   @override
   _TeamRankingState createState() => _TeamRankingState();
@@ -29,7 +29,7 @@ class TeamRanking extends StatefulWidget {
 
 class _TeamRankingState extends State<TeamRanking> {
   double _cupOpacity = 0;
-  bool _openClassificationList = false;
+  bool _openRankingTable = false;
 
   @override
   void initState() {
@@ -43,9 +43,8 @@ class _TeamRankingState extends State<TeamRanking> {
 
   @override
   Widget build(BuildContext context) {
-    int teamIndex =
-        widget.classification.teamsRankings?.indexWhere((element) => element.teamCode == widget.team.code) ?? -1;
-    RankingTeamSynthesis stats = widget.classification.teamsRankings?[teamIndex] ?? RankingTeamSynthesis.empty();
+    int teamIndex = widget.ranking.ranks?.indexWhere((element) => element.teamCode == widget.team.code) ?? -1;
+    RankingTeamSynthesis stats = widget.ranking.ranks?[teamIndex] ?? RankingTeamSynthesis.empty();
     return SliverList(
         delegate: SliverChildListDelegate([
       _buildCompetitionDescription(context),
@@ -62,8 +61,8 @@ class _TeamRankingState extends State<TeamRanking> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          Text(getClassificationCategory(widget.classification.division), style: Theme.of(context).textTheme.headline4),
-          CompetitionBadge(competitionCode: widget.classification.competitionCode, deltaSize: 0.8),
+          Text(getClassificationCategory(widget.ranking.division), style: Theme.of(context).textTheme.headline4),
+          CompetitionBadge(competitionCode: widget.ranking.competitionCode, deltaSize: 0.8),
         ],
       ),
     );
@@ -71,22 +70,19 @@ class _TeamRankingState extends State<TeamRanking> {
 
   Widget _buildPodium(BuildContext context, RankingTeamSynthesis teamStats) {
     String title = "";
-    if (teamStats.rank! <= widget.classification.promoted!) {
+    if (teamStats.rank! <= widget.ranking.promoted!) {
       title = "Promue";
-    } else if (widget.classification.teamsRankings != null &&
-        widget.classification.teamsRankings!.length - teamStats.rank! < widget.classification.relegated!) {
+    } else if (widget.ranking.ranks != null &&
+        widget.ranking.ranks!.length - teamStats.rank! < widget.ranking.relegated!) {
       title = "Reléguée";
     } else {
       title = "";
     }
 
-    RankingTeamSynthesis currentTeamClassification = widget.classification.teamsRankings
-            ?.firstWhere((teamClassification) => teamClassification.teamCode == widget.team.code) ??
-        RankingTeamSynthesis.empty();
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
+        SizedBox(height: 28),
         FractionallySizedBox(
           widthFactor: 0.8,
           child: Stack(
@@ -113,10 +109,12 @@ class _TeamRankingState extends State<TeamRanking> {
                   children: <Widget>[
                     Expanded(
                         child: PodiumWidget(
-                            title: title,
-                            classification: widget.classification,
-                            currentlyDisplayed: true,
-                            highlightedTeamCode: widget.team.code)),
+                      title: title,
+                      classification: widget.ranking,
+                      currentlyDisplayed: true,
+                      highlightedTeamCode: widget.team.code,
+                      showTrailing: false,
+                    )),
                   ],
                 ),
               ),
@@ -126,40 +124,26 @@ class _TeamRankingState extends State<TeamRanking> {
         Align(
           alignment: Alignment.bottomRight,
           child: Padding(
-            padding: const EdgeInsets.only(right: 18.0, top: 12, bottom: 8),
+            padding: const EdgeInsets.only(right: 10.0, top: 12, bottom: 8),
             child: SizedBox(
               width: 180,
               child: RoundedOutlinedButton(
                 onPressed: () => setState(() {
-                  _openClassificationList = !_openClassificationList;
+                  _openRankingTable = !_openRankingTable;
                 }),
                 child: AnimatedCrossFade(
                   duration: Duration(milliseconds: 500),
-                  crossFadeState: _openClassificationList ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+                  crossFadeState: _openRankingTable ? CrossFadeState.showFirst : CrossFadeState.showSecond,
                   firstChild: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      Expanded(
-                        child: Text("Cacher le détail", style: Theme.of(context).textTheme.bodyText2),
-                      ),
-                      Icon(
-                        Icons.arrow_drop_up,
-                        color: Theme.of(context).textTheme.bodyText2!.color,
-                      )
+                      Text("Cacher le détail"),
+                      Icon(Icons.arrow_drop_up),
                     ],
                   ),
                   secondChild: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      Expanded(
-                        child: Text("Voir le détail", style: Theme.of(context).textTheme.bodyText2),
-                      ),
-                      Icon(
-                        Icons.arrow_drop_down,
-                        color: Theme.of(context).textTheme.bodyText2!.color,
-                      )
+                      Text("Voir le détail"),
+                      Icon(Icons.arrow_drop_down),
                     ],
                   ),
                 ),
@@ -168,99 +152,12 @@ class _TeamRankingState extends State<TeamRanking> {
           ),
         ),
         AnimatedCrossFade(
-          crossFadeState: _openClassificationList ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+          crossFadeState: _openRankingTable ? CrossFadeState.showSecond : CrossFadeState.showFirst,
           duration: Duration(milliseconds: 800),
           firstChild: SizedBox(
             width: double.infinity,
           ),
-          secondChild: Column(
-            children: [
-              if (widget.classification.teamsRankings != null)
-                ...widget.classification.teamsRankings!.reversed
-                    .toList()
-                    .asMap()
-                    .map(
-                      (index, classificationSynthesis) {
-                        return MapEntry(
-                          index,
-                          Padding(
-                            padding: const EdgeInsets.only(left: 28.0, right: 28, top: 6, bottom: 6),
-                            child: Container(
-                                alignment: Alignment.centerLeft,
-                                child: Row(
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.only(right: 8.0),
-                                      child: SizedBox(
-                                        width: 20,
-                                        height: 20,
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.all(Radius.circular(4)),
-                                              color: classificationSynthesis.teamCode == widget.team.code
-                                                  ? Theme.of(context).textTheme.bodyText2!.color
-                                                  : Theme.of(context).textTheme.bodyText1!.color),
-                                          child: Center(
-                                            child: Text(
-                                              "${index + 1}",
-                                              style: Theme.of(context).textTheme.bodyText1!.copyWith(
-                                                  color: Theme.of(context).canvasColor, fontWeight: FontWeight.bold),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    Expanded(
-                                      flex: 100,
-                                      child: Text(
-                                        classificationSynthesis.name!,
-                                        overflow: TextOverflow.ellipsis,
-                                        maxLines: 1,
-                                        style: classificationSynthesis.teamCode == widget.team.code
-                                            ? Theme.of(context)
-                                                .textTheme
-                                                .bodyText2!
-                                                .copyWith(fontWeight: FontWeight.bold)
-                                            : Theme.of(context).textTheme.bodyText1,
-                                      ),
-                                    ),
-                                    Expanded(
-                                      flex: 52,
-                                      child: Row(
-                                        children: [
-                                          Text(
-                                            "${classificationSynthesis.wonSets} pts",
-                                            style: classificationSynthesis.teamCode == widget.team.code
-                                                ? Theme.of(context)
-                                                    .textTheme
-                                                    .bodyText2!
-                                                    .copyWith(fontWeight: FontWeight.bold)
-                                                : Theme.of(context).textTheme.bodyText1,
-                                          ),
-                                          classificationSynthesis.teamCode != widget.team.code
-                                              ? Text(
-                                                  " (${classificationSynthesis.totalPoints! - currentTeamClassification.totalPoints! > 0 ? "+" : ""}${classificationSynthesis.totalPoints! - currentTeamClassification.totalPoints!})",
-                                                  style: classificationSynthesis.teamCode == widget.team.code
-                                                      ? Theme.of(context)
-                                                          .textTheme
-                                                          .bodyText2!
-                                                          .copyWith(fontWeight: FontWeight.bold)
-                                                      : Theme.of(context).textTheme.bodyText1,
-                                                )
-                                              : SizedBox()
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                )),
-                          ),
-                        );
-                      },
-                    )
-                    .values
-                    .toList()
-            ],
-          ),
+          secondChild: TeamRankingTable(team: widget.team, ranking: widget.ranking),
         ),
       ],
     );

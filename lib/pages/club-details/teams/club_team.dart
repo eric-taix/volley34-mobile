@@ -21,7 +21,7 @@ import '../../../commons/router.dart';
 
 class ClubTeam extends StatefulWidget {
   final Team team;
-  final Club? club;
+  final Club club;
 
   ClubTeam({required this.team, required this.club});
 
@@ -57,7 +57,6 @@ class _ClubTeamState extends State<ClubTeam> {
           builder: (_) => TeamDetailPage(
                 team: widget.team,
                 club: widget.club,
-                classifications: null,
               )),
       buttonBar: ButtonBar(
         children: <Widget>[

@@ -11,7 +11,7 @@ class SummaryWidget extends StatelessWidget {
 
   const SummaryWidget({Key? key, required this.title, required this.teamStats}) : super(key: key);
 
-  List<BarChartGroupData?> showingGroups(BuildContext context, RankingTeamSynthesis teamStats) {
+  List<BarChartGroupData>? showingGroups(BuildContext context, RankingTeamSynthesis teamStats) {
     return List.generate(7, (i) {
       switch (i) {
         case 0:
@@ -26,11 +26,9 @@ class SummaryWidget extends StatelessWidget {
           return makeGroupData(context, 4, teamStats.nbSets13!.toDouble(), Colors.deepOrangeAccent, teamStats);
         case 5:
           return makeGroupData(context, 5, teamStats.nbSets03!.toDouble(), Colors.redAccent, teamStats);
-        case 6:
+        default:
           return makeGroupData(
               context, 6, teamStats.nbSetsMI!.toDouble(), Theme.of(context).colorScheme.secondary, teamStats);
-        default:
-          return null;
       }
     });
   }

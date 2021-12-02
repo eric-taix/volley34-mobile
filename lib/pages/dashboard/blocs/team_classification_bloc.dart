@@ -32,12 +32,12 @@ class TeamRankingLoadingState extends TeamRankingState {}
 
 class TeamRankingLoadedState extends TeamRankingState {
   final String? highlightedTeamCode;
-  final List<RankingSynthesis> rankins;
+  final List<RankingSynthesis> rankings;
 
-  TeamRankingLoadedState(this.highlightedTeamCode, this.rankins);
+  TeamRankingLoadedState(this.highlightedTeamCode, this.rankings);
 
   @override
-  List<Object?> get props => [highlightedTeamCode, rankins];
+  List<Object?> get props => [highlightedTeamCode, rankings];
 }
 
 // -- Bloc
@@ -53,7 +53,7 @@ class TeamRankingBloc extends Bloc<TeamRankingEvent, TeamRankingState> {
       yield TeamRankingLoadingState();
       List<RankingSynthesis> rankins = await repository.loadTeamRankingSynthesis(event.team.code);
       rankins = rankins.map((classification) {
-        classification.teamsRankings?.sort((tc1, tc2) {
+        classification.ranks?.sort((tc1, tc2) {
           return tc1.rank!.compareTo(tc2.rank!) * -1;
         });
         return classification;

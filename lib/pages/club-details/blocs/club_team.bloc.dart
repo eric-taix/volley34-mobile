@@ -78,10 +78,10 @@ class TeamResultsLoaded extends TeamState {
 abstract class TeamEvent {}
 
 class TeamLoadSlidingResult extends TeamEvent {
-  final String? code;
+  final String code;
   final int? last;
 
-  TeamLoadSlidingResult({this.code, this.last});
+  TeamLoadSlidingResult({required this.code, this.last});
 }
 
 class TeamLoadAverageSlidingResult extends TeamEvent {
@@ -117,7 +117,7 @@ class TeamBloc extends Bloc<TeamEvent, TeamState> {
     if (event is TeamLoadAverageSlidingResult) {
       yield TeamSlidingStatsLoading();
       List<RankingSynthesis> rankings = (await repository.loadTeamRankingSynthesis(event.team.code)).map((ranking) {
-        return ranking..teamsRankings?.sort(sortByRank);
+        return ranking..ranks?.sort(sortByRank);
       }).toList();
 
       var competitions = await Future.wait(rankings.map((ranking) async {

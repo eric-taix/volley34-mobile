@@ -78,7 +78,7 @@ class RankingSynthesis {
   final String? fullLabel;
   final String? division;
   final String? pool;
-  final List<RankingTeamSynthesis>? teamsRankings;
+  final List<RankingTeamSynthesis>? ranks;
 
   RankingSynthesis(
       {this.competitionCode,
@@ -88,7 +88,7 @@ class RankingSynthesis {
       this.relegated,
       this.division,
       this.pool,
-      this.teamsRankings});
+      this.ranks});
 
   factory RankingSynthesis.fromJson(Map<String, dynamic> json) {
     return RankingSynthesis(
@@ -99,7 +99,7 @@ class RankingSynthesis {
       relegated: json["Relegue"],
       division: json["Division"],
       pool: json["Poule"],
-      teamsRankings:
+      ranks:
           (json["classementDetail"] as List<dynamic>).map((detail) => RankingTeamSynthesis.fromJson(detail)).toList(),
     );
   }

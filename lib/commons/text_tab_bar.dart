@@ -2,10 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class TextTabBar extends StatelessWidget with PreferredSizeWidget {
-  final List<TextTab>? tabs;
+  final List<TextTab> tabs;
   final double height;
 
-  TextTabBar({this.tabs, this.height = 60});
+  TextTabBar({required this.tabs, this.height = 60});
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +18,7 @@ class TextTabBar extends StatelessWidget with PreferredSizeWidget {
             TabBar(
               isScrollable: true,
               indicatorPadding: EdgeInsets.symmetric(horizontal: 20.0),
-              tabs: tabs!.map((tab) {
+              tabs: tabs.map((tab) {
                 return Container(
                   height: 20,
                   child: Align(
@@ -87,7 +87,7 @@ class _DashedUnderlinePainter extends BoxPainter {
 
   @override
   void paint(Canvas canvas, Offset offset, ImageConfiguration configuration) {
-    assert(configuration.size != null);
+    assert(configuration.size != null && configuration.textDirection != null);
     final Rect rect = offset & configuration.size!;
     final TextDirection textDirection = configuration.textDirection!;
     final Rect indicator = _indicatorRectFor(rect, textDirection).deflate(borderSide.width / 2.0);
@@ -101,10 +101,10 @@ class _DashedUnderlinePainter extends BoxPainter {
     // endX = (bl.dx + br.dx + w)/2
 
     double startX = decoration.width != null
-        ? (indicator.bottomLeft.dx + indicator.bottomRight.dx - decoration.width!) / 2
+        ? (indicator.bottomLeft.dx + indicator.bottomRight.dx - (decoration.width ?? 2)) / 2
         : indicator.bottomLeft.dx;
     double endX = decoration.width != null
-        ? (indicator.bottomLeft.dx + indicator.bottomRight.dx + decoration.width!) / 2
+        ? (indicator.bottomLeft.dx + indicator.bottomRight.dx + (decoration.width ?? 2)) / 2
         : indicator.bottomRight.dx;
 
     while (startX < endX) {

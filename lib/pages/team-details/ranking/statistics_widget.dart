@@ -41,9 +41,7 @@ class StatisticsWidget extends StatelessWidget {
         value: wonPoints!.toDouble(),
         lineWidth: 6,
         leftTitle: LeftTitle(
-          show: true,
-          text: "",
-          style: Theme.of(context).textTheme.bodyText1,
+          show: false,
         ),
         valueBuilder: (value, minValue, maxValue) {
           var percentage = maxValue != 0 ? "${(((value - minValue) / maxValue) * 100).toStringAsFixed(1)}%" : "- -";
