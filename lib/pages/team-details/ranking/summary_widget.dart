@@ -85,6 +85,7 @@ class SummaryWidget extends StatelessWidget {
             ),
           ),
           borderData: FlBorderData(show: false),
+          gridData: FlGridData(show: false),
           titlesData: FlTitlesData(
             show: true,
             bottomTitles: SideTitles(
@@ -113,8 +114,10 @@ class SummaryWidget extends StatelessWidget {
               },
             ),
             leftTitles: SideTitles(showTitles: false),
+            topTitles: SideTitles(showTitles: false),
+            rightTitles: SideTitles(showTitles: false),
           ),
-          barGroups: showingGroups(context, teamStats) as List<BarChartGroupData>?,
+          barGroups: showingGroups(context, teamStats),
         )),
       ),
     );

@@ -74,7 +74,7 @@ class ResultCard extends StatelessWidget {
                             "Set n°",
                             style: Theme.of(context).textTheme.bodyText1,
                           ),
-                          Icon(_setIcons[index], color: Theme.of(context).colorScheme.secondary),
+                          Icon(_setIcons[index], color: Theme.of(context).textTheme.bodyText1!.color!),
                         ],
                       ),
                     ),
@@ -151,7 +151,7 @@ class ResultCard extends StatelessWidget {
       child: Row(children: [
         Container(
           decoration: BoxDecoration(
-              border: Border(right: BorderSide(color: Theme.of(context).colorScheme.secondary, width: 0))),
+              border: Border(right: BorderSide(color: Theme.of(context).textTheme.bodyText1!.color!, width: 0))),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 18.0),
             child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
@@ -199,9 +199,10 @@ class ResultCard extends StatelessWidget {
                 "${result.hostName}",
                 textAlign: TextAlign.center,
                 overflow: TextOverflow.ellipsis,
-                style: Theme.of(context).textTheme.bodyText2!.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyText2!
+                    .copyWith(fontWeight: FontWeight.bold, color: result.hostTeamCode == team.code ? scoreColor : null),
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -215,8 +216,7 @@ class ResultCard extends StatelessWidget {
                 textAlign: TextAlign.center,
                 overflow: TextOverflow.ellipsis,
                 style: Theme.of(context).textTheme.bodyText2!.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
+                    fontWeight: FontWeight.bold, color: result.visitorTeamCode == team.code ? scoreColor : null),
               ),
             ],
           ),

@@ -1,9 +1,19 @@
 import 'package:dio/dio.dart';
 import 'package:intl/intl.dart';
 import 'package:v34/models/event.dart';
+import 'package:v34/models/match_result.dart';
 import 'package:v34/repositories/providers/http.dart';
 
 class AgendaProvider {
+  Future<List<MatchResult>> listAllIncomingMatches() async {
+    Response response = await dio.get("/match", queryParameters: {"filter": "next"});
+    if (response.statusCode == 200 || response.statusCode == 304) {
+      return (response.data as List).map((json) => MatchResult.fromJson(json)).toList();
+    } else {
+      throw Exception('Impossible de récupérer les événements');
+    }
+  }
+
   Future<List<Event>> listEvents() async {
     Response response = await dio.get("/calendars");
     if (response.statusCode == 200 || response.statusCode == 304) {

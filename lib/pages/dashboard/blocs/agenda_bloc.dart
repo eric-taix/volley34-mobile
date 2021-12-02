@@ -74,14 +74,7 @@ class AgendaBloc extends Bloc<AgendaEvent, AgendaState> {
   @override
   Stream<AgendaState> mapEventToState(AgendaEvent event) async* {
     yield AgendaLoading(state.events);
-    if (event is LoadWeekAgenda) {
-      List<Event> otherEvents = await repository.loadAgendaWeek(event.week);
-      List<Event> favoriteTeamsEvents = await repository.loadFavoriteTeamsMatches();
-      yield AgendaLoaded(favoriteTeamsEvents
-        ..addAll(otherEvents)
-        ..addAll(state.events)
-        ..sort((event1, event2) => event1.date!.compareTo(event2.date!)));
-    } else if (event is LoadTeamMonthAgenda) {
+    if (event is LoadTeamMonthAgenda) {
       var today = DateTime.now();
       List<Event> events = (await repository.loadTeamAgenda(event.teamCode, event.days))
           .where((calendarEvent) => calendarEvent.date!.compareTo(today) > 0)

@@ -111,20 +111,11 @@ class Repository {
   Future<List<MatchResult>> loadTeamLastMatchesResult(String? teamCode, int? nbLastMatches) async {
     List<MatchResult> matches = (await _teamProvider.lastTeamMatchesResult(teamCode))
         .where((matchResult) => VALID_MATCH_RESULT_TYPES.contains(matchResult.resultType))
+        .sorted((m1, m2) => m1.matchDate?.compareTo(m2.matchDate ?? DateTime.now()) ?? 0)
         .toList();
     return nbLastMatches != null
         ? matches.sublist(matches.length > nbLastMatches ? matches.length - nbLastMatches : 0).toList()
         : matches;
-  }
-
-  /// Load all favorite teams matches
-  Future<List<Event>> loadFavoriteTeamsMatches() async {
-    var results = await Future.wait([
-      _teamProvider.loadTeamMatches("VCVX1"),
-      _teamProvider.loadTeamMatches("VCVX2"),
-      _teamProvider.loadTeamMatches("VCVX3"),
-    ]);
-    return results.expand((i) => i).toList();
   }
 
   /// Load classification synthesis

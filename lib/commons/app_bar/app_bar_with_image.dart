@@ -4,6 +4,7 @@ import 'package:v34/commons/app_bar/animated_logo.dart';
 import 'package:v34/commons/app_bar/app_bar.dart';
 import 'package:v34/commons/favorite/favorite.dart';
 import 'package:v34/commons/favorite/favorite_icon.dart';
+import 'package:v34/commons/loading.dart';
 
 class _AppBarHeaderDelegate extends SliverPersistentHeaderDelegate {
   final double expandedHeight;
@@ -180,7 +181,7 @@ class AppBarWithImage extends StatefulWidget {
   final Widget? stub;
   final ValueChanged<int>? onPositionChange;
   final ValueChanged<double>? onScroll;
-  final int initPosition;
+  final int? initPosition;
 
   AppBarWithImage(
     this.title,
@@ -195,7 +196,7 @@ class AppBarWithImage extends StatefulWidget {
     this.stub,
     this.onPositionChange,
     this.onScroll,
-    this.initPosition = 0,
+    this.initPosition,
   }) : super(key: key);
 
   @override
@@ -209,7 +210,7 @@ class _AppBarWithImageState extends State<AppBarWithImage> with TickerProviderSt
 
   @override
   void initState() {
-    _currentPosition = widget.initPosition;
+    _currentPosition = widget.initPosition ?? 0;
     controller = TabController(
       length: widget.itemCount,
       vsync: this,
@@ -228,7 +229,7 @@ class _AppBarWithImageState extends State<AppBarWithImage> with TickerProviderSt
       controller.removeListener(onPositionChange);
       controller.dispose();
 
-      _currentPosition = widget.initPosition;
+      _currentPosition = widget.initPosition ?? _currentPosition;
 
       if (_currentPosition > widget.itemCount - 1) {
         _currentPosition = widget.itemCount - 1;
@@ -253,7 +254,7 @@ class _AppBarWithImageState extends State<AppBarWithImage> with TickerProviderSt
         controller.animation?.addListener(onScroll);
       });
     } else {
-      controller.animateTo(widget.initPosition);
+      controller.animateTo(widget.initPosition ?? _currentPosition);
     }
 
     super.didUpdateWidget(oldWidget);
@@ -311,11 +312,10 @@ class _AppBarWithImageState extends State<AppBarWithImage> with TickerProviderSt
                             TabBar(
                               isScrollable: true,
                               controller: controller,
-                              indicatorPadding: EdgeInsets.symmetric(horizontal: 20.0),
+                              //indicatorPadding: EdgeInsets.symmetric(horizontal: 12.0),
                               tabs: List.generate(
                                 widget.itemCount,
                                 (index) {
-                                  print("Call tab builder: $index");
                                   return widget.tabBuilder(context, index);
                                 },
                               ),
@@ -330,56 +330,36 @@ class _AppBarWithImageState extends State<AppBarWithImage> with TickerProviderSt
             ),
           ];
         },
-        body: TabBarView(
-          controller: controller,
-          children: List.generate(
-            widget.itemCount,
-            (index) {
-              print("Calling page builder: $index");
-              return SafeArea(
-                top: false,
-                bottom: false,
-                child: Builder(
-                  builder: (BuildContext context) {
-                    return CustomScrollView(
-                      key: PageStorageKey<String>("page$index"),
-                      slivers: <Widget>[
-                        SliverOverlapInjector(
-                          handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
-                        ),
-                        SliverPadding(
-                          padding: const EdgeInsets.only(top: 0.0, right: 8.0, bottom: 48.0, left: 8.0),
-                          sliver: widget.pageBuilder(context, index),
-                        ),
-                      ],
+        body: widget.itemCount > 0
+            ? TabBarView(
+                controller: controller,
+                children: List.generate(
+                  widget.itemCount,
+                  (index) {
+                    return SafeArea(
+                      top: false,
+                      bottom: false,
+                      child: Builder(
+                        builder: (BuildContext context) {
+                          return CustomScrollView(
+                            key: PageStorageKey<String>("page$index"),
+                            slivers: <Widget>[
+                              SliverOverlapInjector(
+                                handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+                              ),
+                              SliverPadding(
+                                padding: const EdgeInsets.only(top: 0.0, right: 8.0, bottom: 48.0, left: 8.0),
+                                sliver: widget.pageBuilder(context, index),
+                              ),
+                            ],
+                          );
+                        },
+                      ),
                     );
                   },
                 ),
-              );
-            },
-          ), /*widget.tabs.map((tab) {
-            return SafeArea(
-              top: false,
-              bottom: false,
-              child: Builder(
-                builder: (BuildContext context) {
-                  return CustomScrollView(
-                    key: PageStorageKey<String>(tab.title),
-                    slivers: <Widget>[
-                      SliverOverlapInjector(
-                        handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
-                      ),
-                      SliverPadding(
-                        padding: const EdgeInsets.only(top: 0.0, right: 8.0, bottom: 48.0, left: 8.0),
-                        sliver: tab.child,
-                      ),
-                    ],
-                  );
-                },
-              ),
-            );
-          }).toList(),*/
-        ),
+              )
+            : Center(child: Loading()),
       ),
     );
   }

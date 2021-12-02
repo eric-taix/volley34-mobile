@@ -176,7 +176,7 @@ class _TeamRankingState extends State<TeamRanking> {
     }
   }
 
-  Widget _buildStats(BuildContext context, RankingTeamSynthesis teamStats) {
+  Widget _buildStats(BuildContext context, RankingTeamSynthesis? teamStats) {
     List<double> setsDiffEvolution = TeamBloc.computePointsDiffs(widget.results, widget.team.code);
     DateTime? startDate = widget.results.first.matchDate;
     DateTime? endDate = widget.results.last.matchDate;
@@ -185,14 +185,16 @@ class _TeamRankingState extends State<TeamRanking> {
       children: <Widget>[
         StatisticsWidget(
           title: "Matchs\ngagnés",
-          wonPoints: teamStats.wonMatches,
-          maxPoints: teamStats.wonMatches! + teamStats.lostMatches!,
+          points: teamStats?.wonMatches ?? 0,
+          maxPoints: (teamStats?.wonMatches ?? 0) + (teamStats?.lostMatches ?? 0),
+          backgroundColor: Theme.of(context).canvasColor,
         ),
-        SummaryWidget(title: "Scores", teamStats: teamStats),
+        SummaryWidget(title: "Scores", teamStats: teamStats ?? RankingTeamSynthesis.empty()),
         StatisticsWidget(
           title: "Sets pris",
-          wonPoints: teamStats.wonSets,
-          maxPoints: teamStats.wonSets! + teamStats.lostSets!,
+          points: teamStats?.wonSets ?? 0,
+          maxPoints: (teamStats?.wonSets ?? 0) + (teamStats?.lostSets ?? 0),
+          backgroundColor: Theme.of(context).canvasColor,
         ),
         EvolutionWidget(title: "Diff.\nde sets", evolution: setsDiffEvolution, startDate: startDate, endDate: endDate),
         EvolutionWidget(
@@ -202,8 +204,9 @@ class _TeamRankingState extends State<TeamRanking> {
             endDate: endDate),
         StatisticsWidget(
           title: "Points pris",
-          wonPoints: teamStats.wonPoints,
-          maxPoints: teamStats.wonPoints! + teamStats.lostPoints!,
+          points: teamStats?.wonPoints ?? 0,
+          maxPoints: (teamStats?.wonPoints ?? 0) + (teamStats?.lostPoints ?? 0),
+          backgroundColor: Theme.of(context).canvasColor,
         ),
       ],
     );

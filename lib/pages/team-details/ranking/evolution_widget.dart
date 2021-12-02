@@ -27,6 +27,7 @@ class EvolutionWidget extends StatelessWidget {
               showTitle: false,
               startDate: startDate,
               endDate: endDate,
+              thumbnail: true,
             ),
           ),
         ),

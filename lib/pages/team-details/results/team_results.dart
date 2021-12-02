@@ -7,9 +7,14 @@ import 'package:v34/pages/team-details/results/result_card.dart';
 class TeamResults extends StatelessWidget {
   final Team team;
   final List<MatchResult> results;
+  late final List<MatchResult> _sortedResults;
+  final Function(bool)? onChanged;
+  final bool showOnlyTeam;
 
-  TeamResults({Key? key, required this.team, required this.results}) : super(key: key) {
-    results.sort((result1, result2) => result1.matchDate!.compareTo(result2.matchDate!) * -1);
+  TeamResults({Key? key, required this.team, required this.results, this.onChanged, this.showOnlyTeam = true})
+      : super(key: key) {
+    _sortedResults = results.toList();
+    _sortedResults.sort((result1, result2) => result1.matchDate!.compareTo(result2.matchDate!) * -1);
   }
 
   @override
@@ -17,7 +22,21 @@ class TeamResults extends StatelessWidget {
     return SliverList(
       delegate: SliverChildListDelegate([
         SizedBox(height: 28),
-        ...results.map((result) => ResultCard(team: team, result: result)),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Text("Voir tous les résultats", style: Theme.of(context).textTheme.bodyText1),
+            Switch(
+              value: showOnlyTeam,
+              onChanged: (newValue) {
+                if (onChanged != null) onChanged!(newValue);
+              },
+            ),
+          ],
+        ),
+        SizedBox(height: 28),
+        ..._sortedResults.map((result) => ResultCard(
+            key: ValueKey("result-${result.hostTeamCode}-${result.visitorTeamCode}"), team: team, result: result)),
       ]),
     );
   }

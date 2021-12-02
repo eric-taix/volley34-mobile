@@ -270,7 +270,7 @@ class _FluidExpansionCardState extends State<FluidExpansionCard> with TickerProv
                         height: switchRadius - switchPadding,
                         width: switchRadius - switchPadding,
                         alignment: Alignment.center,
-                        child: Icon(Icons.keyboard_arrow_down, color: Theme.of(context).colorScheme.secondary),
+                        child: Icon(Icons.keyboard_arrow_down, color: Theme.of(context).textTheme.bodyText2!.color!),
                         decoration: BoxDecoration(
                           color: Theme.of(context).cardTheme.color,
                           borderRadius: BorderRadius.circular(switchRadius / 2),

@@ -27,6 +27,7 @@ class TeamDetailPage extends StatefulWidget {
 class _TeamDetailPageState extends State<TeamDetailPage> {
   late final TeamRankingBloc _rankingBloc;
   late final TeamBloc _teamBloc;
+  bool _showAllTeams = false;
 
   @override
   void initState() {
@@ -36,12 +37,21 @@ class _TeamDetailPageState extends State<TeamDetailPage> {
     _teamBloc = TeamBloc(repository: repository);
 
     _rankingBloc.add(LoadTeamRankingEvent(widget.team));
-    _teamBloc.add(TeamLoadResults(code: widget.team.code, last: 8));
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<TeamRankingBloc, TeamRankingState>(
+    return BlocConsumer<TeamRankingBloc, TeamRankingState>(
+      listener: (context, rankingState) {
+        if (rankingState is TeamRankingLoadedState) {
+          _teamBloc.add(TeamLoadDivisionPoolResults(
+            teamCode: widget.team.code!,
+            competitionsFullPath: rankingState.rankings
+                .map((ranking) => CompetitionFullPath(ranking.competitionCode!, ranking.division!, ranking.pool!))
+                .toList(),
+          ));
+        }
+      },
       bloc: _rankingBloc,
       builder: (context, state) {
         return AppBarWithImage(
@@ -54,7 +64,7 @@ class _TeamDetailPageState extends State<TeamDetailPage> {
             widget.team.code,
             FavoriteType.Team,
           ),
-          itemCount: state is TeamRankingLoadedState ? state.rankings.length + 2 : 1,
+          itemCount: state is TeamRankingLoadedState ? state.rankings.length + 2 : 0,
           tabBuilder: (context, index) {
             if (state is TeamRankingLoadedState) {
               if (index < state.rankings.length) {
@@ -70,12 +80,24 @@ class _TeamDetailPageState extends State<TeamDetailPage> {
               return BlocBuilder<TeamBloc, TeamState>(
                 bloc: _teamBloc,
                 builder: (context, teamState) {
-                  if (teamState is TeamResultsLoaded) {
+                  if (teamState is TeamDivisionPoolResultsLoaded) {
                     if (index < state.rankings.length)
-                      return _buildTeamRanking(state.rankings[index], teamState.results);
-                    if (index == state.rankings.length) return _buildTeamResults(state.rankings[0], teamState.results);
+                      return _buildTeamRanking(state.rankings[index], teamState.teamResults);
+                    if (index == state.rankings.length)
+                      return TeamResults(
+                        showOnlyTeam: _showAllTeams,
+                        team: widget.team,
+                        results: _showAllTeams ? teamState.allResults : teamState.teamResults,
+                        onChanged: (onlyTeam) {
+                          setState(
+                            () {
+                              _showAllTeams = onlyTeam;
+                            },
+                          );
+                        },
+                      );
                     if (index == state.rankings.length + 1)
-                      return _buildTeamAgenda(state.rankings[0], teamState.results);
+                      return _buildTeamAgenda(state.rankings[0], teamState.teamResults);
                   }
                   return SliverFillRemaining(child: Center(child: Loading()));
                 },
@@ -86,10 +108,6 @@ class _TeamDetailPageState extends State<TeamDetailPage> {
         );
       },
     );
-  }
-
-  Widget _buildTeamResults(RankingSynthesis? ranking, List<MatchResult> results) {
-    return TeamResults(team: widget.team, results: results);
   }
 
   Widget _buildTeamAgenda(RankingSynthesis? ranking, List<MatchResult> results) {

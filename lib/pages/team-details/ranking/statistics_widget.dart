@@ -1,31 +1,60 @@
 import 'package:flutter/material.dart';
 import 'package:v34/commons/graphs/arc.dart';
 
-class StatisticsWidget extends StatelessWidget {
+class StatisticsWidget extends StatefulWidget {
   final String title;
-  final int? wonPoints;
-  final int? lostPoints;
+  final int? points;
+  final int? diffPoints;
   final int maxPoints;
+  final Color? backgroundColor;
 
-  static final double miniGraphSize = 60;
+  const StatisticsWidget({
+    Key? key,
+    required this.points,
+    this.diffPoints,
+    required this.title,
+    required this.maxPoints,
+    this.backgroundColor,
+  }) : super(key: key);
 
-  const StatisticsWidget(
-      {Key? key, required this.wonPoints, this.lostPoints, required this.title, required this.maxPoints})
-      : super(key: key);
+  @override
+  State<StatisticsWidget> createState() => _StatisticsWidgetState();
+}
 
-  Widget _buildRatio(BuildContext context) {
+class _StatisticsWidgetState extends State<StatisticsWidget> with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+  late final Animation _animation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(duration: Duration(milliseconds: 800), vsync: this);
+    _animation = CurvedAnimation(parent: _controller, curve: Curves.easeInOut);
+    _controller.addListener(() {
+      setState(() {});
+    });
+    _controller.forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  Widget _buildRatio(BuildContext context, int point) {
     return RichText(
       textScaleFactor: 1.2,
       textAlign: TextAlign.center,
       text: new TextSpan(
-        text: wonPoints.toString(),
+        text: "$point",
         style: new TextStyle(
           fontSize: 24.0,
           fontWeight: FontWeight.bold,
           color: Theme.of(context).textTheme.bodyText2!.color,
         ),
         children: <TextSpan>[
-          new TextSpan(text: ' / ${(maxPoints)}', style: TextStyle(fontSize: 12, fontWeight: FontWeight.normal)),
+          new TextSpan(text: ' / ${(widget.maxPoints)}', style: TextStyle(fontSize: 12, fontWeight: FontWeight.normal)),
         ],
       ),
     );
@@ -33,18 +62,18 @@ class StatisticsWidget extends StatelessWidget {
 
   Widget _buildGraph(BuildContext context) {
     return SizedBox(
-      height: miniGraphSize,
-      width: miniGraphSize,
+      height: 80,
       child: ArcGraph(
         minValue: 0,
-        maxValue: maxPoints.toDouble(),
-        value: wonPoints!.toDouble(),
-        lineWidth: 6,
+        maxValue: widget.maxPoints.toDouble(),
+        value: widget.points!.toDouble(),
+        lineWidth: 8,
+        backgroundColor: widget.backgroundColor,
         leftTitle: LeftTitle(
           show: false,
         ),
         valueBuilder: (value, minValue, maxValue) {
-          var percentage = maxValue != 0 ? "${(((value - minValue) / maxValue) * 100).toStringAsFixed(1)}%" : "- -";
+          var percentage = maxValue != 0 ? "${(value * 100).toStringAsFixed(1)}%" : "- -";
           return Text(percentage);
         },
       ),
@@ -57,8 +86,9 @@ class StatisticsWidget extends StatelessWidget {
       padding: EdgeInsets.symmetric(vertical: 20.0),
       child: Row(
         children: <Widget>[
-          Expanded(child: Text(title, textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodyText1)),
-          Expanded(child: _buildRatio(context)),
+          Expanded(
+              child: Text(widget.title, textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodyText1)),
+          Expanded(child: _buildRatio(context, (_animation.value * widget.points).toInt())),
           Expanded(child: _buildGraph(context)),
         ],
       ),
