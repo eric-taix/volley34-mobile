@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:v34/commons/force_widget.dart';
 import 'package:v34/models/event.dart';
+import 'package:v34/models/force.dart';
 
 class MatchTitle extends StatelessWidget {
   final Event event;
@@ -37,7 +39,41 @@ class MatchTitle extends StatelessWidget {
                         fontWeight: FontWeight.bold,
                       ),
                 ),
-              )
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 18.0, bottom: 18),
+                child: ForceWidget(
+                  hostName: "Hôte",
+                  visitorName: "Visiteur",
+                  hostForce: event.hostForce ?? Force(),
+                  visitorForce: event.visitorForce ?? Force(),
+                  globalForce: event.globalForce ?? Force(),
+                ),
+              ),
+              Container(
+                child: Row(
+                  children: [
+                    Expanded(child: Text("${event.hostForce?.homeAttackPerSet ?? 0}")),
+                    Expanded(child: Text("${event.visitorForce?.outsideAttackPerSet ?? 0}")),
+                  ],
+                ),
+              ),
+              Container(
+                child: Row(
+                  children: [
+                    Expanded(child: Text("${event.hostForce?.homeDefensePerSet ?? 0}")),
+                    Expanded(child: Text("${event.visitorForce?.outsideDefensePerSet ?? 0}")),
+                  ],
+                ),
+              ),
+              Container(
+                child: Row(
+                  children: [
+                    Expanded(child: Text("${event.globalForce?.homeAttackPerSet ?? 0}")),
+                    Expanded(child: Text("${event.globalForce?.outsideAttackPerSet ?? 0}")),
+                  ],
+                ),
+              ),
             ],
           ),
         ),

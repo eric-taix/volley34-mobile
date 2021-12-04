@@ -51,14 +51,14 @@ class TeamRankingBloc extends Bloc<TeamRankingEvent, TeamRankingState> {
   Stream<TeamRankingState> mapEventToState(TeamRankingEvent event) async* {
     if (event is LoadTeamRankingEvent) {
       yield TeamRankingLoadingState();
-      List<RankingSynthesis> rankins = await repository.loadTeamRankingSynthesis(event.team.code);
-      rankins = rankins.map((classification) {
+      List<RankingSynthesis> rankings = await repository.loadTeamRankingSynthesis(event.team.code);
+      rankings = rankings.map((classification) {
         classification.ranks?.sort((tc1, tc2) {
           return tc1.rank!.compareTo(tc2.rank!) * -1;
         });
         return classification;
       }).toList();
-      yield TeamRankingLoadedState(event.team.code, rankins);
+      yield TeamRankingLoadedState(event.team.code, rankings);
     }
   }
 }

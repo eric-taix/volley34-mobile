@@ -53,6 +53,8 @@ flutter:
   uses-material-design: true
 
   assets:
+    - assets/attack.svg
+    - assets/defense.svg
     - assets/error.svg
     - assets/gpl_licence.txt
     - assets/about.markdown
