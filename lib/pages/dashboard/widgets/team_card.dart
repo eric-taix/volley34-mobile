@@ -69,7 +69,7 @@ class _TeamCardState extends State<TeamCard> {
             return [
               Expanded(
                 child: PodiumWidget(
-                  showTrailing: false,
+                  showTrailing: true,
                   classification: classification,
                   highlightedTeamCode: state.highlightedTeamCode,
                   currentlyDisplayed: widget.currentlyDisplayed,
