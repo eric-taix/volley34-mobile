@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import 'details/event_date.dart';
 import 'line.dart';
@@ -30,7 +31,44 @@ class Timeline extends StatelessWidget {
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      EventDate(date: item.date),
+                      Container(
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 18.0),
+                          child: EventDate(
+                            date: item.date,
+                            dateBuilder: (context, _, __) {
+                              DateFormat dateFormat = DateFormat('EEE dd/M', "FR");
+                              List<String> dateStr = dateFormat.format(item.date!).split(" ");
+                              List<String> daysStr = dateStr[1].split("/");
+                              return Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  RichText(
+                                    text: TextSpan(
+                                      text: "${dateStr[0][0].toUpperCase()}${dateStr[0].substring(1)}",
+                                      style: Theme.of(context).textTheme.headline5,
+                                    ),
+                                    textAlign: TextAlign.start,
+                                  ),
+                                  RichText(
+                                    text: TextSpan(
+                                      text: daysStr[0],
+                                      style: Theme.of(context).textTheme.headline4,
+                                      children: [
+                                        TextSpan(
+                                          text: " / ${daysStr[1]}",
+                                          style: Theme.of(context).textTheme.bodyText1,
+                                        ),
+                                      ],
+                                    ),
+                                    textAlign: TextAlign.start,
+                                  ),
+                                ],
+                              );
+                            },
+                          ),
+                        ),
+                      ),
                       Padding(
                         padding: const EdgeInsets.only(right: 8.0),
                         child: Line(
@@ -85,8 +123,13 @@ class TimelineGapBuilder {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
-              padding: const EdgeInsets.only(right: 4.0),
-              child: Container(constraints: BoxConstraints(minWidth: 80), child: SizedBox(height: 50)),
+              padding: const EdgeInsets.only(left: 18, right: 4.0),
+              child: Container(
+                  constraints: BoxConstraints(
+                    minWidth: EventDate.dateColumnWidth,
+                    maxWidth: EventDate.dateColumnWidth,
+                  ),
+                  child: SizedBox(height: 50, width: EventDate.dateColumnWidth)),
             ),
             DashedLine(lineWidth),
             Expanded(child: SizedBox()),

@@ -20,6 +20,10 @@ class Force {
   int get outsideAttack => _outsideAttack;
   int get countOutside => _countOutside;
 
+  int get totalCount => _countHome + _countOutside;
+  double get totalAttackPerSet => totalCount != 0 ? ((_homeAttack + _outsideAttack) / totalCount).toDouble() : 0;
+  double get totalDefensePerSet => totalCount != 0 ? ((_homeDefense + _outsideDefense) / totalCount).toDouble() : 0;
+
   void withHomeResult(int attack, int defense, int setCount) {
     _homeAttack = _homeAttack + attack;
     _homeDefense = _homeDefense + defense;

@@ -41,37 +41,13 @@ class MatchTitle extends StatelessWidget {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.only(top: 18.0, bottom: 18),
+                padding: const EdgeInsets.only(top: 18.0),
                 child: ForceWidget(
                   hostName: "Hôte",
                   visitorName: "Visiteur",
                   hostForce: event.hostForce ?? Force(),
                   visitorForce: event.visitorForce ?? Force(),
                   globalForce: event.globalForce ?? Force(),
-                ),
-              ),
-              Container(
-                child: Row(
-                  children: [
-                    Expanded(child: Text("${event.hostForce?.homeAttackPerSet ?? 0}")),
-                    Expanded(child: Text("${event.visitorForce?.outsideAttackPerSet ?? 0}")),
-                  ],
-                ),
-              ),
-              Container(
-                child: Row(
-                  children: [
-                    Expanded(child: Text("${event.hostForce?.homeDefensePerSet ?? 0}")),
-                    Expanded(child: Text("${event.visitorForce?.outsideDefensePerSet ?? 0}")),
-                  ],
-                ),
-              ),
-              Container(
-                child: Row(
-                  children: [
-                    Expanded(child: Text("${event.globalForce?.homeAttackPerSet ?? 0}")),
-                    Expanded(child: Text("${event.globalForce?.outsideAttackPerSet ?? 0}")),
-                  ],
                 ),
               ),
             ],
