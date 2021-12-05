@@ -18,7 +18,7 @@ class ForceWidget extends StatefulWidget {
       required this.hostForce,
       required this.visitorForce,
       required this.globalForce})
-      : super(key: key) {}
+      : super(key: key);
 
   @override
   State<ForceWidget> createState() => _ForceWidgetState();
@@ -159,7 +159,7 @@ class ForceGraphPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final double barTranslationX = 8;
 
-    final double strokeWidth = 10;
+    final double strokeWidth = 8;
     final colors = [Colors.red, Colors.orange, Colors.yellow, Colors.green];
     final invertedColors = colors.reversed.toList();
     final stops = List.generate(colors.length, (index) => (index * max / (colors.length)));

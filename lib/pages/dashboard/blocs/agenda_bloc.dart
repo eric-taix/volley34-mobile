@@ -94,7 +94,6 @@ class AgendaBloc extends Bloc<AgendaEvent, AgendaState> {
 
       Force globalForce = Force();
       Map<String, ForceBuilder> forceByTeam = {};
-      print("MATCH ${allResults.fold<int>(0, (previousValue, element) => element.sets!.length + previousValue)}");
       allResults.forEach((matchResult) {
         var hostForceBuilder = forceByTeam.putIfAbsent(
             matchResult.hostTeamCode!,
@@ -108,9 +107,13 @@ class AgendaBloc extends Bloc<AgendaEvent, AgendaState> {
         visitorForceBuilder.add(matchResult);
       });
 
-      List<Event> eventsWithForce = events.where((event) => event.type == EventType.Match).map((event) {
-        return event.withForce(
-            forceByTeam[event.hostCode]!.teamForce, forceByTeam[event.visitorCode]!.teamForce, globalForce);
+      List<Event> eventsWithForce = events.map((event) {
+        if (event.type == EventType.Match) {
+          return event.withForce(
+              forceByTeam[event.hostCode]!.teamForce, forceByTeam[event.visitorCode]!.teamForce, globalForce);
+        } else {
+          return event;
+        }
       }).toList();
 
       eventsWithForce.sort((event1, event2) => event1.date!.compareTo(event2.date!));

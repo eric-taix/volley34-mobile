@@ -33,7 +33,7 @@ class Timeline extends StatelessWidget {
                     children: [
                       Container(
                         child: Padding(
-                          padding: const EdgeInsets.only(left: 18.0),
+                          padding: const EdgeInsets.only(left: 8.0),
                           child: EventDate(
                             date: item.date,
                             dateBuilder: (context, _, __) {
@@ -123,7 +123,7 @@ class TimelineGapBuilder {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
-              padding: const EdgeInsets.only(left: 18, right: 4.0),
+              padding: const EdgeInsets.only(left: 8, right: 4.0),
               child: Container(
                   constraints: BoxConstraints(
                     minWidth: EventDate.dateColumnWidth,

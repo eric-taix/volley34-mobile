@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:v34/commons/force_widget.dart';
+import 'package:v34/commons/force_widget_comparison.dart';
 import 'package:v34/models/event.dart';
 import 'package:v34/models/force.dart';
+import 'package:v34/models/team.dart';
 
 class MatchTitle extends StatelessWidget {
   final Event event;
-
-  const MatchTitle({Key? key, required this.event}) : super(key: key);
+  final Team team;
+  const MatchTitle({Key? key, required this.event, required this.team}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -41,13 +42,12 @@ class MatchTitle extends StatelessWidget {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.only(top: 18.0),
-                child: ForceWidget(
-                  hostName: "Hôte",
-                  visitorName: "Visiteur",
+                padding: const EdgeInsets.only(top: 18.0, bottom: 4),
+                child: ForceComparison(
                   hostForce: event.hostForce ?? Force(),
                   visitorForce: event.visitorForce ?? Force(),
                   globalForce: event.globalForce ?? Force(),
+                  direction: event.hostCode == team.code ? ForceDirection.rightToLeft : ForceDirection.leftToRight,
                 ),
               ),
             ],

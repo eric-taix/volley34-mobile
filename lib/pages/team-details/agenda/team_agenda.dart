@@ -63,7 +63,7 @@ class _TeamAgendaState extends State<TeamAgenda> {
               ),
             );
           } else {
-            return SliverToBoxAdapter(child: SizedBox(height: 200, child: Center(child: Loading())));
+            return SliverFillRemaining(child: Center(child: Loading()));
           }
         });
   }
