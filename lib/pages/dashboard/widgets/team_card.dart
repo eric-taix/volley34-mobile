@@ -89,14 +89,6 @@ class _TeamCardState extends State<TeamCard> {
     }
   }
 
-  Function? _onTap(TeamRankingState state) {
-    if (state is TeamRankingLoadedState) {
-      return () =>
-          RouterFacade.push(context: context, builder: (_) => TeamDetailPage(team: widget.team, club: widget.club!));
-    } else
-      return null;
-  }
-
   @override
   Widget build(BuildContext context) {
     var absDistance = widget.distance.abs() > 1 ? 1 : widget.distance.abs();
@@ -119,7 +111,8 @@ class _TeamCardState extends State<TeamCard> {
                 ),
               ),
             ),
-            onTap: _onTap(state) as void Function()?,
+            onTap: () => RouterFacade.push(
+                context: context, builder: (_) => TeamDetailPage(team: widget.team, club: widget.club!)),
           ),
         );
       },
