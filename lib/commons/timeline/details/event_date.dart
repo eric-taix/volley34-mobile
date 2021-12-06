@@ -2,13 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class EventDate extends StatelessWidget {
+  static const double dateColumnWidth = 55;
 
   final DateTime? date;
   final DateTime? endDate;
   final bool fullFormat;
   final bool hour;
+  final Widget Function(BuildContext, DateTime?, DateTime?)? dateBuilder;
 
-  const EventDate({Key? key, required this.date, this.endDate, this.fullFormat = false, this.hour = false}) : super(key: key);
+  const EventDate({
+    Key? key,
+    required this.date,
+    this.endDate,
+    this.fullFormat = false,
+    this.hour = false,
+    this.dateBuilder,
+  }) : super(key: key);
 
   String _capitalize(String input) {
     return "${input[0].toUpperCase()}${input.substring(1)}";
@@ -23,23 +32,31 @@ class EventDate extends StatelessWidget {
     DateFormat toHourFormat = DateFormat("'à 'HH:mm", "FR");
     String dateStr;
     if (hour) {
-      dateStr = (endDate == null) ? hourFormat.format(date!) : fromHourFormat.format(date!) + toHourFormat.format(endDate!);
+      dateStr =
+          (endDate == null) ? hourFormat.format(date!) : fromHourFormat.format(date!) + toHourFormat.format(endDate!);
     } else {
       dateStr = fullFormat ? fullDateFormat.format(date!) : dateFormat.format(date!);
     }
     dateStr = _capitalize(dateStr);
-    return  Padding(
+    return Padding(
       padding: const EdgeInsets.only(right: 4.0),
       child: Container(
-          constraints: BoxConstraints(minWidth: 80),
-          child: Text(
-            dateStr,
-            textAlign: fullFormat || hour ? TextAlign.left : TextAlign.right,
-            style: Theme.of(context).textTheme.bodyText1!.copyWith(color: Theme.of(context).textTheme.bodyText2!.color),
-          )),
+        constraints: BoxConstraints(minWidth: dateColumnWidth, maxWidth: dateColumnWidth),
+        child: Builder(
+          builder: (context) => dateBuilder != null
+              ? dateBuilder!(context, date, endDate)
+              : Text(
+                  dateStr,
+                  textAlign: fullFormat || hour ? TextAlign.left : TextAlign.right,
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyText1!
+                      .copyWith(color: Theme.of(context).textTheme.bodyText2!.color),
+                ),
+        ),
+      ),
     );
   }
-
 }
 
 class NoEventDate extends StatelessWidget {
@@ -53,5 +70,4 @@ class NoEventDate extends StatelessWidget {
       ),
     );
   }
-
 }

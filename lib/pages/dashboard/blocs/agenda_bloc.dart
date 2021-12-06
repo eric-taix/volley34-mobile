@@ -4,6 +4,9 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:v34/models/event.dart';
+import 'package:v34/models/force.dart';
+import 'package:v34/models/ranking.dart';
+import 'package:v34/pages/club-details/blocs/club_team.bloc.dart';
 import 'package:v34/repositories/repository.dart';
 
 //--- States
@@ -74,21 +77,47 @@ class AgendaBloc extends Bloc<AgendaEvent, AgendaState> {
   @override
   Stream<AgendaState> mapEventToState(AgendaEvent event) async* {
     yield AgendaLoading(state.events);
-    if (event is LoadWeekAgenda) {
-      List<Event> otherEvents = await repository.loadAgendaWeek(event.week);
-      List<Event> favoriteTeamsEvents = await repository.loadFavoriteTeamsMatches();
-      yield AgendaLoaded(favoriteTeamsEvents
-        ..addAll(otherEvents)
-        ..addAll(state.events)
-        ..sort((event1, event2) => event1.date!.compareTo(event2.date!)));
-    } else if (event is LoadTeamMonthAgenda) {
+    if (event is LoadTeamMonthAgenda) {
       var today = DateTime.now();
       List<Event> events = (await repository.loadTeamAgenda(event.teamCode, event.days))
           .where((calendarEvent) => calendarEvent.date!.compareTo(today) > 0)
           .toList();
 
-      events.sort((event1, event2) => event1.date!.compareTo(event2.date!));
-      yield AgendaLoaded(events);
+      List<RankingSynthesis> rankings = await repository.loadTeamRankingSynthesis(event.teamCode);
+      List<CompetitionFullPath> competitionsFullPath = rankings
+          .map((ranking) => CompetitionFullPath(ranking.competitionCode!, ranking.division!, ranking.pool!))
+          .toList();
+
+      var allResults = (await Future.wait(competitionsFullPath.map((competitionFullPath) => repository.loadResults(
+              competitionFullPath.competitionCode, competitionFullPath.division, competitionFullPath.pool))))
+          .expand((e) => e);
+
+      Force globalForce = Force();
+      Map<String, ForceBuilder> forceByTeam = {};
+      allResults.forEach((matchResult) {
+        var hostForceBuilder = forceByTeam.putIfAbsent(
+            matchResult.hostTeamCode!,
+            () => ForceBuilder(
+                  teamCode: matchResult.hostTeamCode,
+                  othersForce: globalForce,
+                ));
+        var visitorForceBuilder = forceByTeam.putIfAbsent(
+            matchResult.visitorTeamCode!, () => ForceBuilder(teamCode: matchResult.visitorTeamCode));
+        hostForceBuilder.add(matchResult);
+        visitorForceBuilder.add(matchResult);
+      });
+
+      List<Event> eventsWithForce = events.map((event) {
+        if (event.type == EventType.Match) {
+          return event.withForce(
+              forceByTeam[event.hostCode]!.teamForce, forceByTeam[event.visitorCode]!.teamForce, globalForce);
+        } else {
+          return event;
+        }
+      }).toList();
+
+      eventsWithForce.sort((event1, event2) => event1.date!.compareTo(event2.date!));
+      yield AgendaLoaded(eventsWithForce);
     } else if (event is LoadTeamsMonthAgenda) {
       var today = DateTime.now();
       Set<Event> allEvents = Set();

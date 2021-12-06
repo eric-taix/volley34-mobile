@@ -64,12 +64,12 @@ class _TeamCardState extends State<TeamCard> {
 
   List<Widget> _getPodiumWidget(state) {
     if (state is TeamRankingLoadedState) {
-      List<Widget> result = state.rankins
+      List<Widget> result = state.rankings
           .expand((classification) {
             return [
               Expanded(
                 child: PodiumWidget(
-                  showTrailing: false,
+                  showTrailing: true,
                   classification: classification,
                   highlightedTeamCode: state.highlightedTeamCode,
                   currentlyDisplayed: widget.currentlyDisplayed,
@@ -78,7 +78,7 @@ class _TeamCardState extends State<TeamCard> {
               VerticalDivider(thickness: 0.9, indent: 38, endIndent: 38)
             ];
           })
-          .take(state.rankins.length * 2 - 1)
+          .take(state.rankings.length * 2 - 1)
           .toList();
       if (result.isEmpty) result.add(_noPodiumData());
       return result;
@@ -87,15 +87,6 @@ class _TeamCardState extends State<TeamCard> {
     } else {
       return [];
     }
-  }
-
-  Function? _onTap(TeamRankingState state) {
-    if (state is TeamRankingLoadedState) {
-      return () => RouterFacade.push(
-          context: context,
-          builder: (_) => TeamDetailPage(team: widget.team, classifications: state.rankins, club: widget.club));
-    } else
-      return null;
   }
 
   @override
@@ -120,7 +111,8 @@ class _TeamCardState extends State<TeamCard> {
                 ),
               ),
             ),
-            onTap: _onTap(state) as void Function()?,
+            onTap: () => RouterFacade.push(
+                context: context, builder: (_) => TeamDetailPage(team: widget.team, club: widget.club!)),
           ),
         );
       },

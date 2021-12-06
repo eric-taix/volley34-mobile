@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:v34/models/force.dart';
 
 @immutable
 class Event extends Equatable {
@@ -15,6 +16,9 @@ class Event extends Equatable {
   final String? visitorName;
   final String? visitorCode;
   final String? gymnasiumCode;
+  final Force? hostForce;
+  final Force? visitorForce;
+  final Force? globalForce;
 
   // Tournament & Meeting
   final DateTime? endDate;
@@ -24,23 +28,27 @@ class Event extends Equatable {
 
   final String? imageUrl;
 
-  Event(
-      {this.date,
-      this.name,
-      this.place,
-      this.gymnasiumCode,
-      this.type,
-      this.hostName,
-      this.hostCode,
-      this.visitorName,
-      this.visitorCode,
-      this.endDate,
-      this.contactName,
-      this.contactPhone,
-      this.contactEmail,
-      this.clubCode,
-      this.description,
-      this.imageUrl});
+  Event({
+    this.date,
+    this.name,
+    this.place,
+    this.gymnasiumCode,
+    this.type,
+    this.hostName,
+    this.hostCode,
+    this.visitorName,
+    this.visitorCode,
+    this.endDate,
+    this.contactName,
+    this.contactPhone,
+    this.contactEmail,
+    this.clubCode,
+    this.description,
+    this.imageUrl,
+    this.hostForce,
+    this.visitorForce,
+    this.globalForce,
+  });
 
   factory Event.fromJson(json) {
     if (json["MatchCode"] != null) {
@@ -70,6 +78,30 @@ class Event extends Equatable {
         type: _toEnumType(json["CalendarEventType"]),
       );
     }
+  }
+
+  Event withForce(Force hostForce, Force visitorForce, Force globalForce) {
+    return Event(
+      date: date,
+      name: name,
+      place: place,
+      gymnasiumCode: gymnasiumCode,
+      type: type,
+      hostName: hostName,
+      hostCode: hostCode,
+      visitorName: visitorName,
+      visitorCode: visitorCode,
+      endDate: endDate,
+      contactName: contactName,
+      contactPhone: contactPhone,
+      contactEmail: contactEmail,
+      clubCode: clubCode,
+      description: description,
+      imageUrl: imageUrl,
+      hostForce: hostForce,
+      visitorForce: visitorForce,
+      globalForce: globalForce,
+    );
   }
 
   static EventType _toEnumType(String? enumType) {

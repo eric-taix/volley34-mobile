@@ -22,7 +22,7 @@ class PodiumWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var placeValues = classification.teamsRankings?.map((teamClassification) {
+    var placeValues = classification.ranks?.map((teamClassification) {
           return PlaceValue(teamClassification.teamCode, teamClassification.totalPoints!.toDouble());
         }).toList() ??
         <PlaceValue>[];

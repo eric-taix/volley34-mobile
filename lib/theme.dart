@@ -32,7 +32,7 @@ class AppTheme {
         primary: Color(0xFF262C41),
         primaryVariant: Color(0xFF313852),
         secondary: _mainColor,
-        secondaryVariant: _mainColor,
+        secondaryVariant: _mainColor.withOpacity(0.7),
         surface: Color(0xFF262C41),
         background: Color(0xFF262C41),
         error: _mainColor,
@@ -86,7 +86,7 @@ class AppTheme {
             TextStyle(color: Color(0xFFF7FBFE), fontSize: 14, fontFamily: "Raleway", fontWeight: FontWeight.w400),
         bodyText1:
             TextStyle(color: Color(0xFF979DB2), fontSize: 14, fontFamily: "Raleway", fontWeight: FontWeight.w400),
-        caption: TextStyle(color: Color(0xFF979DB2), fontSize: 16, fontFamily: "Raleway"),
+        caption: TextStyle(color: Colors.white, fontSize: 18, fontFamily: "Raleway", fontWeight: FontWeight.w400),
       ),
       tabBarTheme: TabBarTheme(
         labelColor: Color(0xFFF7FBFE),
@@ -151,6 +151,18 @@ class AppTheme {
         ),
       ),
       dividerTheme: DividerThemeData(thickness: 0.3),
+      switchTheme: SwitchThemeData(
+        trackColor: MultiStateColor(
+          disabledColor: Colors.grey,
+          selectedColor: Colors.white,
+          defaultColor: Colors.white24,
+        ),
+        thumbColor: MultiStateColor(
+          disabledColor: Colors.grey,
+          selectedColor: _mainColor,
+          defaultColor: Colors.white,
+        ),
+      ),
     );
   }
 
@@ -270,6 +282,31 @@ class ButtonForegroundStateColor extends MaterialStateColor {
   @override
   Color resolve(Set<MaterialState> states) =>
       states.contains(MaterialState.disabled) ? Colors.white30 : color ?? Color(_defaultColor);
+}
+
+class MultiStateColor extends MaterialStateColor {
+  static const int _defaultColor = 0xFFFFFFFF;
+
+  final Color disabledColor;
+  final Color selectedColor;
+  final Color defaultColor;
+
+  const MultiStateColor({
+    required this.disabledColor,
+    required this.selectedColor,
+    required this.defaultColor,
+  }) : super(_defaultColor);
+
+  @override
+  Color resolve(Set<MaterialState> states) {
+    if (states.contains(MaterialState.disabled)) {
+      return disabledColor;
+    }
+    if (states.contains(MaterialState.selected)) {
+      return selectedColor;
+    }
+    return defaultColor;
+  }
 }
 
 class ButtonBackgroundStateColor extends MaterialStateColor {

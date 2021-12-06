@@ -26,7 +26,13 @@ class RoundedNetworkImage extends StatelessWidget {
         ),
         child: Padding(
           padding: const EdgeInsets.all(4.0),
-          child: CachedNetworkImage(fit: BoxFit.fill, imageUrl: imageUrl!),
+          child: imageUrl != null
+              ? CachedNetworkImage(
+                  fit: BoxFit.fill,
+                  imageUrl: imageUrl!,
+                  errorWidget: (_, __, ___) => SizedBox(),
+                )
+              : SizedBox(),
         ),
       ),
     );

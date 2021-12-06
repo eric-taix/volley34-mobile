@@ -2,10 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:v34/commons/loading.dart';
+import 'package:v34/commons/page/main_page.dart';
 import 'package:v34/models/gymnasium.dart';
 import 'package:v34/pages/gymnasium/gymnasium_card.dart';
 import 'package:v34/pages/gymnasium/gymnasium_map.dart';
-import 'package:v34/commons/page/main_page.dart';
 import 'package:v34/repositories/repository.dart';
 
 class GymnasiumPage extends StatefulWidget {
@@ -17,14 +17,23 @@ class _GymnasiumPageState extends State<GymnasiumPage> {
   List<Gymnasium>? _gymnasiums;
   PageController? _pageController;
   String? _currentGymnasiumCode;
+  bool _moving = false;
 
   @override
   void initState() {
     super.initState();
     _pageController = PageController(viewportFraction: 0.8)
-      ..addListener(() {
-        setState(() => _currentGymnasiumCode = _gymnasiums![_pageController!.page!.toInt()].gymnasiumCode);
-      });
+      ..addListener(
+        () {
+          setState(
+            () {
+              if (!_moving) {
+                _currentGymnasiumCode = _gymnasiums![_pageController!.page!.toInt()].gymnasiumCode;
+              }
+            },
+          );
+        },
+      );
     RepositoryProvider.of<Repository>(context)
       ..loadAllGymnasiums().then((gymnasiums) => setState(() {
             _gymnasiums = gymnasiums;
@@ -41,7 +50,11 @@ class _GymnasiumPageState extends State<GymnasiumPage> {
   Widget build(BuildContext context) {
     return MainPage(
       title: "Gymnases",
-      sliver: SliverFillRemaining(hasScrollBody: false,child: _buildMap(context), fillOverscroll: false,),
+      sliver: SliverFillRemaining(
+        hasScrollBody: false,
+        child: _buildMap(context),
+        fillOverscroll: false,
+      ),
     );
   }
 
@@ -56,7 +69,16 @@ class _GymnasiumPageState extends State<GymnasiumPage> {
                   currentGymnasiumCode: _currentGymnasiumCode,
                   onGymnasiumSelected: (selectedGymnasiumCode) {
                     int selectedGymnasiumIndex = _gymnasiums!.indexOf(selectedGymnasiumCode);
-                    _pageController!.jumpToPage(selectedGymnasiumIndex);
+                    _moving = true;
+                    _pageController!
+                        .animateToPage(selectedGymnasiumIndex,
+                            curve: Curves.easeInOut, duration: Duration(milliseconds: 1000))
+                        .then((_) {
+                      setState(() {
+                        _moving = false;
+                        _currentGymnasiumCode = _gymnasiums![_pageController!.page!.toInt()].gymnasiumCode;
+                      });
+                    });
                   },
                 ),
                 Align(

@@ -25,16 +25,14 @@ class FavoriteIcon extends StatelessWidget {
     return Padding(
       padding: padding,
       child: BlocBuilder<PreferencesBloc, PreferencesState>(
-        builder: (context, dynamic state) => Icon(
-          (favoriteType == FavoriteType.Club && state.favoriteClub!.code == favoriteId) ||
-                  (favoriteType == FavoriteType.Team && state.favoriteTeam!.code == favoriteId)
-              ? Icons.star
-              : Icons.star_border,
-          color: (favoriteType == FavoriteType.Club && state.favoriteClub!.code == favoriteId) ||
-                  (favoriteType == FavoriteType.Team && state.favoriteTeam!.code == favoriteId)
-              ? Colors.orangeAccent
-              : Theme.of(context).textTheme.bodyText1!.color,
-        ),
+        builder: (context, dynamic state) =>
+            (favoriteType == FavoriteType.Club && state.favoriteClub!.code == favoriteId) ||
+                    (favoriteType == FavoriteType.Team && state.favoriteTeam!.code == favoriteId)
+                ? Icon(
+                    Icons.star,
+                    color: Colors.orangeAccent,
+                  )
+                : SizedBox(),
       ),
     );
   }

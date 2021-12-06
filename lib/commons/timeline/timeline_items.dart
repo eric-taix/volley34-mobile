@@ -85,7 +85,7 @@ class _MatchTimelineItem extends TimelineItemWidget {
   @override
   Widget build(BuildContext context) {
     return _TimelineItemCard(
-      children: <Widget>[MatchTitle(event: event), _Place(event.place, event.date)],
+      children: <Widget>[MatchTitle(event: event, team: team), _Place(event.place, event.date)],
       onTap: () => showEventDetails(context, event),
     );
   }

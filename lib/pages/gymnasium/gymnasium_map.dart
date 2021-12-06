@@ -6,6 +6,7 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:v34/commons/marker/map-marker.dart';
 import 'package:v34/models/gymnasium.dart';
 import 'package:v34/repositories/repository.dart';
 import 'package:v34/utils/extensions.dart';
@@ -32,6 +33,9 @@ class _GymnasiumMapState extends State<GymnasiumMap> {
 
   CameraPosition _initialLocation = CameraPosition(target: LatLng(43.6101248, 3.8039496), zoom: 11);
 
+  BitmapDescriptor? _selectedMarker;
+  BitmapDescriptor? _otherMarker;
+
   String? _rawMapStyle;
   String? _currentMapStyle;
 
@@ -43,6 +47,30 @@ class _GymnasiumMapState extends State<GymnasiumMap> {
       _rawMapStyle = mapStyle;
       _applyMapStyle(context);
     });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _loadMarkers(context);
+  }
+
+  void _loadMarkers(BuildContext context) async {
+    _selectedMarker = await MapMarker(
+      size: 120,
+      borderColor: Theme.of(context).colorScheme.secondary,
+      backgroundColor: Colors.white,
+      pinLength: 16,
+      borderWidth: 8,
+    ).bitmapDescriptor;
+    _otherMarker = await MapMarker(
+      size: 80,
+      borderColor: Theme.of(context).colorScheme.secondaryVariant,
+      backgroundColor: Theme.of(context).colorScheme.primary,
+      pinLength: 16,
+      borderWidth: 6,
+    ).bitmapDescriptor;
+    setState(() {});
   }
 
   void _applyMapStyle(BuildContext buildContext) {
@@ -61,7 +89,7 @@ class _GymnasiumMapState extends State<GymnasiumMap> {
 
   @override
   void dispose() {
-    _mapController!.dispose();
+    _mapController?.dispose();
     super.dispose();
   }
 
@@ -133,9 +161,12 @@ class _GymnasiumMapState extends State<GymnasiumMap> {
                           gymnasium.latitude!,
                           gymnasium.longitude!,
                         ),
-                        alpha: gymnasium.gymnasiumCode == widget.currentGymnasiumCode ? 1.0 : 0.35,
+                        alpha: gymnasium.gymnasiumCode == widget.currentGymnasiumCode ? 1.0 : 1,
                         onTap: () => _onMarkerTap(gymnasium),
                         zIndex: gymnasium.gymnasiumCode == widget.currentGymnasiumCode ? 1.0 : 0.0,
+                        icon: gymnasium.gymnasiumCode == widget.currentGymnasiumCode
+                            ? _selectedMarker ?? BitmapDescriptor.defaultMarker
+                            : _otherMarker ?? BitmapDescriptor.defaultMarker,
                       ),
                     )
                     .toSet(),

@@ -14,7 +14,7 @@ class GymnasiumCard extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(bottom: 28.0),
       child: Card(
-          color: Theme.of(context).appBarTheme.backgroundColor,
+          //color: Theme.of(context).appBarTheme.backgroundColor,
           margin: EdgeInsets.all(8),
           child: Padding(
             padding: const EdgeInsets.all(18.0),
@@ -24,8 +24,12 @@ class GymnasiumCard extends StatelessWidget {
                 Expanded(
                     child: Padding(
                   padding: const EdgeInsets.only(right: 18.0),
-                  child: Text(gymnasium.name!,
-                      maxLines: 2, overflow: TextOverflow.ellipsis, style: Theme.of(context).textTheme.headline1),
+                  child: Text(
+                    gymnasium.name!,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: Theme.of(context).textTheme.caption,
+                  ),
                 )),
                 Text(
                   "${gymnasium.address}",
@@ -44,6 +48,15 @@ class GymnasiumCard extends StatelessWidget {
                       child: ListView(
                         scrollDirection: Axis.horizontal,
                         children: [
+                          if (gymnasium.longitude != null && gymnasium.latitude != null)
+                            Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 2.0, horizontal: 4.0),
+                              child: ElevatedButton.icon(
+                                onPressed: () => launchRoute(context, gymnasium),
+                                icon: Icon(Icons.directions),
+                                label: Text("Itinéraire"),
+                              ),
+                            ),
                           if (gymnasium.phone != null && gymnasium.phone!.isNotEmpty)
                             Padding(
                               padding: const EdgeInsets.symmetric(vertical: 2.0, horizontal: 2.0),
@@ -51,15 +64,6 @@ class GymnasiumCard extends StatelessWidget {
                                 leadingIcon: Icons.phone,
                                 onPressed: () => launchURL("tel:${gymnasium.phone}"),
                                 child: Text("Appeler"),
-                              ),
-                            ),
-                          if (gymnasium.longitude != null && gymnasium.latitude != null)
-                            Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 2.0, horizontal: 4.0),
-                              child: RoundedOutlinedButton(
-                                leadingIcon: Icons.directions,
-                                onPressed: () => launchRoute(context, gymnasium),
-                                child: Text("Itinéraire"),
                               ),
                             ),
                         ],

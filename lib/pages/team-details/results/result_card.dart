@@ -74,7 +74,7 @@ class ResultCard extends StatelessWidget {
                             "Set n°",
                             style: Theme.of(context).textTheme.bodyText1,
                           ),
-                          Icon(_setIcons[index], color: Theme.of(context).colorScheme.secondary),
+                          Icon(_setIcons[index], color: Theme.of(context).textTheme.bodyText1!.color!),
                         ],
                       ),
                     ),
@@ -91,11 +91,14 @@ class ResultCard extends StatelessWidget {
                       ),
                     ),
                     Expanded(
-                        flex: 2,
-                        child: ResultBar(
-                            minMax: minMax,
-                            diffValue: set.hostPoint! - set.visitorpoint!,
-                            isHost: team.code == result.hostTeamCode))
+                      flex: 2,
+                      child: team.code == result.hostTeamCode || team.code == result.visitorTeamCode
+                          ? ResultBar(
+                              minMax: minMax,
+                              diffValue: set.hostPoint! - set.visitorpoint!,
+                              isHost: team.code == result.hostTeamCode)
+                          : SizedBox(),
+                    )
                   ],
                 ),
               )))
@@ -139,7 +142,9 @@ class ResultCard extends StatelessWidget {
     String resultString;
 
     if ((diffSets > 0) || (diffSets == 0 && result.totalPointsHost! > result.totalPointsVisitor!)) {
-      scoreColor = team.code == result.hostTeamCode ? Colors.green : Colors.red;
+      scoreColor = team.code == result.hostTeamCode
+          ? Colors.green
+          : (team.code == result.visitorTeamCode ? Colors.red : Theme.of(context).textTheme.bodyText2!.color!);
       resultString = "gagne contre";
     } else {
       scoreColor = team.code == result.hostTeamCode ? Colors.red : Colors.green;
@@ -151,7 +156,7 @@ class ResultCard extends StatelessWidget {
       child: Row(children: [
         Container(
           decoration: BoxDecoration(
-              border: Border(right: BorderSide(color: Theme.of(context).colorScheme.secondary, width: 0))),
+              border: Border(right: BorderSide(color: Theme.of(context).textTheme.bodyText1!.color!, width: 0))),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 18.0),
             child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
@@ -199,9 +204,10 @@ class ResultCard extends StatelessWidget {
                 "${result.hostName}",
                 textAlign: TextAlign.center,
                 overflow: TextOverflow.ellipsis,
-                style: Theme.of(context).textTheme.bodyText2!.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyText2!
+                    .copyWith(fontWeight: FontWeight.bold, color: result.hostTeamCode == team.code ? scoreColor : null),
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -215,8 +221,7 @@ class ResultCard extends StatelessWidget {
                 textAlign: TextAlign.center,
                 overflow: TextOverflow.ellipsis,
                 style: Theme.of(context).textTheme.bodyText2!.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
+                    fontWeight: FontWeight.bold, color: result.visitorTeamCode == team.code ? scoreColor : null),
               ),
             ],
           ),

@@ -20,9 +20,17 @@ class RoundedOutlinedButton extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (leadingIcon != null) Icon(leadingIcon),
+          if (leadingIcon != null)
+            Padding(
+              padding: const EdgeInsets.only(right: 8.0),
+              child: Icon(leadingIcon),
+            ),
           child,
-          if (trailingIcon != null) Icon(trailingIcon),
+          if (trailingIcon != null)
+            Padding(
+              padding: const EdgeInsets.only(left: 8.0),
+              child: Icon(trailingIcon),
+            ),
         ],
       ),
     );

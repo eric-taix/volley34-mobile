@@ -25,6 +25,14 @@ class TeamCompetitionSynthesis extends Equatable {
   List<Object?> get props => [rankingSynthesis, pointsDiffEvolution];
 }
 
+class CompetitionFullPath {
+  final String competitionCode;
+  final String division;
+  final String pool;
+
+  CompetitionFullPath(this.competitionCode, this.division, this.pool);
+}
+
 //---- STATE
 
 class ValuePerMax {
@@ -73,15 +81,25 @@ class TeamResultsLoaded extends TeamState {
   List<Object?> get props => [results];
 }
 
+class TeamDivisionPoolResultsLoaded extends TeamState {
+  final List<MatchResult> teamResults;
+  final List<MatchResult> allResults;
+
+  TeamDivisionPoolResultsLoaded({required this.teamResults, required this.allResults});
+
+  @override
+  List<Object?> get props => [teamResults, allResults];
+}
+
 //---- EVENT
 @immutable
 abstract class TeamEvent {}
 
 class TeamLoadSlidingResult extends TeamEvent {
-  final String? code;
+  final String code;
   final int? last;
 
-  TeamLoadSlidingResult({this.code, this.last});
+  TeamLoadSlidingResult({required this.code, this.last});
 }
 
 class TeamLoadAverageSlidingResult extends TeamEvent {
@@ -97,6 +115,13 @@ class TeamLoadResults extends TeamEvent {
   final int last;
 
   TeamLoadResults({required this.code, required this.last});
+}
+
+class TeamLoadDivisionPoolResults extends TeamEvent {
+  final List<CompetitionFullPath> competitionsFullPath;
+  final String teamCode;
+
+  TeamLoadDivisionPoolResults({required this.teamCode, required this.competitionsFullPath});
 }
 
 //---- BLOC
@@ -117,7 +142,7 @@ class TeamBloc extends Bloc<TeamEvent, TeamState> {
     if (event is TeamLoadAverageSlidingResult) {
       yield TeamSlidingStatsLoading();
       List<RankingSynthesis> rankings = (await repository.loadTeamRankingSynthesis(event.team.code)).map((ranking) {
-        return ranking..teamsRankings?.sort(sortByRank);
+        return ranking..ranks?.sort(sortByRank);
       }).toList();
 
       var competitions = await Future.wait(rankings.map((ranking) async {
@@ -152,6 +177,26 @@ class TeamBloc extends Bloc<TeamEvent, TeamState> {
       yield TeamSlidingStatsLoading();
       var results = await repository.loadTeamLastMatchesResult(event.code, event.last);
       yield TeamResultsLoaded(results: results);
+    }
+
+    if (event is TeamLoadDivisionPoolResults) {
+      yield TeamSlidingStatsLoading();
+      var matchResults = (await Future.wait(event.competitionsFullPath.map((competitionFullPath) async {
+        var results = await repository.loadResults(
+            competitionFullPath.competitionCode, competitionFullPath.division, competitionFullPath.pool);
+        return results;
+      })))
+          .expand((results) => results)
+          .toList()
+        ..sort((m1, m2) => m1.matchDate!.compareTo(m2.matchDate!));
+
+      yield TeamDivisionPoolResultsLoaded(
+        teamResults: matchResults
+            .where((matchResult) =>
+                matchResult.hostTeamCode == event.teamCode || matchResult.visitorTeamCode == event.teamCode)
+            .toList(),
+        allResults: matchResults.toList(),
+      );
     }
   }
 

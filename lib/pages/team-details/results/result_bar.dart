@@ -7,17 +7,15 @@ class ResultBar extends StatelessWidget {
   final bool isHost;
   final double kHeight = 8;
 
-  const ResultBar(
-      {required this.minMax, required this.diffValue, required this.isHost});
+  const ResultBar({required this.minMax, required this.diffValue, required this.isHost});
 
   @override
   Widget build(BuildContext context) {
-    int max =
-        (minMax.min.abs() > minMax.max.abs() ? minMax.min : minMax.max).abs();
+    int max = (minMax.min.abs() > minMax.max.abs() ? minMax.min : minMax.max).abs();
     return Center(
       child: CustomPaint(
         painter: _BarPainter(
-            color: Theme.of(context).textTheme.caption!.color,
+            color: Theme.of(context).textTheme.bodyText1!.color,
             widthOffset: diffValue / max,
             height: kHeight,
             isHost: isHost),
@@ -64,8 +62,7 @@ class _BarPainter extends CustomPainter {
       final stops = [0.0, 0.4, 0.8];
       final gradient = LinearGradient(colors: colors, stops: stops);
       final paint = Paint()
-        ..shader = gradient.createShader(
-            Rect.fromLTRB(size.width / 2, 0, size.width, size.height))
+        ..shader = gradient.createShader(Rect.fromLTRB(size.width / 2, 0, size.width, size.height))
         ..strokeWidth = height
         ..strokeCap = StrokeCap.round
         ..style = PaintingStyle.stroke;
@@ -85,16 +82,14 @@ class _BarPainter extends CustomPainter {
       final stops = [0.2, 0.6, 1.0];
       final gradient = LinearGradient(colors: colors, stops: stops);
       final paint = Paint()
-        ..shader = gradient
-            .createShader(Rect.fromLTRB(0, 0, size.width / 2, size.height))
+        ..shader = gradient.createShader(Rect.fromLTRB(0, 0, size.width / 2, size.height))
         ..strokeWidth = height
         ..strokeCap = StrokeCap.round
         ..style = PaintingStyle.stroke;
 
       canvas.drawPath(linePath, paint);
     }
-    canvas.drawLine(
-        Offset(size.width / 2, -5), Offset(size.width / 2, 10), verticalLine);
+    canvas.drawLine(Offset(size.width / 2, -5), Offset(size.width / 2, 10), verticalLine);
   }
 
   @override

@@ -6,9 +6,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:map_launcher/map_launcher.dart' as mapLauncher;
 import 'package:v34/commons/loading.dart';
+import 'package:v34/commons/marker/map-marker.dart';
+import 'package:v34/commons/rounded_outlined_button.dart';
 import 'package:v34/models/event.dart';
 import 'package:v34/pages/dashboard/blocs/gymnasium_bloc.dart';
 import 'package:v34/utils/extensions.dart';
+import 'package:v34/utils/launch.dart';
 
 class EventPlace extends StatefulWidget {
   final Event event;
@@ -24,10 +27,16 @@ class _EventPlaceState extends State<EventPlace> {
   String? _rawMapStyle;
   String? _currentMapStyle;
   GoogleMapController? _mapController;
+  BitmapDescriptor? _marker;
 
   @override
   void initState() {
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
     if (widget.event.type == EventType.Match) {
       _gymnasiumBloc = GymnasiumBloc(RepositoryProvider.of(context), GymnasiumUninitializedState());
       _gymnasiumBloc!.add(LoadGymnasiumEvent(gymnasiumCode: widget.event.gymnasiumCode));
@@ -36,6 +45,23 @@ class _EventPlaceState extends State<EventPlace> {
       _rawMapStyle = mapStyle;
       _applyMapStyle(context);
     });
+    _loadMarker();
+  }
+
+  void _loadMarker() {
+    MapMarker(
+      size: 120,
+      borderColor: Theme.of(context).colorScheme.secondary,
+      backgroundColor: Colors.white,
+      pinLength: 16,
+      borderWidth: 8,
+    ).bitmapDescriptor.then(
+      (bitmap) {
+        setState(() {
+          _marker = bitmap;
+        });
+      },
+    );
   }
 
   @override
@@ -125,9 +151,9 @@ class _EventPlaceState extends State<EventPlace> {
               child: GoogleMap(
                   markers: [
                     Marker(
-                      markerId: MarkerId(state.gymnasium.gymnasiumCode!),
-                      position: LatLng(state.gymnasium.latitude!, state.gymnasium.longitude!),
-                    )
+                        markerId: MarkerId(state.gymnasium.gymnasiumCode!),
+                        position: LatLng(state.gymnasium.latitude!, state.gymnasium.longitude!),
+                        icon: _marker ?? BitmapDescriptor.defaultMarkerWithHue(100))
                   ].toSet(),
                   initialCameraPosition:
                       CameraPosition(target: LatLng(state.gymnasium.latitude!, state.gymnasium.longitude!), zoom: 11),
@@ -146,10 +172,30 @@ class _EventPlaceState extends State<EventPlace> {
             ),
           ),
         ),
-        ElevatedButton.icon(
-          onPressed: () => _launchMap(state, true),
-          icon: Icon(Icons.directions),
-          label: Text("Itinéraire"),
+        Padding(
+          padding: const EdgeInsets.only(top: 8.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(right: 8.0),
+                child: ElevatedButton.icon(
+                  onPressed: () => _launchMap(state, true),
+                  icon: Icon(Icons.directions),
+                  label: Text("Itinéraire"),
+                ),
+              ),
+              if (state.gymnasium.phone != null && state.gymnasium.phone!.isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.only(left: 8.0),
+                  child: RoundedOutlinedButton(
+                    leadingIcon: Icons.phone,
+                    child: Text("Appeler"),
+                    onPressed: () => launchURL("tel:${state.gymnasium.phone}"),
+                  ),
+                ),
+            ],
+          ),
         ),
       ],
     );

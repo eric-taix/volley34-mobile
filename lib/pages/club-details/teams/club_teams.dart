@@ -8,7 +8,7 @@ import 'package:v34/pages/club-details/teams/club_team.dart';
 import 'package:v34/repositories/repository.dart';
 
 class ClubTeams extends StatefulWidget {
-  final Club? club;
+  final Club club;
 
   ClubTeams(this.club);
 
@@ -23,7 +23,7 @@ class _ClubTeamsState extends State<ClubTeams> {
   void initState() {
     super.initState();
     _clubTeamsBloc = ClubTeamsBloc(repository: RepositoryProvider.of<Repository>(context))
-      ..add(ClubTeamsLoadEvent(widget.club!.code));
+      ..add(ClubTeamsLoadEvent(widget.club.code));
   }
 
   @override

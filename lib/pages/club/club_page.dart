@@ -41,8 +41,6 @@ class _ClubPageState extends State<ClubPage> with SingleTickerProviderStateMixin
       setState(() {
         _loading = false;
         clubs.sort((c1, c2) {
-          if (c1.favorite && !c2.favorite) return -1;
-          if (!c1.favorite && c2.favorite) return 1;
           return c1.shortName!.toUpperCase().compareTo(c2.shortName!.toUpperCase());
         });
         _clubs = clubs;
@@ -93,20 +91,23 @@ class _ClubPageState extends State<ClubPage> with SingleTickerProviderStateMixin
               child: SliverList(
                 delegate: SliverChildBuilderDelegate(
                   (context, index) {
-                    return index < _clubs.length
+                    return index > 0 && index < _clubs.length + 1
                         ? AnimationConfiguration.staggeredList(
                             position: index,
                             duration: const Duration(milliseconds: 375),
-                            child: SlideAnimation(
-                              horizontalOffset: 50.0,
-                              child: FadeInAnimation(
-                                child: ClubCard(_clubs[index], index),
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 18.0),
+                              child: SlideAnimation(
+                                horizontalOffset: 50.0,
+                                child: FadeInAnimation(
+                                  child: ClubCard(_clubs[index - 1], index - 1),
+                                ),
                               ),
                             ),
                           )
-                        : SizedBox(height: 86);
+                        : SizedBox(height: index == 0 ? 38 : 86);
                   },
-                  childCount: _clubs.length + 1,
+                  childCount: _clubs.length + 2,
                 ),
               ),
             ),
