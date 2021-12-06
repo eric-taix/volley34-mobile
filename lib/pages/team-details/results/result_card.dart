@@ -91,11 +91,14 @@ class ResultCard extends StatelessWidget {
                       ),
                     ),
                     Expanded(
-                        flex: 2,
-                        child: ResultBar(
-                            minMax: minMax,
-                            diffValue: set.hostPoint! - set.visitorpoint!,
-                            isHost: team.code == result.hostTeamCode))
+                      flex: 2,
+                      child: team.code == result.hostTeamCode || team.code == result.visitorTeamCode
+                          ? ResultBar(
+                              minMax: minMax,
+                              diffValue: set.hostPoint! - set.visitorpoint!,
+                              isHost: team.code == result.hostTeamCode)
+                          : SizedBox(),
+                    )
                   ],
                 ),
               )))
@@ -139,7 +142,9 @@ class ResultCard extends StatelessWidget {
     String resultString;
 
     if ((diffSets > 0) || (diffSets == 0 && result.totalPointsHost! > result.totalPointsVisitor!)) {
-      scoreColor = team.code == result.hostTeamCode ? Colors.green : Colors.red;
+      scoreColor = team.code == result.hostTeamCode
+          ? Colors.green
+          : (team.code == result.visitorTeamCode ? Colors.red : Theme.of(context).textTheme.bodyText2!.color!);
       resultString = "gagne contre";
     } else {
       scoreColor = team.code == result.hostTeamCode ? Colors.red : Colors.green;
