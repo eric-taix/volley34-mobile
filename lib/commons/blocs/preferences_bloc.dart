@@ -34,6 +34,8 @@ class PreferencesState extends Equatable {
 
 class PreferencesUninitializedState extends PreferencesState {}
 
+class PreferencesErrorState extends PreferencesState {}
+
 class PreferencesLoadingState extends PreferencesState {}
 
 class PreferencesSavingState extends PreferencesState {}
@@ -65,31 +67,39 @@ class PreferencesBloc extends Bloc<PreferencesEvent, PreferencesState> {
   Stream<PreferencesState> mapEventToState(PreferencesEvent event) async* {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     if (event is PreferencesLoadEvent) {
-      yield PreferencesLoadingState();
-      Club? club = await repository.loadFavoriteClub();
-      Team? team = await repository.loadFavoriteTeam();
-      yield PreferencesUpdatedState(
-        useAutomaticTheme: preferences.getBool("automatic_theme") ?? true,
-        useDarkTheme: preferences.getBool("dark_theme") ?? false,
-        favoriteClub: club,
-        favoriteTeam: team,
-      );
+      try {
+        yield PreferencesLoadingState();
+        Club? club = await repository.loadFavoriteClub();
+        Team? team = await repository.loadFavoriteTeam();
+        yield PreferencesUpdatedState(
+          useAutomaticTheme: preferences.getBool("automatic_theme") ?? true,
+          useDarkTheme: preferences.getBool("dark_theme") ?? false,
+          favoriteClub: club,
+          favoriteTeam: team,
+        );
+      } catch (e) {
+        yield PreferencesErrorState();
+      }
     } else if (event is PreferencesSaveEvent) {
-      yield PreferencesSavingState();
-      if (event.useAutomaticTheme != null) preferences.setBool("automatic_theme", event.useAutomaticTheme!);
-      if (event.useDarkTheme != null) preferences.setBool("dark_theme", event.useDarkTheme!);
-      if (event.favoriteClub?.code != null) {
-        await repository.setFavorite(event.favoriteClub!.code, FavoriteType.Club);
+      try {
+        yield PreferencesSavingState();
+        if (event.useAutomaticTheme != null) preferences.setBool("automatic_theme", event.useAutomaticTheme!);
+        if (event.useDarkTheme != null) preferences.setBool("dark_theme", event.useDarkTheme!);
+        if (event.favoriteClub?.code != null) {
+          await repository.setFavorite(event.favoriteClub!.code, FavoriteType.Club);
+        }
+        if (event.favoriteTeam?.code != null) {
+          await repository.setFavorite(event.favoriteTeam!.code, FavoriteType.Team);
+        }
+        yield PreferencesUpdatedState(
+          useAutomaticTheme: preferences.getBool("automatic_theme") ?? true,
+          useDarkTheme: preferences.getBool("dark_theme") ?? false,
+          favoriteClub: event.favoriteClub ?? await repository.loadFavoriteClub(),
+          favoriteTeam: event.favoriteTeam ?? await repository.loadFavoriteTeam(),
+        );
+      } catch (e) {
+        yield PreferencesErrorState();
       }
-      if (event.favoriteTeam?.code != null) {
-        await repository.setFavorite(event.favoriteTeam!.code, FavoriteType.Team);
-      }
-      yield PreferencesUpdatedState(
-        useAutomaticTheme: preferences.getBool("automatic_theme") ?? true,
-        useDarkTheme: preferences.getBool("dark_theme") ?? false,
-        favoriteClub: event.favoriteClub ?? await repository.loadFavoriteClub(),
-        favoriteTeam: event.favoriteTeam ?? await repository.loadFavoriteTeam(),
-      );
     }
   }
 }

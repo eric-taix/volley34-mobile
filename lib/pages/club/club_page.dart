@@ -19,23 +19,25 @@ class _ClubPageState extends State<ClubPage> with SingleTickerProviderStateMixin
 
   late List<Club> _clubs;
   bool _loading = false;
+  bool _error = true;
 
   @override
   void initState() {
     super.initState();
     _repository = RepositoryProvider.of<Repository>(context);
-    _loadClubs();
+    _loadClubs(context);
   }
 
   @override
   void didUpdateWidget(ClubPage oldWidget) async {
-    _loadClubs();
+    _loadClubs(context);
     super.didUpdateWidget(oldWidget);
   }
 
-  void _loadClubs() {
+  void _loadClubs(BuildContext context) {
     setState(() {
       _loading = true;
+      _error = false;
     });
     _repository.loadAllClubs().then((clubs) {
       setState(() {
@@ -44,6 +46,11 @@ class _ClubPageState extends State<ClubPage> with SingleTickerProviderStateMixin
           return c1.shortName!.toUpperCase().compareTo(c2.shortName!.toUpperCase());
         });
         _clubs = clubs;
+      });
+    }).onError((error, stackTrace) {
+      setState(() {
+        _error = true;
+        _clubs = [];
       });
     });
   }
@@ -78,39 +85,34 @@ class _ClubPageState extends State<ClubPage> with SingleTickerProviderStateMixin
           ),
         ),
       ],
-      sliver: _loading
-          ? SliverToBoxAdapter(
-              child: Center(
-                  child: Column(
-              children: [
-                Loading(),
-                Text("Hello"),
-              ],
-            )))
-          : AnimationLimiter(
-              child: SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  (context, index) {
-                    return index > 0 && index < _clubs.length + 1
-                        ? AnimationConfiguration.staggeredList(
-                            position: index,
-                            duration: const Duration(milliseconds: 375),
-                            child: Padding(
-                              padding: const EdgeInsets.only(left: 18.0),
-                              child: SlideAnimation(
-                                horizontalOffset: 50.0,
-                                child: FadeInAnimation(
-                                  child: ClubCard(_clubs[index - 1], index - 1),
+      sliver: _error
+          ? SliverToBoxAdapter()
+          : _loading
+              ? SliverFillRemaining(child: Center(child: Loading()))
+              : AnimationLimiter(
+                  child: SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) {
+                        return index > 0 && index < _clubs.length + 1
+                            ? AnimationConfiguration.staggeredList(
+                                position: index,
+                                duration: const Duration(milliseconds: 375),
+                                child: Padding(
+                                  padding: const EdgeInsets.only(left: 18.0),
+                                  child: SlideAnimation(
+                                    horizontalOffset: 50.0,
+                                    child: FadeInAnimation(
+                                      child: ClubCard(_clubs[index - 1], index - 1),
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            ),
-                          )
-                        : SizedBox(height: index == 0 ? 38 : 86);
-                  },
-                  childCount: _clubs.length + 2,
+                              )
+                            : SizedBox(height: index == 0 ? 38 : 86);
+                      },
+                      childCount: _clubs.length + 2,
+                    ),
+                  ),
                 ),
-              ),
-            ),
     );
   }
 }

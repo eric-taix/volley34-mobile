@@ -18,6 +18,7 @@ class _GymnasiumPageState extends State<GymnasiumPage> {
   PageController? _pageController;
   String? _currentGymnasiumCode;
   bool _moving = false;
+  bool _error = false;
 
   @override
   void initState() {
@@ -35,9 +36,17 @@ class _GymnasiumPageState extends State<GymnasiumPage> {
         },
       );
     RepositoryProvider.of<Repository>(context)
-      ..loadAllGymnasiums().then((gymnasiums) => setState(() {
-            _gymnasiums = gymnasiums;
-          }));
+      ..loadAllGymnasiums()
+          .then((gymnasiums) => setState(() {
+                _gymnasiums = gymnasiums;
+                _error = false;
+              }))
+          .onError((error, stackTrace) {
+        setState(() {
+          _error = true;
+          _gymnasiums = [];
+        });
+      });
   }
 
   @override
@@ -61,43 +70,45 @@ class _GymnasiumPageState extends State<GymnasiumPage> {
   Widget _buildMap(BuildContext context) {
     return Padding(
       padding: EdgeInsets.all(0),
-      child: _gymnasiums != null
-          ? Container(
-              child: Stack(children: [
-                GymnasiumMap(
-                  gymnasiums: _gymnasiums,
-                  currentGymnasiumCode: _currentGymnasiumCode,
-                  onGymnasiumSelected: (selectedGymnasiumCode) {
-                    int selectedGymnasiumIndex = _gymnasiums!.indexOf(selectedGymnasiumCode);
-                    _moving = true;
-                    _pageController!
-                        .animateToPage(selectedGymnasiumIndex,
-                            curve: Curves.easeInOut, duration: Duration(milliseconds: 1000))
-                        .then((_) {
-                      setState(() {
-                        _moving = false;
-                        _currentGymnasiumCode = _gymnasiums![_pageController!.page!.toInt()].gymnasiumCode;
-                      });
-                    });
-                  },
-                ),
-                Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Container(
-                    margin: EdgeInsets.only(bottom: 50),
-                    height: 220,
-                    child: PageView.builder(
-                      controller: _pageController,
-                      itemBuilder: (context, index) {
-                        return GymnasiumCard(gymnasium: _gymnasiums![index]);
+      child: _error
+          ? SizedBox()
+          : _gymnasiums != null
+              ? Container(
+                  child: Stack(children: [
+                    GymnasiumMap(
+                      gymnasiums: _gymnasiums,
+                      currentGymnasiumCode: _currentGymnasiumCode,
+                      onGymnasiumSelected: (selectedGymnasiumCode) {
+                        int selectedGymnasiumIndex = _gymnasiums!.indexOf(selectedGymnasiumCode);
+                        _moving = true;
+                        _pageController!
+                            .animateToPage(selectedGymnasiumIndex,
+                                curve: Curves.easeInOut, duration: Duration(milliseconds: 1000))
+                            .then((_) {
+                          setState(() {
+                            _moving = false;
+                            _currentGymnasiumCode = _gymnasiums![_pageController!.page!.toInt()].gymnasiumCode;
+                          });
+                        });
                       },
-                      itemCount: _gymnasiums!.length,
                     ),
-                  ),
+                    Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Container(
+                        margin: EdgeInsets.only(bottom: 50),
+                        height: 220,
+                        child: PageView.builder(
+                          controller: _pageController,
+                          itemBuilder: (context, index) {
+                            return GymnasiumCard(gymnasium: _gymnasiums![index]);
+                          },
+                          itemCount: _gymnasiums!.length,
+                        ),
+                      ),
+                    )
+                  ]),
                 )
-              ]),
-            )
-          : Center(child: Loading()),
+              : Center(child: Loading()),
     );
   }
 }
