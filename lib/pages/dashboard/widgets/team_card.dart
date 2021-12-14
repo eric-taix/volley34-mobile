@@ -68,11 +68,14 @@ class _TeamCardState extends State<TeamCard> {
           .expand((classification) {
             return [
               Expanded(
-                child: PodiumWidget(
-                  showTrailing: true,
-                  classification: classification,
-                  highlightedTeamCode: state.highlightedTeamCode,
-                  currentlyDisplayed: widget.currentlyDisplayed,
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 18.0, right: 8.0),
+                  child: PodiumWidget(
+                    showTrailing: true,
+                    classification: classification,
+                    highlightedTeamCode: state.highlightedTeamCode,
+                    currentlyDisplayed: widget.currentlyDisplayed,
+                  ),
                 ),
               ),
               VerticalDivider(thickness: 0.9, indent: 38, endIndent: 38)

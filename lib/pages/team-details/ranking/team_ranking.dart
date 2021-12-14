@@ -1,6 +1,5 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:v34/commons/competition_badge.dart';
 import 'package:v34/commons/paragraph.dart';
 import 'package:v34/commons/podium_widget.dart';
@@ -15,7 +14,7 @@ import 'package:v34/utils/competition_text.dart';
 
 import 'evolution_widget.dart';
 
-class TeamRanking extends StatefulWidget {
+class TeamRanking extends StatelessWidget {
   final Team team;
   final RankingSynthesis ranking;
   final List<MatchResult> results;
@@ -23,27 +22,9 @@ class TeamRanking extends StatefulWidget {
   const TeamRanking({Key? key, required this.team, required this.ranking, required this.results}) : super(key: key);
 
   @override
-  _TeamRankingState createState() => _TeamRankingState();
-}
-
-class _TeamRankingState extends State<TeamRanking> {
-  double _cupOpacity = 0;
-  bool _openRankingTable = false;
-
-  @override
-  void initState() {
-    super.initState();
-    Future.delayed(Duration(milliseconds: 800), () {
-      setState(() {
-        _cupOpacity = 1;
-      });
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
-    int teamIndex = widget.ranking.ranks?.indexWhere((element) => element.teamCode == widget.team.code) ?? -1;
-    RankingTeamSynthesis stats = widget.ranking.ranks?[teamIndex] ?? RankingTeamSynthesis.empty();
+    int teamIndex = ranking.ranks?.indexWhere((element) => element.teamCode == team.code) ?? -1;
+    RankingTeamSynthesis stats = ranking.ranks?[teamIndex] ?? RankingTeamSynthesis.empty();
     return SliverList(
         delegate: SliverChildListDelegate([
       _buildCompetitionDescription(context),
@@ -60,8 +41,8 @@ class _TeamRankingState extends State<TeamRanking> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          Text(getClassificationCategory(widget.ranking.division), style: Theme.of(context).textTheme.headline4),
-          CompetitionBadge(competitionCode: widget.ranking.competitionCode, deltaSize: 0.8),
+          Text(getClassificationCategory(ranking.division), style: Theme.of(context).textTheme.headline4),
+          CompetitionBadge(competitionCode: ranking.competitionCode, deltaSize: 0.8),
         ],
       ),
     );
@@ -69,10 +50,9 @@ class _TeamRankingState extends State<TeamRanking> {
 
   Widget _buildPodium(BuildContext context, RankingTeamSynthesis teamStats) {
     String title = "";
-    if (teamStats.rank! <= widget.ranking.promoted!) {
+    if (teamStats.rank! <= ranking.promoted!) {
       title = "Promue";
-    } else if (widget.ranking.ranks != null &&
-        widget.ranking.ranks!.length - teamStats.rank! < widget.ranking.relegated!) {
+    } else if (ranking.ranks != null && ranking.ranks!.length - teamStats.rank! < ranking.relegated!) {
       title = "Reléguée";
     } else {
       title = "";
@@ -84,75 +64,51 @@ class _TeamRankingState extends State<TeamRanking> {
         SizedBox(height: 28),
         FractionallySizedBox(
           widthFactor: 0.8,
-          child: Stack(
-            children: [
-              Container(
-                alignment: Alignment.bottomRight,
-                height: 50,
-                child: AnimatedOpacity(
-                  opacity: _cupOpacity,
-                  duration: Duration(milliseconds: 1800),
-                  curve: Curves.easeInOut,
-                  child: FaIcon(
-                    FontAwesomeIcons.trophy,
-                    size: 44,
-                    color: _getRankColor(teamStats.rank),
-                  ),
-                ),
-              ),
-              Container(
-                alignment: Alignment.bottomLeft,
-                height: 150,
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Expanded(
-                        child: PodiumWidget(
-                      title: title,
-                      classification: widget.ranking,
-                      currentlyDisplayed: true,
-                      highlightedTeamCode: widget.team.code,
-                      showTrailing: false,
-                    )),
-                  ],
-                ),
-              ),
-            ],
+          child: Container(
+            alignment: Alignment.bottomLeft,
+            height: 150,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Expanded(
+                    child: PodiumWidget(
+                  title: title,
+                  classification: ranking,
+                  currentlyDisplayed: true,
+                  highlightedTeamCode: team.code,
+                  showTrailing: false,
+                )),
+              ],
+            ),
           ),
         ),
         Padding(
           padding: const EdgeInsets.only(top: 18.0),
-          child: TeamRankingTable(team: widget.team, ranking: widget.ranking),
+          child: TeamRankingTable(team: team, ranking: ranking),
         ),
       ],
     );
   }
 
-  Color _getRankColor(int? rank) {
-    switch (rank) {
-      case 1:
-        return Color(0xffFFD700);
-      case 2:
-        return Color(0xffC0C0C0);
-      case 3:
-        return Color(0xff796221);
-      default:
-        return Colors.transparent;
-    }
-  }
-
   Widget _buildStats(BuildContext context, RankingTeamSynthesis? teamStats) {
-    List<double> setsDiffEvolution = TeamBloc.computePointsDiffs(widget.results, widget.team.code);
-    DateTime? startDate = widget.results.first.matchDate;
-    DateTime? endDate = widget.results.last.matchDate;
+    List<double> setsDiffEvolution = TeamBloc.computePointsDiffs(results, team.code);
+    DateTime? startDate = results.first.matchDate;
+    DateTime? endDate = results.last.matchDate;
     List<double> cumulativeSetsDiffEvolution = TeamBloc.computeCumulativePointsDiffs(setsDiffEvolution);
     return Column(
       children: <Widget>[
         StatisticsWidget(
-          title: "Matchs\ngagnés",
+          title: "Victoires",
           points: teamStats?.wonMatches ?? 0,
           maxPoints: (teamStats?.wonMatches ?? 0) + (teamStats?.lostMatches ?? 0),
           backgroundColor: Theme.of(context).canvasColor,
+        ),
+        EvolutionWidget(
+          title: "Total pts.",
+          evolution: cumulativeSetsDiffEvolution,
+          startDate: startDate,
+          endDate: endDate,
+          topPadding: 0,
         ),
         SummaryWidget(title: "Scores", teamStats: teamStats ?? RankingTeamSynthesis.empty()),
         StatisticsWidget(
@@ -161,12 +117,6 @@ class _TeamRankingState extends State<TeamRanking> {
           maxPoints: (teamStats?.wonSets ?? 0) + (teamStats?.lostSets ?? 0),
           backgroundColor: Theme.of(context).canvasColor,
         ),
-        EvolutionWidget(title: "Diff.\nde sets", evolution: setsDiffEvolution, startDate: startDate, endDate: endDate),
-        EvolutionWidget(
-            title: "Cumul diff.\nde sets",
-            evolution: cumulativeSetsDiffEvolution,
-            startDate: startDate,
-            endDate: endDate),
         StatisticsWidget(
           title: "Points pris",
           points: teamStats?.wonPoints ?? 0,

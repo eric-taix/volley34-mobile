@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:v34/commons/force_widget_comparison.dart';
 import 'package:v34/models/event.dart';
-import 'package:v34/models/force.dart';
 import 'package:v34/models/team.dart';
 
 class MatchTitle extends StatelessWidget {
@@ -43,12 +41,12 @@ class MatchTitle extends StatelessWidget {
               ),
               Padding(
                 padding: const EdgeInsets.only(top: 18.0, bottom: 4),
-                child: ForceComparison(
+                /*  child: ForceComparison(
                   hostForce: event.hostForce ?? Force(),
                   visitorForce: event.visitorForce ?? Force(),
                   globalForce: event.globalForce ?? Force(),
                   direction: event.hostCode == team.code ? ForceDirection.rightToLeft : ForceDirection.leftToRight,
-                ),
+                ),*/
               ),
             ],
           ),

@@ -107,6 +107,7 @@ class _ClubTeamState extends State<ClubTeam> {
                                                   child: LineGraph(
                                                     competition.pointsDiffEvolution ?? [],
                                                     thumbnail: true,
+                                                    title: "Total pts.",
                                                   ),
                                                 ),
                                               ),
