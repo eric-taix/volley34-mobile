@@ -57,10 +57,14 @@ class V34 extends StatefulWidget {
 class _V34State extends State<V34> {
   late Repository _repository;
   late MessageCubit _messageCubit;
+  late bool _automatic;
+  late bool _dark;
 
   @override
   void initState() {
     super.initState();
+    _automatic = widget.automatic;
+    _dark = widget.dark;
 
     _messageCubit = MessageCubit();
     initDio(_messageCubit);
@@ -89,11 +93,19 @@ class _V34State extends State<V34> {
         child: BlocProvider(
           create: (_) => _messageCubit,
           child: FeatureDiscovery(
-            child: MaterialApp(
-              title: 'Volley34',
-              theme: AppTheme.getNormalThemeFromPreferences(widget.automatic, widget.dark),
-              darkTheme: AppTheme.getDarkThemeFromPreferences(widget.automatic),
-              home: MainPage(),
+            child: BlocProvider<PreferencesBloc>(
+              create: (context) {
+                PreferencesBloc bloc = PreferencesBloc(_repository);
+                bloc.add(PreferencesLoadEvent());
+                return bloc;
+              },
+              // BlocBuuilder
+              child: MaterialApp(
+                title: "Volley34",
+                theme: AppTheme.getNormalThemeFromPreferences(_automatic, _dark),
+                darkTheme: AppTheme.getDarkThemeFromPreferences(_automatic),
+                home: MainPage(),
+              ),
             ),
           ),
         ),
