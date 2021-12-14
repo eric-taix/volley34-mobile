@@ -163,6 +163,9 @@ class AppTheme {
           defaultColor: Colors.white,
         ),
       ),
+      radioTheme: RadioThemeData(
+          fillColor:
+              MultiStateColor(defaultColor: Colors.white70, selectedColor: _mainColor, disabledColor: Colors.white30)),
     );
   }
 

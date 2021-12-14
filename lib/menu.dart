@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:v34/commons/blocs/preferences_bloc.dart';
-import 'package:v34/pages/favorite/favorite_wizard.dart';
 import 'package:v34/pages/markdown_page.dart';
 import 'package:v34/pages/preferences_page.dart';
+import 'package:v34/pages/profil/profil_page.dart';
 
 class AppMenu extends StatefulWidget {
   @override
@@ -66,22 +66,6 @@ class _AppMenuState extends State<AppMenu> {
                 ),
               ],
             ),
-            Positioned(
-              right: 0,
-              top: 0,
-              child: FloatingActionButton(
-                mini: true,
-                child: Icon(Icons.edit),
-                onPressed: () => showGeneralDialog(
-                  barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
-                  barrierColor: Colors.black45,
-                  context: context,
-                  pageBuilder:
-                      (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) =>
-                          SelectFavoriteTeam(),
-                ),
-              ),
-            ),
           ],
         ),
         decoration: BoxDecoration(
@@ -91,6 +75,12 @@ class _AppMenuState extends State<AppMenu> {
       SizedBox(
         height: 10,
       ),
+      _MenuItemWithLeading(
+          "Profil",
+          Icon(Icons.person, color: textStyleColor),
+          () => navigator
+              .maybePop()
+              .then((value) => navigator.push(MaterialPageRoute<void>(builder: (context) => ProfilPage())))),
       _MenuItemWithLeading(
           "Préférences",
           Icon(Icons.settings, color: textStyleColor),

@@ -7,6 +7,7 @@ import 'package:v34/commons/paragraph.dart';
 import 'package:v34/pages/dashboard/widgets/dashboard_agenda.dart';
 import 'package:v34/pages/dashboard/widgets/dashboard_club_teams.dart';
 import 'package:v34/pages/dashboard/widgets/dashboard_clubs.dart';
+import 'package:v34/pages/favorite/favorite_wizard.dart';
 import 'package:v34/state_builder.dart';
 
 class DashboardPage extends StatefulWidget {
@@ -23,7 +24,18 @@ class _DashboardPageState extends State<DashboardPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<PreferencesBloc, PreferencesState>(
+    return BlocConsumer<PreferencesBloc, PreferencesState>(
+      listener: (_, state) {
+        if (state is PreferencesUpdatedState && (state.favoriteClub == null || state.favoriteTeam == null)) {
+          showGeneralDialog(
+            barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
+            barrierColor: Colors.black45,
+            context: context,
+            pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) =>
+                SelectFavoriteTeam(),
+          );
+        }
+      },
       builder: (context, state) {
         return MainPage(
           title: "Volley34",

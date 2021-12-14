@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:v34/commons/blocs/preferences_bloc.dart';
-import 'package:v34/commons/rounded_outlined_button.dart';
 import 'package:v34/models/club.dart';
 import 'package:v34/models/team.dart';
 import 'package:v34/pages/favorite/favorite_club.dart';
@@ -36,84 +35,49 @@ class _SelectFavoriteTeamState extends State<SelectFavoriteTeam> {
 
   @override
   Widget build(BuildContext context) {
-    String selectionType = _pageController.hasClients && _pageController.page == 1 ? "équipe" : "club";
+    String selectionType = _selectedClub != null ? "équipe" : "club";
     return SafeArea(
-      child: Container(
-        color: Theme.of(context).canvasColor,
-        child: Column(
-          children: [
-            Container(
-              color: Theme.of(context).appBarTheme.backgroundColor,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 18.0),
-                    child: Text("Sélectionnez votre $selectionType", style: Theme.of(context).textTheme.headline4),
-                  ),
-                ],
-              ),
-            ),
-            Expanded(
-              child: PageView(
-                controller: _pageController,
-                children: [
-                  FavoriteClubSelection(
-                      onClubChange: (club) => setState(() {
-                            _selectedClub = club;
-                            _selectedTeam = null;
-                          })),
-                  if (_selectedClub != null)
-                    FavoriteTeamSelection(
-                        club: _selectedClub!, onTeamChange: (team) => setState(() => _selectedTeam = team)),
-                ],
-              ),
-            ),
-            Container(
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      child: Scaffold(
+        appBar: AppBar(
+          leading: IconButton(icon: Icon(Icons.close), onPressed: () => Navigator.of(context).pop()),
+          title: Text("Sélectionnez votre $selectionType", style: Theme.of(context).textTheme.headline4),
+        ),
+        body: Container(
+          color: Theme.of(context).canvasColor,
+          child: Column(
+            children: [
+              Expanded(
+                child: PageView(
+                  controller: _pageController,
                   children: [
-                    ElevatedButton(
-                      onPressed: _selectedTeam != null && _selectedClub != null ? () => _save(context) : null,
-                      child: Text("Enregistrer"),
+                    FavoriteClubSelection(
+                      onClubChange: (club) => setState(
+                        () {
+                          _selectedClub = club;
+                          _selectedTeam = null;
+                          _pageController.animateToPage(1,
+                              duration: Duration(milliseconds: 400), curve: Curves.easeInOut);
+                        },
+                      ),
                     ),
-                    RoundedOutlinedButton(
-                      onPressed: _pageController.hasClients && _pageController.page == 1 ? () => _back() : null,
-                      leadingIcon: Icons.arrow_back_ios_rounded,
-                      child: Text("Préc."),
-                    ),
-                    RoundedOutlinedButton(
-                      onPressed: _selectedClub != null && _pageController.hasClients && _pageController.page == 0
-                          ? () => _next()
-                          : null,
-                      trailingIcon: Icons.arrow_forward_ios_rounded,
-                      child: Text("Suiv."),
-                    ),
-                    TextButton(onPressed: () => _close(context), child: Text("Annuler")),
+                    if (_selectedClub != null)
+                      FavoriteTeamSelection(
+                        club: _selectedClub!,
+                        onTeamChange: (team) => setState(() {
+                          _selectedTeam = team;
+                          if (_selectedTeam != null && _selectedClub != null) {
+                            _save(context);
+                          }
+                        }),
+                      ),
                   ],
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
-  }
-
-  _back() async {
-    if (_pageController.page == 1) {
-      await _pageController.animateToPage(0, duration: Duration(milliseconds: 500), curve: Curves.easeInOut);
-      setState(() {});
-    }
-  }
-
-  _next() async {
-    if (_pageController.page == 0) {
-      await _pageController.animateToPage(1, duration: Duration(milliseconds: 500), curve: Curves.easeInOut);
-      setState(() {});
-    }
   }
 
   _save(BuildContext context) async {

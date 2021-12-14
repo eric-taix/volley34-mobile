@@ -25,10 +25,11 @@ class FavoriteIcon extends StatelessWidget {
     return Padding(
       padding: padding,
       child: BlocBuilder<PreferencesBloc, PreferencesState>(
-        builder: (context, dynamic state) => (favoriteType == FavoriteType.Club &&
-                    state.favoriteClub != null &&
-                    state.favoriteClub!.code == favoriteId) ||
-                (favoriteType == FavoriteType.Team && state.favoriteTeam!.code == favoriteId)
+        builder: (context, state) => (state is PreferencesUpdatedState &&
+                ((favoriteType == FavoriteType.Club &&
+                        state.favoriteClub != null &&
+                        state.favoriteClub!.code == favoriteId) ||
+                    (favoriteType == FavoriteType.Team && state.favoriteTeam!.code == favoriteId)))
             ? Icon(
                 Icons.star,
                 color: Colors.orangeAccent,
