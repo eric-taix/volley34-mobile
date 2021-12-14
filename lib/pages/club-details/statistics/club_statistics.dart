@@ -47,7 +47,7 @@ class _ClubStatisticsState extends State<ClubStatistics> {
             [
               SizedBox(height: 40),
               StatRow(
-                title: "Matchs gagnés",
+                title: "Victoires",
                 child: ConstrainedBox(
                   constraints: BoxConstraints(maxWidth: 100, maxHeight: 80),
                   child: ArcGraph(
@@ -88,12 +88,12 @@ class _ClubStatisticsState extends State<ClubStatistics> {
                 ),
               ),
               StatRow(
-                title: "A domicile",
+                title: "Domicile",
                 child: _buildPieChart(
                     context, state is ClubStatsLoadedState, state is ClubStatsLoadedState ? state.homeMatches : null),
               ),
               StatRow(
-                title: "A l'extérieur",
+                title: "Extérieur",
                 child: _buildPieChart(context, state is ClubStatsLoadedState,
                     state is ClubStatsLoadedState ? state.outsideMatches : null),
               ),
@@ -112,21 +112,25 @@ class _ClubStatisticsState extends State<ClubStatistics> {
         centerSpaceRadius: 20,
         sections: [
           PieChartSectionData(
-            radius: 15,
-            value: loaded ? matchesPlayed!.won.toDouble() : 1,
-            title: "${loaded ? matchesPlayed!.won : 0} Vict.",
-            titlePositionPercentageOffset: POSITION_OFFSET - 0.8,
+            radius: loaded && matchesPlayed != null ? (matchesPlayed.won > matchesPlayed.lost ? 15 : 8) : 8,
+            value: loaded && matchesPlayed != null ? matchesPlayed.won.toDouble() : 1,
+            title: "${loaded && matchesPlayed != null ? "${matchesPlayed.won} Vict." : 0}",
+            titlePositionPercentageOffset: loaded && matchesPlayed != null
+                ? (matchesPlayed.won > matchesPlayed.lost ? POSITION_OFFSET - 1.3 : POSITION_OFFSET - 0.5)
+                : POSITION_OFFSET - 0.5,
             titleStyle: Theme.of(context).textTheme.bodyText1,
             color: loaded
                 ? _getSectionColor(matchesPlayed!.won, matchesPlayed.total)
                 : Theme.of(context).colorScheme.primaryVariant,
           ),
           PieChartSectionData(
-            radius: 8,
-            value: loaded ? matchesPlayed!.lost.toDouble() : 1,
-            title: "${loaded ? matchesPlayed!.lost : 0} Déf.",
+            radius: loaded && matchesPlayed != null ? (matchesPlayed.lost > matchesPlayed.won ? 15 : 8) : 8,
+            value: loaded && matchesPlayed != null ? matchesPlayed.won.toDouble() : 1,
+            title: "${loaded && matchesPlayed != null ? "${matchesPlayed.lost} Déf." : 0}",
             titleStyle: Theme.of(context).textTheme.bodyText1,
-            titlePositionPercentageOffset: POSITION_OFFSET + 0.3,
+            titlePositionPercentageOffset: loaded && matchesPlayed != null
+                ? (matchesPlayed.lost > matchesPlayed.won ? POSITION_OFFSET - 1.3 : POSITION_OFFSET - 0.5)
+                : POSITION_OFFSET - 0.5,
             color: loaded
                 ? _getSectionColor(matchesPlayed!.lost, matchesPlayed.total, invert: true)
                 : Theme.of(context).colorScheme.primaryVariant,

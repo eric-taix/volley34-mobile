@@ -13,8 +13,9 @@ class Place {
 class PlaceValue {
   final String? id;
   final double value;
+  final int rank;
 
-  PlaceValue(this.id, this.value);
+  PlaceValue(this.id, this.value, this.rank);
 }
 
 class Podium extends StatefulWidget {
@@ -51,7 +52,7 @@ class _PodiumState extends State<Podium> {
   @override
   void initState() {
     _updatePlaces();
-    places = List.generate(placeValues!.length, (index) => Place(PlaceValue("", 0), "", false));
+    places = List.generate(placeValues!.length, (index) => Place(PlaceValue("", 0, -1), "", false));
     super.initState();
   }
 
@@ -62,14 +63,16 @@ class _PodiumState extends State<Podium> {
   }
 
   _updatePlaces() {
-    placeValues = widget.placeValues.map((placeValue) => PlaceValue(placeValue.id, placeValue.value + 1)).toList();
+    placeValues = widget.placeValues
+        .map((placeValue) => PlaceValue(placeValue.id, placeValue.value + 1, placeValue.rank))
+        .toList();
     if (widget.highlightedIndex != -1) {
       highlightedValue = placeValues![widget.highlightedIndex!];
     } else {
       highlightedValue = null;
     }
-    max =
-        placeValues!.fold(new PlaceValue("", 0), (max, placeValue) => placeValue.value > max.value ? placeValue : max);
+    max = placeValues!
+        .fold(new PlaceValue("", 0, -1), (max, placeValue) => placeValue.value > max.value ? placeValue : max);
     if (widget.active) {
       Future.delayed(Duration(milliseconds: 200), () {
         var length = placeValues!.length;
@@ -112,7 +115,7 @@ class _PodiumState extends State<Podium> {
         showToolTip = false;
         showPosition = false;
         position = null;
-        places = List.generate(placeValues!.length, (index) => Place(PlaceValue("", 0), "", false));
+        places = List.generate(placeValues!.length, (index) => Place(PlaceValue("", 0, -1), "", false));
       });
     }
   }

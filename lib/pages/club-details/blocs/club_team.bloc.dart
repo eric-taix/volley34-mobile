@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:v34/models/force.dart';
 import 'package:v34/models/match_result.dart';
 import 'package:v34/models/ranking.dart';
 import 'package:v34/models/team.dart';
@@ -84,8 +85,14 @@ class TeamResultsLoaded extends TeamState {
 class TeamDivisionPoolResultsLoaded extends TeamState {
   final List<MatchResult> teamResults;
   final List<MatchResult> allResults;
+  final Force teamForce;
+  final Force divisionGlobalForce;
 
-  TeamDivisionPoolResultsLoaded({required this.teamResults, required this.allResults});
+  TeamDivisionPoolResultsLoaded(
+      {required this.teamResults,
+      required this.allResults,
+      required this.teamForce,
+      required this.divisionGlobalForce});
 
   @override
   List<Object?> get props => [teamResults, allResults];
@@ -190,12 +197,17 @@ class TeamBloc extends Bloc<TeamEvent, TeamState> {
           .toList()
         ..sort((m1, m2) => m1.matchDate!.compareTo(m2.matchDate!));
 
+      ForceBuilder forceBuilder = matchResults.fold<ForceBuilder>(
+          ForceBuilder(teamCode: event.teamCode), (forceBuilder, matchResult) => forceBuilder..add(matchResult));
+
       yield TeamDivisionPoolResultsLoaded(
         teamResults: matchResults
             .where((matchResult) =>
                 matchResult.hostTeamCode == event.teamCode || matchResult.visitorTeamCode == event.teamCode)
             .toList(),
         allResults: matchResults.toList(),
+        teamForce: forceBuilder.teamForce,
+        divisionGlobalForce: forceBuilder.othersForce,
       );
     }
   }

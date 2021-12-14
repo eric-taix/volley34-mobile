@@ -11,8 +11,10 @@ class LineGraph extends StatefulWidget {
   final bool showTitle;
   final DateTime? startDate;
   final DateTime? endDate;
+  final String title;
 
-  LineGraph(List<double> results, {this.thumbnail = false, this.showTitle = true, this.startDate, this.endDate})
+  LineGraph(List<double> results,
+      {this.thumbnail = false, this.showTitle = true, this.startDate, this.endDate, this.title = "Sets"})
       : this.results = results.toList()..insert(0, 0.0);
 
   @override
@@ -68,7 +70,7 @@ class _LineGraphState extends State<LineGraph> {
       axisTitleData: FlAxisTitleData(
         leftTitle: AxisTitle(
           showTitle: widget.showTitle,
-          titleText: "Sets",
+          titleText: widget.title,
           margin: 10,
           textStyle: Theme.of(context).textTheme.bodyText1,
           reservedSize: 0,
