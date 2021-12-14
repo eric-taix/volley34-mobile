@@ -5,20 +5,10 @@ import 'package:v34/models/force.dart';
 class ForceWidget extends StatefulWidget {
   static const double centerWidth = 50;
 
-  final String hostName;
-  final String visitorName;
-  final Force hostForce;
-  final Force visitorForce;
+  final Force force;
   final Force globalForce;
 
-  ForceWidget(
-      {Key? key,
-      required this.hostName,
-      required this.visitorName,
-      required this.hostForce,
-      required this.visitorForce,
-      required this.globalForce})
-      : super(key: key);
+  ForceWidget({Key? key, required this.force, required this.globalForce}) : super(key: key);
 
   @override
   State<ForceWidget> createState() => _ForceWidgetState();
@@ -32,7 +22,7 @@ class _ForceWidgetState extends State<ForceWidget> with SingleTickerProviderStat
   void initState() {
     super.initState();
     _controller = AnimationController(vsync: this, duration: Duration(milliseconds: 1200));
-    _animation = CurvedAnimation(parent: _controller, curve: Curves.easeOut);
+    _animation = CurvedAnimation(parent: _controller, curve: Curves.easeInOut);
     _controller.addListener(() {
       setState(() {});
     });
@@ -50,52 +40,21 @@ class _ForceWidgetState extends State<ForceWidget> with SingleTickerProviderStat
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Padding(
-          padding: const EdgeInsets.only(bottom: 8.0),
-          child: Row(
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              Expanded(
-                  flex: 1,
-                  child: Text(widget.hostName, textAlign: TextAlign.end, style: Theme.of(context).textTheme.bodyText1)),
-              Container(width: ForceWidget.centerWidth, child: Center(child: Text(""))),
-              Expanded(
-                  flex: 1,
-                  child: Text(widget.visitorName,
-                      textAlign: TextAlign.start, style: Theme.of(context).textTheme.bodyText1)),
-            ],
-          ),
-        ),
         _buildRow(
-          CustomPaint(
-            painter: ForceGraphPainter(
-              value: _animation.value * (widget.hostForce.totalAttackPerSet / widget.globalForce.totalAttackPerSet),
-              orientation: ForceOrientation.rightToLeft,
-              backgroundColor: Theme.of(context).cardTheme.color!,
-            ),
-          ),
           SvgPicture.asset("assets/attack.svg", width: 24, color: Theme.of(context).textTheme.bodyText1!.color),
           CustomPaint(
             painter: ForceGraphPainter(
-              value: _animation.value * (widget.visitorForce.totalAttackPerSet / widget.globalForce.totalAttackPerSet),
+              value: _animation.value * (widget.force.totalAttackPerSet / widget.globalForce.totalAttackPerSet),
               backgroundColor: Theme.of(context).cardTheme.color!,
             ),
           ),
         ),
         _buildRow(
-          CustomPaint(
-            painter: ForceGraphPainter(
-              value: _animation.value *
-                  ((25 - widget.hostForce.totalDefensePerSet) / (25 - widget.globalForce.totalDefensePerSet)),
-              orientation: ForceOrientation.rightToLeft,
-              backgroundColor: Theme.of(context).cardTheme.color!,
-            ),
-          ),
           SvgPicture.asset("assets/defense.svg", width: 20, color: Theme.of(context).textTheme.bodyText1!.color),
           CustomPaint(
             painter: ForceGraphPainter(
               value: _animation.value *
-                  ((25 - widget.visitorForce.totalDefensePerSet) / (25 - widget.globalForce.totalDefensePerSet)),
+                  ((25 - widget.force.totalDefensePerSet) / (25 - widget.globalForce.totalDefensePerSet)),
               backgroundColor: Theme.of(context).cardTheme.color!,
             ),
           ),
@@ -104,30 +63,28 @@ class _ForceWidgetState extends State<ForceWidget> with SingleTickerProviderStat
     );
   }
 
-  Widget _buildRow(Widget leftCell, Widget middleCell, Widget rightCell) {
+  Widget _buildRow(Widget leftCell, Widget rightCell) {
     const double forceMargin = 18;
     return Padding(
       padding: const EdgeInsets.only(top: 10),
       child: Row(
         mainAxisSize: MainAxisSize.max,
         children: [
-          Expanded(
-              child: Padding(
-            padding: const EdgeInsets.only(left: forceMargin),
-            child: leftCell,
-          )),
           Container(
-              width: ForceWidget.centerWidth,
-              child: Center(
-                  child: Padding(
-                padding: const EdgeInsets.only(top: 4.0, bottom: 4.0),
-                child: middleCell,
-              ))),
-          Expanded(
+            width: ForceWidget.centerWidth,
+            child: Center(
               child: Padding(
-            padding: const EdgeInsets.only(right: forceMargin),
-            child: rightCell,
-          )),
+                padding: const EdgeInsets.only(top: 4.0, bottom: 4.0),
+                child: leftCell,
+              ),
+            ),
+          ),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.only(left: 18.0, right: 18.0),
+              child: rightCell,
+            ),
+          ),
         ],
       ),
     );
@@ -137,7 +94,6 @@ class _ForceWidgetState extends State<ForceWidget> with SingleTickerProviderStat
 enum ForceOrientation { leftToRight, rightToLeft }
 
 class ForceGraphPainter extends CustomPainter {
-  final ForceOrientation orientation;
   final double min;
   final double max;
   final double ref;
@@ -145,7 +101,6 @@ class ForceGraphPainter extends CustomPainter {
   late final Color backgroundColor;
 
   ForceGraphPainter({
-    this.orientation: ForceOrientation.leftToRight,
     this.min = 0.75,
     this.max = 1.25,
     this.ref = 1,
@@ -161,19 +116,12 @@ class ForceGraphPainter extends CustomPainter {
 
     final double strokeWidth = 8;
     final colors = [Colors.red, Colors.orange, Colors.yellow, Colors.green];
-    final invertedColors = colors.reversed.toList();
     final stops = List.generate(colors.length, (index) => (index * max / (colors.length)));
     final gradient = LinearGradient(colors: colors, stops: stops);
-    final invertedGradient = LinearGradient(colors: invertedColors, stops: stops);
 
     double gradientSize = size.width;
     final paint = Paint()
       ..shader = gradient.createShader(Rect.fromLTRB(0, 0, gradientSize, size.height))
-      ..strokeWidth = strokeWidth
-      ..strokeCap = StrokeCap.round
-      ..style = PaintingStyle.stroke;
-    final invertedPaint = Paint()
-      ..shader = invertedGradient.createShader(Rect.fromLTRB(0, 0, gradientSize, size.height))
       ..strokeWidth = strokeWidth
       ..strokeCap = StrokeCap.round
       ..style = PaintingStyle.stroke;
@@ -182,14 +130,12 @@ class ForceGraphPainter extends CustomPainter {
     if (val < min) val = min;
     if (val > max) val = max;
     double axisX = (val - min) / (max - min);
-    Offset start = orientation == ForceOrientation.leftToRight ? Offset(0, 0) : Offset(size.width, 0);
-    Offset end = orientation == ForceOrientation.leftToRight
-        ? Offset(axisX * size.width, 0)
-        : Offset(size.width, 0).translate(-(axisX * size.width), 0);
-    canvas.drawLine(
-        start,
-        end.translate(orientation == ForceOrientation.leftToRight ? barTranslationX : -barTranslationX, 0),
-        orientation == ForceOrientation.leftToRight ? paint : invertedPaint);
+
+    Offset start = Offset(0, size.height / 2);
+    Offset end = Offset(size.width, size.height / 2);
+    canvas.drawLine(start.translate(-barTranslationX, 0), end.translate(barTranslationX, 0), paint);
+
+    Offset point = Offset(axisX * size.width, size.height / 2);
 
     Paint circleForegroundPaint = Paint()
       ..color = _lerpGradient(colors, stops, axisX)
@@ -200,17 +146,16 @@ class ForceGraphPainter extends CustomPainter {
       ..style = PaintingStyle.fill;
 
     const double circleRadius = 8;
-    canvas.drawCircle(end, 10, circleBackgroundPaint);
-    canvas.drawCircle(end, circleRadius, circleForegroundPaint);
+    canvas.drawCircle(point, 10, circleBackgroundPaint);
+    canvas.drawCircle(point, circleRadius, circleForegroundPaint);
 
     TextSpan span = new TextSpan(text: "${((value / ref) * 100).toInt()}%");
     TextPainter tp = new TextPainter(text: span, textAlign: TextAlign.left, textDirection: TextDirection.ltr);
     tp.layout();
     tp.paint(
-        canvas,
-        orientation == ForceOrientation.leftToRight
-            ? end.translate(-tp.width / 2, -tp.height - circleRadius - 3)
-            : end.translate(-tp.width / 2, -tp.height - circleRadius - 3));
+      canvas,
+      end.translate(-tp.width / 2, -tp.height - circleRadius - 3),
+    );
   }
 
   @override

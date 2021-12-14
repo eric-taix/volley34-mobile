@@ -4,6 +4,7 @@ import 'package:v34/commons/app_bar/app_bar_with_image.dart';
 import 'package:v34/commons/favorite/favorite.dart';
 import 'package:v34/commons/loading.dart';
 import 'package:v34/models/club.dart';
+import 'package:v34/models/force.dart';
 import 'package:v34/models/match_result.dart';
 import 'package:v34/models/ranking.dart';
 import 'package:v34/models/team.dart';
@@ -82,7 +83,8 @@ class _TeamDetailPageState extends State<TeamDetailPage> {
                 builder: (context, teamState) {
                   if (teamState is TeamDivisionPoolResultsLoaded) {
                     if (index < state.rankings.length)
-                      return _buildTeamRanking(state.rankings[index], teamState.teamResults);
+                      return _buildTeamRanking(state.rankings[index], teamState.teamResults, teamState.teamForce,
+                          teamState.divisionGlobalForce);
                     if (index == state.rankings.length)
                       return TeamResults(
                         showOnlyTeam: _showAllTeams,
@@ -114,10 +116,13 @@ class _TeamDetailPageState extends State<TeamDetailPage> {
     return TeamAgenda(team: widget.team);
   }
 
-  Widget _buildTeamRanking(RankingSynthesis? ranking, List<MatchResult> results) {
+  Widget _buildTeamRanking(RankingSynthesis? ranking, List<MatchResult> results, Force teamForce, Force globalForce) {
     return TeamRanking(
-        team: widget.team,
-        ranking: ranking ?? RankingSynthesis(),
-        results: results.where((result) => result.competitionCode == ranking?.competitionCode).toList());
+      team: widget.team,
+      ranking: ranking ?? RankingSynthesis(),
+      results: results.where((result) => result.competitionCode == ranking?.competitionCode).toList(),
+      teamForce: teamForce,
+      globalForce: globalForce,
+    );
   }
 }

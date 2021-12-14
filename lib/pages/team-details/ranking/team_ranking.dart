@@ -1,12 +1,15 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:v34/commons/competition_badge.dart';
+import 'package:v34/commons/force_widget.dart';
 import 'package:v34/commons/paragraph.dart';
 import 'package:v34/commons/podium_widget.dart';
+import 'package:v34/models/force.dart';
 import 'package:v34/models/match_result.dart';
 import 'package:v34/models/ranking.dart';
 import 'package:v34/models/team.dart';
 import 'package:v34/pages/club-details/blocs/club_team.bloc.dart';
+import 'package:v34/pages/team-details/ranking/labeled_stat.dart';
 import 'package:v34/pages/team-details/ranking/statistics_widget.dart';
 import 'package:v34/pages/team-details/ranking/summary_widget.dart';
 import 'package:v34/pages/team-details/ranking/team_ranking_table.dart';
@@ -18,8 +21,17 @@ class TeamRanking extends StatelessWidget {
   final Team team;
   final RankingSynthesis ranking;
   final List<MatchResult> results;
+  final Force teamForce;
+  final Force globalForce;
 
-  const TeamRanking({Key? key, required this.team, required this.ranking, required this.results}) : super(key: key);
+  const TeamRanking(
+      {Key? key,
+      required this.team,
+      required this.ranking,
+      required this.results,
+      required this.teamForce,
+      required this.globalForce})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +43,7 @@ class TeamRanking extends StatelessWidget {
       Paragraph(title: "Classement"),
       _buildPodium(context, stats),
       Paragraph(title: "Statistiques"),
-      _buildStats(context, stats),
+      _buildStats(context, stats, teamForce, globalForce),
     ]));
   }
 
@@ -90,7 +102,7 @@ class TeamRanking extends StatelessWidget {
     );
   }
 
-  Widget _buildStats(BuildContext context, RankingTeamSynthesis? teamStats) {
+  Widget _buildStats(BuildContext context, RankingTeamSynthesis? teamStats, Force force, Force globalForce) {
     List<double> setsDiffEvolution = TeamBloc.computePointsDiffs(results, team.code);
     DateTime? startDate = results.first.matchDate;
     DateTime? endDate = results.last.matchDate;
@@ -117,6 +129,12 @@ class TeamRanking extends StatelessWidget {
           maxPoints: (teamStats?.wonSets ?? 0) + (teamStats?.lostSets ?? 0),
           backgroundColor: Theme.of(context).canvasColor,
         ),
+        LabeledStat(
+            title: "Forces",
+            child: ForceWidget(
+              force: force,
+              globalForce: globalForce,
+            )),
         StatisticsWidget(
           title: "Points pris",
           points: teamStats?.wonPoints ?? 0,
