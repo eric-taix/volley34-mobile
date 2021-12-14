@@ -99,12 +99,21 @@ class _V34State extends State<V34> {
                 bloc.add(PreferencesLoadEvent());
                 return bloc;
               },
-              // BlocBuuilder
-              child: MaterialApp(
-                title: "Volley34",
-                theme: AppTheme.getNormalThemeFromPreferences(_automatic, _dark),
-                darkTheme: AppTheme.getDarkThemeFromPreferences(_automatic),
-                home: MainPage(),
+              child: BlocListener<PreferencesBloc, PreferencesState>(
+                listener: (context, state) {
+                  if (state is PreferencesUpdatedState) {
+                    setState(() {
+                      _automatic = state.useAutomaticTheme;
+                      _dark = state.useDarkTheme;
+                    });
+                  }
+                },
+                child: MaterialApp(
+                  title: "Volley34",
+                  theme: AppTheme.getNormalThemeFromPreferences(_automatic, _dark),
+                  darkTheme: AppTheme.getDarkThemeFromPreferences(_automatic),
+                  home: MainPage(),
+                ),
               ),
             ),
           ),
