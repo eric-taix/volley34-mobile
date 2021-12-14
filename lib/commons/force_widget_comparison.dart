@@ -105,6 +105,7 @@ class _ForceComparisonState extends State<ForceComparison> with SingleTickerProv
     return Padding(
       padding: const EdgeInsets.only(top: 0),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.max,
         children: [
           Container(
@@ -159,13 +160,7 @@ class ForceGraphPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final double strokeWidth = 8;
-    final colors = [
-      Colors.pinkAccent,
-      Colors.deepPurpleAccent,
-      Colors.indigoAccent,
-      Colors.deepPurpleAccent,
-      Colors.pinkAccent
-    ];
+    final colors = [Colors.green, Colors.orange, Colors.red, Colors.orange, Colors.green];
     final invertedColors = colors.reversed.toList();
     final stops = List.generate(colors.length, (index) => 1 / (colors.length * 2) + (index * (1 / colors.length)));
     final gradient = LinearGradient(colors: colors, stops: stops);

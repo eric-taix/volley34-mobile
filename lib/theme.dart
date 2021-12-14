@@ -7,21 +7,21 @@ const double CARD_BORDER_RADIUS = 18.0;
 const Color _mainColor = Color(0xFFC9334F);
 
 class AppTheme {
-  static ThemeData darkTheme(Color? dominantColor) {
+  static ThemeData darkTheme() {
     return ThemeData(
-      splashColor: (dominantColor ?? _mainColor).withOpacity(0.2),
+      splashColor: _mainColor.withOpacity(0.2),
       canvasColor: Color(0xFF262C41),
       scaffoldBackgroundColor: Color(0xFF262C41),
       highlightColor: Colors.transparent,
       primarySwatch: MaterialColor(
-        dominantColor?.value ?? 0xFFC9334F,
+        _mainColor.value,
         <int, Color>{
           50: Color(0xFFE3F2FD),
           100: Color(0xFFBBDEFB),
           200: Color(0xFF90CAF9),
           300: Color(0xFF64B5F6),
           400: Color(0xFF42A5F5),
-          500: dominantColor ?? _mainColor,
+          500: _mainColor,
           600: Color(0xFF1E88E5),
           700: Color(0xFF1976D2),
           800: Color(0xFF1565C0),
@@ -128,7 +128,7 @@ class AppTheme {
           overlayColor: OverlayStateColor(Colors.white.withOpacity(0.2)),
           shape: ButtonStateProperty(color: Colors.transparent),
           foregroundColor: ButtonForegroundStateColor(),
-          backgroundColor: ButtonBackgroundStateColor(color: dominantColor),
+          backgroundColor: ButtonBackgroundStateColor(color: _mainColor),
           padding: ButtonPaddingProperty(),
         ),
       ),
@@ -163,6 +163,9 @@ class AppTheme {
           defaultColor: Colors.white,
         ),
       ),
+      radioTheme: RadioThemeData(
+          fillColor:
+              MultiStateColor(defaultColor: Colors.white70, selectedColor: _mainColor, disabledColor: Colors.white30)),
     );
   }
 
@@ -248,15 +251,15 @@ class AppTheme {
             textTheme: ButtonTextTheme.accent));
   }
 
-  static ThemeData getNormalThemeFromPreferences(bool isAutomatic, bool isDark, Color? dominantColor) {
+  static ThemeData getNormalThemeFromPreferences(bool isAutomatic, bool isDark) {
     if (isAutomatic)
       return lightTheme();
     else
-      return isDark ? darkTheme(dominantColor) : lightTheme();
+      return isDark ? darkTheme() : lightTheme();
   }
 
-  static ThemeData? getDarkThemeFromPreferences(bool isAutomatic, Color? dominantColor) {
-    return isAutomatic ? darkTheme(dominantColor) : null;
+  static ThemeData? getDarkThemeFromPreferences(bool isAutomatic) {
+    return isAutomatic ? darkTheme() : null;
   }
 }
 

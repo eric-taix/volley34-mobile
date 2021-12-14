@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
-import 'package:tinycolor2/tinycolor2.dart';
 import 'package:v34/models/club.dart';
 import 'package:v34/models/team.dart';
 import 'package:v34/repositories/repository.dart';
-import 'package:v34/theme.dart';
 
 class FavoriteTeamSelection extends StatefulWidget {
   final Club club;
@@ -54,19 +52,18 @@ class _FavoriteTeamSelectionState extends State<FavoriteTeamSelection> {
       itemScrollController: itemScrollController,
       itemCount: _teams.length,
       itemBuilder: (BuildContext context, int index) {
-        return Card(
-          color: _selectedIndex == index
-              ? TinyColor(Theme.of(context).cardTheme.color!).mix(input: Colors.white, amount: 20).color
-              : null,
-          margin: EdgeInsets.only(top: 4.0, bottom: 4.0, right: 8.0),
-          child: InkWell(
-            borderRadius: BorderRadius.circular(CARD_BORDER_RADIUS),
-            onTap: () => _selectTeam(index),
-            child: Padding(
+        return Row(
+          children: [
+            Radio<Team>(
+              groupValue: _selectedIndex != null ? _teams[_selectedIndex!] : null,
+              value: _teams[index],
+              onChanged: (Team? team) => _selectTeam(index),
+            ),
+            Padding(
               padding: const EdgeInsets.only(top: 18.0, bottom: 18, left: 18, right: 18),
               child: Text(_teams[index].name!),
             ),
-          ),
+          ],
         );
       },
     );

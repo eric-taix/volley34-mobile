@@ -79,36 +79,24 @@ class _TeamRankingTableState extends State<TeamRankingTable> {
                                 flex: 100,
                                 child: Text(
                                   rankingSynthesis.name!,
-                                  overflow: TextOverflow.ellipsis,
+                                  overflow: TextOverflow.fade,
+                                  softWrap: false,
                                   maxLines: 1,
                                   style: rankingSynthesis.teamCode == widget.team.code
                                       ? Theme.of(context).textTheme.bodyText2!.copyWith(fontWeight: FontWeight.bold)
                                       : Theme.of(context).textTheme.bodyText1,
                                 ),
                               ),
-                              SizedBox(
-                                width: 80,
-                                child: Row(
-                                  children: [
-                                    Text(
-                                      "${rankingSynthesis.wonSets} pts",
-                                      style: rankingSynthesis.teamCode == widget.team.code
-                                          ? Theme.of(context).textTheme.bodyText2!.copyWith(fontWeight: FontWeight.bold)
-                                          : Theme.of(context).textTheme.bodyText1,
-                                    ),
-                                    rankingSynthesis.teamCode != widget.team.code &&
-                                            rankingSynthesis.totalPoints != widget._teamRank.totalPoints
-                                        ? Text(
-                                            " (${rankingSynthesis.totalPoints! - widget._teamRank.totalPoints! > 0 ? "+" : ""}${rankingSynthesis.totalPoints! - widget._teamRank.totalPoints!})",
-                                            style: rankingSynthesis.teamCode == widget.team.code
-                                                ? Theme.of(context)
-                                                    .textTheme
-                                                    .bodyText2!
-                                                    .copyWith(fontWeight: FontWeight.bold)
-                                                : Theme.of(context).textTheme.bodyText1,
-                                          )
-                                        : SizedBox()
-                                  ],
+                              Padding(
+                                padding: const EdgeInsets.only(left: 12.0),
+                                child: SizedBox(
+                                  width: 60,
+                                  child: Text(
+                                    "${rankingSynthesis.wonSets} pts",
+                                    style: rankingSynthesis.teamCode == widget.team.code
+                                        ? Theme.of(context).textTheme.bodyText2!.copyWith(fontWeight: FontWeight.bold)
+                                        : Theme.of(context).textTheme.bodyText1,
+                                  ),
                                 ),
                               ),
                               SizedBox(

@@ -4,7 +4,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:v34/commons/competition_badge.dart';
 import 'package:v34/commons/paragraph.dart';
 import 'package:v34/commons/podium_widget.dart';
-import 'package:v34/commons/rounded_outlined_button.dart';
 import 'package:v34/models/match_result.dart';
 import 'package:v34/models/ranking.dart';
 import 'package:v34/models/team.dart';
@@ -121,43 +120,9 @@ class _TeamRankingState extends State<TeamRanking> {
             ],
           ),
         ),
-        Align(
-          alignment: Alignment.bottomRight,
-          child: Padding(
-            padding: const EdgeInsets.only(right: 10.0, top: 12, bottom: 8),
-            child: SizedBox(
-              width: 180,
-              child: RoundedOutlinedButton(
-                onPressed: () => setState(() {
-                  _openRankingTable = !_openRankingTable;
-                }),
-                child: AnimatedCrossFade(
-                  duration: Duration(milliseconds: 500),
-                  crossFadeState: _openRankingTable ? CrossFadeState.showFirst : CrossFadeState.showSecond,
-                  firstChild: Row(
-                    children: [
-                      Text("Cacher le détail"),
-                      Icon(Icons.arrow_drop_up),
-                    ],
-                  ),
-                  secondChild: Row(
-                    children: [
-                      Text("Voir le détail"),
-                      Icon(Icons.arrow_drop_down),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ),
-        AnimatedCrossFade(
-          crossFadeState: _openRankingTable ? CrossFadeState.showSecond : CrossFadeState.showFirst,
-          duration: Duration(milliseconds: 800),
-          firstChild: SizedBox(
-            width: double.infinity,
-          ),
-          secondChild: TeamRankingTable(team: widget.team, ranking: widget.ranking),
+        Padding(
+          padding: const EdgeInsets.only(top: 18.0),
+          child: TeamRankingTable(team: widget.team, ranking: widget.ranking),
         ),
       ],
     );

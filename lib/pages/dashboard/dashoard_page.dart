@@ -7,12 +7,35 @@ import 'package:v34/commons/paragraph.dart';
 import 'package:v34/pages/dashboard/widgets/dashboard_agenda.dart';
 import 'package:v34/pages/dashboard/widgets/dashboard_club_teams.dart';
 import 'package:v34/pages/dashboard/widgets/dashboard_clubs.dart';
+import 'package:v34/pages/favorite/favorite_wizard.dart';
 import 'package:v34/state_builder.dart';
 
-class DashboardPage extends StatelessWidget {
+class DashboardPage extends StatefulWidget {
+  @override
+  State<DashboardPage> createState() => _DashboardPageState();
+}
+
+class _DashboardPageState extends State<DashboardPage> {
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    BlocProvider.of<PreferencesBloc>(context).add(PreferencesLoadEvent());
+  }
+
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<PreferencesBloc, PreferencesState>(
+    return BlocConsumer<PreferencesBloc, PreferencesState>(
+      listener: (_, state) {
+        if (state is PreferencesUpdatedState && (state.favoriteClub == null || state.favoriteTeam == null)) {
+          showGeneralDialog(
+            barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
+            barrierColor: Colors.black45,
+            context: context,
+            pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) =>
+                SelectFavoriteTeam(),
+          );
+        }
+      },
       builder: (context, state) {
         return MainPage(
           title: "Volley34",
@@ -25,7 +48,7 @@ class DashboardPage extends StatelessWidget {
                   conditionalBuilders: [
                     when(
                       stateIs<PreferencesLoadingState>(),
-                      (_, __) => Loading(),
+                      (_, __) => SizedBox(height: DashboardClub.cardHeight, child: Loading()),
                     ),
                     when<PreferencesUpdatedState>(
                       stateIs<PreferencesUpdatedState>(),
@@ -41,7 +64,7 @@ class DashboardPage extends StatelessWidget {
                       },
                     ),
                   ],
-                  defaultBuilder: (_, state) => Container(height: 250, child: Text("Ooooops")),
+                  defaultBuilder: (_, state) => Container(height: 250),
                 ),
                 Paragraph(title: "Votre équipe"),
                 StateConditionBuilder(
@@ -49,7 +72,10 @@ class DashboardPage extends StatelessWidget {
                   conditionalBuilders: [
                     when(
                       stateIs<PreferencesLoadingState>(),
-                      (_, __) => Loading(),
+                      (_, __) => SizedBox(
+                        height: DashboardClubTeam.cardHeight,
+                        child: Loading(),
+                      ),
                     ),
                     when<PreferencesUpdatedState>(
                       stateIs<PreferencesUpdatedState>(),
@@ -68,13 +94,18 @@ class DashboardPage extends StatelessWidget {
                       },
                     ),
                   ],
-                  defaultBuilder: (_, state) => Container(height: 250, child: Text("Ooooops")),
+                  defaultBuilder: (_, state) => Container(height: 250),
                 ),
                 Paragraph(title: "Votre agenda"),
                 StateConditionBuilder(
                   state: state,
                   conditionalBuilders: [
-                    when<PreferencesUpdatedState>(stateIs<PreferencesLoadingState>(), (_, __) => Loading()),
+                    when<PreferencesLoadingState>(
+                        stateIs<PreferencesLoadingState>(),
+                        (_, __) => SizedBox(
+                              height: DashboardClub.cardHeight,
+                              child: Loading(),
+                            )),
                     when<PreferencesUpdatedState>(
                       stateIs<PreferencesUpdatedState>(),
                       (_, state) => state.favoriteTeam != null
@@ -82,7 +113,7 @@ class DashboardPage extends StatelessWidget {
                           : _buildNoFavorite(context, "Sélectionnez votre équipe dans votre profil"),
                     ),
                   ],
-                  defaultBuilder: (_, state) => Container(height: 250, child: Text("Ooooops")),
+                  defaultBuilder: (_, state) => Container(height: 250),
                 )
               ],
             ),

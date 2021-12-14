@@ -9,14 +9,13 @@ typedef TeamFavoriteChangeCallback = void Function(Team team);
 class DashboardClubTeam extends StatelessWidget {
   final Team team;
   final Club club;
-  final double cardHeight = 260;
+  static final double cardHeight = 260;
 
   const DashboardClubTeam({Key? key, required this.team, required this.club}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: cardHeight,
       child: Padding(
         padding: const EdgeInsets.only(left: 8.0, right: 0),
         child: TeamCard(
