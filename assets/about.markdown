@@ -1,6 +1,9 @@
 
-Cette application mobile a pour but de rendre plus facile et plus lisible les informations qui concernent notre sport
-favori : le Volley Ball. Elle a nécessité du temps et de l'énergie, n'hésitez pas à remercier les différents contributeurs
+Cette application mobile vous est proposé par le Volley Club de Vailhauquès (VCV).  
+  
+
+Elle a pour but de rendre plus facile l'utilisation quotidienne concernant Volley34. Elle a nécessité du temps et de l'énergie, 
+n'hésitez pas à mettre un commentaire sur les stores, à remercier les différents contributeurs
 et à leur offrir un verre à l'occasion.
 
 # Développeurs
@@ -23,7 +26,8 @@ http://www.volley34.fr
 
 # Testeurs
 
-_Un grand merci aux personnes suivantes, qui ont joué les cobayes pour nous remonter leurs impressions et les problèmes qu'ils rencontraient:_
+_Un grand merci aux personnes suivantes, qui ont joué les cobayes pour nous remonter leurs impressions et les problèmes 
+qu'ils rencontraient:_
 
 
 * Christophe Lapoujade
@@ -47,5 +51,5 @@ font foi.
 
 # Respect de la vie privée
 
-Cette application respecte votre vie privée et ne collecte aucune donnée personnelle. Seule votre navigation dans l'application
+Cette application respecte votre vie privée et ne collecte aucune donnée personnelle sans votre accord. Votre navigation dans l'application
 est envoyée de façon anonyme sur nos serveurs afin de mieux comprendre vos habitudes et d'améliorer votre expérience utilisateur.
