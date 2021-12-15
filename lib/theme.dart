@@ -175,7 +175,7 @@ class AppTheme {
         scaffoldBackgroundColor: Color(0xfff3f5ff),
         highlightColor: Colors.transparent,
         primarySwatch: Colors.blue,
-        primaryColor: Color(0xfff3f5ff),
+        primaryColor: Color(0xffFBFDFF),
         bottomAppBarColor: Color(0xff44485d),
         cardTheme: CardTheme(
           color: Color(0xffeceef8),

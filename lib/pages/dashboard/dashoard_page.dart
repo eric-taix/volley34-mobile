@@ -32,7 +32,9 @@ class _DashboardPageState extends State<DashboardPage> {
             barrierColor: Colors.black45,
             context: context,
             pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) =>
-                SelectFavoriteTeam(),
+                SelectFavoriteTeam(
+              canClose: false,
+            ),
           );
         }
       },

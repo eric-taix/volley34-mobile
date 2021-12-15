@@ -35,7 +35,7 @@ class ProfilPage extends StatelessWidget {
                       context: context,
                       pageBuilder:
                           (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) =>
-                              SelectFavoriteTeam(),
+                              SelectFavoriteTeam(canClose: true),
                     ),
                     trailing: Icon(
                       Icons.keyboard_arrow_right,

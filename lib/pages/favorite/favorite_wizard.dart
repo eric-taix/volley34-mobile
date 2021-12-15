@@ -7,7 +7,9 @@ import 'package:v34/pages/favorite/favorite_club.dart';
 import 'package:v34/pages/favorite/favorite_team.dart';
 
 class SelectFavoriteTeam extends StatefulWidget {
-  const SelectFavoriteTeam({Key? key}) : super(key: key);
+  final bool canClose;
+
+  const SelectFavoriteTeam({Key? key, required this.canClose}) : super(key: key);
 
   @override
   State<SelectFavoriteTeam> createState() => _SelectFavoriteTeamState();
@@ -36,44 +38,55 @@ class _SelectFavoriteTeamState extends State<SelectFavoriteTeam> {
   @override
   Widget build(BuildContext context) {
     String selectionType = _selectedClub != null ? "équipe" : "club";
-    return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          leading: IconButton(icon: Icon(Icons.close), onPressed: () => Navigator.of(context).pop()),
-          title: Text("Sélectionnez votre $selectionType", style: Theme.of(context).textTheme.headline4),
-        ),
-        body: Container(
-          color: Theme.of(context).canvasColor,
-          child: Column(
-            children: [
-              Expanded(
-                child: PageView(
-                  controller: _pageController,
-                  children: [
-                    FavoriteClubSelection(
-                      onClubChange: (club) => setState(
-                        () {
-                          _selectedClub = club;
-                          _selectedTeam = null;
-                          _pageController.animateToPage(1,
-                              duration: Duration(milliseconds: 400), curve: Curves.easeInOut);
-                        },
+    return BlocListener<PreferencesBloc, PreferencesState>(
+      listener: (context, state) {
+        if (state is PreferencesUpdatedState) {
+          if (state.favoriteTeam != null && state.favoriteClub != null) {
+            _close(context);
+          }
+        }
+      },
+      child: SafeArea(
+        child: Scaffold(
+          appBar: AppBar(
+            leading: widget.canClose
+                ? IconButton(icon: Icon(Icons.close), onPressed: () => Navigator.of(context).pop())
+                : SizedBox(),
+            title: Text("Sélectionnez votre $selectionType", style: Theme.of(context).textTheme.headline4),
+          ),
+          body: Container(
+            color: Theme.of(context).canvasColor,
+            child: Column(
+              children: [
+                Expanded(
+                  child: PageView(
+                    controller: _pageController,
+                    children: [
+                      FavoriteClubSelection(
+                        onClubChange: (club) => setState(
+                          () {
+                            _selectedClub = club;
+                            _selectedTeam = null;
+                            _pageController.animateToPage(1,
+                                duration: Duration(milliseconds: 400), curve: Curves.easeInOut);
+                          },
+                        ),
                       ),
-                    ),
-                    if (_selectedClub != null)
-                      FavoriteTeamSelection(
-                        club: _selectedClub!,
-                        onTeamChange: (team) => setState(() {
-                          _selectedTeam = team;
-                          if (_selectedTeam != null && _selectedClub != null) {
-                            _save(context);
-                          }
-                        }),
-                      ),
-                  ],
+                      if (_selectedClub != null)
+                        FavoriteTeamSelection(
+                          club: _selectedClub!,
+                          onTeamChange: (team) => setState(() {
+                            _selectedTeam = team;
+                            if (_selectedTeam != null && _selectedClub != null) {
+                              _save(context);
+                            }
+                          }),
+                        ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -82,10 +95,9 @@ class _SelectFavoriteTeamState extends State<SelectFavoriteTeam> {
 
   _save(BuildContext context) async {
     _preferencesBloc.add(PreferencesSaveEvent(favoriteClub: _selectedClub, favoriteTeam: _selectedTeam));
-    _close(context);
   }
 
   _close(BuildContext context) {
-    Navigator.of(context).pop();
+    Navigator.of(context, rootNavigator: true).pop();
   }
 }
