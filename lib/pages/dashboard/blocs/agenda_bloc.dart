@@ -78,7 +78,9 @@ class AgendaBloc extends Bloc<AgendaEvent, AgendaState> {
   Stream<AgendaState> mapEventToState(AgendaEvent event) async* {
     yield AgendaLoading(state.events);
     if (event is LoadTeamMonthAgenda) {
-      var today = DateTime.now();
+      var now = DateTime.now();
+      var today = DateTime(now.year, now.month, now.day);
+
       List<Event> events = (await repository.loadTeamAgenda(event.teamCode, event.days))
           .where((calendarEvent) => calendarEvent.date!.compareTo(today) > 0)
           .toList();
@@ -119,7 +121,8 @@ class AgendaBloc extends Bloc<AgendaEvent, AgendaState> {
       eventsWithForce.sort((event1, event2) => event1.date!.compareTo(event2.date!));
       yield AgendaLoaded(eventsWithForce);
     } else if (event is LoadTeamsMonthAgenda) {
-      var today = DateTime.now();
+      var now = DateTime.now();
+      var today = DateTime(now.year, now.month, now.day);
       Set<Event> allEvents = Set();
       for (String? teamCode in event.teamCodes) {
         List<Event> events = (await repository.loadTeamAgenda(teamCode, event.days))
