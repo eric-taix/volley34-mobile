@@ -19,7 +19,6 @@ class FavoriteTeamSelection extends StatefulWidget {
 class _FavoriteTeamSelectionState extends State<FavoriteTeamSelection> {
   final ItemScrollController itemScrollController = ItemScrollController();
   late Repository _repository;
-  int? _selectedIndex;
   List<Team> _teams = [];
 
   @override
@@ -48,22 +47,31 @@ class _FavoriteTeamSelectionState extends State<FavoriteTeamSelection> {
   @override
   Widget build(BuildContext context) {
     return ScrollablePositionedList.builder(
-      padding: EdgeInsets.symmetric(vertical: 28, horizontal: 18),
       itemScrollController: itemScrollController,
       itemCount: _teams.length,
       itemBuilder: (BuildContext context, int index) {
-        return Row(
-          children: [
-            Radio<Team>(
-              groupValue: _selectedIndex != null ? _teams[_selectedIndex!] : null,
-              value: _teams[index],
-              onChanged: (Team? team) => _selectTeam(index),
+        return Material(
+          child: InkWell(
+            onTap: () => _selectTeam(index),
+            child: Padding(
+              padding: EdgeInsets.symmetric(vertical: 10, horizontal: 18),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 8.0, bottom: 8, left: 18, right: 18),
+                      child: Text(_teams[index].name!),
+                    ),
+                  ),
+                  Icon(
+                    Icons.arrow_forward_ios_outlined,
+                    size: 16,
+                    color: Theme.of(context).textTheme.bodyText1!.color,
+                  ),
+                ],
+              ),
             ),
-            Padding(
-              padding: const EdgeInsets.only(top: 18.0, bottom: 18, left: 18, right: 18),
-              child: Text(_teams[index].name!),
-            ),
-          ],
+          ),
         );
       },
     );
@@ -71,6 +79,5 @@ class _FavoriteTeamSelectionState extends State<FavoriteTeamSelection> {
 
   void _selectTeam(int index) {
     widget.onTeamChange(_teams[index]);
-    setState(() => _selectedIndex = index);
   }
 }
