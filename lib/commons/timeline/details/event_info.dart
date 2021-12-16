@@ -129,21 +129,21 @@ class EventInfo extends StatelessWidget {
           Divider(color: Theme.of(context).textTheme.bodyText1!.color!.withOpacity(0.5)),
           ..._buildPlace(context),
           EventPlace(event: event),
-          if (event.clubCode != null) ...[
+          if (event.clubCode != null && event.clubCode!.isNotEmpty) ...[
             Divider(color: Theme.of(context).textTheme.bodyText1!.color!.withOpacity(0.5)),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 4.0),
               child: _buildOrganizerClub(context),
             ),
           ],
-          if (event.description != null) ...[
+          if (event.description != null && event.description!.isNotEmpty) ...[
             Divider(color: Theme.of(context).textTheme.bodyText1!.color!.withOpacity(0.5)),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 4.0),
               child: _buildDescription(context),
             ),
           ],
-          if (event.contactName != null) ...[
+          if (event.contactName != null && event.contactName!.isNotEmpty) ...[
             Divider(color: Theme.of(context).textTheme.bodyText1!.color!.withOpacity(0.2)),
             Padding(padding: const EdgeInsets.symmetric(vertical: 4.0), child: _buildContact(context)),
           ],
