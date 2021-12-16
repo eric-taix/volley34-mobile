@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:v34/commons/rounded_network_image.dart';
 import 'package:v34/commons/timeline/details/event_info.dart';
 import 'package:v34/models/event.dart';
-import 'package:v34/repositories/repository.dart';
 import 'package:v34/utils/analytics.dart';
 
 class EventDetails extends StatefulWidget {
@@ -16,49 +14,28 @@ class EventDetails extends StatefulWidget {
 }
 
 class _EventDetailsState extends State<EventDetails> with RouteAwareAnalytics {
-  String? hostLogoUrl = "";
-  String? visitorLogoUrl = "";
-
   @override
   void initState() {
     super.initState();
-    if (widget.event.type == EventType.Match) {
-      Repository repository = RepositoryProvider.of<Repository>(context);
-      repository.loadTeamClub(widget.event.hostCode).then((hostClub) {
-        hostLogoUrl = hostClub.logoUrl;
-        return repository.loadTeamClub(widget.event.visitorCode);
-      }).then((visitorClub) {
-        visitorLogoUrl = visitorClub.logoUrl;
-        setState(() {});
-      });
-    }
   }
 
   Widget _screenTitle(BuildContext context) {
-    if (widget.event.type == EventType.Match) {
-      return Padding(
-        padding: const EdgeInsets.only(left: 32.0, right: 8.0),
-        child: RichText(
-          textScaleFactor: 0.7,
-          textAlign: TextAlign.center,
-          text: TextSpan(
-            text: "",
-            children: [
-              TextSpan(text: widget.event.hostName, style: Theme.of(context).appBarTheme.titleTextStyle),
-              TextSpan(text: "  reçoit  ", style: Theme.of(context).textTheme.bodyText1),
-              TextSpan(text: widget.event.visitorName, style: Theme.of(context).appBarTheme.titleTextStyle),
-            ],
-          ),
-        ),
-      );
-    } else {
-      return Text(widget.event.name!,
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            color: Theme.of(context).textTheme.bodyText2!.color,
-            fontSize: 16.0,
-          ));
+    String title;
+    switch (widget.event.type) {
+      case EventType.Match:
+        title = "Match";
+        break;
+      case EventType.Tournament:
+        title = "Tournoi";
+        break;
+      case EventType.Meeting:
+        title = "Evénement";
+        break;
+      default:
+        title = "Inconnu";
+        break;
     }
+    return Text(title, textAlign: TextAlign.center, style: Theme.of(context).appBarTheme.titleTextStyle);
   }
 
   Widget _buildAppBarBackground(BuildContext context) {
@@ -70,7 +47,7 @@ class _EventDetailsState extends State<EventDetails> with RouteAwareAnalytics {
             left: 50,
             child: RoundedNetworkImage(
               80,
-              hostLogoUrl,
+              "",
             ),
           ),
           Positioned(
@@ -78,7 +55,7 @@ class _EventDetailsState extends State<EventDetails> with RouteAwareAnalytics {
             right: 50,
             child: RoundedNetworkImage(
               80,
-              visitorLogoUrl,
+              "",
             ),
           ),
           const DecoratedBox(
@@ -111,11 +88,10 @@ class _EventDetailsState extends State<EventDetails> with RouteAwareAnalytics {
           headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
             return <Widget>[
               SliverAppBar(
-                expandedHeight: 200.0,
                 floating: false,
                 pinned: true,
-                stretch: true,
                 elevation: 0,
+                title: _screenTitle(context),
                 shape: RoundedRectangleBorder(
                     side: BorderSide.none,
                     borderRadius: BorderRadius.only(
@@ -129,8 +105,6 @@ class _EventDetailsState extends State<EventDetails> with RouteAwareAnalytics {
                     StretchMode.fadeTitle,
                   ],
                   centerTitle: true,
-                  title: _screenTitle(context),
-                  background: _buildAppBarBackground(context),
                 ),
               ),
             ];

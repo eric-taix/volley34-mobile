@@ -1,19 +1,90 @@
 import 'package:add_2_calendar/add_2_calendar.dart' as addToCalendar;
+import 'package:feature_discovery/feature_discovery.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
+import 'package:v34/commons/circular_menu/circular_menu.dart';
+import 'package:v34/commons/circular_menu/circular_menu_item.dart';
+import 'package:v34/commons/feature_tour.dart';
+import 'package:v34/commons/rounded_network_image.dart';
+import 'package:v34/commons/router.dart';
 import 'package:v34/commons/timeline/details/event_place.dart';
+import 'package:v34/models/club.dart';
 import 'package:v34/models/event.dart';
+import 'package:v34/models/team.dart';
+import 'package:v34/pages/team-details/team_detail_page.dart';
+import 'package:v34/repositories/repository.dart';
 import 'package:v34/utils/launch.dart';
 
 import 'event_date.dart';
 import 'organizer_club.dart';
 
-class EventInfo extends StatelessWidget {
+class EventInfo extends StatefulWidget {
   final Event event;
+  const EventInfo({Key? key, required this.event}) : super(key: key);
+
+  @override
+  State<EventInfo> createState() => _EventInfoState();
+}
+
+class _EventInfoState extends State<EventInfo> with SingleTickerProviderStateMixin {
+  static final Divider _divider = Divider(indent: 20, endIndent: 20);
+
+  Team? _hostTeam;
+  Club? _hostClub;
+  Team? _visitorTeam;
+  Club? _visitorClub;
+
   final double _iconSize = 30.0;
 
-  const EventInfo({Key? key, required this.event}) : super(key: key);
+  GlobalKey<CircularMenuState> menuKey = GlobalKey<CircularMenuState>();
+  late final ScrollController _scrollController;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController();
+    _scrollController.addListener(() {
+      _closeMenu();
+    });
+    if (widget.event.type == EventType.Match) {
+      Repository repository = RepositoryProvider.of<Repository>(context);
+      repository.loadTeamClub(widget.event.hostCode).then((hostClub) {
+        _hostClub = hostClub;
+        return repository.loadTeam(widget.event.hostCode!);
+      }).then((hostTeam) {
+        _hostTeam = hostTeam;
+        return repository.loadTeamClub(widget.event.visitorCode);
+      }).then((visitorClub) {
+        _visitorClub = visitorClub;
+        return repository.loadTeam(widget.event.visitorCode!);
+      }).then((visitorTeam) {
+        _visitorTeam = visitorTeam;
+        setState(() {});
+        Future.delayed(Duration(seconds: 1)).then((_) {
+          FeatureDiscovery.discoverFeatures(
+            context,
+            [
+              ...[
+                "match_opponents",
+                "match_date_and_hour",
+                "match_place",
+                "match_actions",
+              ],
+            ],
+          );
+        });
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   List<Widget> _buildDateAndHour(BuildContext context) {
     return [
@@ -23,32 +94,47 @@ class EventInfo extends StatelessWidget {
             color: Theme.of(context).textTheme.bodyText1!.color,
             size: _iconSize,
           ),
-          title: EventDate(date: event.date, endDate: event.endDate, fullFormat: true)),
+          title: EventDate(date: widget.event.date, endDate: widget.event.endDate, fullFormat: true)),
       ListTile(
           leading: Icon(Icons.access_time, color: Theme.of(context).textTheme.bodyText1!.color, size: _iconSize),
-          title: EventDate(date: event.date, endDate: event.endDate, hour: true)),
+          title: FeatureTour(
+              title: "Date et heure",
+              featureId: "match_date_and_hour",
+              paragraphs: [
+                "Retrouvez la date et l'heure du match. Pour ajouter ce match à votre calendrier, cliquez sur le lien \"AJOUTER AU CALENDRIER\""
+              ],
+              child: EventDate(date: widget.event.date, endDate: widget.event.endDate, hour: true))),
       ListTile(
-          title: Center(
-        child: ElevatedButton.icon(
-          onPressed: () => _addEventToCalendar(),
-          icon: Icon(
-            Icons.calendar_today,
-          ),
-          label: Text("Ajouter à l'agenda"),
-        ),
-      ))
+          contentPadding: EdgeInsets.zero,
+          title: Align(
+            alignment: Alignment.centerLeft,
+            child: TextButton.icon(
+              onPressed: () => _addEventToCalendar(),
+              icon: Icon(
+                Icons.calendar_today,
+              ),
+              label: Text("Ajouter à l'agenda".toUpperCase()),
+            ),
+          ))
     ];
   }
 
   List<Widget> _buildPlace(BuildContext context) {
     return [
-      ListTile(
-        leading: Icon(
-          Icons.location_on,
-          color: Theme.of(context).textTheme.bodyText1!.color,
-          size: _iconSize,
+      FeatureTour(
+        title: "Localisation",
+        featureId: "match_place",
+        paragraphs: [
+          "Localisez l'emplacement du match sur la carte. En cliquant sur le lien \"ITINERAIRE\" : votre application de navigation vous guidera à votre destination.",
+        ],
+        child: ListTile(
+          leading: Icon(
+            Icons.location_on,
+            color: Theme.of(context).textTheme.bodyText1!.color,
+            size: _iconSize,
+          ),
+          title: Text(widget.event.place!, textAlign: TextAlign.left, style: Theme.of(context).textTheme.bodyText2),
         ),
-        title: Text(event.place!, textAlign: TextAlign.left, style: Theme.of(context).textTheme.bodyText2),
       )
     ];
   }
@@ -57,7 +143,7 @@ class EventInfo extends StatelessWidget {
     return ListTile(
       leading: SvgPicture.asset('assets/shield.svg',
           width: _iconSize, height: _iconSize, color: Theme.of(context).textTheme.bodyText1!.color!.withOpacity(0.5)),
-      title: OrganizerClub(clubCode: event.clubCode),
+      title: OrganizerClub(clubCode: widget.event.clubCode),
     );
   }
 
@@ -68,29 +154,29 @@ class EventInfo extends StatelessWidget {
           color: Theme.of(context).textTheme.bodyText1!.color!,
           size: _iconSize,
         ),
-        title: HtmlWidget(event.description!, textStyle: Theme.of(context).textTheme.bodyText2!));
+        title: HtmlWidget(widget.event.description!, textStyle: Theme.of(context).textTheme.bodyText2!));
   }
 
   Widget _buildContact(BuildContext context) {
     final Uri params = Uri(
       scheme: 'mailto',
-      path: event.contactEmail,
-      query: 'subject=${event.name}',
+      path: widget.event.contactEmail,
+      query: 'subject=${widget.event.name}',
     );
     Widget? subtitle;
-    if (event.contactPhone != null || event.contactEmail != null) {
+    if (widget.event.contactPhone != null || widget.event.contactEmail != null) {
       subtitle = Padding(
         padding: const EdgeInsets.only(top: 8.0),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            if (event.contactPhone != null)
+            if (widget.event.contactPhone != null)
               ElevatedButton.icon(
                 icon: Icon(Icons.phone, color: Theme.of(context).textTheme.bodyText1!.color),
-                onPressed: () => launchURL("tel:${event.contactPhone}"),
+                onPressed: () => launchURL("tel:${widget.event.contactPhone}"),
                 label: Text("Appeler"),
               ),
-            if (event.contactEmail != null)
+            if (widget.event.contactEmail != null)
               ElevatedButton.icon(
                 icon: Icon(Icons.mail, color: Theme.of(context).textTheme.bodyText1!.color),
                 onPressed: () => launchURL(params.toString()),
@@ -106,49 +192,253 @@ class EventInfo extends StatelessWidget {
         color: Theme.of(context).textTheme.bodyText1!.color,
         size: _iconSize,
       ),
-      title: Text(event.contactName!, textAlign: TextAlign.left, style: Theme.of(context).textTheme.bodyText2!),
+      title: Text(widget.event.contactName!, textAlign: TextAlign.left, style: Theme.of(context).textTheme.bodyText2!),
       subtitle: subtitle,
     );
   }
 
   void _addEventToCalendar() async {
     final addToCalendar.Event event = addToCalendar.Event(
-        title: this.event.name!,
-        location: this.event.place!,
-        startDate: this.event.date!,
-        endDate: this.event.endDate ?? this.event.date!.add(Duration(hours: 2)));
+        title: this.widget.event.name!,
+        location: this.widget.event.place!,
+        startDate: this.widget.event.date!,
+        endDate: this.widget.event.endDate ?? this.widget.event.date!.add(Duration(hours: 2)));
     await addToCalendar.Add2Calendar.addEvent2Cal(event);
+  }
+
+  Widget _buildOpponent(BuildContext context, Team team, Club club) {
+    return ListTile(
+      onTap: () => RouterFacade.push(context: context, builder: (_) => TeamDetailPage(team: team, club: club)),
+      title: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(right: 18.0),
+            child: Hero(
+              tag: "hero-logo-${team.code}",
+              child: RoundedNetworkImage(40, club.logoUrl ?? ""),
+            ),
+          ),
+          Expanded(
+            child: Text(
+              team.name!,
+              textAlign: TextAlign.start,
+              style: Theme.of(context).textTheme.headline4,
+            ),
+          ),
+          Icon(
+            Icons.arrow_forward_ios_rounded,
+            size: 14,
+          ),
+        ],
+      ),
+    );
+  }
+
+  List<Widget> _buildTitle(BuildContext context) {
+    if (widget.event.type == EventType.Match) {
+      return [
+        Padding(
+          padding: const EdgeInsets.only(top: 18),
+          child: _hostClub != null && _hostTeam != null ? _buildOpponent(context, _hostTeam!, _hostClub!) : SizedBox(),
+        ),
+        FeatureTour(
+          title: "Les équipes",
+          featureId: "match_opponents",
+          paragraphs: [
+            "Le détail de l'équipe hôte et de l'équipe visiteuse. Vous pouvez accéder aux détails d'une équipe en cliquant dessus.",
+          ],
+          child: Padding(
+            padding: const EdgeInsets.only(left: 88.0),
+            child: Text("reçoit", style: Theme.of(context).textTheme.bodyText1),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(bottom: 18.0),
+          child: _visitorClub != null && _visitorTeam != null
+              ? _buildOpponent(context, _visitorTeam!, _visitorClub!)
+              : SizedBox(),
+        ),
+        _divider,
+      ];
+    } else if (widget.event.type == EventType.Unknown) {
+      return [];
+    } else {
+      return [
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 38.0, horizontal: 8),
+          child: ListTile(
+            title: Text(
+              widget.event.name!,
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.headline4,
+            ),
+          ),
+        ),
+        _divider,
+      ];
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: ListView(
+    return GestureDetector(
+      onTap: () => _closeMenu(),
+      child: Stack(
         children: [
-          ..._buildDateAndHour(context),
-          Divider(color: Theme.of(context).textTheme.bodyText1!.color!.withOpacity(0.5)),
-          ..._buildPlace(context),
-          EventPlace(event: event),
-          if (event.clubCode != null && event.clubCode!.isNotEmpty) ...[
-            Divider(color: Theme.of(context).textTheme.bodyText1!.color!.withOpacity(0.5)),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 4.0),
-              child: _buildOrganizerClub(context),
+          Container(
+            child: ListView(
+              controller: _scrollController,
+              children: [
+                ..._buildTitle(context),
+                ..._buildDateAndHour(context),
+                _divider,
+                ..._buildPlace(context),
+                EventPlace(
+                  event: widget.event,
+                  onCameraMoveStarted: () => _closeMenu(),
+                ),
+                if (widget.event.clubCode != null && widget.event.clubCode!.isNotEmpty) ...[
+                  _divider,
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4.0),
+                    child: _buildOrganizerClub(context),
+                  ),
+                ],
+                if (widget.event.description != null && widget.event.description!.isNotEmpty) ...[
+                  _divider,
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4.0),
+                    child: _buildDescription(context),
+                  ),
+                ],
+                if (widget.event.contactName != null && widget.event.contactName!.isNotEmpty) ...[
+                  _divider,
+                  Padding(padding: const EdgeInsets.symmetric(vertical: 4.0), child: _buildContact(context)),
+                ],
+              ],
             ),
-          ],
-          if (event.description != null && event.description!.isNotEmpty) ...[
-            Divider(color: Theme.of(context).textTheme.bodyText1!.color!.withOpacity(0.5)),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 4.0),
-              child: _buildDescription(context),
+          ),
+          if (widget.event.type == EventType.Match)
+            CircularMenu(
+              key: menuKey,
+              alignment: Alignment.bottomRight,
+              radius: 120,
+              toggleButtonColor: Theme.of(context).colorScheme.secondary,
+              toggleButtonMargin: 18,
+              items: [
+                CircularMenuItem(
+                  icon: Icons.play_arrow,
+                  iconColor: Colors.black54,
+                ),
+                CircularMenuItem(
+                  icon: Icons.timer,
+                  iconColor: Colors.black54,
+                ),
+                CircularMenuItem(
+                  icon: Icons.edit,
+                  onTap: () {
+                    _closeMenu();
+                  },
+                ),
+                if (widget.event.matchCode != null && widget.event.matchCode!.isNotEmpty)
+                  CircularMenuItem(
+                    icon: Icons.file_present,
+                    onTap: () {
+                      FirebaseAnalytics.instance.logEvent(
+                        name: "file_download",
+                        parameters: filterOutNulls(<String, String?>{
+                          "file_name": "FDM_${widget.event.matchCode!}",
+                          "file_extension": "pdf",
+                        }),
+                      );
+                      _closeMenu();
+                      launchURL("https://www.volley34.fr/Data/FDM/FDM_${widget.event.matchCode!}.pdf");
+                    },
+                  ),
+              ],
             ),
-          ],
-          if (event.contactName != null && event.contactName!.isNotEmpty) ...[
-            Divider(color: Theme.of(context).textTheme.bodyText1!.color!.withOpacity(0.2)),
-            Padding(padding: const EdgeInsets.symmetric(vertical: 4.0), child: _buildContact(context)),
-          ],
+          Align(
+            alignment: Alignment.bottomRight,
+            child: FeatureTour(
+              title: "Actions",
+              featureId: "match_actions",
+              paragraphsChildren: [
+                Text("Ouvrez le menu pour découvrir les actions possibles :",
+                    style: Theme.of(context).textTheme.bodyText2, textScaleFactor: 1.2),
+                Padding(
+                  padding: const EdgeInsets.only(top: 8.0),
+                  child: RichText(
+                    textScaleFactor: 1.2,
+                    text: TextSpan(
+                      style: Theme.of(context).textTheme.bodyText2,
+                      children: [
+                        WidgetSpan(alignment: PlaceholderAlignment.middle, child: Icon(Icons.play_arrow)),
+                        TextSpan(text: " Démarrez le match (prochainement)"),
+                      ],
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 8.0),
+                  child: RichText(
+                    textScaleFactor: 1.2,
+                    text: TextSpan(
+                      style: Theme.of(context).textTheme.bodyText2,
+                      children: [
+                        WidgetSpan(alignment: PlaceholderAlignment.middle, child: Icon(Icons.timer)),
+                        TextSpan(text: " Reportez le match (prochainement)"),
+                      ],
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 8.0),
+                  child: RichText(
+                    textScaleFactor: 1.2,
+                    text: TextSpan(
+                      style: Theme.of(context).textTheme.bodyText2,
+                      children: [
+                        WidgetSpan(
+                          alignment: PlaceholderAlignment.middle,
+                          child: Icon(Icons.edit),
+                        ),
+                        TextSpan(text: " Saisissez le score"),
+                      ],
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 8.0),
+                  child: RichText(
+                    textScaleFactor: 1.2,
+                    text: TextSpan(
+                      style: Theme.of(context).textTheme.bodyText2,
+                      children: [
+                        WidgetSpan(alignment: PlaceholderAlignment.middle, child: Icon(Icons.file_present)),
+                        TextSpan(text: " Téléchargez la feuille de match"),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+              target: Icon(Icons.menu, color: Theme.of(context).cardTheme.color),
+              child: Padding(
+                padding: const EdgeInsets.only(right: 88.0, bottom: 88),
+                child: SizedBox(),
+              ),
+              onComplete: () {
+                menuKey.currentState?.forwardAnimation();
+                return Future.value(true);
+              },
+            ),
+          )
         ],
       ),
     );
+  }
+
+  _closeMenu() {
+    menuKey.currentState?.reverseAnimation();
   }
 }

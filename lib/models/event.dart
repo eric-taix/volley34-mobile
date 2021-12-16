@@ -19,6 +19,7 @@ class Event extends Equatable {
   final Force? hostForce;
   final Force? visitorForce;
   final Force? globalForce;
+  final String? matchCode;
 
   // Tournament & Meeting
   final DateTime? endDate;
@@ -48,9 +49,11 @@ class Event extends Equatable {
     this.hostForce,
     this.visitorForce,
     this.globalForce,
+    this.matchCode,
   });
 
   factory Event.fromJson(json) {
+    print(json);
     if (json["MatchCode"] != null) {
       return Event(
         date: DateTime.parse(json["DateMatch"]),
@@ -62,6 +65,7 @@ class Event extends Equatable {
         visitorName: json["NomVisiteurs"],
         visitorCode: json["EquipeVisiteursCode"],
         type: EventType.Match,
+        matchCode: json["MatchCode"],
       );
     } else {
       return Event(

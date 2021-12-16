@@ -137,6 +137,10 @@ class AppTheme {
       ),
       textButtonTheme: TextButtonThemeData(
         style: ButtonStyle(
+          textStyle: ButtonTextStyleState(
+            enabledStyle: TextStyle(fontSize: 16),
+            disabledStyle: TextStyle(fontSize: 12),
+          ),
           overlayColor: OverlayStateColor(_mainColor.withOpacity(0.2)),
           shape: ButtonStateProperty(color: Colors.transparent),
           foregroundColor: ButtonForegroundStateColor(color: _mainColor),
@@ -150,7 +154,7 @@ class AppTheme {
           padding: ButtonPaddingProperty(),
         ),
       ),
-      dividerTheme: DividerThemeData(thickness: 0.3),
+      dividerTheme: DividerThemeData(thickness: 0.3, color: Color(0xFF979DB2)),
       switchTheme: SwitchThemeData(
         trackColor: MultiStateColor(
           disabledColor: Colors.grey,
@@ -310,6 +314,16 @@ class MultiStateColor extends MaterialStateColor {
     }
     return defaultColor;
   }
+}
+
+class ButtonTextStyleState extends MaterialStateProperty<TextStyle> {
+  final TextStyle disabledStyle;
+  final TextStyle enabledStyle;
+  ButtonTextStyleState({required this.enabledStyle, required this.disabledStyle});
+
+  @override
+  TextStyle resolve(Set<MaterialState> states) =>
+      states.contains(MaterialState.disabled) ? disabledStyle : enabledStyle;
 }
 
 class ButtonBackgroundStateColor extends MaterialStateColor {

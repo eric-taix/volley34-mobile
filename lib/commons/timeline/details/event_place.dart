@@ -7,7 +7,6 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:map_launcher/map_launcher.dart' as mapLauncher;
 import 'package:v34/commons/loading.dart';
 import 'package:v34/commons/marker/map-marker.dart';
-import 'package:v34/commons/rounded_outlined_button.dart';
 import 'package:v34/models/event.dart';
 import 'package:v34/pages/dashboard/blocs/gymnasium_bloc.dart';
 import 'package:v34/utils/extensions.dart';
@@ -15,8 +14,9 @@ import 'package:v34/utils/launch.dart';
 
 class EventPlace extends StatefulWidget {
   final Event event;
+  final VoidCallback? onCameraMoveStarted;
 
-  const EventPlace({Key? key, required this.event}) : super(key: key);
+  const EventPlace({Key? key, required this.event, this.onCameraMoveStarted}) : super(key: key);
 
   @override
   _EventPlaceState createState() => _EventPlaceState();
@@ -156,14 +156,15 @@ class _EventPlaceState extends State<EventPlace> {
                         icon: _marker ?? BitmapDescriptor.defaultMarkerWithHue(100))
                   ].toSet(),
                   initialCameraPosition:
-                      CameraPosition(target: LatLng(state.gymnasium.latitude!, state.gymnasium.longitude!), zoom: 11),
+                      CameraPosition(target: LatLng(state.gymnasium.latitude!, state.gymnasium.longitude!), zoom: 9),
                   myLocationEnabled: true,
                   myLocationButtonEnabled: false,
                   mapType: MapType.normal,
-                  zoomGesturesEnabled: true,
+                  zoomGesturesEnabled: false,
                   zoomControlsEnabled: false,
                   mapToolbarEnabled: false,
                   onMapCreated: _onMapCreated,
+                  onCameraMoveStarted: () => widget.onCameraMoveStarted != null ? widget.onCameraMoveStarted!() : null,
                   gestureRecognizers: [
                     Factory<OneSequenceGestureRecognizer>(
                       () => new EagerGestureRecognizer(),
@@ -173,24 +174,27 @@ class _EventPlaceState extends State<EventPlace> {
           ),
         ),
         Padding(
-          padding: const EdgeInsets.only(top: 8.0),
+          padding: const EdgeInsets.only(top: 8.0, bottom: 58),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Padding(
                 padding: const EdgeInsets.only(right: 8.0),
-                child: ElevatedButton.icon(
+                child: TextButton.icon(
                   onPressed: () => _launchMap(state, true),
-                  icon: Icon(Icons.directions),
-                  label: Text("Itinéraire"),
+                  icon: Icon(
+                    Icons.directions,
+                    size: 28,
+                  ),
+                  label: Text("Itinéraire".toUpperCase()),
                 ),
               ),
               if (state.gymnasium.phone != null && state.gymnasium.phone!.isNotEmpty)
                 Padding(
                   padding: const EdgeInsets.only(left: 8.0),
-                  child: RoundedOutlinedButton(
-                    leadingIcon: Icons.phone,
-                    child: Text("Appeler"),
+                  child: TextButton.icon(
+                    icon: Icon(Icons.phone),
+                    label: Text("Appeler".toUpperCase()),
                     onPressed: () => launchURL("tel:${state.gymnasium.phone}"),
                   ),
                 ),
