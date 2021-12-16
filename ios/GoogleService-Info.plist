@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>1055082740226-8lu6a1h8ru0fn6pa1afq9u3083p020pm.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.1055082740226-8lu6a1h8ru0fn6pa1afq9u3083p020pm</string>
+	<key>API_KEY</key>
+	<string>AIzaSyCXO4TLA9zCovzT4JM7IC7tf3sk0tBCAAc</string>
+	<key>GCM_SENDER_ID</key>
+	<string>1055082740226</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>org.jared.v34.mobile</string>
+	<key>PROJECT_ID</key>
+	<string>volley34-mobile-cb271</string>
+	<key>STORAGE_BUCKET</key>
+	<string>volley34-mobile-cb271.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:1055082740226:ios:3eea5ffaa9c2e64d69051b</string>
+	<key>DATABASE_URL</key>
+	<string>https://volley34-mobile-cb271.firebaseio.com</string>
+</dict>
+</plist>

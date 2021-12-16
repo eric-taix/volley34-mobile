@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:v34/models/match_result.dart';
 import 'package:v34/models/team.dart';
 import 'package:v34/pages/team-details/results/result_card.dart';
+import 'package:v34/utils/analytics.dart';
 
-class TeamResults extends StatelessWidget {
+class TeamResults extends StatefulWidget {
   final Team team;
   final List<MatchResult> results;
   late final List<MatchResult> _sortedResults;
@@ -18,6 +19,19 @@ class TeamResults extends StatelessWidget {
   }
 
   @override
+  State<TeamResults> createState() => _TeamResultsState();
+}
+
+class _TeamResultsState extends State<TeamResults> with RouteAwareAnalytics {
+  @override
+  void didUpdateWidget(covariant TeamResults oldWidget) {
+    if (oldWidget.showOnlyTeam != widget.showOnlyTeam) {
+      pushAnalyticsScreen();
+    }
+    super.didUpdateWidget(oldWidget);
+  }
+
+  @override
   Widget build(BuildContext context) {
     return SliverList(
       delegate: SliverChildListDelegate([
@@ -27,17 +41,25 @@ class TeamResults extends StatelessWidget {
           children: [
             Text("Voir tous les résultats", style: Theme.of(context).textTheme.bodyText1),
             Switch(
-              value: showOnlyTeam,
+              value: widget.showOnlyTeam,
               onChanged: (newValue) {
-                if (onChanged != null) onChanged!(newValue);
+                if (widget.onChanged != null) widget.onChanged!(newValue);
               },
             ),
           ],
         ),
         SizedBox(height: 28),
-        ..._sortedResults.map((result) => ResultCard(
-            key: ValueKey("result-${result.hostTeamCode}-${result.visitorTeamCode}"), team: team, result: result)),
+        ...widget._sortedResults.map((result) => ResultCard(
+            key: ValueKey("result-${result.hostTeamCode}-${result.visitorTeamCode}"),
+            team: widget.team,
+            result: result)),
       ]),
     );
   }
+
+  @override
+  AnalyticsRoute get route => AnalyticsRoute.team_results;
+
+  @override
+  String? get extraRoute => widget.showOnlyTeam ? "all" : null;
 }

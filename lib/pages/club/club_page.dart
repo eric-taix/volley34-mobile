@@ -8,13 +8,14 @@ import 'package:v34/commons/page/main_page.dart';
 import 'package:v34/models/club.dart';
 import 'package:v34/pages/club/club_card.dart';
 import 'package:v34/repositories/repository.dart';
+import 'package:v34/utils/analytics.dart';
 
 class ClubPage extends StatefulWidget {
   @override
   _ClubPageState createState() => _ClubPageState();
 }
 
-class _ClubPageState extends State<ClubPage> with SingleTickerProviderStateMixin {
+class _ClubPageState extends State<ClubPage> with SingleTickerProviderStateMixin, RouteAwareAnalytics {
   late Repository _repository;
 
   late List<Club> _clubs;
@@ -115,4 +116,7 @@ class _ClubPageState extends State<ClubPage> with SingleTickerProviderStateMixin
                 ),
     );
   }
+
+  @override
+  AnalyticsRoute get route => AnalyticsRoute.clubs;
 }

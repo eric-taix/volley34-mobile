@@ -2,13 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:v34/commons/blocs/preferences_bloc.dart';
 import 'package:v34/commons/loading.dart';
+import 'package:v34/utils/analytics.dart';
 
 class PreferencesPage extends StatefulWidget {
   @override
   _PreferencesPageState createState() => _PreferencesPageState();
 }
 
-class _PreferencesPageState extends State<PreferencesPage> {
+class _PreferencesPageState extends State<PreferencesPage> with RouteAwareAnalytics {
   @override
   void initState() {
     super.initState();
@@ -86,4 +87,7 @@ class _PreferencesPageState extends State<PreferencesPage> {
       },
     );
   }
+
+  @override
+  AnalyticsRoute get route => AnalyticsRoute.preferences;
 }

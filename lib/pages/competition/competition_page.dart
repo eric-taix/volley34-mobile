@@ -3,13 +3,14 @@ import 'package:flutter/widgets.dart';
 import 'package:v34/commons/no_data.dart';
 import 'package:v34/commons/page/main_page.dart';
 import 'package:v34/commons/text_tab_bar.dart';
+import 'package:v34/utils/analytics.dart';
 
 class CompetitionPage extends StatefulWidget {
   @override
   State<CompetitionPage> createState() => _CompetitionPageState();
 }
 
-class _CompetitionPageState extends State<CompetitionPage> with SingleTickerProviderStateMixin {
+class _CompetitionPageState extends State<CompetitionPage> with SingleTickerProviderStateMixin, RouteAwareAnalytics {
   @override
   Widget build(BuildContext context) {
     return MainPage(
@@ -40,4 +41,7 @@ class _CompetitionPageState extends State<CompetitionPage> with SingleTickerProv
       ),
     );
   }
+
+  @override
+  AnalyticsRoute get route => AnalyticsRoute.competitions;
 }

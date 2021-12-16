@@ -13,11 +13,12 @@ import 'package:v34/pages/team-details/ranking/labeled_stat.dart';
 import 'package:v34/pages/team-details/ranking/statistics_widget.dart';
 import 'package:v34/pages/team-details/ranking/summary_widget.dart';
 import 'package:v34/pages/team-details/ranking/team_ranking_table.dart';
+import 'package:v34/utils/analytics.dart';
 import 'package:v34/utils/competition_text.dart';
 
 import 'evolution_widget.dart';
 
-class TeamRanking extends StatelessWidget {
+class TeamRanking extends StatefulWidget {
   final Team team;
   final RankingSynthesis ranking;
   final List<MatchResult> results;
@@ -34,27 +35,48 @@ class TeamRanking extends StatelessWidget {
       : super(key: key);
 
   @override
+  State<TeamRanking> createState() => _TeamRankingState();
+}
+
+class _TeamRankingState extends State<TeamRanking> with RouteAwareAnalytics {
+  @override
   Widget build(BuildContext context) {
-    int teamIndex = ranking.ranks?.indexWhere((element) => element.teamCode == team.code) ?? -1;
-    RankingTeamSynthesis stats = ranking.ranks?[teamIndex] ?? RankingTeamSynthesis.empty();
+    int teamIndex = widget.ranking.ranks?.indexWhere((element) => element.teamCode == widget.team.code) ?? -1;
+    RankingTeamSynthesis stats = widget.ranking.ranks?[teamIndex] ?? RankingTeamSynthesis.empty();
     return SliverList(
         delegate: SliverChildListDelegate([
+      Padding(
+        padding: const EdgeInsets.only(top: 48),
+        child: Text(
+          widget.ranking.fullLabel ?? "",
+          style: Theme.of(context).textTheme.bodyText1,
+          textAlign: TextAlign.center,
+        ),
+      ),
       _buildCompetitionDescription(context),
       Paragraph(title: "Classement"),
       _buildPodium(context, stats),
       Paragraph(title: "Statistiques"),
-      _buildStats(context, stats, teamForce, globalForce),
+      _buildStats(context, stats, widget.teamForce, widget.globalForce),
     ]));
   }
 
   Widget _buildCompetitionDescription(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(top: 48, bottom: 8.0),
+      padding: const EdgeInsets.only(top: 8, bottom: 8.0),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(getClassificationCategory(ranking.division), style: Theme.of(context).textTheme.headline4),
-          CompetitionBadge(competitionCode: ranking.competitionCode, deltaSize: 0.8),
+          Text("${getClassificationCategory(widget.ranking.division)} - ${getClassificationPool(widget.ranking.pool)}",
+              style: Theme.of(context).textTheme.headline4),
+          Padding(
+            padding: const EdgeInsets.only(left: 18.0),
+            child: CompetitionBadge(
+              competitionCode: widget.ranking.competitionCode,
+              deltaSize: 0.8,
+              showSubTitle: false,
+            ),
+          ),
         ],
       ),
     );
@@ -62,9 +84,10 @@ class TeamRanking extends StatelessWidget {
 
   Widget _buildPodium(BuildContext context, RankingTeamSynthesis teamStats) {
     String title = "";
-    if (teamStats.rank! <= ranking.promoted!) {
+    if (teamStats.rank! <= widget.ranking.promoted!) {
       title = "Promue";
-    } else if (ranking.ranks != null && ranking.ranks!.length - teamStats.rank! < ranking.relegated!) {
+    } else if (widget.ranking.ranks != null &&
+        widget.ranking.ranks!.length - teamStats.rank! < widget.ranking.relegated!) {
       title = "Reléguée";
     } else {
       title = "";
@@ -85,9 +108,9 @@ class TeamRanking extends StatelessWidget {
                 Expanded(
                     child: PodiumWidget(
                   title: title,
-                  classification: ranking,
+                  classification: widget.ranking,
                   currentlyDisplayed: true,
-                  highlightedTeamCode: team.code,
+                  highlightedTeamCode: widget.team.code,
                   showTrailing: false,
                 )),
               ],
@@ -96,16 +119,16 @@ class TeamRanking extends StatelessWidget {
         ),
         Padding(
           padding: const EdgeInsets.only(top: 18.0),
-          child: TeamRankingTable(team: team, ranking: ranking),
+          child: TeamRankingTable(team: widget.team, ranking: widget.ranking),
         ),
       ],
     );
   }
 
   Widget _buildStats(BuildContext context, RankingTeamSynthesis? teamStats, Force force, Force globalForce) {
-    List<double> setsDiffEvolution = TeamBloc.computePointsDiffs(results, team.code);
-    DateTime? startDate = results.first.matchDate;
-    DateTime? endDate = results.last.matchDate;
+    List<double> setsDiffEvolution = TeamBloc.computePointsDiffs(widget.results, widget.team.code);
+    DateTime? startDate = widget.results.first.matchDate;
+    DateTime? endDate = widget.results.last.matchDate;
     List<double> cumulativeSetsDiffEvolution = TeamBloc.computeCumulativePointsDiffs(setsDiffEvolution);
     return Column(
       children: <Widget>[
@@ -144,6 +167,12 @@ class TeamRanking extends StatelessWidget {
       ],
     );
   }
+
+  @override
+  AnalyticsRoute get route => AnalyticsRoute.team_competitions;
+
+  @override
+  String? get extraRoute => widget.ranking.fullLabel;
 }
 
 class ClassificationClip extends CustomClipper<Rect> {

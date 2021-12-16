@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "1055082740226",
+    "firebase_url": "https://volley34-mobile-cb271.firebaseio.com",
+    "project_id": "volley34-mobile-cb271",
+    "storage_bucket": "volley34-mobile-cb271.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1055082740226:android:b76a50a2a9d6145e69051b",
+        "android_client_info": {
+          "package_name": "org.jared.v34.mobile"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1055082740226-cd7usl6v0fi0tc5n89voi091bc9slam4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDEGfrNqa9i085WV83N_yr-Wc8JjRnddY8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1055082740226-cd7usl6v0fi0tc5n89voi091bc9slam4.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1055082740226-8lu6a1h8ru0fn6pa1afq9u3083p020pm.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "org.jared.v34.mobile"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

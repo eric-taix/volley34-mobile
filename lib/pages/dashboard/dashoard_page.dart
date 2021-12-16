@@ -9,13 +9,14 @@ import 'package:v34/pages/dashboard/widgets/dashboard_club_teams.dart';
 import 'package:v34/pages/dashboard/widgets/dashboard_clubs.dart';
 import 'package:v34/pages/favorite/favorite_wizard.dart';
 import 'package:v34/state_builder.dart';
+import 'package:v34/utils/analytics.dart';
 
 class DashboardPage extends StatefulWidget {
   @override
   State<DashboardPage> createState() => _DashboardPageState();
 }
 
-class _DashboardPageState extends State<DashboardPage> {
+class _DashboardPageState extends State<DashboardPage> with RouteAwareAnalytics {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -146,4 +147,7 @@ class _DashboardPageState extends State<DashboardPage> {
       ),
     );
   }
+
+  @override
+  AnalyticsRoute get route => AnalyticsRoute.dashboard;
 }

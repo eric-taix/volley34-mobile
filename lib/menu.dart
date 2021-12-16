@@ -7,6 +7,7 @@ import 'package:v34/commons/blocs/preferences_bloc.dart';
 import 'package:v34/pages/markdown_page.dart';
 import 'package:v34/pages/preferences_page.dart';
 import 'package:v34/pages/profil/profil_page.dart';
+import 'package:v34/utils/analytics.dart';
 
 class AppMenu extends StatefulWidget {
   @override
@@ -90,13 +91,21 @@ class _AppMenuState extends State<AppMenu> {
       _MenuItemWithLeading(
           "A propos",
           Icon(FontAwesomeIcons.info, color: textStyleColor),
-          () => navigator.maybePop().then((value) => navigator
-              .push(MaterialPageRoute<void>(builder: (context) => MarkdownPage("A propos", "assets/about.markdown"))))),
+          () => navigator.maybePop().then((value) => navigator.push(MaterialPageRoute<void>(
+              builder: (context) => MarkdownPage(
+                    "A propos",
+                    "assets/about.markdown",
+                    analyticsRoute: AnalyticsRoute.about,
+                  ))))),
       _MenuItemWithLeading(
           "License",
           Icon(FontAwesomeIcons.ribbon, color: textStyleColor),
-          () => navigator.maybePop().then((value) => navigator
-              .push(MaterialPageRoute<void>(builder: (context) => MarkdownPage("Licence", "assets/gpl_licence.txt"))))),
+          () => navigator.maybePop().then((value) => navigator.push(MaterialPageRoute<void>(
+              builder: (context) => MarkdownPage(
+                    "Licence",
+                    "assets/gpl_licence.txt",
+                    analyticsRoute: AnalyticsRoute.licence,
+                  ))))),
     ]));
   }
 }

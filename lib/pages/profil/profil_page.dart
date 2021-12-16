@@ -4,10 +4,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:v34/commons/blocs/preferences_bloc.dart';
 import 'package:v34/pages/favorite/favorite_wizard.dart';
+import 'package:v34/utils/analytics.dart';
 
-class ProfilPage extends StatelessWidget {
+class ProfilPage extends StatefulWidget {
   const ProfilPage({Key? key}) : super(key: key);
 
+  @override
+  State<ProfilPage> createState() => _ProfilPageState();
+}
+
+class _ProfilPageState extends State<ProfilPage> with RouteAwareAnalytics {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -48,4 +54,7 @@ class ProfilPage extends StatelessWidget {
       ),
     );
   }
+
+  @override
+  AnalyticsRoute get route => AnalyticsRoute.profile;
 }

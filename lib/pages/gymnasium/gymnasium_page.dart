@@ -7,13 +7,14 @@ import 'package:v34/models/gymnasium.dart';
 import 'package:v34/pages/gymnasium/gymnasium_card.dart';
 import 'package:v34/pages/gymnasium/gymnasium_map.dart';
 import 'package:v34/repositories/repository.dart';
+import 'package:v34/utils/analytics.dart';
 
 class GymnasiumPage extends StatefulWidget {
   @override
   _GymnasiumPageState createState() => _GymnasiumPageState();
 }
 
-class _GymnasiumPageState extends State<GymnasiumPage> {
+class _GymnasiumPageState extends State<GymnasiumPage> with RouteAwareAnalytics {
   List<Gymnasium>? _gymnasiums;
   PageController? _pageController;
   String? _currentGymnasiumCode;
@@ -111,4 +112,7 @@ class _GymnasiumPageState extends State<GymnasiumPage> {
               : Center(child: Loading()),
     );
   }
+
+  @override
+  AnalyticsRoute get route => AnalyticsRoute.gymnasiums;
 }
