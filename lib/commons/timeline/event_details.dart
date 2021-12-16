@@ -4,6 +4,7 @@ import 'package:v34/commons/rounded_network_image.dart';
 import 'package:v34/commons/timeline/details/event_info.dart';
 import 'package:v34/models/event.dart';
 import 'package:v34/repositories/repository.dart';
+import 'package:v34/utils/analytics.dart';
 
 class EventDetails extends StatefulWidget {
   final Event event;
@@ -14,7 +15,7 @@ class EventDetails extends StatefulWidget {
   _EventDetailsState createState() => _EventDetailsState();
 }
 
-class _EventDetailsState extends State<EventDetails> {
+class _EventDetailsState extends State<EventDetails> with RouteAwareAnalytics {
   String? hostLogoUrl = "";
   String? visitorLogoUrl = "";
 
@@ -138,5 +139,21 @@ class _EventDetailsState extends State<EventDetails> {
         ),
       ),
     );
+  }
+
+  @override
+  AnalyticsRoute get route {
+    switch (widget.event.type) {
+      case EventType.Match:
+        return AnalyticsRoute.match;
+      case EventType.Tournament:
+        return AnalyticsRoute.tournament;
+      case EventType.Meeting:
+        return AnalyticsRoute.meeting;
+      case EventType.Unknown:
+        return AnalyticsRoute.unknown_event;
+      default:
+        return AnalyticsRoute.unknown_event;
+    }
   }
 }

@@ -9,6 +9,7 @@ import 'package:v34/models/matches_played.dart';
 import 'package:v34/models/team_stats.dart';
 import 'package:v34/pages/club-details/blocs/club_stats.bloc.dart';
 import 'package:v34/repositories/repository.dart';
+import 'package:v34/utils/analytics.dart';
 
 class ClubStatistics extends StatefulWidget {
   final Club? club;
@@ -19,7 +20,7 @@ class ClubStatistics extends StatefulWidget {
   _ClubStatisticsState createState() => _ClubStatisticsState();
 }
 
-class _ClubStatisticsState extends State<ClubStatistics> {
+class _ClubStatisticsState extends State<ClubStatistics> with RouteAwareAnalytics {
   ClubStatsBloc? _clubStatsBloc;
 
   @override
@@ -268,4 +269,7 @@ class _ClubStatisticsState extends State<ClubStatistics> {
       ],
     );
   }
+
+  @override
+  AnalyticsRoute get route => AnalyticsRoute.club_statistics;
 }

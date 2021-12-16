@@ -7,6 +7,18 @@ extension Extension on String? {
   bool isNullOrEmpty() => this == null || this!.trim() == '';
 
   bool isNotNullAndNotEmpty() => this != null && this!.trim() != '';
+
+  String? capitalize() {
+    if (this != null) {
+      return "${this![0].toUpperCase()}${this!.substring(1)}";
+    } else {
+      return null;
+    }
+  }
+
+  String? snakeCase() {
+    return this?.toLowerCase().replaceAll(" ", "_").replaceAll("-", "");
+  }
 }
 
 extension TinyColorExtension on Color {

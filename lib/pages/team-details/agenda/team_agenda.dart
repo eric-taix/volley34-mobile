@@ -8,6 +8,7 @@ import 'package:v34/commons/timeline/timeline_items.dart';
 import 'package:v34/models/team.dart';
 import 'package:v34/pages/dashboard/blocs/agenda_bloc.dart';
 import 'package:v34/repositories/repository.dart';
+import 'package:v34/utils/analytics.dart';
 
 class TeamAgenda extends StatefulWidget {
   final Team team;
@@ -18,7 +19,7 @@ class TeamAgenda extends StatefulWidget {
   _TeamAgendaState createState() => _TeamAgendaState();
 }
 
-class _TeamAgendaState extends State<TeamAgenda> {
+class _TeamAgendaState extends State<TeamAgenda> with RouteAwareAnalytics {
   AgendaBloc? _agendaBloc;
 
   @override
@@ -67,4 +68,7 @@ class _TeamAgendaState extends State<TeamAgenda> {
           }
         });
   }
+
+  @override
+  AnalyticsRoute get route => AnalyticsRoute.team_agenda;
 }

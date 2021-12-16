@@ -4,21 +4,28 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:v34/commons/loading.dart';
+import 'package:v34/utils/analytics.dart';
 
-class MarkdownPage extends StatelessWidget {
+class MarkdownPage extends StatefulWidget {
   final String title;
   final String markdownAsset;
   final Widget? child;
+  final AnalyticsRoute analyticsRoute;
 
-  MarkdownPage(this.title, this.markdownAsset, {this.child});
+  MarkdownPage(this.title, this.markdownAsset, {this.child, required this.analyticsRoute});
 
+  @override
+  State<MarkdownPage> createState() => _MarkdownPageState();
+}
+
+class _MarkdownPageState extends State<MarkdownPage> with RouteAwareAnalytics {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
-      appBar: AppBar(title: Text(title)),
+      appBar: AppBar(title: Text(widget.title)),
       body: FutureBuilder<String>(
-        future: rootBundle.loadString(markdownAsset),
+        future: rootBundle.loadString(widget.markdownAsset),
         builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
           if (snapshot.hasData) {
             return Padding(
@@ -78,6 +85,9 @@ class MarkdownPage extends StatelessWidget {
       ),
     );
   }
+
+  @override
+  AnalyticsRoute get route => widget.analyticsRoute;
 }
 
 class Builder extends MarkdownElementBuilder {}

@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:feature_discovery/feature_discovery.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -20,10 +21,12 @@ import 'package:v34/repositories/providers/result_provider.dart';
 import 'package:v34/repositories/providers/team_provider.dart';
 import 'package:v34/repositories/repository.dart';
 import 'package:v34/theme.dart';
+import 'package:v34/utils/analytics.dart';
 
 Future<void> main() async {
   Bloc.observer = LoggingBlocDelegate();
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(FutureBuilder(
     future: SharedPreferences.getInstance(),
     builder: (BuildContext context, AsyncSnapshot<SharedPreferences> snapshot) {
@@ -113,6 +116,7 @@ class _V34State extends State<V34> {
                   theme: AppTheme.getNormalThemeFromPreferences(_automatic, _dark),
                   darkTheme: AppTheme.getDarkThemeFromPreferences(_automatic),
                   home: MainPage(),
+                  navigatorObservers: [routeObserver],
                 ),
               ),
             ),
