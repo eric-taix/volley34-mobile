@@ -1,24 +1,28 @@
 
-Cette application mobile vous est proposé par le Volley Club de Vailhauquès (VCV).  
+Cette application mobile vous est proposé par Eric Taix et le Volley Club de Vailhauquès (VCV).  
   
 
 Elle a pour but de rendre plus facile l'utilisation quotidienne concernant Volley34. Elle a nécessité du temps et de l'énergie, 
 n'hésitez pas à mettre un commentaire sur les stores, à remercier les différents contributeurs
 et à leur offrir un verre à l'occasion.
 
-# Développeurs
+# Contributeurs
 
-## Eric Taix
+## Eric Taix (Mobile Lead Dev)
 
-_Membre du VCV (Vailhauquès Volley Club)_  
+_Vice président du VCV (Vailhauquès Volley Club)_  
 https://github.com/eric-taix
 
-## Thomas Foulon
+## Matthieu Aubert (Product Owner)
+
+_Membre du VCV (Vailhauquès Volley Club)_
+
+## Thomas Foulon (Mobile Dev)
 
 _Étudiant en formation d'ingénieur à Grenoble INP - ENSIMAG_  
 https://github.com/thomasFoulon
 
-## Laurent Sangalli
+## Laurent Sangalli (Backend Dev)
 
 _Créateur du site Volley34 et président de l'association sportive "3ème mi-temps"_  
 http://www.volley34.fr
@@ -37,9 +41,6 @@ qu'ils rencontraient:_
 * Julien Bonnefond
 * Magali Jaoul Grammare
 * Marianne Le Goc
-* Matthieu Aubert
-
-
 
 
 # Avertissement

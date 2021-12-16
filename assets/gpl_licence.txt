@@ -12,4 +12,4 @@ sous licence GNU General Public License. Pour consulter l'intégralité du conte
 
 # Sources
 
-L'intégralité du code source de cette application mobile est consultable à l'adresse suivante: https://github.com/eric-taix/volley34-mobile
+L'intégralité du code source de cette application mobile est disponible à l'adresse suivante: https://github.com/eric-taix/volley34-mobile
