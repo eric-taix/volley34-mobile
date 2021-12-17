@@ -76,8 +76,9 @@ class _EventPlaceState extends State<EventPlace> {
       _currentMapStyle = _rawMapStyle!
           .replaceAll("{appBarTheme.color}", themeData.appBarTheme.backgroundColor!.toHexWithoutAlpha())
           .replaceAll("{canvasColor}", themeData.canvasColor.toHexWithoutAlpha())
-          .replaceAll("{buttonColor}", themeData.colorScheme.primaryVariant.toHexWithoutAlpha())
-          .replaceAll("{labelColor}", themeData.textTheme.bodyText2!.color!.toHexWithoutAlpha());
+          .replaceAll("{colorScheme.primaryVariant}", themeData.colorScheme.primaryVariant.toHexWithoutAlpha())
+          .replaceAll("{textTheme.bodyText1}", themeData.textTheme.bodyText1!.color!.toHexWithoutAlpha())
+          .replaceAll("{textTheme.bodyText2}", themeData.textTheme.bodyText2!.color!.toHexWithoutAlpha());
       if (_mapController != null) {
         _mapController!.setMapStyle(_currentMapStyle);
       }
@@ -148,28 +149,32 @@ class _EventPlaceState extends State<EventPlace> {
             onTap: () => _launchMap(state, false),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(20),
-              child: GoogleMap(
-                  markers: [
-                    Marker(
-                        markerId: MarkerId(state.gymnasium.gymnasiumCode!),
-                        position: LatLng(state.gymnasium.latitude!, state.gymnasium.longitude!),
-                        icon: _marker ?? BitmapDescriptor.defaultMarkerWithHue(100))
-                  ].toSet(),
-                  initialCameraPosition:
-                      CameraPosition(target: LatLng(state.gymnasium.latitude!, state.gymnasium.longitude!), zoom: 9),
-                  myLocationEnabled: true,
-                  myLocationButtonEnabled: false,
-                  mapType: MapType.normal,
-                  zoomGesturesEnabled: false,
-                  zoomControlsEnabled: false,
-                  mapToolbarEnabled: false,
-                  onMapCreated: _onMapCreated,
-                  onCameraMoveStarted: () => widget.onCameraMoveStarted != null ? widget.onCameraMoveStarted!() : null,
-                  gestureRecognizers: [
-                    Factory<OneSequenceGestureRecognizer>(
-                      () => new EagerGestureRecognizer(),
-                    )
-                  ].toSet()),
+              child: AbsorbPointer(
+                absorbing: true,
+                child: GoogleMap(
+                    markers: [
+                      Marker(
+                          markerId: MarkerId(state.gymnasium.gymnasiumCode!),
+                          position: LatLng(state.gymnasium.latitude!, state.gymnasium.longitude!),
+                          icon: _marker ?? BitmapDescriptor.defaultMarkerWithHue(100))
+                    ].toSet(),
+                    initialCameraPosition:
+                        CameraPosition(target: LatLng(state.gymnasium.latitude!, state.gymnasium.longitude!), zoom: 9),
+                    myLocationEnabled: true,
+                    myLocationButtonEnabled: false,
+                    mapType: MapType.normal,
+                    zoomGesturesEnabled: false,
+                    zoomControlsEnabled: false,
+                    mapToolbarEnabled: false,
+                    onMapCreated: _onMapCreated,
+                    onCameraMoveStarted: () =>
+                        widget.onCameraMoveStarted != null ? widget.onCameraMoveStarted!() : null,
+                    gestureRecognizers: [
+                      Factory<OneSequenceGestureRecognizer>(
+                        () => new EagerGestureRecognizer(),
+                      )
+                    ].toSet()),
+              ),
             ),
           ),
         ),

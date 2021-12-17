@@ -11,6 +11,7 @@
             }
         ]
     },
+
     {
         "featureType": "all",
         "elementType": "labels.text.fill",
@@ -58,6 +59,7 @@
         "elementType": "geometry",
         "stylers": [
             {
+            "visibility": "off",
                 "color": "{appBarTheme.color}"
             },
             {
@@ -66,11 +68,44 @@
         ]
     },
     {
+            "featureType": "administrative.neighborhood",
+            "elementType": "all",
+            "stylers": [
+                {
+                    "visibility": "on"
+                },
+                {
+                    "color": "{textTheme.bodyText1}"
+                }
+            ]
+    },
+{
+        "featureType": "administrative.neighborhood",
+        "elementType": "labels.text.stroke",
+        "stylers": [
+            {
+                "color": "#ff0000"
+            },
+            {
+                "visibility": "off"
+            }
+        ]
+    },
+  {
+            "featureType": "administrative.locality",
+            "elementType": "all",
+            "stylers": [
+                {
+                    "color": "{textTheme.bodyText2}"
+                }
+            ]
+        },
+    {
         "featureType": "road.highway",
         "elementType": "geometry.fill",
         "stylers": [
             {
-                "color": "{buttonColor}"
+                "color": "{colorScheme.primaryVariant}"
             }
         ]
     },
@@ -79,7 +114,7 @@
         "elementType": "geometry.stroke",
         "stylers": [
             {
-                "color": "{buttonColor}"
+                "color": "{colorScheme.primaryVariant}"
             },
             {
                 "lightness": 25
@@ -91,7 +126,7 @@
         "elementType": "geometry.fill",
         "stylers": [
             {
-                "color": "{buttonColor}"
+                "color": "{colorScheme.primaryVariant}"
             }
         ]
     },
@@ -100,7 +135,7 @@
         "elementType": "geometry.stroke",
         "stylers": [
             {
-                "color": "{buttonColor}"
+                "color": "{colorScheme.primaryVariant}"
             },
             {
                 "lightness": 16
@@ -112,7 +147,7 @@
         "elementType": "geometry",
         "stylers": [
             {
-                "color": "{buttonColor}"
+                "color": "{colorScheme.primaryVariant}"
             }
         ]
     },
@@ -121,7 +156,7 @@
         "elementType": "all",
         "stylers": [
             {
-                "color": "{buttonColor}"
+                "color": "{colorScheme.primaryVariant}"
             }
         ]
     },

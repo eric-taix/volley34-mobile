@@ -79,8 +79,9 @@ class _GymnasiumMapState extends State<GymnasiumMap> {
       _currentMapStyle = _rawMapStyle!
           .replaceAll("{appBarTheme.color}", themeData.appBarTheme.backgroundColor!.toHexWithoutAlpha())
           .replaceAll("{canvasColor}", themeData.canvasColor.toHexWithoutAlpha())
-          .replaceAll("{buttonColor}", themeData.colorScheme.primaryVariant.toHexWithoutAlpha())
-          .replaceAll("{labelColor}", themeData.textTheme.bodyText2!.color!.toHexWithoutAlpha());
+          .replaceAll("{colorScheme.primaryVariant}", themeData.colorScheme.primaryVariant.toHexWithoutAlpha())
+          .replaceAll("{textTheme.bodyText1}", themeData.textTheme.bodyText1!.color!.toHexWithoutAlpha())
+          .replaceAll("{textTheme.bodyText2}", themeData.textTheme.bodyText2!.color!.toHexWithoutAlpha());
       if (_mapController != null) {
         _mapController!.setMapStyle(_currentMapStyle);
       }
