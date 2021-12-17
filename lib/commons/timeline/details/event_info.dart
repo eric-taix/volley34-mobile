@@ -14,6 +14,7 @@ import 'package:v34/commons/timeline/details/event_place.dart';
 import 'package:v34/models/club.dart';
 import 'package:v34/models/event.dart';
 import 'package:v34/models/team.dart';
+import 'package:v34/pages/match/edit_match.dart';
 import 'package:v34/pages/team-details/team_detail_page.dart';
 import 'package:v34/repositories/repository.dart';
 import 'package:v34/utils/launch.dart';
@@ -339,6 +340,14 @@ class _EventInfoState extends State<EventInfo> with SingleTickerProviderStateMix
                   icon: Icons.edit,
                   onTap: () {
                     _closeMenu();
+                    RouterFacade.push(
+                        context: context,
+                        builder: (_) => EditMatch(
+                              hostTeam: _hostTeam!,
+                              visitorTeam: _visitorTeam!,
+                              hostClub: _hostClub!,
+                              visitorClub: _visitorClub!,
+                            ));
                   },
                 ),
                 if (widget.event.matchCode != null && widget.event.matchCode!.isNotEmpty)

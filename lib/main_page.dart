@@ -1,10 +1,10 @@
 import 'package:feature_discovery/feature_discovery.dart';
 import 'package:fluid_bottom_nav_bar/fluid_bottom_nav_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:v34/commons/blocs/preferences_bloc.dart';
 import 'package:v34/commons/feature_tour.dart';
 import 'package:v34/commons/show_dialog.dart';
 import 'package:v34/menu.dart';
@@ -13,7 +13,6 @@ import 'package:v34/pages/club/club_page.dart';
 import 'package:v34/pages/competition/competition_page.dart';
 import 'package:v34/pages/dashboard/dashoard_page.dart';
 import 'package:v34/pages/gymnasium/gymnasium_page.dart';
-import 'package:v34/repositories/repository.dart';
 
 class MainPage extends StatefulWidget {
   @override
@@ -22,31 +21,12 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   Widget? _child;
-  late Repository _repository;
 
   @override
   void initState() {
     super.initState();
     _child = DashboardPage();
     initializeDateFormatting();
-    SchedulerBinding.instance!.addPostFrameCallback((Duration duration) {
-      _repository = RepositoryProvider.of<Repository>(context);
-      _repository.loadFavoriteClub().then((club) {
-        if (club != null) {
-          Future.delayed(Duration(seconds: 1)).then((_) {
-            FeatureDiscovery.discoverFeatures(
-              context,
-              const <String>{
-                "dashboard_feature_id",
-                "competition_feature_id",
-                "clubs_feature_id",
-                "gymnasiums_feature_id",
-              },
-            );
-          });
-        }
-      });
-    });
   }
 
   @override
@@ -63,7 +43,25 @@ class _MainPageState extends State<MainPage> {
             });
           }
         },
-        child: _child,
+        child: BlocListener<PreferencesBloc, PreferencesState>(
+            listener: (context, state) {
+              if (state is PreferencesUpdatedState && state.favoriteClub != null && state.favoriteTeam != null) {
+                Future.delayed(Duration(milliseconds: 500)).then(
+                  (_) {
+                    FeatureDiscovery.discoverFeatures(
+                      context,
+                      const <String>{
+                        "dashboard_feature_id",
+                        "competition_feature_id",
+                        "clubs_feature_id",
+                        "gymnasiums_feature_id",
+                      },
+                    );
+                  },
+                );
+              }
+            },
+            child: _child),
       ),
       bottomNavigationBar: FluidNavBar(
         icons: [

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:v34/commons/rounded_network_image.dart';
 import 'package:v34/commons/timeline/details/event_info.dart';
 import 'package:v34/models/event.dart';
 import 'package:v34/utils/analytics.dart';
@@ -36,47 +35,6 @@ class _EventDetailsState extends State<EventDetails> with RouteAwareAnalytics {
         break;
     }
     return Text(title, textAlign: TextAlign.center, style: Theme.of(context).appBarTheme.titleTextStyle);
-  }
-
-  Widget _buildAppBarBackground(BuildContext context) {
-    if (widget.event.type == EventType.Match) {
-      return Stack(
-        children: [
-          Positioned(
-            top: 60,
-            left: 50,
-            child: RoundedNetworkImage(
-              80,
-              "",
-            ),
-          ),
-          Positioned(
-            top: 60,
-            right: 50,
-            child: RoundedNetworkImage(
-              80,
-              "",
-            ),
-          ),
-          const DecoratedBox(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment(0.0, 0.5),
-                end: Alignment(0.0, 0.0),
-                colors: <Color>[
-                  Color(0x60000000),
-                  Color(0x00000000),
-                ],
-              ),
-            ),
-          ),
-        ],
-      );
-    } else if (widget.event.imageUrl != null && widget.event.imageUrl != "") {
-      return Image.network(widget.event.imageUrl!, fit: BoxFit.cover);
-    } else {
-      return Container(color: Theme.of(context).appBarTheme.backgroundColor);
-    }
   }
 
   @override
