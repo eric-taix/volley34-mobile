@@ -8,14 +8,14 @@ import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:v34/commons/circular_menu/circular_menu.dart';
 import 'package:v34/commons/circular_menu/circular_menu_item.dart';
 import 'package:v34/commons/feature_tour.dart';
-import 'package:v34/commons/rounded_network_image.dart';
 import 'package:v34/commons/router.dart';
 import 'package:v34/commons/timeline/details/event_place.dart';
 import 'package:v34/models/club.dart';
 import 'package:v34/models/event.dart';
 import 'package:v34/models/team.dart';
 import 'package:v34/pages/match/edit_match.dart';
-import 'package:v34/pages/team-details/team_detail_page.dart';
+import 'package:v34/pages/match/match_info.dart';
+import 'package:v34/pages/match/postpone_match.dart';
 import 'package:v34/repositories/repository.dart';
 import 'package:v34/utils/launch.dart';
 
@@ -207,58 +207,17 @@ class _EventInfoState extends State<EventInfo> with SingleTickerProviderStateMix
     await addToCalendar.Add2Calendar.addEvent2Cal(event);
   }
 
-  Widget _buildOpponent(BuildContext context, Team team, Club club) {
-    return ListTile(
-      onTap: () => RouterFacade.push(context: context, builder: (_) => TeamDetailPage(team: team, club: club)),
-      title: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(right: 18.0),
-            child: Hero(
-              tag: "hero-logo-${team.code}",
-              child: RoundedNetworkImage(40, club.logoUrl ?? ""),
-            ),
-          ),
-          Expanded(
-            child: Text(
-              team.name!,
-              textAlign: TextAlign.start,
-              style: Theme.of(context).textTheme.headline4,
-            ),
-          ),
-          Icon(
-            Icons.arrow_forward_ios_rounded,
-            size: 14,
-          ),
-        ],
-      ),
-    );
-  }
-
   List<Widget> _buildTitle(BuildContext context) {
     if (widget.event.type == EventType.Match) {
       return [
-        Padding(
-          padding: const EdgeInsets.only(top: 18),
-          child: _hostClub != null && _hostTeam != null ? _buildOpponent(context, _hostTeam!, _hostClub!) : SizedBox(),
-        ),
-        FeatureTour(
-          title: "Les équipes",
-          featureId: "match_opponents",
-          paragraphs: [
-            "Le détail de l'équipe hôte et de l'équipe visiteuse. Vous pouvez accéder aux détails d'une équipe en cliquant dessus.",
-          ],
-          child: Padding(
-            padding: const EdgeInsets.only(left: 88.0),
-            child: Text("reçoit", style: Theme.of(context).textTheme.bodyText1),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(bottom: 18.0),
-          child: _visitorClub != null && _visitorTeam != null
-              ? _buildOpponent(context, _visitorTeam!, _visitorClub!)
-              : SizedBox(),
+        MatchInfo(
+          hostTeam: _hostTeam!,
+          visitorTeam: _visitorTeam!,
+          hostClub: _hostClub!,
+          visitorClub: _visitorClub!,
+          date: widget.event.date!,
+          showMatchDate: false,
+          showTeamLink: true,
         ),
         _divider,
       ];
@@ -333,21 +292,35 @@ class _EventInfoState extends State<EventInfo> with SingleTickerProviderStateMix
                   iconColor: Colors.black54,
                 ),
                 CircularMenuItem(
-                  icon: Icons.timer,
-                  iconColor: Colors.black54,
-                ),
-                CircularMenuItem(
                   icon: Icons.edit,
                   onTap: () {
                     _closeMenu();
                     RouterFacade.push(
-                        context: context,
-                        builder: (_) => EditMatch(
-                              hostTeam: _hostTeam!,
-                              visitorTeam: _visitorTeam!,
-                              hostClub: _hostClub!,
-                              visitorClub: _visitorClub!,
-                            ));
+                      context: context,
+                      builder: (_) => EditMatch(
+                        hostTeam: _hostTeam!,
+                        visitorTeam: _visitorTeam!,
+                        hostClub: _hostClub!,
+                        visitorClub: _visitorClub!,
+                        matchDate: widget.event.date!,
+                      ),
+                    );
+                  },
+                ),
+                CircularMenuItem(
+                  icon: Icons.timer,
+                  onTap: () {
+                    _closeMenu();
+                    RouterFacade.push(
+                      context: context,
+                      builder: (_) => PostPoneMatch(
+                        hostTeam: _hostTeam!,
+                        visitorTeam: _visitorTeam!,
+                        hostClub: _hostClub!,
+                        visitorClub: _visitorClub!,
+                        matchDate: widget.event.date!,
+                      ),
+                    );
                   },
                 ),
                 if (widget.event.matchCode != null && widget.event.matchCode!.isNotEmpty)
@@ -395,8 +368,11 @@ class _EventInfoState extends State<EventInfo> with SingleTickerProviderStateMix
                     text: TextSpan(
                       style: Theme.of(context).textTheme.bodyText2,
                       children: [
-                        WidgetSpan(alignment: PlaceholderAlignment.middle, child: Icon(Icons.timer)),
-                        TextSpan(text: " Reportez le match (prochainement)"),
+                        WidgetSpan(
+                          alignment: PlaceholderAlignment.middle,
+                          child: Icon(Icons.edit),
+                        ),
+                        TextSpan(text: " Saisissez le score"),
                       ],
                     ),
                   ),
@@ -408,11 +384,8 @@ class _EventInfoState extends State<EventInfo> with SingleTickerProviderStateMix
                     text: TextSpan(
                       style: Theme.of(context).textTheme.bodyText2,
                       children: [
-                        WidgetSpan(
-                          alignment: PlaceholderAlignment.middle,
-                          child: Icon(Icons.edit),
-                        ),
-                        TextSpan(text: " Saisissez le score"),
+                        WidgetSpan(alignment: PlaceholderAlignment.middle, child: Icon(Icons.timer)),
+                        TextSpan(text: " Reportez le match"),
                       ],
                     ),
                   ),

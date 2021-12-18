@@ -6,9 +6,9 @@ import 'package:image_picker/image_picker.dart';
 import 'package:v34/commons/animated_button.dart';
 import 'package:v34/commons/ensure_visible_when_focused.dart';
 import 'package:v34/commons/paragraph.dart';
-import 'package:v34/commons/rounded_network_image.dart';
 import 'package:v34/models/club.dart';
 import 'package:v34/models/team.dart';
+import 'package:v34/pages/match/match_info.dart';
 import 'package:validators/validators.dart';
 
 class EditMatch extends StatefulWidget {
@@ -16,10 +16,15 @@ class EditMatch extends StatefulWidget {
   final Team visitorTeam;
   final Club hostClub;
   final Club visitorClub;
-
-  const EditMatch(
-      {Key? key, required this.hostTeam, required this.visitorTeam, required this.hostClub, required this.visitorClub})
-      : super(key: key);
+  final DateTime matchDate;
+  const EditMatch({
+    Key? key,
+    required this.hostTeam,
+    required this.visitorTeam,
+    required this.hostClub,
+    required this.visitorClub,
+    required this.matchDate,
+  }) : super(key: key);
 
   @override
   State<EditMatch> createState() => _EditMatchState();
@@ -38,6 +43,8 @@ class _EditMatchState extends State<EditMatch> {
   late final FocusNode _nameFocus;
   late final FocusNode _emailFocus;
   late final FocusNode _commentsFocus;
+
+  Team? _userTeam;
 
   int _hostSets = 0;
   int _visitorSets = 0;
@@ -95,13 +102,15 @@ class _EditMatchState extends State<EditMatch> {
         child: FocusScope(
           child: ListView(
             children: [
-              SizedBox(height: 38),
-              _buildOpponent(context, widget.hostTeam, widget.hostClub),
-              Padding(
-                padding: const EdgeInsets.only(left: 88.0),
-                child: Text("reçoit", style: Theme.of(context).textTheme.bodyText1),
+              MatchInfo(
+                hostTeam: widget.hostTeam,
+                visitorTeam: widget.visitorTeam,
+                hostClub: widget.hostClub,
+                visitorClub: widget.visitorClub,
+                date: widget.matchDate,
+                showMatchDate: true,
+                showTeamLink: false,
               ),
-              _buildOpponent(context, widget.visitorTeam, widget.visitorClub),
               Padding(
                 padding: const EdgeInsets.only(bottom: 18.0),
                 child: Paragraph(title: "Résultat"),
@@ -175,7 +184,10 @@ class _EditMatchState extends State<EditMatch> {
                   children: [
                     AnimatedButton(
                       onPressed: (_formKey.currentState?.validate() ?? false) &&
-                              ((PHOTO_REQUIRED && _scoreSheetPhotoPath != null) || !PHOTO_REQUIRED)
+                              ((PHOTO_REQUIRED && _scoreSheetPhotoPath != null) || !PHOTO_REQUIRED) &&
+                              _userTeam != null &&
+                              _setControllers[0].text.isNotEmpty &&
+                              _setControllers[1].text.isNotEmpty
                           ? () => _sendResult(
                                 context,
                                 name: _nameController.text,
@@ -183,6 +195,7 @@ class _EditMatchState extends State<EditMatch> {
                                 hostTeamName: widget.hostTeam.name!,
                                 visitorTeamName: widget.visitorTeam.name!,
                                 scoreSheetPath: _scoreSheetPhotoPath,
+                                userTeam: _userTeam!,
                               )
                           : null,
                       text: "ENVOYER",
@@ -205,6 +218,7 @@ class _EditMatchState extends State<EditMatch> {
     required String hostTeamName,
     required String visitorTeamName,
     required String? scoreSheetPath,
+    required Team userTeam,
   }) async {
     var pointResults = _setControllers
         .where((setController) => setController.text.isNotEmpty)
@@ -218,7 +232,7 @@ class _EditMatchState extends State<EditMatch> {
 
     final MailOptions mailOptions = MailOptions(
         body: '''
-      <strong><u>Envoi de résultats de $name ($senderEmail) pour l'équipe $hostTeamName</u></strong><br/>
+      <strong><u>Envoi de résultats de $name ($senderEmail) pour l'équipe ${userTeam.name}</u></strong><br/>
       <br/>
       $hostTeamName reçoit $visitorTeamName :<br/>
       Détail des points : $pointResults<br/>
@@ -239,28 +253,22 @@ class _EditMatchState extends State<EditMatch> {
     String platformResponse;
     switch (response) {
       case MailerResponse.saved:
-
-        /// ios only
-        platformResponse = 'mail was saved to draft';
+        platformResponse = "L'e-mail a été sauvegardé en brouillon";
         break;
       case MailerResponse.sent:
-
-        /// ios only
-        platformResponse = 'mail was sent';
+        platformResponse = "L'e-mail a été envoyé";
         break;
       case MailerResponse.cancelled:
-
-        /// ios only
-        platformResponse = 'mail was cancelled';
+        platformResponse = "L'e-mail a été annulé. Merci";
         break;
       case MailerResponse.android:
-        platformResponse = 'intent was successful';
+        platformResponse = "L'e-mail a été envoyé. Merci";
         break;
       default:
-        platformResponse = 'unknown';
+        platformResponse = "Nous avons reçu une réponse inconnue de votre client d'e-mail !";
         break;
     }
-    final snackBar = SnackBar(content: Text("Le résultat a été envoyé. Merci."));
+    final snackBar = SnackBar(content: Text(platformResponse));
     return ScaffoldMessenger.of(context).showSnackBar(snackBar).closed..then((_) => Navigator.of(context).pop());
   }
 
@@ -471,10 +479,10 @@ class _EditMatchState extends State<EditMatch> {
       autovalidateMode: AutovalidateMode.always,
       validator: (value) {
         try {
-          if (value == null || value.isEmpty) {
+          if ((value == null || value.isEmpty) && fieldIndex > 1) {
             return null;
           }
-          int.parse(value);
+          int.parse(value ?? "");
           return null;
         } catch (e) {
           return "";
@@ -504,30 +512,6 @@ class _EditMatchState extends State<EditMatch> {
       } catch (e) {}
     }
     setState(() {});
-  }
-
-  Widget _buildOpponent(BuildContext context, Team team, Club club) {
-    return ListTile(
-      title: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(right: 18.0),
-            child: Hero(
-              tag: "hero-logo-${team.code}",
-              child: RoundedNetworkImage(40, club.logoUrl ?? ""),
-            ),
-          ),
-          Expanded(
-            child: Text(
-              team.name!,
-              textAlign: TextAlign.start,
-              style: Theme.of(context).textTheme.headline4,
-            ),
-          ),
-        ],
-      ),
-    );
   }
 
   List<Widget> _buildInformation(BuildContext context) {
@@ -605,6 +589,39 @@ class _EditMatchState extends State<EditMatch> {
           ),
         ),
       ),
+      Padding(
+        padding: const EdgeInsets.only(top: 32.0, left: 38, right: 28),
+        child: Text("Votre équipe", style: Theme.of(context).textTheme.bodyText1),
+      ),
+      Padding(
+        padding: const EdgeInsets.only(top: 8.0, left: 28, right: 28),
+        child: RadioListTile<Team>(
+          groupValue: _userTeam,
+          value: widget.hostTeam,
+          onChanged: (_) => setState(() => _userTeam = widget.hostTeam),
+          title: Text(widget.hostTeam.name!, style: Theme.of(context).textTheme.bodyText2),
+        ),
+      ),
+      Padding(
+        padding: const EdgeInsets.only(left: 28, right: 28),
+        child: RadioListTile<Team>(
+          groupValue: _userTeam,
+          value: widget.visitorTeam,
+          onChanged: (_) => setState(() => _userTeam = widget.visitorTeam),
+          title: Text(widget.visitorTeam.name!, style: Theme.of(context).textTheme.bodyText2),
+        ),
+      ),
+      if (_userTeam == null)
+        Padding(
+          padding: const EdgeInsets.only(left: 38.0),
+          child: Text(
+            "La sélection de votre équipe est obligatoire",
+            style: Theme.of(context)
+                .textTheme
+                .bodyText2!
+                .copyWith(color: Theme.of(context).inputDecorationTheme.errorStyle!.color!),
+          ),
+        )
     ];
   }
 }
