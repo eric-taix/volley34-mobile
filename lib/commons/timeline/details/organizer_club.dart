@@ -13,13 +13,15 @@ class OrganizerClub extends StatefulWidget {
 }
 
 class OrganizerClubState extends State<OrganizerClub> {
-  ClubBloc? _clubBloc;
+  late final ClubBloc _clubBloc;
 
   @override
   void initState() {
     super.initState();
     _clubBloc = ClubBloc(ClubUninitializedState(), repository: RepositoryProvider.of(context));
-    _clubBloc!.add(LoadClubEvent(clubCode: widget.clubCode));
+    if (widget.clubCode != null && widget.clubCode!.isNotEmpty) {
+      _clubBloc.add(LoadClubEvent(clubCode: widget.clubCode));
+    }
   }
 
   @override
@@ -32,8 +34,10 @@ class OrganizerClubState extends State<OrganizerClub> {
               textAlign: TextAlign.left,
               style:
                   Theme.of(context).textTheme.bodyText1!.copyWith(color: Theme.of(context).textTheme.bodyText2!.color));
-        } else {
+        } else if (state is ClubLoadingState) {
           return Loading();
+        } else {
+          return SizedBox();
         }
       },
     );

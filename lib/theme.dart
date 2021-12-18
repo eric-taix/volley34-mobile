@@ -137,6 +137,10 @@ class AppTheme {
       ),
       textButtonTheme: TextButtonThemeData(
         style: ButtonStyle(
+          textStyle: ButtonTextStyleState(
+            enabledStyle: TextStyle(fontSize: 16),
+            disabledStyle: TextStyle(fontSize: 12),
+          ),
           overlayColor: OverlayStateColor(_mainColor.withOpacity(0.2)),
           shape: ButtonStateProperty(color: Colors.transparent),
           foregroundColor: ButtonForegroundStateColor(color: _mainColor),
@@ -150,7 +154,7 @@ class AppTheme {
           padding: ButtonPaddingProperty(),
         ),
       ),
-      dividerTheme: DividerThemeData(thickness: 0.3),
+      dividerTheme: DividerThemeData(thickness: 0.3, color: Color(0xFF979DB2)),
       switchTheme: SwitchThemeData(
         trackColor: MultiStateColor(
           disabledColor: Colors.grey,
@@ -164,8 +168,45 @@ class AppTheme {
         ),
       ),
       radioTheme: RadioThemeData(
-          fillColor:
-              MultiStateColor(defaultColor: Colors.white70, selectedColor: _mainColor, disabledColor: Colors.white30)),
+        fillColor:
+            MultiStateColor(defaultColor: Colors.white70, selectedColor: _mainColor, disabledColor: Colors.white30),
+      ),
+      inputDecorationTheme: InputDecorationTheme(
+        suffixStyle: TextStyle(color: Colors.black54),
+        labelStyle:
+            TextStyle(color: Colors.white70, fontSize: 18, fontFamily: "Raleway", fontWeight: FontWeight.normal),
+        errorStyle: TextStyle(color: Color(0xFFC73551), fontSize: 11, height: 0),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(24),
+          borderSide: BorderSide(style: BorderStyle.solid, color: Colors.white54, width: 1),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(24),
+          borderSide: BorderSide(style: BorderStyle.solid, color: Color(0xFFC73551), width: 3),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(24),
+          borderSide: BorderSide(style: BorderStyle.solid, color: Color(0xFFC73551), width: 2),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(24),
+          borderSide: BorderSide(style: BorderStyle.solid, color: Colors.white10, width: 1),
+        ),
+        disabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(24),
+          borderSide: BorderSide(style: BorderStyle.solid, color: Colors.white24, width: 1),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(24),
+          borderSide: BorderSide(style: BorderStyle.solid, color: Colors.white, width: 1),
+        ),
+        contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 28),
+      ),
+      textSelectionTheme: TextSelectionThemeData(
+        cursorColor: Color(0xFFC73551),
+        selectionColor: Color(0xFFC73551),
+        selectionHandleColor: Color(0xFFC73551),
+      ),
     );
   }
 
@@ -310,6 +351,16 @@ class MultiStateColor extends MaterialStateColor {
     }
     return defaultColor;
   }
+}
+
+class ButtonTextStyleState extends MaterialStateProperty<TextStyle> {
+  final TextStyle disabledStyle;
+  final TextStyle enabledStyle;
+  ButtonTextStyleState({required this.enabledStyle, required this.disabledStyle});
+
+  @override
+  TextStyle resolve(Set<MaterialState> states) =>
+      states.contains(MaterialState.disabled) ? disabledStyle : enabledStyle;
 }
 
 class ButtonBackgroundStateColor extends MaterialStateColor {

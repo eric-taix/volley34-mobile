@@ -1,0 +1,8 @@
+- Correction de l'écran des événements quand certains champs étaient vides
+- Possibilité de voir le détail d'une équipe depuis un match en cliquant dessus
+- Modification du rôle de Matthieu dans le menu "A propos" (Product Owner)
+- Ajout d'une aide lancé au 1er lancement, sur les fonctionnalités disponibles depuis un match
+- Amélioration des couleurs des cartes (mode sombre pour l'instant)
+- Depuis un match, possibilité d'envoyer le résultat
+- Depuis un match, possibilité d'envoyer un report de match
+- Depuis un match possibilité de télécharger la feuille de match pré-remplie

@@ -98,6 +98,6 @@ class _SelectFavoriteTeamState extends State<SelectFavoriteTeam> {
   }
 
   _close(BuildContext context) {
-    Navigator.of(context, rootNavigator: true).pop();
+    Navigator.of(context).pop();
   }
 }

@@ -33,8 +33,8 @@ Future<void> main() async {
       bool _automatic = true;
       bool _dark = true;
       if (snapshot.hasData) {
-        _automatic = snapshot.data!.getBool("automatic_theme") ?? true;
-        _dark = snapshot.data!.getBool("dark_theme") ?? false;
+        _automatic = snapshot.data!.getBool("automatic_theme") ?? false;
+        _dark = snapshot.data!.getBool("dark_theme") ?? true;
         return V34(automatic: _automatic, dark: _dark);
       } else {
         return SizedBox();
