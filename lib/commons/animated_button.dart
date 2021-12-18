@@ -70,12 +70,15 @@ class _AnimatedButtonState extends State<AnimatedButton> with SingleTickerProvid
           _buttonWidth = PROGRESS_SIZE;
           _computation = widget.onPressed!();
           _computation?.then(
-            (_) => setState(
-              () {
-                _buttonWidth = widget.width;
-                Future.delayed(Duration(milliseconds: 280), () => setState(() => _computation = null));
-              },
-            ),
+            (_) {
+              if (mounted)
+                setState(
+                  () {
+                    _buttonWidth = widget.width;
+                    Future.delayed(Duration(milliseconds: 280), () => setState(() => _computation = null));
+                  },
+                );
+            },
           );
         },
       );

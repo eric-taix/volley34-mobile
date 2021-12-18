@@ -211,11 +211,11 @@ class _EventInfoState extends State<EventInfo> with SingleTickerProviderStateMix
     if (widget.event.type == EventType.Match) {
       return [
         MatchInfo(
-          hostTeam: _hostTeam!,
-          visitorTeam: _visitorTeam!,
-          hostClub: _hostClub!,
-          visitorClub: _visitorClub!,
-          date: widget.event.date!,
+          hostTeam: _hostTeam,
+          visitorTeam: _visitorTeam,
+          hostClub: _hostClub,
+          visitorClub: _visitorClub,
+          date: widget.event.date,
           showMatchDate: false,
           showTeamLink: true,
         ),

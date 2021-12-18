@@ -78,6 +78,9 @@ class _EditMatchState extends State<EditMatch> {
     _nameFocus.dispose();
     _emailFocus.dispose();
     _commentsFocus.dispose();
+    _nameController.dispose();
+    _emailController.dispose();
+    _commentsController.dispose();
     _focusNodes.forEach((focusNode) => focusNode.dispose());
     _setControllers.forEach((setController) => setController.dispose());
     super.dispose();
@@ -170,6 +173,23 @@ class _EditMatchState extends State<EditMatch> {
                 );
               }),
               _buildCurrentResult(context),
+              Padding(
+                padding: const EdgeInsets.only(top: 32.0, left: 28, right: 28),
+                child: EnsureVisibleWhenFocused(
+                  focusNode: _commentsFocus,
+                  child: TextFormField(
+                    controller: _commentsController,
+                    focusNode: _commentsFocus,
+                    autofocus: true,
+                    cursorWidth: 2,
+                    style: Theme.of(context).textTheme.bodyText2!.copyWith(fontSize: 18),
+                    autovalidateMode: AutovalidateMode.always,
+                    keyboardType: TextInputType.multiline,
+                    maxLines: 5,
+                    decoration: InputDecoration(labelText: "Commentaires"),
+                  ),
+                ),
+              ),
               Paragraph(title: "Informations"),
               ..._buildInformation(context),
               Padding(
@@ -196,6 +216,7 @@ class _EditMatchState extends State<EditMatch> {
                                 visitorTeamName: widget.visitorTeam.name!,
                                 scoreSheetPath: _scoreSheetPhotoPath,
                                 userTeam: _userTeam!,
+                                comments: _commentsController.text,
                               )
                           : null,
                       text: "ENVOYER",
@@ -219,6 +240,7 @@ class _EditMatchState extends State<EditMatch> {
     required String visitorTeamName,
     required String? scoreSheetPath,
     required Team userTeam,
+    required String comments,
   }) async {
     var pointResults = _setControllers
         .where((setController) => setController.text.isNotEmpty)
@@ -232,15 +254,17 @@ class _EditMatchState extends State<EditMatch> {
 
     final MailOptions mailOptions = MailOptions(
         body: '''
-      <strong><u>Envoi de résultats de $name ($senderEmail) pour l'équipe ${userTeam.name}</u></strong><br/>
+      <b><u>Envoi de résultat de $name ($senderEmail) pour l'équipe ${userTeam.name}</u></b><br/>
       <br/>
       $hostTeamName reçoit $visitorTeamName :<br/>
       Détail des points : $pointResults<br/>
       Total des sets: $_hostSets - $_visitorSets<br/>
       Total des points: $_hostTotalPoints - $_visitorTotalPoints<br/>
       <br>
+      ${comments.isNotEmpty ? "<b>Commentaires : </b><br/>$comments" : ""}
       ''',
-        subject: "Résultats Volley 34",
+        subject:
+            "[Volley34 : Résultats et Classements] - Envoi du résultat du Match $hostTeamName reçoit $visitorTeamName",
         recipients: [
           senderEmail,
           //"resultat@volley34.fr",
@@ -268,8 +292,10 @@ class _EditMatchState extends State<EditMatch> {
         platformResponse = "Nous avons reçu une réponse inconnue de votre client d'e-mail !";
         break;
     }
+    Navigator.of(context).pop();
     final snackBar = SnackBar(content: Text(platformResponse));
-    return ScaffoldMessenger.of(context).showSnackBar(snackBar).closed..then((_) => Navigator.of(context).pop());
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    return Future.value();
   }
 
   Widget _buildScoreSheetPhoto() {
@@ -573,29 +599,13 @@ class _EditMatchState extends State<EditMatch> {
         ),
       ),
       Padding(
-        padding: const EdgeInsets.only(top: 32.0, left: 28, right: 28),
-        child: EnsureVisibleWhenFocused(
-          focusNode: _commentsFocus,
-          child: TextFormField(
-            controller: _commentsController,
-            focusNode: _commentsFocus,
-            autofocus: true,
-            cursorWidth: 2,
-            style: Theme.of(context).textTheme.bodyText2!.copyWith(fontSize: 18),
-            autovalidateMode: AutovalidateMode.always,
-            keyboardType: TextInputType.multiline,
-            maxLines: 5,
-            decoration: InputDecoration(labelText: "Commentaires"),
-          ),
-        ),
-      ),
-      Padding(
         padding: const EdgeInsets.only(top: 32.0, left: 38, right: 28),
         child: Text("Votre équipe", style: Theme.of(context).textTheme.bodyText1),
       ),
       Padding(
         padding: const EdgeInsets.only(top: 8.0, left: 28, right: 28),
         child: RadioListTile<Team>(
+          dense: true,
           groupValue: _userTeam,
           value: widget.hostTeam,
           onChanged: (_) => setState(() => _userTeam = widget.hostTeam),
@@ -605,6 +615,7 @@ class _EditMatchState extends State<EditMatch> {
       Padding(
         padding: const EdgeInsets.only(left: 28, right: 28),
         child: RadioListTile<Team>(
+          dense: true,
           groupValue: _userTeam,
           value: widget.visitorTeam,
           onChanged: (_) => setState(() => _userTeam = widget.visitorTeam),

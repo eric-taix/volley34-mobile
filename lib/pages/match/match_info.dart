@@ -7,11 +7,11 @@ import 'package:v34/models/team.dart';
 import 'package:v34/pages/team-details/team_detail_page.dart';
 
 class MatchInfo extends StatelessWidget {
-  final Team hostTeam;
-  final Team visitorTeam;
-  final Club hostClub;
-  final Club visitorClub;
-  final DateTime date;
+  final Team? hostTeam;
+  final Team? visitorTeam;
+  final Club? hostClub;
+  final Club? visitorClub;
+  final DateTime? date;
   final bool showTeamLink;
   final bool showMatchDate;
 
@@ -42,7 +42,8 @@ class MatchInfo extends StatelessWidget {
             child: Text("reçoit", style: Theme.of(context).textTheme.bodyText1),
           ),
           _buildOpponent(context, visitorTeam, visitorClub, showTeamLink),
-          if (showMatchDate) Text("${dateFormat.format(date)}", style: Theme.of(context).textTheme.bodyText1),
+          if (showMatchDate && date != null)
+            Text("${dateFormat.format(date!)}", style: Theme.of(context).textTheme.bodyText1),
         ],
       ),
     );
@@ -55,24 +56,24 @@ class MatchInfo extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.only(right: 18.0),
           child: Hero(
-            tag: "hero-logo-${hostTeam.code}",
-            child: RoundedNetworkImage(40, hostClub.logoUrl ?? ""),
+            tag: "hero-logo-${hostTeam?.code}",
+            child: RoundedNetworkImage(40, hostClub?.logoUrl ?? ""),
           ),
         ),
         Padding(
           padding: const EdgeInsets.only(left: 18.0),
           child: Hero(
-            tag: "hero-logo-${visitorTeam.code}",
-            child: RoundedNetworkImage(40, visitorClub.logoUrl ?? ""),
+            tag: "hero-logo-${visitorTeam?.code}",
+            child: RoundedNetworkImage(40, visitorClub?.logoUrl ?? ""),
           ),
         ),
       ],
     );
   }
 
-  Widget _buildOpponent(BuildContext context, Team team, Club club, bool linkToTeam) {
+  Widget _buildOpponent(BuildContext context, Team? team, Club? club, bool linkToTeam) {
     return ListTile(
-      onTap: linkToTeam
+      onTap: linkToTeam && team != null && club != null
           ? () => RouterFacade.push(context: context, builder: (_) => TeamDetailPage(team: team, club: club))
           : null,
       title: Row(
@@ -80,7 +81,7 @@ class MatchInfo extends StatelessWidget {
         children: [
           Expanded(
             child: Text(
-              team.name!,
+              team?.name ?? "",
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.headline4,
             ),
