@@ -175,7 +175,7 @@ class AppTheme {
         suffixStyle: TextStyle(color: Colors.black54),
         labelStyle:
             TextStyle(color: Colors.white70, fontSize: 18, fontFamily: "Raleway", fontWeight: FontWeight.normal),
-        errorStyle: TextStyle(color: Colors.white30, fontSize: 13, height: 0),
+        errorStyle: TextStyle(color: Colors.white30, fontSize: 11, height: 0),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(24),
           borderSide: BorderSide(style: BorderStyle.solid, color: Colors.white54, width: 1),
