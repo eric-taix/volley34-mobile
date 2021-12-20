@@ -111,7 +111,7 @@ class AppTheme {
       buttonTheme: ButtonThemeData(
           buttonColor: Color(0xFF373E5D),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(18.0),
+            borderRadius: BorderRadius.circular(CARD_BORDER_RADIUS),
             side: BorderSide(
               color: Colors.transparent,
             ),
@@ -177,30 +177,30 @@ class AppTheme {
             TextStyle(color: Colors.white70, fontSize: 18, fontFamily: "Raleway", fontWeight: FontWeight.normal),
         errorStyle: TextStyle(color: Color(0xFFC73551), fontSize: 11, height: 0),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(24),
+          borderRadius: BorderRadius.circular(CARD_BORDER_RADIUS),
           borderSide: BorderSide(style: BorderStyle.solid, color: Colors.white54, width: 1),
         ),
         focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(24),
+          borderRadius: BorderRadius.circular(CARD_BORDER_RADIUS),
           borderSide: BorderSide(style: BorderStyle.solid, color: Color(0xFFC73551), width: 3),
         ),
         errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(24),
+          borderRadius: BorderRadius.circular(CARD_BORDER_RADIUS),
           borderSide: BorderSide(style: BorderStyle.solid, color: Color(0xFFC73551), width: 2),
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(24),
+          borderRadius: BorderRadius.circular(CARD_BORDER_RADIUS),
           borderSide: BorderSide(style: BorderStyle.solid, color: Colors.white10, width: 1),
         ),
         disabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(24),
+          borderRadius: BorderRadius.circular(CARD_BORDER_RADIUS),
           borderSide: BorderSide(style: BorderStyle.solid, color: Colors.white24, width: 1),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(24),
+          borderRadius: BorderRadius.circular(CARD_BORDER_RADIUS),
           borderSide: BorderSide(style: BorderStyle.solid, color: Colors.white, width: 1),
         ),
-        contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 28),
+        contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 14),
       ),
       textSelectionTheme: TextSelectionThemeData(
         cursorColor: Color(0xFFC73551),
