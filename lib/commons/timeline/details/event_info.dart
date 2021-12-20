@@ -102,7 +102,7 @@ class _EventInfoState extends State<EventInfo> with SingleTickerProviderStateMix
               title: "Date et heure",
               featureId: "match_date_and_hour",
               paragraphs: [
-                "Retrouvez la date et l'heure du match. Pour ajouter ce match à votre calendrier, cliquez sur le lien \"AJOUTER AU CALENDRIER\""
+                "Retrouvez la date et l'heure du match. Pour ajouter ce match à votre calendrier, cliquez sur le lien \"Ajouter au calendrier\""
               ],
               child: EventDate(date: widget.event.date, endDate: widget.event.endDate, hour: true))),
       ListTile(
@@ -126,7 +126,7 @@ class _EventInfoState extends State<EventInfo> with SingleTickerProviderStateMix
         title: "Localisation",
         featureId: "match_place",
         paragraphs: [
-          "Localisez l'emplacement du match sur la carte. En cliquant sur le lien \"ITINERAIRE\" : votre application de navigation vous guidera à votre destination.",
+          "Localisez l'emplacement du match sur la carte. En cliquant sur le lien \"Itinéraire\" : votre application de navigation vous guidera à votre destination.",
         ],
         child: ListTile(
           leading: Icon(

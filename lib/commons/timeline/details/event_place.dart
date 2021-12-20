@@ -191,7 +191,7 @@ class _EventPlaceState extends State<EventPlace> {
                     Icons.directions,
                     size: 28,
                   ),
-                  label: Text("Itinéraire".toUpperCase()),
+                  label: Text("Itinéraire"),
                 ),
               ),
               if (state.gymnasium.phone != null && state.gymnasium.phone!.isNotEmpty)
@@ -199,7 +199,7 @@ class _EventPlaceState extends State<EventPlace> {
                   padding: const EdgeInsets.only(left: 8.0),
                   child: TextButton.icon(
                     icon: Icon(Icons.phone),
-                    label: Text("Appeler".toUpperCase()),
+                    label: Text("Appeler"),
                     onPressed: () => launchURL("tel:${state.gymnasium.phone}"),
                   ),
                 ),

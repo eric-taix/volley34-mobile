@@ -23,6 +23,12 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   Widget? _child;
 
+  static const String MAIN_MENU = "main_menu";
+  static const String MAIN_DASHBOARD = "main_dashboard";
+  static const String MAIN_COMPETITION = "main_competition";
+  static const String MAIN_CLUBS = "main_clubs";
+  static const String MAIN_GYMNASIUMS = "main_gymnasiums";
+
   @override
   void initState() {
     super.initState();
@@ -33,7 +39,12 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: AppMenu(),
+      drawer: FeatureTour(
+        featureId: MAIN_MENU,
+        title: "Menu",
+        paragraphs: ["Accédez à votre profil, vos préférences et aux différents menus de l'application"],
+        child: AppMenu(),
+      ),
       backgroundColor: Theme.of(context).primaryColor,
       extendBody: true,
       body: BlocListener<MessageCubit, MessageState>(
@@ -68,10 +79,11 @@ class _MainPageState extends State<MainPage> {
                       FeatureDiscovery.discoverFeatures(
                         context,
                         const <String>{
-                          "dashboard_feature_id",
-                          "competition_feature_id",
-                          "clubs_feature_id",
-                          "gymnasiums_feature_id",
+                          MAIN_MENU,
+                          MAIN_DASHBOARD,
+                          MAIN_COMPETITION,
+                          MAIN_CLUBS,
+                          MAIN_GYMNASIUMS,
                         },
                       );
                     });
