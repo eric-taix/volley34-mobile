@@ -30,12 +30,12 @@ Future<void> main() async {
   runApp(FutureBuilder(
     future: SharedPreferences.getInstance(),
     builder: (BuildContext context, AsyncSnapshot<SharedPreferences> snapshot) {
-      bool _automatic = true;
-      bool _dark = true;
+      ThemeMode _themeMode = ThemeMode.system;
       if (snapshot.hasData) {
-        _automatic = snapshot.data!.getBool("automatic_theme") ?? false;
-        _dark = snapshot.data!.getBool("dark_theme") ?? true;
-        return V34(automatic: _automatic, dark: _dark);
+        String themeString = snapshot.data!.getString("theme") ?? "";
+        _themeMode = ThemeMode.values
+            .firstWhere((theme) => theme.toString() == "Theme." + themeString, orElse: () => ThemeMode.system);
+        return V34(themeMode: _themeMode);
       } else {
         return SizedBox();
       }
@@ -44,10 +44,9 @@ Future<void> main() async {
 }
 
 class V34 extends StatefulWidget {
-  final bool automatic;
-  final bool dark;
+  final ThemeMode themeMode;
 
-  V34({required this.automatic, required this.dark});
+  V34({required this.themeMode});
 
   @override
   _V34State createState() => _V34State();
@@ -60,14 +59,12 @@ class V34 extends StatefulWidget {
 class _V34State extends State<V34> {
   late Repository _repository;
   late MessageCubit _messageCubit;
-  late bool _automatic;
-  late bool _dark;
+  late ThemeMode _themeMode;
 
   @override
   void initState() {
     super.initState();
-    _automatic = widget.automatic;
-    _dark = widget.dark;
+    _themeMode = widget.themeMode;
 
     _messageCubit = MessageCubit();
     initDio(_messageCubit);
@@ -96,7 +93,7 @@ class _V34State extends State<V34> {
         child: BlocProvider(
           create: (_) => _messageCubit,
           child: FeatureDiscovery(
-            recordStepsInSharedPreferences: false,
+            recordStepsInSharedPreferences: true,
             child: BlocProvider<PreferencesBloc>(
               create: (context) {
                 PreferencesBloc bloc = PreferencesBloc(_repository);
@@ -107,15 +104,15 @@ class _V34State extends State<V34> {
                 listener: (context, state) {
                   if (state is PreferencesUpdatedState) {
                     setState(() {
-                      _automatic = state.useAutomaticTheme;
-                      _dark = state.useDarkTheme;
+                      _themeMode = state.themeMode;
                     });
                   }
                 },
                 child: MaterialApp(
                   title: "Volley34",
-                  theme: AppTheme.getNormalThemeFromPreferences(_automatic, _dark),
-                  darkTheme: AppTheme.getDarkThemeFromPreferences(_automatic),
+                  theme: AppTheme.lightTheme(),
+                  darkTheme: AppTheme.darkTheme(),
+                  themeMode: _themeMode,
                   home: MainPage(),
                   navigatorObservers: [routeObserver],
                 ),

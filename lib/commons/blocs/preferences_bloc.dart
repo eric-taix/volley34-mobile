@@ -17,12 +17,11 @@ class PreferencesEvent extends Equatable {
 class PreferencesLoadEvent extends PreferencesEvent {}
 
 class PreferencesSaveEvent extends PreferencesEvent {
-  final bool? useAutomaticTheme;
-  final bool? useDarkTheme;
+  final ThemeMode? themeMode;
   final Club? favoriteClub;
   final Team? favoriteTeam;
 
-  PreferencesSaveEvent({this.useAutomaticTheme, this.useDarkTheme, this.favoriteClub, this.favoriteTeam});
+  PreferencesSaveEvent({this.themeMode, this.favoriteClub, this.favoriteTeam});
 }
 
 // ----- STATES -----
@@ -41,15 +40,13 @@ class PreferencesLoadingState extends PreferencesState {}
 class PreferencesSavingState extends PreferencesState {}
 
 class PreferencesUpdatedState extends PreferencesState {
-  final bool useAutomaticTheme;
-  final bool useDarkTheme;
+  final ThemeMode themeMode;
   final Color? dominantColor;
   final Club? favoriteClub;
   final Team? favoriteTeam;
 
   PreferencesUpdatedState({
-    required this.useAutomaticTheme,
-    required this.useDarkTheme,
+    required this.themeMode,
     this.dominantColor,
     this.favoriteClub,
     this.favoriteTeam,
@@ -71,9 +68,11 @@ class PreferencesBloc extends Bloc<PreferencesEvent, PreferencesState> {
         yield PreferencesLoadingState();
         Club? club = await repository.loadFavoriteClub();
         Team? team = await repository.loadFavoriteTeam();
+        String themeString = preferences.getString("theme") ?? "";
+
         yield PreferencesUpdatedState(
-          useAutomaticTheme: preferences.getBool("automatic_theme") ?? true,
-          useDarkTheme: preferences.getBool("dark_theme") ?? false,
+          themeMode:
+              ThemeMode.values.firstWhere((theme) => theme.toString() == themeString, orElse: () => ThemeMode.system),
           favoriteClub: club,
           favoriteTeam: team,
         );
@@ -83,17 +82,19 @@ class PreferencesBloc extends Bloc<PreferencesEvent, PreferencesState> {
     } else if (event is PreferencesSaveEvent) {
       try {
         yield PreferencesSavingState();
-        if (event.useAutomaticTheme != null) preferences.setBool("automatic_theme", event.useAutomaticTheme!);
-        if (event.useDarkTheme != null) preferences.setBool("dark_theme", event.useDarkTheme!);
+        await Future.delayed(Duration(milliseconds: 500), () => null);
+        if (event.themeMode != null) preferences.setString("theme", event.themeMode.toString());
         if (event.favoriteClub?.code != null) {
           await repository.setFavorite(event.favoriteClub!.code, FavoriteType.Club);
         }
         if (event.favoriteTeam?.code != null) {
           await repository.setFavorite(event.favoriteTeam!.code, FavoriteType.Team);
         }
+        String themeString = preferences.getString("theme") ?? "";
+        print("Loaded Theme: $themeString");
         yield PreferencesUpdatedState(
-          useAutomaticTheme: preferences.getBool("automatic_theme") ?? true,
-          useDarkTheme: preferences.getBool("dark_theme") ?? false,
+          themeMode:
+              ThemeMode.values.firstWhere((theme) => theme.toString() == themeString, orElse: () => ThemeMode.system),
           favoriteClub: event.favoriteClub ?? await repository.loadFavoriteClub(),
           favoriteTeam: event.favoriteTeam ?? await repository.loadFavoriteTeam(),
         );

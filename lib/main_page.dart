@@ -62,7 +62,7 @@ class _MainPageState extends State<MainPage> {
         child: BlocListener<PreferencesBloc, PreferencesState>(
             listener: (context, state) {
               if (state is PreferencesUpdatedState && state.favoriteClub != null && state.favoriteTeam != null) {
-                Future.delayed(Duration(milliseconds: 500)).then(
+                Future.delayed(Duration(milliseconds: 1000)).then(
                   (_) {
                     SchedulerBinding.instance?.addPostFrameCallback((duration) {
                       FeatureDiscovery.discoverFeatures(

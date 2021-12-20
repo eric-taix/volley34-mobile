@@ -30,20 +30,76 @@ class _PreferencesPageState extends State<PreferencesPage> with RouteAwareAnalyt
         if (state is PreferencesUpdatedState) {
           return ListView(
             children: <Widget>[
-              _buildDarkModeOption(state),
-              Divider(height: 1.0),
-              _buildAutomaticModeOption(state),
+              SizedBox(height: 30),
+              _buildThemeOption(context, state),
+              SizedBox(height: 50),
             ],
           );
         } else {
           return Center(
-            child: Column(children: <Widget>[Text("Chargement de vos préférences..."), Loading()]),
+            child: Loading(),
           );
         }
       },
     );
   }
 
+  Widget _buildThemeOption(BuildContext context, PreferencesUpdatedState state) {
+    String getThemeUserString(ThemeMode themeMode) {
+      switch (themeMode) {
+        case ThemeMode.light:
+          return "Clair";
+        case ThemeMode.system:
+          return "Thème par défaut du système";
+        case ThemeMode.dark:
+          return "Sombre";
+      }
+    }
+
+    return ListTile(
+      title: Text("Thème"),
+      subtitle: Text(getThemeUserString(state.themeMode)),
+      onTap: () {
+        void updateTheme(ThemeMode? themeMode) async {
+          Navigator.of(context, rootNavigator: true).pop(themeMode);
+          if (themeMode != null) {
+            BlocProvider.of<PreferencesBloc>(context).add(PreferencesSaveEvent(themeMode: themeMode));
+          }
+        }
+
+        Widget buildOption(String label, ThemeMode value) => RadioListTile<ThemeMode>(
+              contentPadding: EdgeInsets.zero,
+              value: value,
+              groupValue: state.themeMode,
+              onChanged: updateTheme,
+              title: Text(label, style: Theme.of(context).textTheme.bodyText2),
+            );
+
+        showDialog<ThemeMode>(
+          barrierDismissible: false,
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Text("Thème"),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  buildOption("Clair", ThemeMode.light),
+                  buildOption("Sombre", ThemeMode.dark),
+                  buildOption("Theme par défaut du système", ThemeMode.system),
+                ],
+              ),
+              actions: [
+                TextButton(onPressed: () => Navigator.of(context, rootNavigator: true).pop(), child: Text("Annuler")),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
+/*
   Widget _buildDarkModeOption(PreferencesUpdatedState state) {
     if (state.useAutomaticTheme) {
       return ListTile(
@@ -87,7 +143,7 @@ class _PreferencesPageState extends State<PreferencesPage> with RouteAwareAnalyt
       },
     );
   }
-
+*/
   @override
   AnalyticsRoute get route => AnalyticsRoute.preferences;
 }

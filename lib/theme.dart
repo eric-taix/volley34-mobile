@@ -9,6 +9,7 @@ const Color _mainColor = Color(0xFFC9334F);
 class AppTheme {
   static ThemeData darkTheme() {
     return ThemeData(
+      brightness: Brightness.dark,
       splashColor: _mainColor.withOpacity(0.2),
       canvasColor: Color(0xFF262C41),
       scaffoldBackgroundColor: Color(0xFF262C41),
@@ -212,6 +213,7 @@ class AppTheme {
 
   static ThemeData lightTheme() {
     return ThemeData(
+        brightness: Brightness.light,
         canvasColor: Colors.white, //(0xfff3f5ff),
         scaffoldBackgroundColor: Color(0xfff3f5ff),
         highlightColor: Colors.transparent,
@@ -290,17 +292,6 @@ class AppTheme {
               ),
             ),
             textTheme: ButtonTextTheme.accent));
-  }
-
-  static ThemeData getNormalThemeFromPreferences(bool isAutomatic, bool isDark) {
-    if (isAutomatic)
-      return lightTheme();
-    else
-      return isDark ? darkTheme() : lightTheme();
-  }
-
-  static ThemeData? getDarkThemeFromPreferences(bool isAutomatic) {
-    return isAutomatic ? darkTheme() : null;
   }
 }
 
