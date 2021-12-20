@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:v34/pages/team-details/ranking/team_ranking.dart';
 
 class LabeledStat extends StatelessWidget {
   final String title;
@@ -15,7 +16,7 @@ class LabeledStat extends StatelessWidget {
           Expanded(
               flex: 1,
               child: Padding(
-                padding: const EdgeInsets.only(left: 24.0),
+                padding: const EdgeInsets.only(left: TEAM_RANKING_LEFT_PADDING),
                 child: Text(title, textAlign: TextAlign.start, style: Theme.of(context).textTheme.bodyText1),
               )),
           Expanded(

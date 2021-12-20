@@ -91,7 +91,6 @@ class PreferencesBloc extends Bloc<PreferencesEvent, PreferencesState> {
           await repository.setFavorite(event.favoriteTeam!.code, FavoriteType.Team);
         }
         String themeString = preferences.getString("theme") ?? "";
-        print("Loaded Theme: $themeString");
         yield PreferencesUpdatedState(
           themeMode:
               ThemeMode.values.firstWhere((theme) => theme.toString() == themeString, orElse: () => ThemeMode.system),

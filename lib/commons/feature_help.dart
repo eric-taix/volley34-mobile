@@ -1,8 +1,6 @@
 import 'package:feature_discovery/feature_discovery.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:v34/message_cubit.dart';
 
 class FeatureHelp extends StatelessWidget {
   final String featureId;
@@ -79,19 +77,19 @@ class FeatureHelp extends StatelessWidget {
             ),
           ],
         ),
-        Align(
+/*        Align(
           alignment: Alignment.centerLeft,
           child: Container(
             child: IconButton(
               icon: Icon(Icons.info_outline_rounded, color: Theme.of(context).textTheme.bodyText1!.color),
               onPressed: () {
-                BlocProvider.of<MessageCubit>(context).showHelp(title: title ?? "", paragraphs: paragraphs ?? []);
-                //FeatureDiscovery.clearPreferences(context, [featureId]);
-                //FeatureDiscovery.discoverFeatures(context, [featureId]);
+                //BlocProvider.of<MessageCubit>(context).showHelp(title: title ?? "", paragraphs: paragraphs ?? []);
+                FeatureDiscovery.clearPreferences(context, [featureId]);
+                FeatureDiscovery.discoverFeatures(context, [featureId]);
               },
             ),
           ),
-        )
+        )*/
       ],
     );
   }

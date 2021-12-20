@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:v34/commons/graphs/arc.dart';
+import 'package:v34/pages/team-details/ranking/team_ranking.dart';
 
 class StatisticsWidget extends StatefulWidget {
   final String title;
@@ -88,7 +89,7 @@ class _StatisticsWidgetState extends State<StatisticsWidget> with SingleTickerPr
         children: <Widget>[
           Expanded(
               child: Padding(
-            padding: const EdgeInsets.only(left: 24.0),
+            padding: const EdgeInsets.only(left: TEAM_RANKING_LEFT_PADDING),
             child: Text(widget.title, textAlign: TextAlign.start, style: Theme.of(context).textTheme.bodyText1),
           )),
           Expanded(child: _buildRatio(context, (_animation.value * widget.points).toInt())),

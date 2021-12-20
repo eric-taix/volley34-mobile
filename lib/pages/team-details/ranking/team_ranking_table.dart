@@ -49,7 +49,7 @@ class _TeamRankingTableState extends State<TeamRankingTable> {
                           ? () => _goToTeamDetails(context, rankingSynthesis.teamCode!)
                           : null,
                       child: Padding(
-                        padding: const EdgeInsets.only(left: 28.0, right: 0, top: 8, bottom: 8),
+                        padding: const EdgeInsets.only(top: 8, bottom: 8),
                         child: Container(
                           alignment: Alignment.centerLeft,
                           child: Row(

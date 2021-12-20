@@ -19,6 +19,8 @@ import 'package:v34/utils/competition_text.dart';
 
 import 'evolution_widget.dart';
 
+const double TEAM_RANKING_LEFT_PADDING = 8;
+
 class TeamRanking extends StatefulWidget {
   final Team team;
   final RankingSynthesis ranking;
@@ -56,21 +58,26 @@ class _TeamRankingState extends State<TeamRanking> with RouteAwareAnalytics {
     int teamIndex = widget.ranking.ranks?.indexWhere((element) => element.teamCode == widget.team.code) ?? -1;
     RankingTeamSynthesis stats = widget.ranking.ranks?[teamIndex] ?? RankingTeamSynthesis.empty();
     return SliverList(
-        delegate: SliverChildListDelegate([
-      Padding(
-        padding: const EdgeInsets.only(top: 48),
-        child: Text(
-          widget.ranking.fullLabel ?? "",
-          style: Theme.of(context).textTheme.bodyText1,
-          textAlign: TextAlign.center,
-        ),
+      delegate: SliverChildListDelegate(
+        [
+          Padding(
+            padding: const EdgeInsets.only(top: 48),
+            child: Text(
+              widget.ranking.fullLabel ?? "",
+              style: Theme.of(context).textTheme.bodyText1,
+              textAlign: TextAlign.center,
+            ),
+          ),
+          _buildCompetitionDescription(context),
+          Paragraph(title: "Classement"),
+          _buildPodium(context, stats),
+          Paragraph(title: "Statistiques générales"),
+          _buildStats(context, stats, widget.teamForce, widget.globalForce),
+          Paragraph(title: "Statistiques avancées"),
+          _buildAdvancedStats(context, stats, widget.teamForce, widget.globalForce),
+        ],
       ),
-      _buildCompetitionDescription(context),
-      Paragraph(title: "Classement"),
-      _buildPodium(context, stats),
-      Paragraph(title: "Statistiques"),
-      _buildStats(context, stats, widget.teamForce, widget.globalForce),
-    ]));
+    );
   }
 
   Widget _buildCompetitionDescription(BuildContext context) {
@@ -118,17 +125,20 @@ class _TeamRankingState extends State<TeamRanking> with RouteAwareAnalytics {
             paragraphs: [
               "Votre position actuelle dans le classement et le nombre de points relatifs des adversaires directs de l'équipe."
             ],
-            child: PodiumWidget(
-              title: title,
-              classification: widget.ranking,
-              currentlyDisplayed: true,
-              highlightedTeamCode: widget.team.code,
-              showTrailing: false,
+            child: Padding(
+              padding: const EdgeInsets.only(left: TEAM_RANKING_LEFT_PADDING, right: 18.0),
+              child: PodiumWidget(
+                title: title,
+                classification: widget.ranking,
+                currentlyDisplayed: true,
+                highlightedTeamCode: widget.team.code,
+                showTrailing: false,
+              ),
             ),
           ),
         ),
         Padding(
-          padding: const EdgeInsets.only(top: 18.0),
+          padding: const EdgeInsets.only(left: TEAM_RANKING_LEFT_PADDING, top: 18.0),
           child: FeatureHelp(
             featureId: TEAM_RANKING_FEATURE,
             title: "Détail du classement",
@@ -141,10 +151,6 @@ class _TeamRankingState extends State<TeamRanking> with RouteAwareAnalytics {
   }
 
   Widget _buildStats(BuildContext context, RankingTeamSynthesis? teamStats, Force force, Force globalForce) {
-    List<double> setsDiffEvolution = TeamBloc.computePointsDiffs(widget.results, widget.team.code);
-    DateTime? startDate = widget.results.first.matchDate;
-    DateTime? endDate = widget.results.last.matchDate;
-    List<double> cumulativeSetsDiffEvolution = TeamBloc.computeCumulativePointsDiffs(setsDiffEvolution);
     return Column(
       children: <Widget>[
         FeatureHelp(
@@ -161,6 +167,41 @@ class _TeamRankingState extends State<TeamRanking> with RouteAwareAnalytics {
           ),
         ),
         FeatureHelp(
+          featureId: TEAM_SCORES_FEATURE,
+          title: "Scores",
+          paragraphs: [
+            "Distribution du nombre de matchs par résultat final. La dernière colonne \"NT\" regroupe tous les matchs non terminés."
+          ],
+          child: SummaryWidget(title: "Scores", teamStats: teamStats ?? RankingTeamSynthesis.empty()),
+        ),
+        FeatureHelp(
+          featureId: TEAM_FORCES_FEATURE,
+          title: "Forces",
+          paragraphs: [
+            "Force d'attaque : nombre moyen de points marqués par set, comparé à la moyenne des équipes de la poule. Une valeur > 100% signifie que l'équipe a une meilleure attaque que la moyenne des équipes.",
+            "",
+            "Potentiel de défense : nombre moyen de points concédés par set, comparé à la moyenne des équipes de la poule. Une valeur > 100% signifie que l'équipe a une meilleure défense que la moyenne des équipes.",
+          ],
+          child: LabeledStat(
+            title: "Forces",
+            child: ForceWidget(
+              force: force,
+              globalForce: globalForce,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildAdvancedStats(BuildContext context, RankingTeamSynthesis? teamStats, Force force, Force globalForce) {
+    List<double> setsDiffEvolution = TeamBloc.computePointsDiffs(widget.results, widget.team.code);
+    DateTime? startDate = widget.results.first.matchDate;
+    DateTime? endDate = widget.results.last.matchDate;
+    List<double> cumulativeSetsDiffEvolution = TeamBloc.computeCumulativePointsDiffs(setsDiffEvolution);
+    return Column(
+      children: <Widget>[
+        FeatureHelp(
           featureId: TEAM_DIFF_SET_FEATURE,
           title: "Différence de sets",
           paragraphs: [
@@ -175,14 +216,6 @@ class _TeamRankingState extends State<TeamRanking> with RouteAwareAnalytics {
           ),
         ),
         FeatureHelp(
-          featureId: TEAM_SCORES_FEATURE,
-          title: "Scores",
-          paragraphs: [
-            "Distribution du nombre de matchs par résultat final. La dernière colonne \"NT\" regroupe tous les matchs non terminés."
-          ],
-          child: SummaryWidget(title: "Scores", teamStats: teamStats ?? RankingTeamSynthesis.empty()),
-        ),
-        FeatureHelp(
           featureId: TEAM_SETS_FEATURE,
           title: "Sets pris",
           paragraphs: [
@@ -195,21 +228,6 @@ class _TeamRankingState extends State<TeamRanking> with RouteAwareAnalytics {
             maxPoints: (teamStats?.wonSets ?? 0) + (teamStats?.lostSets ?? 0),
             backgroundColor: Theme.of(context).canvasColor,
           ),
-        ),
-        FeatureHelp(
-          featureId: TEAM_FORCES_FEATURE,
-          title: "Forces",
-          paragraphs: [
-            "Force d'attaque : nombre moyen de points marqués par set, comparé à la moyenne des équipes de la poule. Une valeur > 100% signifie que l'équipe a une meilleure attaque que la moyenne des équipes.",
-            "",
-            "Potentiel de défense : nombre moyen de points concédés par set, comparé à la moyenne des équipes de la poule. Une valeur > 100% signifie que l'équipe a une meilleure défense que la moyenne des équipes.",
-          ],
-          child: LabeledStat(
-              title: "Forces",
-              child: ForceWidget(
-                force: force,
-                globalForce: globalForce,
-              )),
         ),
         FeatureHelp(
           featureId: TEAM_POINTS_FEATURE,

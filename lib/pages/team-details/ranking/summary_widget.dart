@@ -1,6 +1,7 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:v34/models/ranking.dart';
+import 'package:v34/pages/team-details/ranking/team_ranking.dart';
 import 'package:v34/utils/extensions.dart';
 
 class SummaryWidget extends StatelessWidget {
@@ -132,7 +133,7 @@ class SummaryWidget extends StatelessWidget {
           Expanded(
               flex: 1,
               child: Padding(
-                padding: const EdgeInsets.only(left: 24.0),
+                padding: const EdgeInsets.only(left: TEAM_RANKING_LEFT_PADDING),
                 child: Text(title, textAlign: TextAlign.start, style: Theme.of(context).textTheme.bodyText1),
               )),
           Expanded(flex: 2, child: _buildGraph(context)),
