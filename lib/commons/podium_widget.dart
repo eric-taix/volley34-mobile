@@ -47,7 +47,7 @@ class _PodiumWidgetState extends State<PodiumWidget> {
         <PlaceValue>[];
     var highlightedIndex = placeValues.indexWhere((placeValue) => placeValue.id == widget.highlightedTeamCode);
     return Padding(
-      padding: const EdgeInsets.only(right: 28.0),
+      padding: const EdgeInsets.only(left: 28.0, right: 28.0),
       child: Stack(
         children: [
           Container(

@@ -8,26 +8,33 @@ class FeatureTour extends StatelessWidget {
   final String? title;
   final List<String>? paragraphs;
   final List<Widget>? paragraphsChildren;
-
+  final ContentLocation contentLocation;
   final Widget child;
   final Future<bool> Function()? onComplete;
 
-  FeatureTour(
-      {required this.featureId,
-      this.target,
-      this.title,
-      this.paragraphs,
-      required this.child,
-      this.onComplete,
-      this.paragraphsChildren})
-      : assert(paragraphs == null || paragraphsChildren == null);
+  FeatureTour({
+    required this.featureId,
+    this.target,
+    this.title,
+    this.paragraphs,
+    required this.child,
+    this.onComplete,
+    this.paragraphsChildren,
+    this.contentLocation = ContentLocation.trivial,
+  }) : assert(paragraphs == null || paragraphsChildren == null);
 
   @override
   Widget build(BuildContext context) {
     return DescribedFeatureOverlay(
-      contentLocation: ContentLocation.above,
+      contentLocation: contentLocation,
       featureId: featureId,
-      tapTarget: target ?? SizedBox(),
+      barrierDismissible: true,
+      backgroundDismissible: true,
+      tapTarget: target ??
+          SizedBox(
+            height: 2,
+            width: 2,
+          ),
       onComplete: onComplete,
       title: Text(title ?? "",
           style: TextStyle(
@@ -52,12 +59,10 @@ class FeatureTour extends StatelessWidget {
         ],
       ),
       backgroundColor: Theme.of(context).cardTheme.color,
-      backgroundOpacity: 0.95,
+      backgroundOpacity: 0.85,
       targetColor: Theme.of(context).textTheme.bodyText2!.color!,
-      textColor: Colors.red,
-      overflowMode: OverflowMode.extendBackground,
+      overflowMode: OverflowMode.wrapBackground,
       child: child,
-      onDismiss: () async => false,
     );
   }
 }

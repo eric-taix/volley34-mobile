@@ -10,6 +10,10 @@ class MessageCubit extends Cubit<MessageState> {
     emit(NewMessage(title, message));
   }
 
+  void showHelp({required String title, required List<String> paragraphs}) {
+    emit(NewHelp(title, paragraphs));
+  }
+
   void clearMessage() {
     emit(MessageCleared());
   }

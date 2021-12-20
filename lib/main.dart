@@ -96,6 +96,7 @@ class _V34State extends State<V34> {
         child: BlocProvider(
           create: (_) => _messageCubit,
           child: FeatureDiscovery(
+            recordStepsInSharedPreferences: false,
             child: BlocProvider<PreferencesBloc>(
               create: (context) {
                 PreferencesBloc bloc = PreferencesBloc(_repository);

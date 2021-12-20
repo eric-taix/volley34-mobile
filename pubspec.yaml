@@ -25,7 +25,7 @@ dependencies:
   collection: ^1.15.0
   like_button: ^2.0.3
   smooth_page_indicator: ^1.0.0+2
-  feature_discovery: ^0.14.0
+  feature_discovery: ^0.14.1
   font_awesome_flutter: ^9.2.0
   url_launcher: ^6.0.10
   fl_chart: ^0.40.2

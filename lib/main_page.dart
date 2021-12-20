@@ -1,6 +1,7 @@
 import 'package:feature_discovery/feature_discovery.dart';
 import 'package:fluid_bottom_nav_bar/fluid_bottom_nav_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -38,9 +39,24 @@ class _MainPageState extends State<MainPage> {
       body: BlocListener<MessageCubit, MessageState>(
         listener: (BuildContext context, state) {
           if (state is NewMessage) {
-            showAlertDialog(context, state.title, state.message, onPressed: () {
-              BlocProvider.of<MessageCubit>(context).clearMessage();
-            });
+            showAlertDialog(
+              context,
+              state.title,
+              state.message,
+              onPressed: () {
+                BlocProvider.of<MessageCubit>(context).clearMessage();
+              },
+            );
+          }
+          if (state is NewHelp) {
+            showHelpDialog(
+              context,
+              state.title,
+              state.paragraphs,
+              onPressed: () {
+                BlocProvider.of<MessageCubit>(context).clearMessage();
+              },
+            );
           }
         },
         child: BlocListener<PreferencesBloc, PreferencesState>(
@@ -48,15 +64,17 @@ class _MainPageState extends State<MainPage> {
               if (state is PreferencesUpdatedState && state.favoriteClub != null && state.favoriteTeam != null) {
                 Future.delayed(Duration(milliseconds: 500)).then(
                   (_) {
-                    FeatureDiscovery.discoverFeatures(
-                      context,
-                      const <String>{
-                        "dashboard_feature_id",
-                        "competition_feature_id",
-                        "clubs_feature_id",
-                        "gymnasiums_feature_id",
-                      },
-                    );
+                    SchedulerBinding.instance?.addPostFrameCallback((duration) {
+                      FeatureDiscovery.discoverFeatures(
+                        context,
+                        const <String>{
+                          "dashboard_feature_id",
+                          "competition_feature_id",
+                          "clubs_feature_id",
+                          "gymnasiums_feature_id",
+                        },
+                      );
+                    });
                   },
                 );
               }

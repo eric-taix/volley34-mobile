@@ -87,7 +87,10 @@ class _StatisticsWidgetState extends State<StatisticsWidget> with SingleTickerPr
       child: Row(
         children: <Widget>[
           Expanded(
-              child: Text(widget.title, textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodyText1)),
+              child: Padding(
+            padding: const EdgeInsets.only(left: 24.0),
+            child: Text(widget.title, textAlign: TextAlign.start, style: Theme.of(context).textTheme.bodyText1),
+          )),
           Expanded(child: _buildRatio(context, (_animation.value * widget.points).toInt())),
           Expanded(child: _buildGraph(context)),
         ],
