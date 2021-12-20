@@ -5,10 +5,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:v34/app_page.dart';
 import 'package:v34/commons/blocs/logging_bloc.dart';
 import 'package:v34/commons/blocs/preferences_bloc.dart';
 import 'package:v34/commons/env.dart';
-import 'package:v34/main_page.dart';
 import 'package:v34/message_cubit.dart';
 import 'package:v34/repositories/providers/agenda_provider.dart';
 import 'package:v34/repositories/providers/club_provider.dart';
@@ -93,30 +93,13 @@ class _V34State extends State<V34> {
         child: BlocProvider(
           create: (_) => _messageCubit,
           child: FeatureDiscovery(
-            recordStepsInSharedPreferences: true,
-            child: BlocProvider<PreferencesBloc>(
-              create: (context) {
-                PreferencesBloc bloc = PreferencesBloc(_repository);
-                bloc.add(PreferencesLoadEvent());
-                return bloc;
-              },
-              child: BlocListener<PreferencesBloc, PreferencesState>(
-                listener: (context, state) {
-                  if (state is PreferencesUpdatedState) {
-                    setState(() {
-                      _themeMode = state.themeMode;
-                    });
-                  }
-                },
-                child: MaterialApp(
-                  title: "Volley34",
-                  theme: AppTheme.lightTheme(),
-                  darkTheme: AppTheme.darkTheme(),
-                  themeMode: _themeMode,
-                  home: MainPage(),
-                  navigatorObservers: [routeObserver],
-                ),
-              ),
+            child: MaterialApp(
+              title: "Volley34",
+              theme: AppTheme.lightTheme(),
+              darkTheme: AppTheme.darkTheme(),
+              themeMode: _themeMode,
+              home: AppPage(),
+              navigatorObservers: [routeObserver],
             ),
           ),
         ),

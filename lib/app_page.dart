@@ -1,11 +1,8 @@
-import 'package:feature_discovery/feature_discovery.dart';
 import 'package:fluid_bottom_nav_bar/fluid_bottom_nav_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:v34/commons/blocs/preferences_bloc.dart';
 import 'package:v34/commons/feature_tour.dart';
 import 'package:v34/commons/show_dialog.dart';
 import 'package:v34/menu.dart';
@@ -15,36 +12,35 @@ import 'package:v34/pages/competition/competition_page.dart';
 import 'package:v34/pages/dashboard/dashoard_page.dart';
 import 'package:v34/pages/gymnasium/gymnasium_page.dart';
 
-class MainPage extends StatefulWidget {
+const String MAIN_DASHBOARD = "main_dashboard";
+const String MAIN_COMPETITION = "main_competition";
+const String MAIN_CLUBS = "main_clubs";
+const String MAIN_GYMNASIUMS = "main_gymnasiums";
+
+class AppPage extends StatefulWidget {
   @override
-  _MainPageState createState() => _MainPageState();
+  _AppPageState createState() => _AppPageState();
 }
 
-class _MainPageState extends State<MainPage> {
+class _AppPageState extends State<AppPage> {
   Widget? _child;
-
-  static const String MAIN_MENU = "main_menu";
-  static const String MAIN_DASHBOARD = "main_dashboard";
-  static const String MAIN_COMPETITION = "main_competition";
-  static const String MAIN_CLUBS = "main_clubs";
-  static const String MAIN_GYMNASIUMS = "main_gymnasiums";
 
   @override
   void initState() {
-    super.initState();
     _child = DashboardPage();
     initializeDateFormatting();
+    super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: FeatureTour(
-        featureId: MAIN_MENU,
-        title: "Menu",
-        paragraphs: ["Accédez à votre profil, vos préférences et aux différents menus de l'application"],
-        child: AppMenu(),
-      ),
+      drawer: AppMenu(),
       backgroundColor: Theme.of(context).primaryColor,
       extendBody: true,
       body: BlocListener<MessageCubit, MessageState>(
@@ -70,28 +66,7 @@ class _MainPageState extends State<MainPage> {
             );
           }
         },
-        child: BlocListener<PreferencesBloc, PreferencesState>(
-            listener: (context, state) {
-              if (state is PreferencesUpdatedState && state.favoriteClub != null && state.favoriteTeam != null) {
-                Future.delayed(Duration(milliseconds: 1000)).then(
-                  (_) {
-                    SchedulerBinding.instance?.addPostFrameCallback((duration) {
-                      FeatureDiscovery.discoverFeatures(
-                        context,
-                        const <String>{
-                          MAIN_MENU,
-                          MAIN_DASHBOARD,
-                          MAIN_COMPETITION,
-                          MAIN_CLUBS,
-                          MAIN_GYMNASIUMS,
-                        },
-                      );
-                    });
-                  },
-                );
-              }
-            },
-            child: _child),
+        child: _child,
       ),
       bottomNavigationBar: FluidNavBar(
         icons: [

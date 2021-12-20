@@ -95,6 +95,7 @@ class _SelectFavoriteTeamState extends State<SelectFavoriteTeam> {
 
   _save(BuildContext context) async {
     _preferencesBloc.add(PreferencesSaveEvent(favoriteClub: _selectedClub, favoriteTeam: _selectedTeam));
+    Navigator.of(context).pop();
   }
 
   _close(BuildContext context) {

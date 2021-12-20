@@ -14,7 +14,11 @@ class PreferencesEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class PreferencesLoadEvent extends PreferencesEvent {}
+class PreferencesLoadEvent extends PreferencesEvent {
+  PreferencesLoadEvent() {
+    print("Load event");
+  }
+}
 
 class PreferencesSaveEvent extends PreferencesEvent {
   final ThemeMode? themeMode;
