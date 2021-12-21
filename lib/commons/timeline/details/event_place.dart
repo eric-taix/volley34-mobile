@@ -23,24 +23,14 @@ class EventPlace extends StatefulWidget {
 }
 
 class _EventPlaceState extends State<EventPlace> {
-  GymnasiumBloc? _gymnasiumBloc;
   String? _rawMapStyle;
   String? _currentMapStyle;
   GoogleMapController? _mapController;
   BitmapDescriptor? _marker;
 
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    if (widget.event.type == EventType.Match) {
-      _gymnasiumBloc = GymnasiumBloc(RepositoryProvider.of(context), GymnasiumUninitializedState());
-      _gymnasiumBloc!.add(LoadGymnasiumEvent(gymnasiumCode: widget.event.gymnasiumCode));
-    }
     rootBundle.loadString('assets/maps/map_style.txt').then((mapStyle) {
       _rawMapStyle = mapStyle;
       _applyMapStyle(context);
@@ -179,7 +169,7 @@ class _EventPlaceState extends State<EventPlace> {
           ),
         ),
         Padding(
-          padding: const EdgeInsets.only(top: 8.0, bottom: 58),
+          padding: const EdgeInsets.only(left: 8, top: 8.0, bottom: 58),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
@@ -217,8 +207,7 @@ class _EventPlaceState extends State<EventPlace> {
   @override
   Widget build(BuildContext context) {
     if (widget.event.type == EventType.Match) {
-      return BlocBuilder(
-        bloc: _gymnasiumBloc,
+      return BlocBuilder<GymnasiumBloc, GymnasiumState>(
         builder: (context, dynamic state) {
           if (state is GymnasiumLoadedState) {
             return Padding(padding: const EdgeInsets.only(top: 8.0), child: _buildGymnasiumLocationLoaded(state));

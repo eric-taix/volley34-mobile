@@ -5,7 +5,10 @@ import 'package:v34/models/force.dart';
 @immutable
 class Event extends Equatable {
   // Common
-  final DateTime? date;
+  late final DateTime? _date;
+  DateTime? get date => _postponedDate ?? _date;
+  DateTime? get initialDate => _date;
+
   final String? place;
   final EventType? type;
   final String? name;
@@ -15,11 +18,20 @@ class Event extends Equatable {
   final String? hostCode;
   final String? visitorName;
   final String? visitorCode;
-  final String? gymnasiumCode;
+
+  late final String? _gymnasiumCode;
+  String? get gymnasiumCode => _postponedGymnasiumCode ?? _gymnasiumCode;
+  String? get initialGymnasiumCode => _gymnasiumCode;
+
   final Force? hostForce;
   final Force? visitorForce;
   final Force? globalForce;
   final String? matchCode;
+  late final DateTime? _postponedDate;
+  late final String? _postponedGymnasiumCode;
+
+  DateTime? get postponedDate => _postponedDate != _date ? _postponedDate : null;
+  String? get postponedGymnasiumCode => _postponedGymnasiumCode != _gymnasiumCode ? _postponedGymnasiumCode : null;
 
   // Tournament & Meeting
   final DateTime? endDate;
@@ -30,10 +42,10 @@ class Event extends Equatable {
   final String? imageUrl;
 
   Event({
-    this.date,
+    DateTime? date,
     this.name,
     this.place,
-    this.gymnasiumCode,
+    String? gymnasiumCode,
     this.type,
     this.hostName,
     this.hostCode,
@@ -50,10 +62,16 @@ class Event extends Equatable {
     this.visitorForce,
     this.globalForce,
     this.matchCode,
-  });
+    DateTime? postponedDate,
+    String? postponedGymnasiumCode,
+  }) {
+    _date = date;
+    _gymnasiumCode = gymnasiumCode;
+    _postponedDate = postponedDate;
+    _postponedGymnasiumCode = postponedGymnasiumCode;
+  }
 
   factory Event.fromJson(json) {
-    print(json);
     if (json["MatchCode"] != null) {
       return Event(
         date: DateTime.parse(json["DateMatch"]),
@@ -66,6 +84,8 @@ class Event extends Equatable {
         visitorCode: json["EquipeVisiteursCode"],
         type: EventType.Match,
         matchCode: json["MatchCode"],
+        postponedDate: json["DateMatchRevisee"] != null ? DateTime.parse(json["DateMatchRevisee"]) : null,
+        postponedGymnasiumCode: json["GymnaseCodeRevise"],
       );
     } else {
       return Event(
@@ -86,10 +106,10 @@ class Event extends Equatable {
 
   Event withForce(Force hostForce, Force visitorForce, Force globalForce) {
     return Event(
-      date: date,
+      date: _date,
       name: name,
       place: place,
-      gymnasiumCode: gymnasiumCode,
+      gymnasiumCode: _gymnasiumCode,
       type: type,
       hostName: hostName,
       hostCode: hostCode,
@@ -106,6 +126,8 @@ class Event extends Equatable {
       visitorForce: visitorForce,
       globalForce: globalForce,
       matchCode: matchCode,
+      postponedDate: _postponedDate,
+      postponedGymnasiumCode: _postponedGymnasiumCode,
     );
   }
 

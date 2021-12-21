@@ -81,10 +81,8 @@ class AgendaBloc extends Bloc<AgendaEvent, AgendaState> {
       var now = DateTime.now();
       var today = DateTime(now.year, now.month, now.day);
 
-      List<Event> events = (await repository.loadTeamAgenda(event.teamCode, event.days))
-          .where((calendarEvent) => calendarEvent.date!.compareTo(today) > 0)
-          .toList();
-
+      List<Event> events =
+          (await repository.loadTeamAgenda(event.teamCode, event.days)).where(_matchIsAfter(today)).toList();
       List<RankingSynthesis> rankings = await repository.loadTeamRankingSynthesis(event.teamCode);
       List<CompetitionFullPath> competitionsFullPath = rankings
           .map((ranking) => CompetitionFullPath(ranking.competitionCode!, ranking.division!, ranking.pool!))
@@ -125,14 +123,19 @@ class AgendaBloc extends Bloc<AgendaEvent, AgendaState> {
       var today = DateTime(now.year, now.month, now.day);
       Set<Event> allEvents = Set();
       for (String? teamCode in event.teamCodes) {
-        List<Event> events = (await repository.loadTeamAgenda(teamCode, event.days))
-            .where((calendarEvent) => calendarEvent.date!.compareTo(today) > 0)
-            .toList();
+        List<Event> events =
+            (await repository.loadTeamAgenda(teamCode, event.days)).where(_matchIsAfter(today)).toList();
+        print("FOO1 $events");
         allEvents.addAll(events);
       }
+
       List<Event> eventList = allEvents.toList();
       eventList.sort((event1, event2) => event1.date!.compareTo(event2.date!));
       yield AgendaLoaded(eventList);
     }
+  }
+
+  bool Function(Event) _matchIsAfter(DateTime reference) {
+    return (event) => event.date!.compareTo(reference) > 0;
   }
 }

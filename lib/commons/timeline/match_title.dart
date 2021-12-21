@@ -9,47 +9,41 @@ class MatchTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return Column(
       children: [
-        Expanded(
-          child: Column(
-            children: [
-              Text(
-                event.hostName!,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.bodyText2!.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
+        Text(
+          event.hostName!,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+          textAlign: TextAlign.center,
+          style: Theme.of(context).textTheme.bodyText2!.copyWith(
+                fontWeight: FontWeight.bold,
               ),
-              Padding(
-                padding: const EdgeInsets.all(4.0),
-                child: Text("reçoit", style: Theme.of(context).textTheme.bodyText1),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 8.0),
-                child: Text(
-                  event.visitorName!,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.bodyText2!.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(4.0),
+          child: Text("reçoit", style: Theme.of(context).textTheme.bodyText1),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(bottom: 8.0),
+          child: Text(
+            event.visitorName!,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.bodyText2!.copyWith(
+                  fontWeight: FontWeight.bold,
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 18.0, bottom: 4),
-                /*  child: ForceComparison(
-                  hostForce: event.hostForce ?? Force(),
-                  visitorForce: event.visitorForce ?? Force(),
-                  globalForce: event.globalForce ?? Force(),
-                  direction: event.hostCode == team.code ? ForceDirection.rightToLeft : ForceDirection.leftToRight,
-                ),*/
-              ),
-            ],
           ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(top: 18.0, bottom: 4),
+          /*  child: ForceComparison(
+            hostForce: event.hostForce ?? Force(),
+            visitorForce: event.visitorForce ?? Force(),
+            globalForce: event.globalForce ?? Force(),
+            direction: event.hostCode == team.code ? ForceDirection.rightToLeft : ForceDirection.leftToRight,
+          ),*/
         ),
       ],
     );
