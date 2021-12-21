@@ -21,6 +21,12 @@ class DashboardPage extends StatefulWidget {
 
 class _DashboardPageState extends State<DashboardPage> with RouteAwareAnalytics {
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    BlocProvider.of<PreferencesBloc>(context).add(PreferencesLoadEvent());
+  }
+
+  @override
   Widget build(BuildContext context) {
     return BlocConsumer<PreferencesBloc, PreferencesState>(
       listener: (_, state) {

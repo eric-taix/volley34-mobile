@@ -57,8 +57,8 @@ class _PreferencesPageState extends State<PreferencesPage> with RouteAwareAnalyt
     }
 
     return ListTile(
-      title: Text("Thème"),
-      subtitle: Text(getThemeUserString(state.themeMode)),
+      title: Text("Thème", style: Theme.of(context).textTheme.bodyText2),
+      subtitle: Text(getThemeUserString(state.themeMode), style: Theme.of(context).textTheme.bodyText1),
       onTap: () {
         void updateTheme(ThemeMode? themeMode) async {
           Navigator.of(context, rootNavigator: true).pop(themeMode);

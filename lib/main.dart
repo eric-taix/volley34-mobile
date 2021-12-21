@@ -85,19 +85,32 @@ class _V34State extends State<V34> {
         child: BlocProvider(
           create: (_) => _messageCubit,
           child: FeatureDiscovery(
-            child: MaterialApp(
-              title: "Volley34",
-              theme: AppTheme.lightTheme(),
-              darkTheme: AppTheme.darkTheme(),
-              themeMode: _themeMode,
-              home: SplashScreenView(
-                navigateRoute: AppPage(),
-                text: "Volley 34",
-                textType: TextType.ScaleAnimatedText,
-                textStyle: Theme.of(context).textTheme.headline1,
-                backgroundColor: Color(0xFF262C41),
+            child: BlocListener<PreferencesBloc, PreferencesState>(
+              listener: (_, state) {
+                print("FOO");
+                if (state is PreferencesUpdatedState) {
+                  print("FOO1");
+                  setState(() {
+                    _themeMode = state.themeMode;
+                  });
+                }
+              },
+              child: MaterialApp(
+                title: "Volley34",
+                theme: AppTheme.lightTheme(),
+                darkTheme: AppTheme.darkTheme(),
+                themeMode: _themeMode,
+                home: SplashScreenView(
+                  navigateRoute: AppPage(),
+                  duration: 400,
+                  text: "Volley 34",
+                  textType: TextType.ScaleAnimatedText,
+                  textStyle: TextStyle(
+                      color: Color(0xFFF7FBFE), fontSize: 34, fontFamily: "Raleway", fontWeight: FontWeight.bold),
+                  backgroundColor: Color(0xFF262C41),
+                ),
+                navigatorObservers: [routeObserver],
               ),
-              navigatorObservers: [routeObserver],
             ),
           ),
         ),
