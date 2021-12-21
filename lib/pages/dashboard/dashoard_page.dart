@@ -118,7 +118,7 @@ class _DashboardPageState extends State<DashboardPage> with RouteAwareAnalytics 
                   ],
                   defaultBuilder: (_, state) => Container(height: 250),
                 ),
-                Paragraph(title: "Votre agenda"),
+                Paragraph(title: "Prochains événements"),
                 StateConditionBuilder(
                   state: state,
                   conditionalBuilders: [
