@@ -33,11 +33,6 @@ class _AppPageState extends State<AppPage> {
   }
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: AppMenu(),
