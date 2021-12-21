@@ -125,7 +125,6 @@ class AgendaBloc extends Bloc<AgendaEvent, AgendaState> {
       for (String? teamCode in event.teamCodes) {
         List<Event> events =
             (await repository.loadTeamAgenda(teamCode, event.days)).where(_matchIsAfter(today)).toList();
-        print("FOO1 $events");
         allEvents.addAll(events);
       }
 

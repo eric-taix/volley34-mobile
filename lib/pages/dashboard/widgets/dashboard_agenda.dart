@@ -30,7 +30,7 @@ class DashboardAgendaState extends State<DashboardAgenda> with AutomaticKeepAliv
   }
 
   void _loadTeamsMonthAgenda() {
-    _agendaBloc!.add(LoadTeamsMonthAgenda(teamCodes: [widget.team.code], days: 60));
+    _agendaBloc!.add(LoadTeamMonthAgenda(teamCode: widget.team.code, days: 30));
   }
 
   @override
