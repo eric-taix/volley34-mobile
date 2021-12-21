@@ -18,7 +18,7 @@ class MatchTitle extends StatelessWidget {
                 event.hostName!,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
-                textAlign: TextAlign.left,
+                textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.bodyText2!.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
@@ -33,7 +33,7 @@ class MatchTitle extends StatelessWidget {
                   event.visitorName!,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
-                  textAlign: TextAlign.right,
+                  textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.bodyText2!.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
