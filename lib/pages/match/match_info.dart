@@ -55,17 +55,21 @@ class MatchInfo extends StatelessWidget {
       children: [
         Padding(
           padding: const EdgeInsets.only(right: 18.0),
-          child: Hero(
-            tag: "hero-logo-${hostTeam?.code}",
-            child: RoundedNetworkImage(40, hostClub?.logoUrl ?? ""),
-          ),
+          child: hostTeam != null && hostClub != null
+              ? Hero(
+                  tag: "hero-logo-${hostTeam!.code}",
+                  child: RoundedNetworkImage(40, hostClub!.logoUrl ?? ""),
+                )
+              : SizedBox(),
         ),
         Padding(
           padding: const EdgeInsets.only(left: 18.0),
-          child: Hero(
-            tag: "hero-logo-${visitorTeam?.code}",
-            child: RoundedNetworkImage(40, visitorClub?.logoUrl ?? ""),
-          ),
+          child: visitorTeam != null && visitorClub != null
+              ? Hero(
+                  tag: "hero-logo-${visitorTeam?.code}",
+                  child: RoundedNetworkImage(40, visitorClub?.logoUrl ?? ""),
+                )
+              : SizedBox(),
         ),
       ],
     );

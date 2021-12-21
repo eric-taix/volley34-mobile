@@ -114,7 +114,7 @@ class _EventInfoState extends State<EventInfo> with SingleTickerProviderStateMix
               icon: Icon(
                 Icons.calendar_today,
               ),
-              label: Text("Ajouter à l'agenda".toUpperCase()),
+              label: Text("Ajouter à l'agenda"),
             ),
           ))
     ];
@@ -242,6 +242,7 @@ class _EventInfoState extends State<EventInfo> with SingleTickerProviderStateMix
 
   @override
   Widget build(BuildContext context) {
+    print("EVENT ${widget.event.matchCode}");
     return GestureDetector(
       onTap: () => _closeMenu(),
       child: Stack(

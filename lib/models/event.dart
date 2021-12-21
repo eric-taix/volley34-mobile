@@ -105,6 +105,7 @@ class Event extends Equatable {
       hostForce: hostForce,
       visitorForce: visitorForce,
       globalForce: globalForce,
+      matchCode: matchCode,
     );
   }
 

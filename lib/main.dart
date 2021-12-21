@@ -87,9 +87,7 @@ class _V34State extends State<V34> {
           child: FeatureDiscovery(
             child: BlocListener<PreferencesBloc, PreferencesState>(
               listener: (_, state) {
-                print("FOO");
                 if (state is PreferencesUpdatedState) {
-                  print("FOO1");
                   setState(() {
                     _themeMode = state.themeMode;
                   });
