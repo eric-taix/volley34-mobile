@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_mailer/flutter_mailer.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:v34/commons/animated_button.dart';
@@ -514,6 +515,7 @@ class _EditMatchState extends State<EditMatch> {
           return "";
         }
       },
+      inputFormatters: [FilteringTextInputFormatter.digitsOnly, LengthLimitingTextInputFormatter(2)],
     );
   }
 
