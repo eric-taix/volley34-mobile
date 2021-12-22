@@ -250,6 +250,9 @@ class _EventInfoState extends State<EventInfo> with SingleTickerProviderStateMix
           date: widget.event.date,
           showMatchDate: false,
           showTeamLink: true,
+          hostForce: widget.event.hostForce,
+          globalForce: widget.event.globalForce,
+          visitorForce: widget.event.visitorForce,
         ),
         _divider,
       ];
