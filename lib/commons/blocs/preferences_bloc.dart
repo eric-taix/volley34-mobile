@@ -15,9 +15,7 @@ class PreferencesEvent extends Equatable {
 }
 
 class PreferencesLoadEvent extends PreferencesEvent {
-  PreferencesLoadEvent() {
-    print("Load event");
-  }
+  PreferencesLoadEvent();
 }
 
 class PreferencesSaveEvent extends PreferencesEvent {

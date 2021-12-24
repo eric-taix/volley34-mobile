@@ -9,7 +9,6 @@ import 'package:intl/intl.dart';
 import 'package:v34/commons/circular_menu/circular_menu.dart';
 import 'package:v34/commons/circular_menu/circular_menu_item.dart';
 import 'package:v34/commons/feature_tour.dart';
-import 'package:v34/commons/loading.dart';
 import 'package:v34/commons/router.dart';
 import 'package:v34/commons/timeline/details/event_place.dart';
 import 'package:v34/commons/timeline/postponed_badge.dart';
@@ -58,6 +57,11 @@ class _EventInfoState extends State<EventInfo> with SingleTickerProviderStateMix
     _scrollController.addListener(() {
       _closeMenu();
     });
+    _gymnasiumBloc = GymnasiumBloc(RepositoryProvider.of(context), GymnasiumUninitializedState());
+    if (widget.event.type == EventType.Match) {
+      _gymnasiumBloc!.add(LoadGymnasiumEvent(gymnasiumCode: widget.event.gymnasiumCode));
+    }
+
     if (widget.event.type == EventType.Match) {
       Repository repository = RepositoryProvider.of<Repository>(context);
       repository.loadTeamClub(widget.event.hostCode).then((hostClub) {
@@ -86,11 +90,6 @@ class _EventInfoState extends State<EventInfo> with SingleTickerProviderStateMix
           );
         });
       });
-    }
-
-    if (widget.event.type == EventType.Match) {
-      _gymnasiumBloc = GymnasiumBloc(RepositoryProvider.of(context), GymnasiumUninitializedState());
-      _gymnasiumBloc!.add(LoadGymnasiumEvent(gymnasiumCode: widget.event.gymnasiumCode));
     }
   }
 
@@ -156,29 +155,22 @@ class _EventInfoState extends State<EventInfo> with SingleTickerProviderStateMix
         paragraphs: [
           "Localisez l'emplacement du match sur la carte. En cliquant sur le lien \"Itinéraire\" : votre application de navigation vous guidera à votre destination.",
         ],
-        child: BlocBuilder<GymnasiumBloc, GymnasiumState>(
-          builder: (context, state) {
-            return state is GymnasiumLoadedState
-                ? ListTile(
-                    leading: Icon(
-                      Icons.location_on,
-                      color: Theme.of(context).textTheme.bodyText1!.color,
-                      size: _iconSize,
-                    ),
-                    title: Text(state.gymnasium.fullname!,
-                        textAlign: TextAlign.left, style: Theme.of(context).textTheme.bodyText2),
-                  )
-                : Loading();
-          },
+        child: ListTile(
+          leading: Icon(
+            Icons.location_on,
+            color: Theme.of(context).textTheme.bodyText1!.color,
+            size: _iconSize,
+          ),
+          title: Text(widget.event.place!, textAlign: TextAlign.left, style: Theme.of(context).textTheme.bodyText2),
         ),
-      )
+      ),
     ];
   }
 
   Widget _buildOrganizerClub(BuildContext context) {
     return ListTile(
       leading: SvgPicture.asset('assets/shield.svg',
-          width: _iconSize, height: _iconSize, color: Theme.of(context).textTheme.bodyText1!.color!.withOpacity(0.5)),
+          width: _iconSize, height: _iconSize, color: Theme.of(context).textTheme.bodyText1!.color!),
       title: OrganizerClub(clubCode: widget.event.clubCode),
     );
   }
@@ -201,35 +193,37 @@ class _EventInfoState extends State<EventInfo> with SingleTickerProviderStateMix
     );
     Widget? subtitle;
     if (widget.event.contactPhone != null || widget.event.contactEmail != null) {
-      subtitle = Padding(
-        padding: const EdgeInsets.only(top: 8.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            if (widget.event.contactPhone != null)
-              ElevatedButton.icon(
-                icon: Icon(Icons.phone, color: Theme.of(context).textTheme.bodyText1!.color),
-                onPressed: () => launchURL("tel:${widget.event.contactPhone}"),
-                label: Text("Appeler"),
-              ),
-            if (widget.event.contactEmail != null)
-              ElevatedButton.icon(
-                icon: Icon(Icons.mail, color: Theme.of(context).textTheme.bodyText1!.color),
-                onPressed: () => launchURL(params.toString()),
-                label: Text("Envoyer un mail"),
-              )
-          ],
-        ),
+      subtitle = Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          if (widget.event.contactPhone != null)
+            TextButton.icon(
+              icon: Icon(Icons.phone, color: Theme.of(context).colorScheme.secondary),
+              onPressed: () => launchURL("tel:${widget.event.contactPhone}"),
+              label: Text("Appeler"),
+            ),
+          if (widget.event.contactEmail != null)
+            TextButton.icon(
+              icon: Icon(Icons.mail, color: Theme.of(context).colorScheme.secondary),
+              onPressed: () => launchURL(params.toString()),
+              label: Text("Envoyer un mail"),
+            )
+        ],
       );
     }
-    return ListTile(
-      leading: Icon(
-        Icons.person,
-        color: Theme.of(context).textTheme.bodyText1!.color,
-        size: _iconSize,
-      ),
-      title: Text(widget.event.contactName!, textAlign: TextAlign.left, style: Theme.of(context).textTheme.bodyText2!),
-      subtitle: subtitle,
+    return Column(
+      children: [
+        ListTile(
+          leading: Icon(
+            Icons.person,
+            color: Theme.of(context).textTheme.bodyText1!.color,
+            size: _iconSize,
+          ),
+          title:
+              Text(widget.event.contactName!, textAlign: TextAlign.left, style: Theme.of(context).textTheme.bodyText2!),
+        ),
+        if (subtitle != null) subtitle,
+      ],
     );
   }
 

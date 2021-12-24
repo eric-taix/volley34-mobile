@@ -136,7 +136,6 @@ class Event extends Equatable {
   }
 
   Event withResult() {
-    print("With result: $matchCode");
     return Event(
       date: _date,
       name: name,

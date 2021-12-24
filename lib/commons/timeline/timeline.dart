@@ -122,10 +122,13 @@ class _TimelineState extends State<Timeline> {
 
     if (true) {
       SchedulerBinding.instance!.addPostFrameCallback((_) {
-        Scrollable.ensureVisible(
-          _scrollToWidgetKey.currentContext!,
-          alignment: 0.65,
-        );
+        var ctx = _scrollToWidgetKey.currentContext;
+        if (ctx != null) {
+          Scrollable.ensureVisible(
+            ctx,
+            alignment: 0.65,
+          );
+        }
       });
     }
     return result;
