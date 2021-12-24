@@ -251,7 +251,7 @@ class _TeamRankingState extends State<TeamRanking> with RouteAwareAnalytics {
   AnalyticsRoute get route => AnalyticsRoute.team_competitions;
 
   @override
-  String? get extraRoute => widget.ranking.fullLabel;
+  String? get extraRoute => widget.ranking.label;
 }
 
 class ClassificationClip extends CustomClipper<Rect> {

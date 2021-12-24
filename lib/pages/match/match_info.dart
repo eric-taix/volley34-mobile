@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:v34/commons/force_teams.dart';
+import 'package:v34/commons/loading.dart';
 import 'package:v34/commons/rounded_network_image.dart';
 import 'package:v34/commons/router.dart';
 import 'package:v34/models/club.dart';
@@ -55,6 +56,8 @@ class MatchInfo extends StatelessWidget {
               hostForce: hostForce,
               visitorForce: visitorForce,
               globalForce: globalForce,
+              showDivider: true,
+              backgroundColor: Theme.of(context).canvasColor,
             ),
           ),
           _buildOpponent(context, visitorTeam, visitorClub, showTeamLink),
@@ -96,23 +99,25 @@ class MatchInfo extends StatelessWidget {
       onTap: linkToTeam && team != null && club != null
           ? () => RouterFacade.push(context: context, builder: (_) => TeamDetailPage(team: team, club: club))
           : null,
-      title: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Expanded(
-            child: Text(
-              team?.name ?? "",
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.headline4,
-            ),
-          ),
-          if (showTeamLink)
-            Icon(
-              Icons.arrow_forward_ios_rounded,
-              size: 14,
-            ),
-        ],
-      ),
+      title: team != null
+          ? Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Text(
+                    team.name ?? "",
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.headline4,
+                  ),
+                ),
+                if (showTeamLink)
+                  Icon(
+                    Icons.arrow_forward_ios_rounded,
+                    size: 14,
+                  ),
+              ],
+            )
+          : Loading(loaderType: LoaderType.THREE_BOUNCE),
     );
   }
 }

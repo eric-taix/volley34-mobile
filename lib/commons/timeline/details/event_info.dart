@@ -102,18 +102,13 @@ class _EventInfoState extends State<EventInfo> with SingleTickerProviderStateMix
 
   List<Widget> _buildDateAndHour(BuildContext context) {
     return [
-      Stack(
-        children: [
-          ListTile(
-              leading: Icon(
-                Icons.date_range,
-                color: Theme.of(context).textTheme.bodyText1!.color,
-                size: _iconSize,
-              ),
-              title: EventDate(date: widget.event.date, endDate: widget.event.endDate, fullFormat: true)),
-          Positioned(top: 10, right: 24, child: PostponedBadge()),
-        ],
-      ),
+      ListTile(
+          leading: Icon(
+            Icons.date_range,
+            color: Theme.of(context).textTheme.bodyText1!.color,
+            size: _iconSize,
+          ),
+          title: EventDate(date: widget.event.date, endDate: widget.event.endDate, fullFormat: true)),
       ListTile(
           leading: Icon(Icons.access_time, color: Theme.of(context).textTheme.bodyText1!.color, size: _iconSize),
           title: FeatureTour(
@@ -123,14 +118,8 @@ class _EventInfoState extends State<EventInfo> with SingleTickerProviderStateMix
                 "Retrouvez la date et l'heure du match. Pour ajouter ce match à votre calendrier, cliquez sur le lien \"Ajouter au calendrier\""
               ],
               child: EventDate(date: widget.event.date, endDate: widget.event.endDate, hour: true))),
-      if (widget.event.postponedDate != null)
-        Padding(
-          padding: const EdgeInsets.only(left: 18.0, bottom: 18, top: 8),
-          child: Text("Initialement prévu le ${_fullDateFormat.format(widget.event.initialDate!)}",
-              style: Theme.of(context).textTheme.bodyText1),
-        ),
       ListTile(
-        contentPadding: EdgeInsets.only(left: 6),
+        contentPadding: EdgeInsets.only(left: 0),
         title: Align(
           alignment: Alignment.centerLeft,
           child: TextButton.icon(
@@ -142,6 +131,20 @@ class _EventInfoState extends State<EventInfo> with SingleTickerProviderStateMix
           ),
         ),
       ),
+      if (widget.event.postponedDate != null)
+        Padding(
+          padding: const EdgeInsets.only(left: 18.0, bottom: 18, top: 18),
+          child: Row(
+            children: [
+              PostponedBadge(),
+              Padding(
+                padding: const EdgeInsets.only(left: 8.0),
+                child: Text("Initialement prévu le ${_fullDateFormat.format(widget.event.initialDate!)}",
+                    style: Theme.of(context).textTheme.bodyText1),
+              ),
+            ],
+          ),
+        ),
     ];
   }
 

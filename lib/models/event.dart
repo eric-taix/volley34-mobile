@@ -29,6 +29,7 @@ class Event extends Equatable {
   final String? matchCode;
   late final DateTime? _postponedDate;
   late final String? _postponedGymnasiumCode;
+  final bool hasResult;
 
   DateTime? get postponedDate => _postponedDate != _date ? _postponedDate : null;
   String? get postponedGymnasiumCode => _postponedGymnasiumCode != _gymnasiumCode ? _postponedGymnasiumCode : null;
@@ -62,6 +63,7 @@ class Event extends Equatable {
     this.visitorForce,
     this.globalForce,
     this.matchCode,
+    this.hasResult = false,
     DateTime? postponedDate,
     String? postponedGymnasiumCode,
   }) {
@@ -86,6 +88,7 @@ class Event extends Equatable {
         matchCode: json["MatchCode"],
         postponedDate: json["DateMatchRevisee"] != null ? DateTime.parse(json["DateMatchRevisee"]) : null,
         postponedGymnasiumCode: json["GymnaseCodeRevise"],
+        hasResult: false,
       );
     } else {
       return Event(
@@ -128,6 +131,36 @@ class Event extends Equatable {
       matchCode: matchCode,
       postponedDate: _postponedDate,
       postponedGymnasiumCode: _postponedGymnasiumCode,
+      hasResult: hasResult,
+    );
+  }
+
+  Event withResult() {
+    print("With result: $matchCode");
+    return Event(
+      date: _date,
+      name: name,
+      place: place,
+      gymnasiumCode: _gymnasiumCode,
+      type: type,
+      hostName: hostName,
+      hostCode: hostCode,
+      visitorName: visitorName,
+      visitorCode: visitorCode,
+      endDate: endDate,
+      contactName: contactName,
+      contactPhone: contactPhone,
+      contactEmail: contactEmail,
+      clubCode: clubCode,
+      description: description,
+      imageUrl: imageUrl,
+      hostForce: hostForce,
+      visitorForce: visitorForce,
+      globalForce: globalForce,
+      matchCode: matchCode,
+      postponedDate: _postponedDate,
+      postponedGymnasiumCode: _postponedGymnasiumCode,
+      hasResult: true,
     );
   }
 

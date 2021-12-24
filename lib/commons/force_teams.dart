@@ -11,12 +11,18 @@ class ForceTeams extends StatelessWidget {
   final Force? hostForce;
   final Force? visitorForce;
   final Force? globalForce;
+  final String receiveText;
+  final Color backgroundColor;
+  final bool showDivider;
 
   const ForceTeams({
     Key? key,
     required this.hostForce,
     required this.visitorForce,
     required this.globalForce,
+    required this.backgroundColor,
+    this.receiveText = "reçoit",
+    required this.showDivider,
   }) : super(key: key);
 
   @override
@@ -25,8 +31,10 @@ class ForceTeams extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        SvgPicture.asset("assets/attack.svg",
-            width: ICON_SIZE + 4, color: Theme.of(context).textTheme.bodyText1!.color),
+        (hostForce != null || visitorForce != null) && globalForce != null
+            ? SvgPicture.asset("assets/attack.svg",
+                width: ICON_SIZE + 4, color: Theme.of(context).textTheme.bodyText1!.color)
+            : SizedBox(),
         Expanded(
           child: Container(
             child: Column(
@@ -44,7 +52,7 @@ class ForceTeams extends StatelessWidget {
                               )
                             : SizedBox(),
                       ),
-                      Container(width: 40, height: 20),
+                      Container(width: 40, height: visitorForce != null && globalForce != null ? 20 : 0),
                       Expanded(
                         child: hostForce != null && globalForce != null
                             ? ForceGraph(
@@ -62,13 +70,13 @@ class ForceTeams extends StatelessWidget {
                     Expanded(
                         child: Stack(
                       children: [
-                        Divider(thickness: 0.5, indent: 30, endIndent: 30),
+                        showDivider ? Divider(thickness: 0.2, indent: 30, endIndent: 30) : SizedBox(),
                         Center(
                           child: Container(
-                            color: Theme.of(context).cardTheme.color,
+                            color: backgroundColor,
                             child: Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                              child: Text("reçoit", style: Theme.of(context).textTheme.bodyText1),
+                              child: Text(receiveText, style: Theme.of(context).textTheme.bodyText1),
                             ),
                           ),
                         ),
@@ -89,7 +97,7 @@ class ForceTeams extends StatelessWidget {
                               )
                             : SizedBox(),
                       ),
-                      Container(width: 40, height: 20),
+                      Container(width: 40, height: visitorForce != null && globalForce != null ? 20 : 0),
                       Expanded(
                         child: visitorForce != null && globalForce != null
                             ? ForceGraph(
@@ -106,7 +114,10 @@ class ForceTeams extends StatelessWidget {
             ),
           ),
         ),
-        SvgPicture.asset("assets/defense.svg", width: ICON_SIZE, color: Theme.of(context).textTheme.bodyText1!.color),
+        (hostForce != null || visitorForce != null) && globalForce != null
+            ? SvgPicture.asset("assets/defense.svg",
+                width: ICON_SIZE, color: Theme.of(context).textTheme.bodyText1!.color)
+            : SizedBox(),
       ],
     );
   }

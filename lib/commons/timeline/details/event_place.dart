@@ -169,7 +169,7 @@ class _EventPlaceState extends State<EventPlace> {
           ),
         ),
         Padding(
-          padding: const EdgeInsets.only(left: 8, top: 8.0, bottom: 58),
+          padding: const EdgeInsets.only(left: 0, top: 8.0, bottom: 58),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [

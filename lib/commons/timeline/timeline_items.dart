@@ -21,9 +21,12 @@ abstract class TimelineItemWidget extends StatelessWidget {
   Color? color();
 
   factory TimelineItemWidget.from(Event event, Team team) {
+    var now = DateTime.now();
+    var today = DateTime(now.year, now.month, now.day);
+
     switch (event.type) {
       case EventType.Match:
-        return _MatchTimelineItem(event, team);
+        return _MatchTimelineItem(event, team, event.date!.compareTo(today) >= 0 || !event.hasResult);
       case EventType.Meeting:
         return _MeetingTimelineItem(event);
       case EventType.Tournament:
@@ -81,13 +84,17 @@ class _MeetingTimelineItem extends _OtherTimelineItem {
 class _MatchTimelineItem extends TimelineItemWidget {
   final Event event;
   final Team team;
-  _MatchTimelineItem(this.event, this.team);
+  final bool allowDetails;
+  _MatchTimelineItem(this.event, this.team, this.allowDetails);
 
   @override
   Widget build(BuildContext context) {
     return _TimelineItemCard(
-      children: <Widget>[MatchTitle(event: event, team: team), _Place(event.place, event.date)],
-      onTap: () => showEventDetails(context, event),
+      children: <Widget>[
+        MatchTitle(allowDetails: allowDetails, event: event, team: team),
+        if (allowDetails) _Place(event.place, event.date)
+      ],
+      onTap: allowDetails ? () => showEventDetails(context, event) : null,
       topRightWidget: event.postponedDate != null ? PostponedBadge() : SizedBox(),
     );
   }
@@ -106,9 +113,18 @@ class _TimelineItemCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+      color: onTap != null ? Theme.of(context).cardTheme.color : Theme.of(context).canvasColor,
+      shape: onTap != null
+          ? null
+          : RoundedRectangleBorder(
+              side: BorderSide(color: Theme.of(context).cardTheme.color!, width: 2),
+              borderRadius: Theme.of(context).cardTheme.shape is RoundedRectangleBorder
+                  ? (Theme.of(context).cardTheme.shape as RoundedRectangleBorder).borderRadius
+                  : BorderRadius.circular(18),
+            ),
       margin: EdgeInsets.only(left: 0, right: 0, top: 0, bottom: CardMargin),
       child: InkWell(
-        onTap: () => onTap!(),
+        onTap: onTap != null ? () => onTap!() : null,
         borderRadius: BorderRadius.circular(16.0),
         child: Stack(
           children: [

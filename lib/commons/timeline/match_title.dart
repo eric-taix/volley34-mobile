@@ -6,10 +6,14 @@ import 'package:v34/models/team.dart';
 class MatchTitle extends StatelessWidget {
   final Event event;
   final Team team;
-  const MatchTitle({Key? key, required this.event, required this.team}) : super(key: key);
+  final bool allowDetails;
+  const MatchTitle({Key? key, required this.event, required this.team, required this.allowDetails}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    TextStyle textStyle = allowDetails
+        ? Theme.of(context).textTheme.bodyText2!.copyWith(fontWeight: FontWeight.bold)
+        : Theme.of(context).textTheme.bodyText1!.copyWith(fontWeight: FontWeight.bold);
     return Column(
       children: [
         Text(
@@ -17,23 +21,22 @@ class MatchTitle extends StatelessWidget {
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
           textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.bodyText2!.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+          style: textStyle,
         ),
         ForceTeams(
-          hostForce: event.hostForce,
-          visitorForce: event.visitorForce,
+          hostForce: allowDetails ? event.hostForce : null,
+          visitorForce: allowDetails ? event.visitorForce : null,
           globalForce: event.globalForce,
+          receiveText: allowDetails ? "reçoit" : "a reçu",
+          showDivider: allowDetails,
+          backgroundColor: allowDetails ? Theme.of(context).cardTheme.color! : Theme.of(context).canvasColor,
         ),
         Text(
           event.visitorName!,
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
           textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.bodyText2!.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+          style: textStyle,
         ),
       ],
     );

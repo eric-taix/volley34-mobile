@@ -26,7 +26,7 @@ class _TeamAgendaState extends State<TeamAgenda> with RouteAwareAnalytics {
   void initState() {
     super.initState();
     _agendaBloc = AgendaBloc(repository: RepositoryProvider.of<Repository>(context));
-    _agendaBloc!.add(LoadTeamMonthAgenda(teamCode: widget.team.code, days: 120));
+    _agendaBloc!.add(LoadTeamFullAgenda(teamCode: widget.team.code!));
   }
 
   @override
@@ -41,25 +41,37 @@ class _TeamAgendaState extends State<TeamAgenda> with RouteAwareAnalytics {
         bloc: _agendaBloc,
         builder: (context, dynamic state) {
           if (state is AgendaLoaded) {
-            return SliverToBoxAdapter(
-              child: Timeline(
+            return SliverList(
+              delegate: SliverChildListDelegate(
                 [
-                  ...groupBy(
-                          state.events, (dynamic event) => DateTime(event.date.year, event.date.month, event.date.day))
-                      .entries
-                      .expand((entry) {
-                    return [
-                      TimelineItem(date: entry.key, events: [
-                        ...entry.value.map((e) {
-                          TimelineItemWidget timelineItemWidget = TimelineItemWidget.from(e, widget.team);
-                          return TimelineEvent(
-                            child: timelineItemWidget,
-                            color: timelineItemWidget.color(),
-                          );
-                        })
-                      ])
-                    ];
-                  }),
+                  Timeline(
+                    [
+                      ...groupBy(state.events,
+                              (dynamic event) => DateTime(event.date.year, event.date.month, event.date.day))
+                          .entries
+                          .expand(
+                        (entry) {
+                          return [
+                            TimelineItem(
+                              date: entry.key,
+                              events: [
+                                ...entry.value.map(
+                                  (e) {
+                                    TimelineItemWidget timelineItemWidget = TimelineItemWidget.from(e, widget.team);
+                                    return TimelineEvent(
+                                      child: timelineItemWidget,
+                                      color: timelineItemWidget.color(),
+                                    );
+                                  },
+                                )
+                              ],
+                            )
+                          ];
+                        },
+                      ),
+                    ],
+                    scrollToFirstEvent: true,
+                  ),
                 ],
               ),
             );
