@@ -8,27 +8,30 @@ class SetsDistribution {
   final int? s23;
   final int? s13;
   final int? s03;
-
-  SetsDistribution({this.s30 = 0, this.s31 = 0, this.s32 = 0, this.s23 = 0, this.s13 = 0, this.s03 = 0});
+  final int? nt;
+  SetsDistribution({this.s30 = 0, this.s31 = 0, this.s32 = 0, this.s23 = 0, this.s13 = 0, this.s03 = 0, this.nt = 0});
 
   factory SetsDistribution.fromJson(Map<String, dynamic> json) {
     return SetsDistribution(
-        s30: json["Victoires_3_0"],
-        s31: json["Victoires_3_1"] + json["Victoires_2_0"],
-        s32: json["Victoires_3_2"] +
-            json["Victoires_0_0"] +
-            json["Victoires_1_0"] +
-            json["Victoires_1_1"] +
-            json["Victoires_2_1"] +
-            json["Victoires_2_2"],
-        s23: json["Defaites_2_3"] +
-            json["Defaites_0_0"] +
-            json["Defaites_0_1"] +
-            json["Defaites_1_1"] +
-            json["Defaites_1_2"] +
-            json["Defaites_2_2"],
-        s13: json["Defaites_1_3"] + json["Defaites_0_2"],
-        s03: json["Defaites_0_3"]);
+      s30: json["Victoires_3_0"],
+      s31: json["Victoires_3_1"],
+      s32: json["Victoires_3_2"],
+      s23: json["Defaites_2_3"],
+      s13: json["Defaites_1_3"],
+      s03: json["Defaites_0_3"],
+      nt: json["Victoires_0_0"] +
+          json["Victoires_1_0"] +
+          json["Victoires_2_0"] +
+          json["Victoires_1_1"] +
+          json["Victoires_2_1"] +
+          json["Victoires_2_2"] +
+          json["Defaites_0_0"] +
+          json["Defaites_0_1"] +
+          json["Defaites_1_1"] +
+          json["Defaites_0_2"] +
+          json["Defaites_1_2"] +
+          json["Defaites_2_2"],
+    );
   }
 
   operator +(SetsDistribution other) {
@@ -39,6 +42,7 @@ class SetsDistribution {
       s23: s23! + other.s23!,
       s13: s13! + other.s13!,
       s03: s03! + other.s03!,
+      nt: nt! + other.nt!,
     );
   }
 
@@ -50,6 +54,7 @@ class SetsDistribution {
     if (s23! > max) max = s23!;
     if (s13! > max) max = s13!;
     if (s03! > max) max = s03!;
+    if (nt! > max) max = nt!;
     return max;
   }
 }

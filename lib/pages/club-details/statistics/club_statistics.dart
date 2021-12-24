@@ -205,6 +205,8 @@ class _ClubStatisticsState extends State<ClubStatistics> with RouteAwareAnalytic
                 return '1-3';
               case 5:
                 return '0-3';
+              case 6:
+                return 'NT';
               default:
                 return '';
             }
@@ -243,6 +245,7 @@ class _ClubStatisticsState extends State<ClubStatistics> with RouteAwareAnalytic
             barColor: Colors.deepOrangeAccent),
         makeGroupData(5, setsDistribution.s03!.toDouble(), setsDistribution.maxValue.toDouble(),
             barColor: Colors.redAccent),
+        makeGroupData(6, setsDistribution.nt!.toDouble(), setsDistribution.maxValue.toDouble(), barColor: Colors.pink),
       ];
 
   BarChartGroupData makeGroupData(

@@ -19,6 +19,16 @@ class NewMessage extends MessageState {
   List<Object?> get props => [];
 }
 
+class NewHelp extends MessageState {
+  final String title;
+  final List<String> paragraphs;
+
+  NewHelp(this.title, this.paragraphs);
+
+  @override
+  List<Object?> get props => [];
+}
+
 class MessageCleared extends MessageState {
   @override
   List<Object?> get props => [];

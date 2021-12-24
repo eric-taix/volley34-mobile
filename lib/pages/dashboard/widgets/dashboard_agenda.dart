@@ -30,7 +30,7 @@ class DashboardAgendaState extends State<DashboardAgenda> with AutomaticKeepAliv
   }
 
   void _loadTeamsMonthAgenda() {
-    _agendaBloc!.add(LoadTeamsMonthAgenda(teamCodes: [widget.team.code], days: 60));
+    _agendaBloc!.add(LoadTeamMonthAgenda(teamCode: widget.team.code, days: 30));
   }
 
   @override
@@ -43,23 +43,35 @@ class DashboardAgendaState extends State<DashboardAgenda> with AutomaticKeepAliv
 
   Widget _buildTimeline(AgendaState state) {
     if (state is AgendaLoaded) {
-      return Timeline([
-        ...groupBy(state.events, (dynamic event) => DateTime(event.date.year, event.date.month, event.date.day))
-            .entries
-            .expand((entry) {
-          return [
-            TimelineItem(date: entry.key, events: [
-              ...entry.value.map((e) {
-                TimelineItemWidget timelineItemWidget = TimelineItemWidget.from(e, widget.team);
-                return TimelineEvent(
-                  child: timelineItemWidget,
-                  color: timelineItemWidget.color(),
-                );
-              })
-            ])
-          ];
-        }),
-      ]);
+      return Padding(
+        padding: EdgeInsets.only(right: 18, left: 18),
+        child: Timeline(
+          [
+            ...groupBy(state.events, (dynamic event) => DateTime(event.date.year, event.date.month, event.date.day))
+                .entries
+                .expand(
+              (entry) {
+                return [
+                  TimelineItem(
+                    date: entry.key,
+                    events: [
+                      ...entry.value.map(
+                        (e) {
+                          TimelineItemWidget timelineItemWidget = TimelineItemWidget.from(e, widget.team);
+                          return TimelineEvent(
+                            child: timelineItemWidget,
+                            color: timelineItemWidget.color(),
+                          );
+                        },
+                      )
+                    ],
+                  )
+                ];
+              },
+            ),
+          ],
+        ),
+      );
     } else {
       return Container(height: 250, child: Center(child: Loading()));
     }
@@ -71,7 +83,7 @@ class DashboardAgendaState extends State<DashboardAgenda> with AutomaticKeepAliv
     return BlocBuilder<AgendaBloc, AgendaState>(
       bloc: _agendaBloc,
       builder: (context, state) {
-        return Padding(padding: const EdgeInsets.only(top: 18, bottom: 28.0), child: _buildTimeline(state));
+        return Padding(padding: const EdgeInsets.only(top: 18, bottom: 88.0), child: _buildTimeline(state));
       },
     );
   }

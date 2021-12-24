@@ -141,6 +141,13 @@ class Repository {
     return _agendaProvider.listEvents();
   }
 
+  Future<List<Event>> loadTeamFullAgenda(String? teamCode) async {
+    List<Event> matches = await _agendaProvider.listTeamAllMatches(teamCode);
+    List<Event> events = await _agendaProvider.listTeamEvents(teamCode, 120);
+    events.addAll(matches);
+    return events;
+  }
+
   Future<List<Event>> loadTeamAgenda(String? teamCode, int days) async {
     List<Event> matches = await _agendaProvider.listTeamMatches(teamCode, days);
     List<Event> events = await _agendaProvider.listTeamEvents(teamCode, days);

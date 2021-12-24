@@ -1,10 +1,8 @@
-import 'package:feature_discovery/feature_discovery.dart';
 import 'package:fluid_bottom_nav_bar/fluid_bottom_nav_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:v34/commons/blocs/preferences_bloc.dart';
 import 'package:v34/commons/feature_tour.dart';
 import 'package:v34/commons/show_dialog.dart';
 import 'package:v34/menu.dart';
@@ -14,19 +12,24 @@ import 'package:v34/pages/competition/competition_page.dart';
 import 'package:v34/pages/dashboard/dashoard_page.dart';
 import 'package:v34/pages/gymnasium/gymnasium_page.dart';
 
-class MainPage extends StatefulWidget {
+const String MAIN_DASHBOARD = "main_dashboard";
+const String MAIN_COMPETITION = "main_competition";
+const String MAIN_CLUBS = "main_clubs";
+const String MAIN_GYMNASIUMS = "main_gymnasiums";
+
+class AppPage extends StatefulWidget {
   @override
-  _MainPageState createState() => _MainPageState();
+  _AppPageState createState() => _AppPageState();
 }
 
-class _MainPageState extends State<MainPage> {
+class _AppPageState extends State<AppPage> {
   Widget? _child;
 
   @override
   void initState() {
-    super.initState();
     _child = DashboardPage();
     initializeDateFormatting();
+    super.initState();
   }
 
   @override
@@ -38,30 +41,27 @@ class _MainPageState extends State<MainPage> {
       body: BlocListener<MessageCubit, MessageState>(
         listener: (BuildContext context, state) {
           if (state is NewMessage) {
-            showAlertDialog(context, state.title, state.message, onPressed: () {
-              BlocProvider.of<MessageCubit>(context).clearMessage();
-            });
+            showAlertDialog(
+              context,
+              state.title,
+              state.message,
+              onPressed: () {
+                BlocProvider.of<MessageCubit>(context).clearMessage();
+              },
+            );
+          }
+          if (state is NewHelp) {
+            showHelpDialog(
+              context,
+              state.title,
+              state.paragraphs,
+              onPressed: () {
+                BlocProvider.of<MessageCubit>(context).clearMessage();
+              },
+            );
           }
         },
-        child: BlocListener<PreferencesBloc, PreferencesState>(
-            listener: (context, state) {
-              if (state is PreferencesUpdatedState && state.favoriteClub != null && state.favoriteTeam != null) {
-                Future.delayed(Duration(milliseconds: 500)).then(
-                  (_) {
-                    FeatureDiscovery.discoverFeatures(
-                      context,
-                      const <String>{
-                        "dashboard_feature_id",
-                        "competition_feature_id",
-                        "clubs_feature_id",
-                        "gymnasiums_feature_id",
-                      },
-                    );
-                  },
-                );
-              }
-            },
-            child: _child),
+        child: _child,
       ),
       bottomNavigationBar: FluidNavBar(
         icons: [

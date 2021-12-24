@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:intl/intl.dart';
 
 import 'details/event_date.dart';
@@ -9,103 +10,128 @@ const double circleRadius = 8.0;
 const double lineWidth = 2.0;
 const double circleLineWidth = 3.0;
 
-class Timeline extends StatelessWidget {
+class Timeline extends StatefulWidget {
   final List<TimelineItem> items;
+  final bool scrollToFirstEvent;
+  Timeline(this.items, {this.scrollToFirstEvent = false});
 
+  @override
+  State<Timeline> createState() => _TimelineState();
+}
+
+class _TimelineState extends State<Timeline> {
   final TimelineGapBuilder gapBuilder = TimelineGapBuilder(Duration(days: 7));
 
-  Timeline(this.items);
+  final GlobalKey _scrollToWidgetKey = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-        padding: const EdgeInsets.only(left: 6.0, right: 18),
-        child: ListView(
-          shrinkWrap: true,
-          physics: ScrollPhysics(),
-          children: [
-            ...items.expand((item) {
-              return [
-                gapBuilder.createGapIfHigherThanMinDuration(item.date),
-                IntrinsicHeight(
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 8.0),
-                          child: EventDate(
-                            date: item.date,
-                            dateBuilder: (context, _, __) {
-                              DateFormat dateFormat = DateFormat('EEE dd/M', "FR");
-                              List<String> dateStr = dateFormat.format(item.date!).split(" ");
-                              List<String> daysStr = dateStr[1].split("/");
-                              return Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  RichText(
-                                    text: TextSpan(
-                                      text: "${dateStr[0][0].toUpperCase()}${dateStr[0].substring(1)}",
-                                      style: Theme.of(context).textTheme.headline5,
+    var now = DateTime.now();
+    var today = DateTime(now.year, now.month, now.day);
+    bool scrollKeyAffected = false;
+    var result = Column(
+      children: [
+        ...widget.items.expand((item) {
+          var key;
+          if (widget.scrollToFirstEvent && !scrollKeyAffected && item.date!.compareTo(today) >= 0) {
+            key = _scrollToWidgetKey;
+            scrollKeyAffected = true;
+          }
+          return [
+            gapBuilder.createGapIfHigherThanMinDuration(item.date),
+            IntrinsicHeight(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 8.0),
+                      child: EventDate(
+                        date: item.date,
+                        dateBuilder: (context, _, __) {
+                          DateFormat dateFormat = DateFormat('EEE dd/M', "FR");
+                          List<String> dateStr = dateFormat.format(item.date!).split(" ");
+                          List<String> daysStr = dateStr[1].split("/");
+                          return Column(
+                            key: key,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              RichText(
+                                text: TextSpan(
+                                  text: "${dateStr[0][0].toUpperCase()}${dateStr[0].substring(1)}",
+                                  style: Theme.of(context).textTheme.headline5,
+                                ),
+                                textAlign: TextAlign.start,
+                              ),
+                              RichText(
+                                text: TextSpan(
+                                  text: daysStr[0],
+                                  style: Theme.of(context).textTheme.headline4,
+                                  children: [
+                                    TextSpan(
+                                      text: " / ${daysStr[1]}",
+                                      style: Theme.of(context).textTheme.bodyText1,
                                     ),
-                                    textAlign: TextAlign.start,
-                                  ),
-                                  RichText(
-                                    text: TextSpan(
-                                      text: daysStr[0],
-                                      style: Theme.of(context).textTheme.headline4,
-                                      children: [
-                                        TextSpan(
-                                          text: " / ${daysStr[1]}",
-                                          style: Theme.of(context).textTheme.bodyText1,
-                                        ),
-                                      ],
-                                    ),
-                                    textAlign: TextAlign.start,
-                                  ),
-                                ],
-                              );
-                            },
-                          ),
-                        ),
+                                  ],
+                                ),
+                                textAlign: TextAlign.start,
+                              ),
+                            ],
+                          );
+                        },
                       ),
-                      Padding(
-                        padding: const EdgeInsets.only(right: 8.0),
-                        child: Line(
-                          circleRadius: circleRadius,
-                          lineWidth: lineWidth,
-                          circleLineWidth: circleLineWidth,
-                          circleColor: item.events!.first.color,
-                        ),
-                      ),
-                      Expanded(child: item.events!.first.child!),
-                    ],
-                  ),
-                ),
-                ...item.events!.skip(1).map((event) {
-                  return IntrinsicHeight(
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        NoEventDate(),
-                        Padding(
-                          padding: const EdgeInsets.only(right: 8.0),
-                          child: Line(
-                            circleRadius: circleRadius,
-                            lineWidth: lineWidth,
-                            circleLineWidth: circleLineWidth,
-                            circleColor: item.events!.first.color,
-                          ),
-                        ),
-                        Expanded(child: event.child!),
-                      ],
                     ),
-                  );
-                }),
-              ];
-            })
-          ],
-        ));
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(right: 8.0),
+                    child: Line(
+                      circleRadius: circleRadius,
+                      lineWidth: lineWidth,
+                      circleLineWidth: circleLineWidth,
+                      circleColor: item.events!.first.color,
+                    ),
+                  ),
+                  Expanded(child: item.events!.first.child!),
+                ],
+              ),
+            ),
+            ...item.events!.skip(1).map((event) {
+              return IntrinsicHeight(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    NoEventDate(),
+                    Padding(
+                      padding: const EdgeInsets.only(right: 8.0),
+                      child: Line(
+                        circleRadius: circleRadius,
+                        lineWidth: lineWidth,
+                        circleLineWidth: circleLineWidth,
+                        circleColor: item.events!.first.color,
+                      ),
+                    ),
+                    Expanded(child: event.child!),
+                  ],
+                ),
+              );
+            }),
+          ];
+        }).toList()
+      ],
+    );
+
+    if (true) {
+      SchedulerBinding.instance!.addPostFrameCallback((_) {
+        var ctx = _scrollToWidgetKey.currentContext;
+        if (ctx != null) {
+          Scrollable.ensureVisible(
+            ctx,
+            alignment: 0.65,
+          );
+        }
+      });
+    }
+    return result;
   }
 }
 
