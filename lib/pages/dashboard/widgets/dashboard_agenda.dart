@@ -43,31 +43,34 @@ class DashboardAgendaState extends State<DashboardAgenda> with AutomaticKeepAliv
 
   Widget _buildTimeline(AgendaState state) {
     if (state is AgendaLoaded) {
-      return Timeline(
-        [
-          ...groupBy(state.events, (dynamic event) => DateTime(event.date.year, event.date.month, event.date.day))
-              .entries
-              .expand(
-            (entry) {
-              return [
-                TimelineItem(
-                  date: entry.key,
-                  events: [
-                    ...entry.value.map(
-                      (e) {
-                        TimelineItemWidget timelineItemWidget = TimelineItemWidget.from(e, widget.team);
-                        return TimelineEvent(
-                          child: timelineItemWidget,
-                          color: timelineItemWidget.color(),
-                        );
-                      },
-                    )
-                  ],
-                )
-              ];
-            },
-          ),
-        ],
+      return Padding(
+        padding: EdgeInsets.only(right: 18, left: 18),
+        child: Timeline(
+          [
+            ...groupBy(state.events, (dynamic event) => DateTime(event.date.year, event.date.month, event.date.day))
+                .entries
+                .expand(
+              (entry) {
+                return [
+                  TimelineItem(
+                    date: entry.key,
+                    events: [
+                      ...entry.value.map(
+                        (e) {
+                          TimelineItemWidget timelineItemWidget = TimelineItemWidget.from(e, widget.team);
+                          return TimelineEvent(
+                            child: timelineItemWidget,
+                            color: timelineItemWidget.color(),
+                          );
+                        },
+                      )
+                    ],
+                  )
+                ];
+              },
+            ),
+          ],
+        ),
       );
     } else {
       return Container(height: 250, child: Center(child: Loading()));
