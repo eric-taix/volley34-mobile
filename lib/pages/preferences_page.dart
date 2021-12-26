@@ -18,7 +18,7 @@ class _PreferencesPageState extends State<PreferencesPage> with RouteAwareAnalyt
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).primaryColor,
+      backgroundColor: Theme.of(context).canvasColor,
       appBar: AppBar(title: Text("Préférences")),
       body: _buildPreferencesContent(),
     );

@@ -113,6 +113,7 @@ class _TimelineItemCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+      elevation: onTap != null ? null : 0,
       color: onTap != null ? Theme.of(context).cardTheme.color : Theme.of(context).canvasColor,
       shape: onTap != null
           ? null

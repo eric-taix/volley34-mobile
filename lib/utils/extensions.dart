@@ -33,7 +33,7 @@ extension CustomCardTheme on CardTheme {
   Color titleBackgroundColor(BuildContext context) {
     return TinyColor(Theme.of(context).cardTheme.color!).isDark()
         ? TinyColor(Theme.of(context).cardTheme.color!).lighten(3).color
-        : TinyColor(Theme.of(context).cardTheme.color!).darken(3).color;
+        : Theme.of(context).cardTheme.color!;
   }
 }
 

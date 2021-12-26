@@ -94,6 +94,7 @@ class _V34State extends State<V34> {
                 }
               },
               child: MaterialApp(
+                debugShowCheckedModeBanner: false,
                 title: "Volley34",
                 theme: AppTheme.lightTheme(),
                 darkTheme: AppTheme.darkTheme(),

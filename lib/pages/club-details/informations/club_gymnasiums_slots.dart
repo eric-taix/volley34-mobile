@@ -65,11 +65,14 @@ class _ClubGymnasiumsSlotsState extends State<ClubGymnasiumsSlots> {
                               padding: EdgeInsets.only(left: 8.0, right: 8.0, top: 12, bottom: 12),
                               child: Column(
                                 children: <Widget>[
-                                  Text(slot.day!, style: Theme.of(context).textTheme.headline4),
+                                  Text(slot.day!, style: Theme.of(context).textTheme.subtitle1),
                                   Padding(
                                     padding: const EdgeInsets.only(top: 4.0),
-                                    child:
-                                        Text(slot.time!.format(context), style: Theme.of(context).textTheme.bodyText1),
+                                    child: Text(slot.time!.format(context),
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .subtitle1!
+                                            .copyWith(fontSize: 12, fontWeight: FontWeight.normal)),
                                   ),
                                 ],
                               ),

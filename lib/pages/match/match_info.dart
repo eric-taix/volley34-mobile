@@ -57,7 +57,7 @@ class MatchInfo extends StatelessWidget {
               visitorForce: visitorForce,
               globalForce: globalForce,
               showDivider: true,
-              backgroundColor: Theme.of(context).canvasColor,
+              backgroundColor: Theme.of(context).primaryColor,
             ),
           ),
           _buildOpponent(context, visitorTeam, visitorClub, showTeamLink),

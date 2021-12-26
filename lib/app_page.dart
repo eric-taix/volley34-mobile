@@ -36,7 +36,7 @@ class _AppPageState extends State<AppPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: AppMenu(),
-      backgroundColor: Theme.of(context).primaryColor,
+      backgroundColor: Theme.of(context).canvasColor,
       extendBody: true,
       body: BlocListener<MessageCubit, MessageState>(
         listener: (BuildContext context, state) {

@@ -148,7 +148,7 @@ class _Badge extends StatelessWidget {
               child: CircleAvatar(
                 maxRadius: radius ?? 10,
                 minRadius: radius ?? 10,
-                backgroundColor: color ?? Theme.of(context).primaryColor,
+                backgroundColor: color ?? Theme.of(context).canvasColor,
                 child: FittedBox(
                   child: Text(
                     label ?? '',

@@ -17,7 +17,7 @@ class _ProfilPageState extends State<ProfilPage> with RouteAwareAnalytics {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).primaryColor,
+      backgroundColor: Theme.of(context).canvasColor,
       appBar: AppBar(title: Text("Profil")),
       body: BlocBuilder<PreferencesBloc, PreferencesState>(
         builder: (context, state) => state is PreferencesUpdatedState
