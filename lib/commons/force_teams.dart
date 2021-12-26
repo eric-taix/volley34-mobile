@@ -4,9 +4,9 @@ import 'package:v34/commons/force_widget.dart';
 import 'package:v34/models/force.dart';
 
 class ForceTeams extends StatelessWidget {
-  static const double OUTER_PADDING = 22;
-  static const double INNER_PADDING = 3;
-  static const double ICON_SIZE = 20;
+  static const double OUTER_PADDING = 12;
+  static const double INNER_PADDING = 0;
+  static const double ICON_SIZE = 24;
 
   final Force? hostForce;
   final Force? visitorForce;

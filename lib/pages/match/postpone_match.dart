@@ -69,6 +69,7 @@ class _PostPoneMatchState extends State<PostPoneMatch> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).canvasColor,
       appBar: AppBar(
         leading: IconButton(
           icon: Icon(Icons.close),
@@ -121,7 +122,7 @@ class _PostPoneMatchState extends State<PostPoneMatch> {
                                 comments: _commentsController.text,
                               )
                           : null,
-                      text: "ENVOYER",
+                      text: "Envoyer",
                     ),
                   ],
                 ),

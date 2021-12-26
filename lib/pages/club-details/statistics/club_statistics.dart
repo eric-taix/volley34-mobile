@@ -266,7 +266,7 @@ class _ClubStatisticsState extends State<ClubStatistics> with RouteAwareAnalytic
           backDrawRodData: BackgroundBarChartRodData(
             show: true,
             y: maxRodY == 0 ? 10 : maxRodY,
-            colors: [Theme.of(context).appBarTheme.backgroundColor!],
+            colors: [Colors.black12],
           ),
         ),
       ],

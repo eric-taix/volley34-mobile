@@ -286,7 +286,7 @@ class _AppBarWithImageState extends State<AppBarWithImage> with TickerProviderSt
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: Theme.of(context).primaryColor,
+      color: Theme.of(context).canvasColor,
       child: NestedScrollView(
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
           return <Widget>[
@@ -302,7 +302,7 @@ class _AppBarWithImageState extends State<AppBarWithImage> with TickerProviderSt
                   favorite: widget.favorite,
                   bottom: Container(
                     width: double.infinity,
-                    color: Theme.of(context).primaryColor,
+                    color: Theme.of(context).canvasColor,
                     child: Padding(
                       padding: const EdgeInsets.only(top: 0),
                       child: Container(

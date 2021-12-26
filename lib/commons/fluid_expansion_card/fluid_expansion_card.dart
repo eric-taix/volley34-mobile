@@ -170,23 +170,27 @@ class _FluidExpansionCardState extends State<FluidExpansionCard> with TickerProv
                     children: <Widget>[
                       Padding(
                         padding: const EdgeInsets.only(bottom: 8.0),
-                        child: Container(
-                          height: bottomDimension,
-                          width: widget.width,
-                          decoration: BoxDecoration(
-                            color: widget.color,
-                            borderRadius: BorderRadius.circular(widget.borderRadius),
-                          ),
-                          alignment: Alignment.center,
-                          child: AnimatedOpacity(
-                            duration: Duration(milliseconds: 800),
-                            curve: Curves.easeInOut,
-                            opacity: (isSeparated) ? 1.0 : 0,
-                            child: ClipRect(
-                              clipper: BottomClip(initialBottomDimension, finalBottomDimension, !isSeparated),
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: bottomCardWidget,
+                        child: Material(
+                          elevation: Theme.of(context).cardTheme.elevation!,
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(widget.borderRadius)),
+                          child: Container(
+                            height: bottomDimension,
+                            width: widget.width,
+                            decoration: BoxDecoration(
+                              color: widget.color,
+                              borderRadius: BorderRadius.circular(widget.borderRadius),
+                            ),
+                            alignment: Alignment.center,
+                            child: AnimatedOpacity(
+                              duration: Duration(milliseconds: 800),
+                              curve: Curves.easeInOut,
+                              opacity: (isSeparated) ? 1.0 : 0,
+                              child: ClipRect(
+                                clipper: BottomClip(initialBottomDimension, finalBottomDimension, !isSeparated),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: bottomCardWidget,
+                                ),
                               ),
                             ),
                           ),
@@ -222,15 +226,20 @@ class _FluidExpansionCardState extends State<FluidExpansionCard> with TickerProv
                 alignment: Alignment.topCenter,
                 children: <Widget>[
                   // Top card widget
-                  Container(
-                    height: widget.topCardHeight,
-                    width: widget.width,
-                    decoration: BoxDecoration(
-                      color: widget.color,
-                      borderRadius: BorderRadius.circular(widget.borderRadius),
+                  Material(
+                    elevation: Theme.of(context).cardTheme.elevation!,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(widget.borderRadius)),
+                    child: Container(
+                      //margin: EdgeInsets.only(bottom: 10),
+                      height: widget.topCardHeight,
+                      width: widget.width,
+                      decoration: BoxDecoration(
+                        color: widget.color,
+                        borderRadius: BorderRadius.circular(widget.borderRadius),
+                      ),
+                      alignment: Alignment.center,
+                      child: topCardWidget,
                     ),
-                    alignment: Alignment.center,
-                    child: topCardWidget,
                   ),
                   // Flare other animation
                   Column(

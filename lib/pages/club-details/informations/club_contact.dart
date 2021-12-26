@@ -34,14 +34,15 @@ class ClubContact extends StatelessWidget {
               children: <Widget>[
                 if (club!.email != null && club!.email!.isNotEmpty)
                   Padding(
-                      padding: EdgeInsets.only(right: 15),
-                      child: CircleAvatar(
-                        radius: 30,
-                        backgroundColor: Theme.of(context).colorScheme.primaryVariant,
-                        backgroundImage: NetworkImage(
-                            Gravatar(club!.contact!).imageUrl(size: 208, defaultImage: GravatarImage.blank)),
-                        child: initial,
-                      )),
+                    padding: EdgeInsets.only(right: 15),
+                    child: CircleAvatar(
+                      radius: 30,
+                      backgroundColor: Theme.of(context).colorScheme.primaryVariant,
+                      backgroundImage:
+                          NetworkImage(Gravatar(club!.contact!).imageUrl(size: 208, defaultImage: GravatarImage.blank)),
+                      child: initial,
+                    ),
+                  ),
                 Padding(
                   padding: const EdgeInsets.only(top: 18.0, bottom: 18.0),
                   child: Align(alignment: Alignment.center, child: Text(club!.contact!)),

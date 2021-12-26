@@ -90,6 +90,7 @@ class _EditMatchState extends State<EditMatch> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).canvasColor,
       appBar: AppBar(
         leading: IconButton(
           icon: Icon(Icons.close),
@@ -220,7 +221,7 @@ class _EditMatchState extends State<EditMatch> {
                                 comments: _commentsController.text,
                               )
                           : null,
-                      text: "ENVOYER",
+                      text: "Envoyer",
                     ),
                   ],
                 ),

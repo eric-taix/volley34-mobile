@@ -22,8 +22,9 @@ class PreferencesSaveEvent extends PreferencesEvent {
   final ThemeMode? themeMode;
   final Club? favoriteClub;
   final Team? favoriteTeam;
+  final bool? showForceOnDashboard;
 
-  PreferencesSaveEvent({this.themeMode, this.favoriteClub, this.favoriteTeam});
+  PreferencesSaveEvent({this.themeMode, this.favoriteClub, this.favoriteTeam, this.showForceOnDashboard});
 }
 
 // ----- STATES -----
@@ -46,12 +47,14 @@ class PreferencesUpdatedState extends PreferencesState {
   final Color? dominantColor;
   final Club? favoriteClub;
   final Team? favoriteTeam;
+  final bool? showForceOnDashboard;
 
   PreferencesUpdatedState({
     required this.themeMode,
     this.dominantColor,
     this.favoriteClub,
     this.favoriteTeam,
+    this.showForceOnDashboard,
   });
 }
 
@@ -71,12 +74,13 @@ class PreferencesBloc extends Bloc<PreferencesEvent, PreferencesState> {
         Club? club = await repository.loadFavoriteClub();
         Team? team = await repository.loadFavoriteTeam();
         String themeString = preferences.getString("theme") ?? "";
-
+        bool showForceOnDashboard = preferences.getBool("showForceOnDashboard") ?? false;
         yield PreferencesUpdatedState(
           themeMode:
               ThemeMode.values.firstWhere((theme) => theme.toString() == themeString, orElse: () => ThemeMode.system),
           favoriteClub: club,
           favoriteTeam: team,
+          showForceOnDashboard: showForceOnDashboard,
         );
       } catch (e) {
         yield PreferencesErrorState();
@@ -92,12 +96,16 @@ class PreferencesBloc extends Bloc<PreferencesEvent, PreferencesState> {
         if (event.favoriteTeam?.code != null) {
           await repository.setFavorite(event.favoriteTeam!.code, FavoriteType.Team);
         }
+        if (event.showForceOnDashboard != null) {
+          await preferences.setBool("showForceOnDashboard", event.showForceOnDashboard!);
+        }
         String themeString = preferences.getString("theme") ?? "";
         yield PreferencesUpdatedState(
           themeMode:
               ThemeMode.values.firstWhere((theme) => theme.toString() == themeString, orElse: () => ThemeMode.system),
           favoriteClub: event.favoriteClub ?? await repository.loadFavoriteClub(),
           favoriteTeam: event.favoriteTeam ?? await repository.loadFavoriteTeam(),
+          showForceOnDashboard: event.showForceOnDashboard ?? preferences.getBool("showForceOnDashboard") ?? false,
         );
       } catch (e) {
         yield PreferencesErrorState();

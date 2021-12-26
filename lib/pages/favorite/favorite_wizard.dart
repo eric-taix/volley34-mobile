@@ -48,6 +48,7 @@ class _SelectFavoriteTeamState extends State<SelectFavoriteTeam> {
       },
       child: SafeArea(
         child: Scaffold(
+          backgroundColor: Theme.of(context).canvasColor,
           appBar: AppBar(
             leading: widget.canClose
                 ? IconButton(icon: Icon(Icons.close), onPressed: () => Navigator.of(context).pop())

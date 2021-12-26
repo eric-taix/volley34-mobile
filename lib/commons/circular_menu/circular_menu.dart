@@ -218,7 +218,7 @@ class CircularMenuState extends State<CircularMenu> with SingleTickerProviderSta
         child: CircularMenuItem(
           icon: null,
           margin: widget.toggleButtonMargin,
-          color: widget.toggleButtonColor ?? Theme.of(context).primaryColor,
+          color: widget.toggleButtonColor ?? Theme.of(context).canvasColor,
           padding: (-_animation.value * widget.toggleButtonPadding * 0.5) + widget.toggleButtonPadding,
           onTap: () {
             _animationController.status == AnimationStatus.dismissed

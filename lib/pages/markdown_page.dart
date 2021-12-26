@@ -22,7 +22,7 @@ class _MarkdownPageState extends State<MarkdownPage> with RouteAwareAnalytics {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).primaryColor,
+      backgroundColor: Theme.of(context).canvasColor,
       appBar: AppBar(title: Text(widget.title)),
       body: FutureBuilder<String>(
         future: rootBundle.loadString(widget.markdownAsset),

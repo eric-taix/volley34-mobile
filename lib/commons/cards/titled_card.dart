@@ -21,7 +21,7 @@ class TitledCard extends StatelessWidget {
       this.onTap,
       this.buttonBar,
       this.bodyPadding,
-      this.elevation = 0,
+      this.elevation = 2,
       this.margin});
 
   @override
@@ -29,7 +29,7 @@ class TitledCard extends StatelessWidget {
     return Stack(children: [
       Card(
         margin: margin,
-        elevation: elevation,
+        //elevation: elevation,
         clipBehavior: Clip.hardEdge,
         child: InkWell(
           onTap: onTap,

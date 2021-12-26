@@ -40,6 +40,7 @@ class _EventDetailsState extends State<EventDetails> with RouteAwareAnalytics {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).canvasColor,
       body: DefaultTabController(
         length: 1,
         child: NestedScrollView(
