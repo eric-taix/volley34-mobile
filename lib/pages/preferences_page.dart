@@ -32,6 +32,7 @@ class _PreferencesPageState extends State<PreferencesPage> with RouteAwareAnalyt
             children: <Widget>[
               SizedBox(height: 30),
               _buildThemeOption(context, state),
+              _buildForceInDashboard(context, state),
               SizedBox(height: 50),
             ],
           );
@@ -41,6 +42,23 @@ class _PreferencesPageState extends State<PreferencesPage> with RouteAwareAnalyt
           );
         }
       },
+    );
+  }
+
+  Widget _buildForceInDashboard(BuildContext context, PreferencesUpdatedState state) {
+    return ListTile(
+      title: Row(
+        children: [
+          Expanded(
+              child: Text("Afficher les forces des équipes dans la liste des prochains événements",
+                  style: Theme.of(context).textTheme.bodyText2)),
+          Switch(
+              value: state.showForceOnDashboard ?? false,
+              onChanged: (value) {
+                BlocProvider.of<PreferencesBloc>(context).add(PreferencesSaveEvent(showForceOnDashboard: value));
+              }),
+        ],
+      ),
     );
   }
 
@@ -99,51 +117,6 @@ class _PreferencesPageState extends State<PreferencesPage> with RouteAwareAnalyt
     );
   }
 
-/*
-  Widget _buildDarkModeOption(PreferencesUpdatedState state) {
-    if (state.useAutomaticTheme) {
-      return ListTile(
-        title: Text("Mode sombre", style: Theme.of(context).textTheme.bodyText2),
-        leading: Icon(
-          Icons.brightness_6,
-          color: Theme.of(context).textTheme.bodyText2!.color,
-        ),
-        subtitle: Text(
-          "Mode sombre automatique",
-          style: Theme.of(context).textTheme.bodyText1,
-        ),
-      );
-    } else {
-      return SwitchListTile(
-          title: Text("Mode sombre", style: Theme.of(context).textTheme.bodyText2),
-          subtitle: Text(state.useDarkTheme ? "Mode sombre actif" : "Mode sombre inactif",
-              style: Theme.of(context).textTheme.bodyText1),
-          secondary: Icon(
-            Icons.brightness_6,
-            color: Theme.of(context).textTheme.bodyText2!.color,
-          ),
-          value: state.useDarkTheme,
-          onChanged: (isDark) {
-            BlocProvider.of<PreferencesBloc>(context).add(PreferencesSaveEvent(useDarkTheme: isDark));
-          });
-    }
-  }
-
-  Widget _buildAutomaticModeOption(PreferencesUpdatedState state) {
-    return SwitchListTile(
-      contentPadding: EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0),
-      title: Text("Mode sombre automatique", style: Theme.of(context).textTheme.bodyText2),
-      subtitle: Text(
-          "Cette option active automatiquement le mode sombre en fonction des préférences de votre appareil.",
-          style: Theme.of(context).textTheme.bodyText1),
-      secondary: Icon(Icons.access_time, color: Theme.of(context).textTheme.bodyText2!.color),
-      value: state.useAutomaticTheme,
-      onChanged: (isAutomatic) {
-        BlocProvider.of<PreferencesBloc>(context).add(PreferencesSaveEvent(useAutomaticTheme: isAutomatic));
-      },
-    );
-  }
-*/
   @override
   AnalyticsRoute get route => AnalyticsRoute.preferences;
 }

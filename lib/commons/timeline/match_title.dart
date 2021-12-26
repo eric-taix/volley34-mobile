@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:v34/commons/blocs/preferences_bloc.dart';
 import 'package:v34/commons/force_teams.dart';
 import 'package:v34/models/event.dart';
 import 'package:v34/models/team.dart';
@@ -23,13 +25,20 @@ class MatchTitle extends StatelessWidget {
           textAlign: TextAlign.center,
           style: textStyle,
         ),
-        ForceTeams(
-          hostForce: allowDetails ? event.hostForce : null,
-          visitorForce: allowDetails ? event.visitorForce : null,
-          globalForce: event.globalForce,
-          receiveText: allowDetails ? "reçoit" : "a reçu",
-          showDivider: allowDetails,
-          backgroundColor: allowDetails ? Theme.of(context).cardTheme.color! : Theme.of(context).canvasColor,
+        BlocBuilder<PreferencesBloc, PreferencesState>(
+          builder: (context, state) => state is PreferencesUpdatedState && (state.showForceOnDashboard ?? false)
+              ? ForceTeams(
+                  hostForce: allowDetails ? event.hostForce : null,
+                  visitorForce: allowDetails ? event.visitorForce : null,
+                  globalForce: event.globalForce,
+                  receiveText: allowDetails ? "reçoit" : "a reçu",
+                  showDivider: allowDetails,
+                  backgroundColor: allowDetails ? Theme.of(context).cardTheme.color! : Theme.of(context).canvasColor,
+                )
+              : Padding(
+                  padding: const EdgeInsets.only(top: 18.0, bottom: 18),
+                  child: Text("reçoit", style: Theme.of(context).textTheme.bodyText1),
+                ),
         ),
         Text(
           event.visitorName!,

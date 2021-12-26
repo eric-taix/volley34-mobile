@@ -56,7 +56,7 @@ class _FavoriteClubCardState extends State<FavoriteClubCard> {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Text("Matchs gagnés", style: Theme.of(context).textTheme.bodyText1),
+          Text("Victoires", style: Theme.of(context).textTheme.bodyText1),
           SizedBox(
             height: 80,
             child: Row(

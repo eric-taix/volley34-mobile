@@ -45,7 +45,7 @@ class _TimelineState extends State<Timeline> {
                 children: [
                   Container(
                     child: Padding(
-                      padding: const EdgeInsets.only(left: 8.0),
+                      padding: const EdgeInsets.only(left: LEFT_PADDING),
                       child: EventDate(
                         date: item.date,
                         dateBuilder: (context, _, __) {
@@ -135,6 +135,8 @@ class _TimelineState extends State<Timeline> {
   }
 }
 
+const double LEFT_PADDING = 0;
+
 class TimelineGapBuilder {
   DateTime? previousDate;
   final Duration minGapDuration;
@@ -149,7 +151,7 @@ class TimelineGapBuilder {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
-              padding: const EdgeInsets.only(left: 8, right: 4.0),
+              padding: const EdgeInsets.only(left: LEFT_PADDING, right: 0.0),
               child: Container(
                   constraints: BoxConstraints(
                     minWidth: EventDate.dateColumnWidth,
