@@ -1,14 +1,3 @@
-- Essai de correction de l'écran noir après la fermeture des préférences
-- Correction des sets tronqués dans la saisie d'un résultat
-- Modification de la saisie du thème
-- Ajout d'un splash screen au démarrage
-- Correction de la possibilité de saisir un score même en venant
-- Affichage des matchs reportés
-- Ajout de la colonne NT (non terminé dans le détail d'un club)
-- La saisie d'un set est limité aux nombres positifs et maximum 2 digits
-- Renommage 'Total Pts.' en 'Diff. sets'
-- Renommage de l'agenda du dashboard en 'Prochains événements'
-- Affichage des forces des équipes dans le détail d'un match
-- Affichage des matchs passés dans l'agenda d'une équipe
-- Possibilité de saisir un match passé si le résultat n'a pas encore été saisi
-- Correction d'affichage des boutons d'appel et de mail sur un tournoi
+- Ajout d'une option pour faire afficher les forces sur le dashboard
+- Mise en place du thème clair
+- Mise à jour des assets pour les stores

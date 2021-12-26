@@ -37,7 +37,6 @@ ThemeData buildLightTheme(Color mainColor) {
     ),
     appBarTheme: AppBarTheme(
       iconTheme: IconThemeData(color: Colors.black),
-      elevation: 4,
       backgroundColor: Colors.white,
       titleTextStyle: TextStyle(
         color: Colors.black,
