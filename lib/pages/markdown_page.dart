@@ -29,26 +29,23 @@ class _MarkdownPageState extends State<MarkdownPage> with RouteAwareAnalytics {
         builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
           if (snapshot.hasData) {
             return Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
               child: Column(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.all(18.0),
+                    padding: const EdgeInsets.all(8.0),
                     child: FutureBuilder(
                       future: PackageInfo.fromPlatform(),
                       builder: (BuildContext context, AsyncSnapshot<PackageInfo> snapshot) {
                         if (snapshot.hasData) {
                           String appName = snapshot.data?.appName ?? "?";
                           String version = snapshot.data?.version ?? "?";
-                          String buildNumber = snapshot.data?.buildNumber ?? "?";
                           return RichText(
                             text: TextSpan(
                               text: "$appName ",
                               style: Theme.of(context).textTheme.headline4,
                               children: [
-                                TextSpan(
-                                    text: "  - version $version.$buildNumber",
-                                    style: Theme.of(context).textTheme.bodyText2),
+                                TextSpan(text: "  - version $version", style: Theme.of(context).textTheme.bodyText2),
                               ],
                             ),
                           );
