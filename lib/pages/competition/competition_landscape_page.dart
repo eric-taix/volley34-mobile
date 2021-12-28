@@ -91,7 +91,7 @@ class _CompetitionLandscapePageState extends State<CompetitionLandscapePage>
   }
 
   @override
-  AnalyticsRoute get route => AnalyticsRoute.competitions;
+  AnalyticsRoute get route => AnalyticsRoute.competitions_details;
 
   Widget _buildTitle(RankingSynthesis ranking) {
     String poolLabel = getClassificationPool(ranking.pool) != null ? "- ${getClassificationPool(ranking.pool)}" : "";
