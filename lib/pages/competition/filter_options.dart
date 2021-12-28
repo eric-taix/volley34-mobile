@@ -31,7 +31,6 @@ class _FilterOptionsState extends State<FilterOptions> {
   late final DivisionCubit _divisionCubit;
 
   Map<String, List<Competition>>? _competitionsByGroup;
-  Map<PlayType, Map<PlaySex, List<Competition>>>? _competitionsByTypeAndSex;
 
   late CompetitionFilter _filter;
 
@@ -69,9 +68,6 @@ class _FilterOptionsState extends State<FilterOptions> {
         if (state is CompetitionLoadedState) {
           setState(() {
             _competitionsByGroup = _groupByKey<String>(state.competitions, (competition) => competition.code);
-            _competitionsByTypeAndSex = _groupByKey<PlayType>(state.competitions, (competition) => competition.type)
-                .map((key, value) =>
-                    MapEntry(key, groupBy<Competition, PlaySex>(value, (competition) => competition.sex)));
           });
         }
       },
@@ -90,7 +86,7 @@ class _FilterOptionsState extends State<FilterOptions> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(Icons.filter_list),
+                            Icon(Icons.tune_rounded),
                             Padding(
                               padding: const EdgeInsets.only(left: 8.0),
                               child: Badge(

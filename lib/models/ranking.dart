@@ -8,8 +8,13 @@ class RankingTeamSynthesis {
   final int? nbSets30, nbSets31, nbSets32;
   final int? nbSets03, nbSets13, nbSets23;
   final int? nbSetsMI;
+  final int? forfeitMatches;
+  final int? setsDiff, pointsDiff;
 
   factory RankingTeamSynthesis.empty() => RankingTeamSynthesis(
+        null,
+        null,
+        null,
         null,
         null,
         null,
@@ -46,27 +51,34 @@ class RankingTeamSynthesis {
     this.nbSets13,
     this.nbSets23,
     this.nbSetsMI,
+    this.forfeitMatches,
+    this.setsDiff,
+    this.pointsDiff,
   );
 
   factory RankingTeamSynthesis.fromJson(Map<String, dynamic> json) {
     return RankingTeamSynthesis(
-        json["Nom"],
-        json["EquipeCode"],
-        json["Rang"],
-        json["Total"],
-        json["Gagne"],
-        json["Perdu"],
-        json["SetP"],
-        json["SetC"],
-        json["PointsP"],
-        json["PointsC"],
-        json["NbSets_30"],
-        json["NbSets_31"],
-        json["NbSets_32"],
-        json["NbSets_03"],
-        json["NbSets_13"],
-        json["NbSets_23"],
-        json["NbSets_MI"]);
+      json["Nom"],
+      json["EquipeCode"],
+      json["Rang"],
+      json["Total"],
+      json["Gagne"],
+      json["Perdu"],
+      json["SetP"],
+      json["SetC"],
+      json["PointsP"],
+      json["PointsC"],
+      json["NbSets_30"],
+      json["NbSets_31"],
+      json["NbSets_32"],
+      json["NbSets_03"],
+      json["NbSets_13"],
+      json["NbSets_23"],
+      json["NbSets_MI"],
+      json["Forfait"],
+      json["SefDiff"],
+      json["PointDiff"],
+    );
   }
 }
 

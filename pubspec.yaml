@@ -37,7 +37,6 @@ dependencies:
   map_launcher: ^2.1.1
   add_2_calendar: ^2.1.2
   flutter_markdown: ^0.6.8
-  search_page: ^2.0.0+1
   google_maps_flutter: ^2.0.9
   geolocator: ^7.7.1
   flutter_widget_from_html: ^0.6.2

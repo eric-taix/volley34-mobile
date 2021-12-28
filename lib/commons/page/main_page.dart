@@ -6,23 +6,27 @@ class MainPage extends StatelessWidget {
   final String title;
   final List<Widget>? slivers;
   final List<Widget>? actions;
+  final ScrollController? scrollController;
 
-  MainPage({this.title = "", this.slivers, this.actions});
+  MainPage({this.title = "", this.slivers, this.actions, this.scrollController});
 
   @override
   Widget build(BuildContext context) {
-    return CustomScrollView(slivers: [
-      SliverAppBar(
-        pinned: false,
-        snap: false,
-        floating: true,
-        centerTitle: true,
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(bottomLeft: Radius.circular(10), bottomRight: Radius.circular(10))),
-        title: Text(title),
-        actions: actions,
-      ),
-      if (slivers != null) ...slivers!,
-    ]);
+    return CustomScrollView(
+      slivers: [
+        SliverAppBar(
+          pinned: false,
+          snap: false,
+          floating: true,
+          centerTitle: true,
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(bottomLeft: Radius.circular(10), bottomRight: Radius.circular(10))),
+          title: Text(title),
+          actions: actions,
+        ),
+        if (slivers != null) ...slivers!,
+      ],
+      controller: scrollController,
+    );
   }
 }
