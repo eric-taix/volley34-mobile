@@ -43,5 +43,17 @@
 		<false/>
 		<key>UIStatusBarHidden</key>
 		<false/>
+		<key>NSCalendarsUsageDescription</key>
+        <string>Permet d'ajoutez les matchs, tournois et réunion à votre agenda</string>
+        <key>NSPhotoLibraryUsageDescription</key>
+        <string>Permet d'accéder à votre librairie de photos pour en joindre une au résultat d'un match</string>
+        <key>NSCameraUsageDescription</key>
+        <string>Permet de prendre une photo pour la joindre au résultat d'un match</string>
+        <key>NSMicrophoneUsageDescription</key>
+        <string>Permet de pouvoir prendre des vidéos</string>
+        <key>NSLocationWhenInUseUsageDescription</key>
+        <string>Permet de localiser votre position par rapport aux gymnases</string>
+        <key>NSLocationAlwaysUsageDescription</key>
+        <string>Permet de localiser votre position par rapport aux gymnases</string>
 	</dict>
 </plist>

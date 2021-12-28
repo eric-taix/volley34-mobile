@@ -22,7 +22,7 @@ class CompetitionBadge extends StatelessWidget {
             rightColor: Colors.blue,
             labelStyle: labelStyle,
             subtitleStyle: subTitleStyle,
-            subtitle: showSubTitle ? "4x4 masculin" : null);
+            subtitle: showSubTitle ? getBadgeTitle(competitionCode!) : null);
       case 2:
         return _CompetitionBadgePainter(
             context: context,
@@ -31,7 +31,7 @@ class CompetitionBadge extends StatelessWidget {
             labelStyle: labelStyle,
             rightColor: Colors.blue,
             subtitleStyle: subTitleStyle,
-            subtitle: showSubTitle ? "6x6 masculin" : null);
+            subtitle: showSubTitle ? getBadgeTitle(competitionCode!) : null);
       case 3:
       case 4:
         return _CompetitionBadgePainter(
@@ -41,7 +41,7 @@ class CompetitionBadge extends StatelessWidget {
             leftColor: Colors.blue,
             rightColor: Colors.pinkAccent,
             subtitleStyle: subTitleStyle,
-            subtitle: showSubTitle ? "4x4 mixte" : null);
+            subtitle: showSubTitle ? getBadgeTitle(competitionCode!) : null);
       case 5:
         return _CompetitionBadgePainter(
             context: context,
@@ -50,7 +50,7 @@ class CompetitionBadge extends StatelessWidget {
             leftColor: Colors.blue,
             rightColor: Colors.pinkAccent,
             subtitleStyle: subTitleStyle,
-            subtitle: showSubTitle ? "6x6 mixte" : null);
+            subtitle: showSubTitle ? getBadgeTitle(competitionCode!) : null);
       case 6:
         return _CompetitionBadgePainter(
             context: context,
@@ -59,7 +59,7 @@ class CompetitionBadge extends StatelessWidget {
             leftColor: Colors.pinkAccent,
             rightColor: Colors.pinkAccent,
             subtitleStyle: subTitleStyle,
-            subtitle: showSubTitle ? "4x4 féminin" : null);
+            subtitle: showSubTitle ? getBadgeTitle(competitionCode!) : null);
       case 7:
         return _CompetitionBadgePainter(
             context: context,
@@ -68,9 +68,8 @@ class CompetitionBadge extends StatelessWidget {
             leftColor: Colors.pinkAccent,
             rightColor: Colors.pinkAccent,
             subtitleStyle: subTitleStyle,
-            subtitle: showSubTitle ? "6x6 féminin" : null);
+            subtitle: showSubTitle ? getBadgeTitle(competitionCode!) : null);
       default:
-        // throw new Exception("Type de compétition inconnue.");
         return _CompetitionBadgePainter(
             context: context,
             label: "?",
@@ -78,7 +77,28 @@ class CompetitionBadge extends StatelessWidget {
             rightColor: Colors.blue,
             labelStyle: labelStyle,
             subtitleStyle: subTitleStyle,
-            subtitle: showSubTitle ? "inconnu" : null);
+            subtitle: showSubTitle ? getBadgeTitle(competitionCode!) : null);
+    }
+  }
+
+  static String getBadgeTitle(String competitionCode) {
+    String gameType = competitionCode.substring(competitionCode.length - 1);
+    switch (int.parse(gameType)) {
+      case 1:
+        return "4x4 masculin";
+      case 2:
+        return "6x6 masculin";
+      case 3:
+      case 4:
+        return "4x4 mixte";
+      case 5:
+        return "6x6 mixte";
+      case 6:
+        return "4x4 féminin";
+      case 7:
+        return "6x6 féminin";
+      default:
+        return "inconnu";
     }
   }
 

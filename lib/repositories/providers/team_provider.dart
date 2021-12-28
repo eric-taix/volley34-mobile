@@ -58,6 +58,15 @@ class TeamProvider {
     }
   }
 
+  Future<List<RankingSynthesis>> loadAllRankingSynthesis() async {
+    Response response = await dio.get("/Classements");
+    if (response.statusCode == 200 || response.statusCode == 304) {
+      return (response.data as List).map((json) => RankingSynthesis.fromJson(json)).toList();
+    } else {
+      throw Exception("Impossible to retrieve all rankings");
+    }
+  }
+
   Future<Club> loadTeamClub(String? teamCode) async {
     Response response = await dio.get("/equipes/$teamCode/club");
     if (response.statusCode == 200 || response.statusCode == 304) {

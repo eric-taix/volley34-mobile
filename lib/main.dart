@@ -13,6 +13,7 @@ import 'package:v34/commons/env.dart';
 import 'package:v34/message_cubit.dart';
 import 'package:v34/repositories/providers/agenda_provider.dart';
 import 'package:v34/repositories/providers/club_provider.dart';
+import 'package:v34/repositories/providers/competition_provider.dart';
 import 'package:v34/repositories/providers/favorite_provider.dart';
 import 'package:v34/repositories/providers/global_provider.dart';
 import 'package:v34/repositories/providers/gymnasium_provider.dart';
@@ -58,16 +59,8 @@ class _V34State extends State<V34> {
   @override
   void initState() {
     super.initState();
-    _repository = Repository(
-      ClubProvider(),
-      TeamProvider(),
-      FavoriteProvider(),
-      AgendaProvider(),
-      GymnasiumProvider(),
-      MapProvider(),
-      ResultProvider(),
-      GlobalProvider(),
-    );
+    _repository = Repository(ClubProvider(), TeamProvider(), FavoriteProvider(), AgendaProvider(), GymnasiumProvider(),
+        MapProvider(), ResultProvider(), GlobalProvider(), CompetitionProvider());
     _preferencesBloc = PreferencesBloc(_repository)..add(PreferencesLoadEvent());
 
     _themeMode = widget.themeMode;

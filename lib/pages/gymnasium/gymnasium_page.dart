@@ -60,11 +60,13 @@ class _GymnasiumPageState extends State<GymnasiumPage> with RouteAwareAnalytics 
   Widget build(BuildContext context) {
     return MainPage(
       title: "Gymnases",
-      sliver: SliverFillRemaining(
-        hasScrollBody: false,
-        child: _buildMap(context),
-        fillOverscroll: false,
-      ),
+      slivers: [
+        SliverFillRemaining(
+          hasScrollBody: false,
+          child: _buildMap(context),
+          fillOverscroll: false,
+        ),
+      ],
     );
   }
 

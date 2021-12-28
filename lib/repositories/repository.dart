@@ -2,6 +2,8 @@ import 'package:collection/collection.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:v34/commons/favorite/favorite.dart';
 import 'package:v34/models/club.dart';
+import 'package:v34/models/competition.dart';
+import 'package:v34/models/division.dart';
 import 'package:v34/models/event.dart';
 import 'package:v34/models/gymnasium.dart';
 import 'package:v34/models/match_result.dart';
@@ -11,6 +13,7 @@ import 'package:v34/models/team.dart';
 import 'package:v34/models/team_stats.dart';
 import 'package:v34/repositories/providers/agenda_provider.dart';
 import 'package:v34/repositories/providers/club_provider.dart';
+import 'package:v34/repositories/providers/competition_provider.dart';
 import 'package:v34/repositories/providers/favorite_provider.dart';
 import 'package:v34/repositories/providers/global_provider.dart';
 import 'package:v34/repositories/providers/gymnasium_provider.dart';
@@ -27,9 +30,29 @@ class Repository {
   final MapProvider _mapProvider;
   final ResultProvider _resultProvider;
   final GlobalProvider _globalProvider;
+  final CompetitionProvider _competitionProvider;
 
-  Repository(this._clubProvider, this._teamProvider, this._favoriteProvider, this._agendaProvider,
-      this._gymnasiumProvider, this._mapProvider, this._resultProvider, this._globalProvider);
+  Repository(
+      this._clubProvider,
+      this._teamProvider,
+      this._favoriteProvider,
+      this._agendaProvider,
+      this._gymnasiumProvider,
+      this._mapProvider,
+      this._resultProvider,
+      this._globalProvider,
+      this._competitionProvider);
+
+  /// Loads all competitions
+  Future<List<Competition>> loadAllCompetitions() async {
+    var competitions = await _competitionProvider.loadAllCompetitions();
+    return competitions;
+  }
+
+  /// Load all divisions
+  Future<List<Division>> loadDivisions() async {
+    return _globalProvider.loadDivisions();
+  }
 
   /// Loads match results
   Future<List<MatchResult>> loadResults(String competition, String? divisionCode, String? pool) async {
@@ -121,6 +144,15 @@ class Repository {
   /// Load classification synthesis
   Future<List<RankingSynthesis>> loadTeamRankingSynthesis(String? teamCode) async {
     return await _teamProvider.loadClassificationSynthesis(teamCode);
+  }
+
+  /// Load all classifications synthesis
+  Future<List<RankingSynthesis>> loadAllRankingSynthesis() async {
+    var rankings = await _teamProvider.loadAllRankingSynthesis();
+    rankings.forEach((ranking) {
+      ranking.ranks?.sort((s1, s2) => s1.totalPoints!.compareTo(s2.totalPoints!));
+    });
+    return rankings;
   }
 
   //-------------------------------

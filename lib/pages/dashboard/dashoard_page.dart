@@ -61,85 +61,87 @@ class _DashboardPageState extends State<DashboardPage> with RouteAwareAnalytics 
       builder: (context, state) {
         return MainPage(
           title: "Volley34",
-          sliver: SliverList(
-            delegate: SliverChildListDelegate.fixed(
-              [
-                Paragraph(title: "Votre club"),
-                StateConditionBuilder(
-                  state: state,
-                  conditionalBuilders: [
-                    when(
-                      stateIs<PreferencesLoadingState>(),
-                      (_, __) => SizedBox(height: DashboardClub.cardHeight, child: Loading()),
-                    ),
-                    when<PreferencesUpdatedState>(
-                      stateIs<PreferencesUpdatedState>(),
-                      (_, state) {
-                        if (state.favoriteClub != null) {
-                          return Padding(
-                            padding: const EdgeInsets.only(top: 12.0),
-                            child: DashboardClub(key: ValueKey("dashboard-clubs"), club: state.favoriteClub!),
-                          );
-                        } else {
-                          return _buildNoFavorite(context, "Sélectionnez votre club dans votre profil");
-                        }
-                      },
-                    ),
-                  ],
-                  defaultBuilder: (_, state) => Container(height: 250),
-                ),
-                Paragraph(title: "Votre équipe"),
-                StateConditionBuilder(
-                  state: state,
-                  conditionalBuilders: [
-                    when(
-                      stateIs<PreferencesLoadingState>(),
-                      (_, __) => SizedBox(
-                        height: DashboardClubTeam.cardHeight,
-                        child: Loading(),
+          slivers: [
+            SliverList(
+              delegate: SliverChildListDelegate.fixed(
+                [
+                  Paragraph(title: "Votre club"),
+                  StateConditionBuilder(
+                    state: state,
+                    conditionalBuilders: [
+                      when(
+                        stateIs<PreferencesLoadingState>(),
+                        (_, __) => SizedBox(height: DashboardClub.cardHeight, child: Loading()),
                       ),
-                    ),
-                    when<PreferencesUpdatedState>(
-                      stateIs<PreferencesUpdatedState>(),
-                      (_, state) {
-                        if (state.favoriteTeam != null && state.favoriteClub != null) {
-                          return Padding(
-                            padding: const EdgeInsets.only(top: 12.0),
-                            child: DashboardClubTeam(
-                              club: state.favoriteClub!,
-                              team: state.favoriteTeam!,
-                            ),
-                          );
-                        } else {
-                          return _buildNoFavorite(context, "Sélectionnez votre équipe dans votre profil");
-                        }
-                      },
-                    ),
-                  ],
-                  defaultBuilder: (_, state) => Container(height: 250),
-                ),
-                Paragraph(title: "Prochains événements"),
-                StateConditionBuilder(
-                  state: state,
-                  conditionalBuilders: [
-                    when<PreferencesLoadingState>(
+                      when<PreferencesUpdatedState>(
+                        stateIs<PreferencesUpdatedState>(),
+                        (_, state) {
+                          if (state.favoriteClub != null) {
+                            return Padding(
+                              padding: const EdgeInsets.only(top: 12.0),
+                              child: DashboardClub(key: ValueKey("dashboard-clubs"), club: state.favoriteClub!),
+                            );
+                          } else {
+                            return _buildNoFavorite(context, "Sélectionnez votre club dans votre profil");
+                          }
+                        },
+                      ),
+                    ],
+                    defaultBuilder: (_, state) => Container(height: 250),
+                  ),
+                  Paragraph(title: "Votre équipe"),
+                  StateConditionBuilder(
+                    state: state,
+                    conditionalBuilders: [
+                      when(
                         stateIs<PreferencesLoadingState>(),
                         (_, __) => SizedBox(
-                              height: DashboardClub.cardHeight,
-                              child: Loading(),
-                            )),
-                    when<PreferencesUpdatedState>(
-                      stateIs<PreferencesUpdatedState>(),
-                      (_, state) => state.favoriteTeam != null
-                          ? DashboardAgenda(team: state.favoriteTeam!)
-                          : _buildNoFavorite(context, "Sélectionnez votre équipe dans votre profil"),
-                    ),
-                  ],
-                  defaultBuilder: (_, state) => Container(height: 250),
-                )
-              ],
+                          height: DashboardClubTeam.cardHeight,
+                          child: Loading(),
+                        ),
+                      ),
+                      when<PreferencesUpdatedState>(
+                        stateIs<PreferencesUpdatedState>(),
+                        (_, state) {
+                          if (state.favoriteTeam != null && state.favoriteClub != null) {
+                            return Padding(
+                              padding: const EdgeInsets.only(top: 12.0),
+                              child: DashboardClubTeam(
+                                club: state.favoriteClub!,
+                                team: state.favoriteTeam!,
+                              ),
+                            );
+                          } else {
+                            return _buildNoFavorite(context, "Sélectionnez votre équipe dans votre profil");
+                          }
+                        },
+                      ),
+                    ],
+                    defaultBuilder: (_, state) => Container(height: 250),
+                  ),
+                  Paragraph(title: "Prochains événements"),
+                  StateConditionBuilder(
+                    state: state,
+                    conditionalBuilders: [
+                      when<PreferencesLoadingState>(
+                          stateIs<PreferencesLoadingState>(),
+                          (_, __) => SizedBox(
+                                height: DashboardClub.cardHeight,
+                                child: Loading(),
+                              )),
+                      when<PreferencesUpdatedState>(
+                        stateIs<PreferencesUpdatedState>(),
+                        (_, state) => state.favoriteTeam != null
+                            ? DashboardAgenda(team: state.favoriteTeam!)
+                            : _buildNoFavorite(context, "Sélectionnez votre équipe dans votre profil"),
+                      ),
+                    ],
+                    defaultBuilder: (_, state) => Container(height: 250),
+                  )
+                ],
+              ),
             ),
-          ),
+          ],
         );
       },
     );

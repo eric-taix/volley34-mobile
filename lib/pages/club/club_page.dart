@@ -2,9 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
-import 'package:search_page/search_page.dart';
 import 'package:v34/commons/loading.dart';
 import 'package:v34/commons/page/main_page.dart';
+import 'package:v34/commons/search_page.dart';
 import 'package:v34/models/club.dart';
 import 'package:v34/pages/club/club_card.dart';
 import 'package:v34/repositories/repository.dart';
@@ -58,35 +58,33 @@ class _ClubPageState extends State<ClubPage> with SingleTickerProviderStateMixin
 
   @override
   Widget build(BuildContext context) {
-    return MainPage(
-      title: "Clubs",
-      actions: [
-        IconButton(
-          icon: Icon(Icons.search),
-          onPressed: () => showSearch(
-            context: context,
-            delegate: SearchPage<Club>(
-              items: _clubs,
-              showItemsOnEmpty: true,
-              searchLabel: "Rechercher un club",
-              failure: Center(
-                child: Text("Aucun club trouvé !"),
-              ),
-              filter: (club) => [
-                club.name,
-                club.shortName,
-                club.code,
-              ],
-              builder: (club) => ClubCard(club, 1),
-              barTheme: Theme.of(context).copyWith(
-                textTheme: TextTheme(headline6: Theme.of(context).textTheme.headline4),
-                inputDecorationTheme: InputDecorationTheme(hintStyle: Theme.of(context).textTheme.headline5),
-              ),
+    return MainPage(title: "Clubs", actions: [
+      IconButton(
+        icon: Icon(Icons.search),
+        onPressed: () => showSearch(
+          context: context,
+          delegate: SearchPage<Club>(
+            items: _clubs,
+            showItemsOnEmpty: true,
+            searchLabel: "Rechercher un club",
+            failure: Center(
+              child: Text("Aucun club trouvé !"),
+            ),
+            filter: (club) => [
+              club.name,
+              club.shortName,
+              club.code,
+            ],
+            builder: (club) => ClubCard(club, 1),
+            barTheme: Theme.of(context).copyWith(
+              textTheme: TextTheme(headline6: Theme.of(context).textTheme.headline4),
+              inputDecorationTheme: InputDecorationTheme(hintStyle: Theme.of(context).textTheme.headline5),
             ),
           ),
         ),
-      ],
-      sliver: _error
+      ),
+    ], slivers: [
+      _error
           ? SliverToBoxAdapter()
           : _loading
               ? SliverFillRemaining(child: Center(child: Loading()))
@@ -114,7 +112,7 @@ class _ClubPageState extends State<ClubPage> with SingleTickerProviderStateMixin
                     ),
                   ),
                 ),
-    );
+    ]);
   }
 
   @override

@@ -32,9 +32,11 @@ class _PodiumWidgetState extends State<PodiumWidget> {
   void initState() {
     super.initState();
     Future.delayed(Duration(milliseconds: 800), () {
-      setState(() {
-        _cupOpacity = 1;
-      });
+      if (mounted) {
+        setState(() {
+          _cupOpacity = 1;
+        });
+      }
     });
   }
 
