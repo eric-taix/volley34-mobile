@@ -63,6 +63,11 @@ ThemeData buildDarkTheme(Color mainColor) {
         fontFamily: "Raleway",
       ),
     ),
+    checkboxTheme: CheckboxThemeData(
+      checkColor: MultiStateColor(defaultColor: Colors.white, selectedColor: Colors.white, disabledColor: Colors.grey),
+      fillColor: MultiStateColor(defaultColor: Colors.white, selectedColor: mainColor, disabledColor: Colors.white),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+    ),
     textTheme: TextTheme(
       button: TextStyle(color: Color(0xFFF7FBFE), fontSize: 14.0, fontFamily: "Raleway", fontWeight: FontWeight.normal),
       headline1:
@@ -128,10 +133,10 @@ ThemeData buildDarkTheme(Color mainColor) {
       style: ButtonStyle(
         textStyle: ButtonTextStyleState(
           enabledStyle: TextStyle(fontSize: 16),
-          disabledStyle: TextStyle(fontSize: 12),
+          disabledStyle: TextStyle(fontSize: 16),
         ),
         overlayColor: OverlayStateColor(mainColor.withOpacity(0.2)),
-        shape: ButtonStateProperty(color: Colors.transparent),
+        shape: ButtonStateProperty(color: Colors.transparent, disableColor: Colors.transparent),
         foregroundColor: ButtonForegroundStateColor(color: mainColor),
         padding: ButtonPaddingProperty(),
       ),

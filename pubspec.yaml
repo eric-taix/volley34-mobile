@@ -51,6 +51,8 @@ dependencies:
   image_picker: ^0.8.4+4
   flutter_mailer: ^2.0.1
   splash_screen_view: ^3.0.0
+  modal_bottom_sheet: ^2.0.0
+  badges: ^2.0.2
 
 dev_dependencies:
   dependency_validator: ^3.0.0

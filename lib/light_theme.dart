@@ -65,6 +65,11 @@ ThemeData buildLightTheme(Color mainColor) {
     radioTheme: RadioThemeData(
       fillColor: MultiStateColor(defaultColor: Colors.black45, selectedColor: mainColor, disabledColor: Colors.white30),
     ),
+    checkboxTheme: CheckboxThemeData(
+      checkColor: MultiStateColor(defaultColor: Colors.white, selectedColor: Colors.white, disabledColor: Colors.grey),
+      fillColor: MultiStateColor(defaultColor: Colors.white, selectedColor: mainColor, disabledColor: Colors.white),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+    ),
     textTheme: TextTheme(
       button: TextStyle(color: Color(0xff020202), fontSize: 14.0, fontFamily: "Raleway", fontWeight: FontWeight.normal),
       headline1:
@@ -123,10 +128,10 @@ ThemeData buildLightTheme(Color mainColor) {
       style: ButtonStyle(
         textStyle: ButtonTextStyleState(
           enabledStyle: TextStyle(fontSize: 16),
-          disabledStyle: TextStyle(fontSize: 12),
+          disabledStyle: TextStyle(fontSize: 16),
         ),
         overlayColor: OverlayStateColor(mainColor.withOpacity(0.2)),
-        shape: ButtonStateProperty(color: Colors.transparent),
+        shape: ButtonStateProperty(color: Colors.transparent, disableColor: Colors.transparent),
         foregroundColor: ButtonForegroundStateColor(color: mainColor),
         padding: ButtonPaddingProperty(),
       ),

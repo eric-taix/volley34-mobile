@@ -4,10 +4,10 @@ import 'package:flutter/widgets.dart';
 
 class MainPage extends StatelessWidget {
   final String title;
-  final Widget? sliver;
+  final List<Widget>? slivers;
   final List<Widget>? actions;
 
-  MainPage({this.title = "", this.sliver, this.actions});
+  MainPage({this.title = "", this.slivers, this.actions});
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +22,7 @@ class MainPage extends StatelessWidget {
         title: Text(title),
         actions: actions,
       ),
-      if (sliver != null) sliver!,
+      if (slivers != null) ...slivers!,
     ]);
   }
 }
