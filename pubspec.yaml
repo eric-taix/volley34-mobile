@@ -72,6 +72,7 @@ flutter:
   uses-material-design: true
 
   assets:
+    - assets/filter.svg
     - assets/attack.svg
     - assets/defense.svg
     - assets/error.svg

@@ -46,10 +46,8 @@ class _FilterOptionsState extends State<FilterOptions> {
   }
 
   _reinitFilters() {
-    _updateFilter(CompetitionFilter(
-        competitionGroup: CompetitionFilter.ALL_COMPETITION,
-        competitionPlay: CompetitionPlay.all,
-        competitionDivision: Division.all));
+    _updateFilter(
+        CompetitionFilter(competitionGroup: CompetitionFilter.ALL_COMPETITION, competitionDivision: Division.all));
   }
 
   @override
@@ -70,7 +68,7 @@ class _FilterOptionsState extends State<FilterOptions> {
       listener: (context, state) {
         if (state is CompetitionLoadedState) {
           setState(() {
-            _competitionsByGroup = _groupByKey<String>(state.competitions, (competition) => competition.groupId);
+            _competitionsByGroup = _groupByKey<String>(state.competitions, (competition) => competition.code);
             _competitionsByTypeAndSex = _groupByKey<PlayType>(state.competitions, (competition) => competition.type)
                 .map((key, value) =>
                     MapEntry(key, groupBy<Competition, PlaySex>(value, (competition) => competition.sex)));
@@ -129,7 +127,6 @@ class _FilterOptionsState extends State<FilterOptions> {
                 child: ListView(
                   children: [
                     ..._buildCompetitionFilter(context),
-                    ..._buildTypeFilter(context),
                     ..._buildLevelFilter(context),
                     SizedBox(height: 20),
                   ],
@@ -148,57 +145,6 @@ class _FilterOptionsState extends State<FilterOptions> {
 
   Map<S, List<Competition>> _groupByKey<S>(List<Competition> competitions, S Function(Competition) key) {
     return groupBy<Competition, S>(competitions, key)..removeWhere((key, value) => value.isEmpty);
-  }
-
-  _buildTypeFilter(BuildContext context) {
-    var competitionsPlay = _competitionsByTypeAndSex?.entries
-        .expand<CompetitionPlay>((entry) => entry.value.keys.map((playSex) => CompetitionPlay(playSex, entry.key)))
-        .toList();
-    return [
-      Padding(
-        padding: const EdgeInsets.only(top: 28.0, left: LEFT_PADDING, bottom: 18),
-        child: Text("Types de jeu", style: Theme.of(context).textTheme.headline6),
-      ),
-      RadioListTile<CompetitionPlay>(
-        contentPadding: const EdgeInsets.symmetric(horizontal: LEFT_PADDING),
-        controlAffinity: ListTileControlAffinity.leading,
-        title: Text("Tous les types de jeu", style: Theme.of(context).textTheme.bodyText2),
-        value: CompetitionPlay.all,
-        onChanged: (_) => _updateFilter(_filter.copyWith(competitionPlay: CompetitionPlay.all)),
-        groupValue: _filter.competitionPlay,
-      ),
-      if (competitionsPlay != null)
-        ...competitionsPlay.map(
-          (competitionPlay) {
-            String competitionCode = _getCompetitionCode(competitionPlay);
-            return RadioListTile<CompetitionPlay>(
-              contentPadding: const EdgeInsets.symmetric(horizontal: LEFT_PADDING),
-              controlAffinity: ListTileControlAffinity.leading,
-              title: Row(
-                children: [
-                  SizedBox(
-                    width: 50,
-                    height: 22,
-                    child: CompetitionBadge(
-                      deltaSize: 10,
-                      showSubTitle: false,
-                      competitionCode: competitionCode,
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 18.0),
-                    child: Text(CompetitionBadge.getBadgeTitle(competitionCode),
-                        style: Theme.of(context).textTheme.bodyText2),
-                  ),
-                ],
-              ),
-              value: competitionPlay,
-              onChanged: (_) => _updateFilter(_filter.copyWith(competitionPlay: competitionPlay)),
-              groupValue: _filter.competitionPlay,
-            );
-          },
-        ),
-    ];
   }
 
   _buildLevelFilter(BuildContext context) {
@@ -238,23 +184,6 @@ class _FilterOptionsState extends State<FilterOptions> {
     ];
   }
 
-  String _getCompetitionCode(CompetitionPlay competitionPlay) {
-    if (competitionPlay.type == PlayType.t_4x4 && competitionPlay.sex == PlaySex.male) {
-      return "1";
-    } else if (competitionPlay.type == PlayType.t_6x6 && competitionPlay.sex == PlaySex.male) {
-      return "2";
-    } else if (competitionPlay.type == PlayType.t_4x4 && competitionPlay.sex == PlaySex.mix) {
-      return "3";
-    } else if (competitionPlay.type == PlayType.t_6x6 && competitionPlay.sex == PlaySex.mix) {
-      return "5";
-    } else if (competitionPlay.type == PlayType.t_4x4 && competitionPlay.sex == PlaySex.female) {
-      return "6";
-    } else if (competitionPlay.type == PlayType.t_6x6 && competitionPlay.sex == PlaySex.female) {
-      return "7";
-    }
-    return "";
-  }
-
   _buildCompetitionFilter(BuildContext context) {
     return [
       Padding(
@@ -275,14 +204,37 @@ class _FilterOptionsState extends State<FilterOptions> {
         ..._competitionsByGroup!.entries.map(
           (competitions) => RadioListTile(
             contentPadding: const EdgeInsets.symmetric(horizontal: LEFT_PADDING),
-            title: Text(
-              competitions.value[0].label,
-              style: Theme.of(context).textTheme.bodyText2,
-              textAlign: TextAlign.start,
-            ),
-            subtitle: Text(
-              "Du ${_fullDateFormat.format(competitions.value[0].start)} au ${_fullDateFormat.format(competitions.value[0].end)}",
-              style: Theme.of(context).textTheme.bodyText1,
+            title: Row(
+              children: [
+                SizedBox(
+                  width: 50,
+                  height: 22,
+                  child: CompetitionBadge(
+                    deltaSize: 2,
+                    competitionCode: competitions.value[0].code,
+                    showSubTitle: false,
+                  ),
+                ),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 18.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          competitions.value[0].competitionLabel,
+                          style: Theme.of(context).textTheme.bodyText2,
+                          textAlign: TextAlign.start,
+                        ),
+                        Text(
+                          "Du ${_fullDateFormat.format(competitions.value[0].start)} au ${_fullDateFormat.format(competitions.value[0].end)}",
+                          style: Theme.of(context).textTheme.bodyText1,
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              ],
             ),
             value: competitions.key,
             onChanged: (value) => setState(

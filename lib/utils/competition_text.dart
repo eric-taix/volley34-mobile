@@ -1,3 +1,5 @@
+import 'package:v34/models/competition.dart';
+
 String getClassificationCategory(String? division) {
   switch (division) {
     case "EX":
@@ -15,9 +17,26 @@ String getClassificationCategory(String? division) {
   }
 }
 
-String getClassificationPool(String? pool) {
+String? getClassificationPool(String? pool) {
   if (pool == "0")
-    return "";
+    return null;
   else
     return "Poule $pool";
+}
+
+String getCompetitionCode(CompetitionPlay competitionPlay) {
+  if (competitionPlay.type == PlayType.t_4x4 && competitionPlay.sex == PlaySex.male) {
+    return "1";
+  } else if (competitionPlay.type == PlayType.t_6x6 && competitionPlay.sex == PlaySex.male) {
+    return "2";
+  } else if (competitionPlay.type == PlayType.t_4x4 && competitionPlay.sex == PlaySex.mix) {
+    return "3";
+  } else if (competitionPlay.type == PlayType.t_6x6 && competitionPlay.sex == PlaySex.mix) {
+    return "5";
+  } else if (competitionPlay.type == PlayType.t_4x4 && competitionPlay.sex == PlaySex.female) {
+    return "6";
+  } else if (competitionPlay.type == PlayType.t_6x6 && competitionPlay.sex == PlaySex.female) {
+    return "7";
+  }
+  return "";
 }

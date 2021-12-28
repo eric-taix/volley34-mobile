@@ -42,6 +42,15 @@ class Competition {
   final DateTime end;
   final String groupId;
 
+  String get competitionLabel {
+    int index = label.indexOf("-");
+    if (index != -1) {
+      return label.substring(0, index);
+    } else {
+      return label;
+    }
+  }
+
   Competition({
     required this.code,
     required this.season,
