@@ -1,3 +1,4 @@
-- Ajout d'une option pour faire afficher les forces sur le dashboard
-- Mise en place du thème clair
-- Mise à jour des assets pour les stores
+- Page d'affichage des compétitions
+- Gestion des filtres des compétitions ainsi que d'un champ de recherche
+- Page de détails des compétitions avec l'ensemble des colonnes
+- Mise à jour des permissions pour Android & iOS
