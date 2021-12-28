@@ -1,9 +1,11 @@
 import 'package:badges/badges.dart';
 import 'package:fluid_bottom_nav_bar/fluid_bottom_nav_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:search_page/search_page.dart';
 import 'package:v34/commons/competition_badge.dart';
 import 'package:v34/commons/loading.dart';
 import 'package:v34/commons/page/main_page.dart';
@@ -25,6 +27,7 @@ class CompetitionPage extends StatefulWidget {
 class _CompetitionPageState extends State<CompetitionPage> with SingleTickerProviderStateMixin, RouteAwareAnalytics {
   late final CompetitionCubit _competitionCubit;
   late final RankingCubit _rankingCubit;
+  ValueNotifier<String?> _query = ValueNotifier(null);
 
   CompetitionFilter _filter = CompetitionFilter.all;
 
@@ -57,6 +60,40 @@ class _CompetitionPageState extends State<CompetitionPage> with SingleTickerProv
           return MainPage(
             title: "Compétitions",
             actions: [
+              if (state is RankingLoadedState)
+                IconButton(
+                  icon: Icon(Icons.search),
+                  onPressed: () => showSearch(
+                    context: context,
+                    delegate: SearchPage<RankingSynthesis>(
+                      items: state.rankings,
+                      showItemsOnEmpty: true,
+                      searchLabel: "Rechercher une équipe",
+                      failure: Center(
+                        child: Text("Aucune équipe trouvé !"),
+                      ),
+                      filter: (ranking) => [
+                        if (ranking.ranks != null) ...ranking.ranks!.map((rank) => rank.name).toList(),
+                      ],
+                      onQueryUpdate: (query) => SchedulerBinding.instance!.addPostFrameCallback((timeStamp) {
+                        _query.value = query;
+                      }),
+                      builder: (ranking) {
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: FluidNavBar.nominalHeight),
+                          child: ValueListenableBuilder<String?>(
+                              builder: (context, value, __) =>
+                                  _buildCompetitionRankingTable(ranking, highlightTeamName: value),
+                              valueListenable: _query),
+                        );
+                      },
+                      barTheme: Theme.of(context).copyWith(
+                        textTheme: TextTheme(headline6: Theme.of(context).textTheme.headline4),
+                        inputDecorationTheme: InputDecorationTheme(hintStyle: Theme.of(context).textTheme.headline5),
+                      ),
+                    ),
+                  ),
+                ),
               Badge(
                 showBadge: _filter.count > 0,
                 padding: EdgeInsets.all(5),
@@ -102,21 +139,10 @@ class _CompetitionPageState extends State<CompetitionPage> with SingleTickerProv
                           delegate: SliverChildBuilderDelegate(
                             (context, index) {
                               if (index == ((state is RankingLoadedState ? state.rankings.length : 0) + 1) - 1) {
-                                return SizedBox(height: FluidNavBar.nominalHeight + 18);
+                                return SizedBox(height: FluidNavBar.nominalHeight + 58);
                               }
                               RankingSynthesis ranking = state.rankings[index];
-                              return Column(
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 28.0),
-                                    child: _buildTitle(ranking),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 18.0, left: 18, right: 8),
-                                    child: TeamRankingTable(ranking: ranking),
-                                  ),
-                                ],
-                              );
+                              return _buildCompetitionRankingTable(ranking);
                             },
                             childCount: (state is RankingLoadedState ? state.rankings.length : 0) + 1,
                           ),
@@ -132,6 +158,21 @@ class _CompetitionPageState extends State<CompetitionPage> with SingleTickerProv
     );
   }
 
+  _buildCompetitionRankingTable(RankingSynthesis ranking, {String? highlightTeamName}) {
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(top: 28.0),
+          child: _buildTitle(ranking),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(top: 18.0, left: 18, right: 8),
+          child: TeamRankingTable(ranking: ranking, highlightTeamName: highlightTeamName),
+        ),
+      ],
+    );
+  }
+
   @override
   AnalyticsRoute get route => AnalyticsRoute.competitions;
 
@@ -139,23 +180,31 @@ class _CompetitionPageState extends State<CompetitionPage> with SingleTickerProv
     String poolLabel = getClassificationPool(ranking.pool) != null ? "- ${getClassificationPool(ranking.pool)}" : "";
     return Padding(
       padding: const EdgeInsets.only(top: 28, bottom: 8.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
+      child: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.only(right: 18.0),
-            child: SizedBox(
-              width: 60,
-              height: 25,
-              child: CompetitionBadge(
-                competitionCode: ranking.competitionCode,
-                deltaSize: 0.8,
-                showSubTitle: false,
-              ),
-            ),
+            padding: const EdgeInsets.only(bottom: 8.0),
+            child: Text(ranking.label!),
           ),
-          Text("${getClassificationCategory(ranking.division)} $poolLabel",
-              style: Theme.of(context).textTheme.headline5),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(right: 18.0),
+                child: SizedBox(
+                  width: 60,
+                  height: 25,
+                  child: CompetitionBadge(
+                    competitionCode: ranking.competitionCode,
+                    deltaSize: 0.8,
+                    showSubTitle: false,
+                  ),
+                ),
+              ),
+              Text("${getClassificationCategory(ranking.division)} $poolLabel",
+                  style: Theme.of(context).textTheme.headline5),
+            ],
+          ),
         ],
       ),
     );

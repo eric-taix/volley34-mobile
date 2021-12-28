@@ -14,8 +14,9 @@ class TeamRankingTable extends StatefulWidget {
   final RankingSynthesis ranking;
   late final RankingTeamSynthesis? _teamRank;
   late final int? _teamMatches;
+  late final String? highlightTeamName;
 
-  TeamRankingTable({Key? key, this.team, required this.ranking}) : super(key: key) {
+  TeamRankingTable({Key? key, this.team, required this.ranking, this.highlightTeamName}) : super(key: key) {
     _teamRank = ranking.ranks?.firstWhereOrNull((rank) => rank.teamCode == team?.code);
     if (_teamRank != null)
       _teamMatches = (_teamRank?.wonMatches ?? 0) + (_teamRank?.lostMatches ?? 0);
@@ -50,7 +51,11 @@ class _TeamRankingTableState extends State<TeamRankingTable> {
                       ? (rankingSynthesis.teamCode == widget.team?.code
                           ? Theme.of(context).textTheme.bodyText2!.copyWith(fontWeight: FontWeight.bold)
                           : Theme.of(context).textTheme.bodyText1)
-                      : Theme.of(context).textTheme.bodyText2!.copyWith(fontWeight: FontWeight.bold);
+                      : (widget.highlightTeamName != null
+                          ? (rankingSynthesis.name!.toLowerCase().contains(widget.highlightTeamName!.toLowerCase())
+                              ? Theme.of(context).textTheme.bodyText2!.copyWith(fontWeight: FontWeight.bold)
+                              : Theme.of(context).textTheme.bodyText1!)
+                          : Theme.of(context).textTheme.bodyText2!.copyWith(fontWeight: FontWeight.bold));
                   return MapEntry(
                     index,
                     InkWell(
@@ -70,10 +75,9 @@ class _TeamRankingTableState extends State<TeamRankingTable> {
                                   height: 20,
                                   child: Container(
                                     decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.all(Radius.circular(4)),
-                                        color: rankingSynthesis.teamCode == widget.team?.code
-                                            ? Theme.of(context).textTheme.bodyText2!.color
-                                            : Theme.of(context).textTheme.bodyText1!.color),
+                                      borderRadius: BorderRadius.all(Radius.circular(4)),
+                                      color: lineStyle!.color,
+                                    ),
                                     child: Center(
                                       child: Text(
                                         "${index + 1}",
@@ -125,7 +129,7 @@ class _TeamRankingTableState extends State<TeamRankingTable> {
                                                 child: SvgPicture.asset(
                                                   "assets/volleyball-filled.svg",
                                                   width: 16,
-                                                  color: lineStyle!.color,
+                                                  color: lineStyle.color,
                                                 ),
                                               )
                                             ],
@@ -137,7 +141,7 @@ class _TeamRankingTableState extends State<TeamRankingTable> {
                               SizedBox(
                                 width: 20,
                                 child: rankingSynthesis.teamCode != widget.team?.code
-                                    ? Icon(Icons.arrow_forward_ios_outlined, size: 14, color: lineStyle!.color)
+                                    ? Icon(Icons.arrow_forward_ios_outlined, size: 14, color: lineStyle.color)
                                     : SizedBox(),
                               )
                             ],
