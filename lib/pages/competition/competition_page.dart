@@ -79,7 +79,7 @@ class _CompetitionPageState extends State<CompetitionPage> with SingleTickerProv
                             showItemsOnEmpty: true,
                             searchLabel: "Rechercher une équipe",
                             failure: Center(
-                              child: Text("Aucune équipe trouvé !"),
+                              child: Text("Aucune équipe trouvée", style: Theme.of(context).textTheme.bodyText1),
                             ),
                             filter: (ranking) => [
                                   if (ranking.ranks != null) ...ranking.ranks!.map((rank) => rank.name).toList(),

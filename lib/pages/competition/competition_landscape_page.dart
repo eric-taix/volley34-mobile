@@ -63,7 +63,9 @@ class _CompetitionLandscapePageState extends State<CompetitionLandscapePage>
                         childCount: widget.rankings.length + 1,
                       ),
                     )
-                  : SliverFillRemaining(child: Center(child: Text("Aucun résultat"))))
+                  : SliverFillRemaining(
+                      child:
+                          Center(child: Text("Aucune équipe trouvée", style: Theme.of(context).textTheme.bodyText1))))
             ],
           ),
         ],

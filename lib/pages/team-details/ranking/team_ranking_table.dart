@@ -53,11 +53,11 @@ class _TeamRankingTableState extends State<TeamRankingTable> {
                     ? (rankingSynthesis.teamCode == widget.team?.code
                         ? Theme.of(context).textTheme.bodyText2!.copyWith(fontWeight: FontWeight.bold)
                         : Theme.of(context).textTheme.bodyText1)
-                    : (widget.highlightTeamName != null
+                    : (widget.highlightTeamName != null && widget.highlightTeamName!.isNotEmpty
                         ? (rankingSynthesis.name!.toLowerCase().contains(widget.highlightTeamName!.toLowerCase())
                             ? Theme.of(context).textTheme.bodyText2!.copyWith(fontWeight: FontWeight.bold)
                             : Theme.of(context).textTheme.bodyText1!)
-                        : Theme.of(context).textTheme.bodyText2!.copyWith(fontWeight: FontWeight.bold));
+                        : Theme.of(context).textTheme.bodyText2!);
                 return MapEntry(
                   index,
                   InkWell(
