@@ -102,6 +102,19 @@ class RankingSynthesis {
       this.pool,
       this.ranks});
 
+  RankingSynthesis copyWith({List<RankingTeamSynthesis>? ranks}) {
+    return RankingSynthesis(
+      competitionCode: this.competitionCode,
+      label: this.label,
+      fullLabel: this.fullLabel,
+      promoted: this.promoted,
+      relegated: this.relegated,
+      division: this.division,
+      pool: this.pool,
+      ranks: ranks ?? this.ranks,
+    );
+  }
+
   factory RankingSynthesis.fromJson(Map<String, dynamic> json) {
     return RankingSynthesis(
       competitionCode: json["CompetitionCode"],

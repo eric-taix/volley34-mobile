@@ -149,10 +149,9 @@ class Repository {
   /// Load all classifications synthesis
   Future<List<RankingSynthesis>> loadAllRankingSynthesis() async {
     var rankings = await _teamProvider.loadAllRankingSynthesis();
-    rankings.forEach((ranking) {
-      ranking.ranks?.sort((s1, s2) => s1.totalPoints!.compareTo(s2.totalPoints!));
-    });
-    return rankings;
+    return rankings.map((ranking) {
+      return ranking.copyWith(ranks: ranking.ranks!.reversed.toList());
+    }).toList();
   }
 
   //-------------------------------
