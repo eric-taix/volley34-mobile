@@ -104,16 +104,18 @@ class AgendaBloc extends Bloc<AgendaEvent, AgendaState> {
       Force globalForce = Force();
       Map<String, ForceBuilder> forceByTeam = {};
       allResults.forEach((matchResult) {
-        var hostForceBuilder = forceByTeam.putIfAbsent(
-            matchResult.hostTeamCode!,
-            () => ForceBuilder(
-                  teamCode: matchResult.hostTeamCode,
-                  othersForce: globalForce,
-                ));
-        var visitorForceBuilder = forceByTeam.putIfAbsent(
-            matchResult.visitorTeamCode!, () => ForceBuilder(teamCode: matchResult.visitorTeamCode));
-        hostForceBuilder.add(matchResult);
-        visitorForceBuilder.add(matchResult);
+        if (!_isForfeit(matchResult)) {
+          var hostForceBuilder = forceByTeam.putIfAbsent(
+              matchResult.hostTeamCode!,
+              () => ForceBuilder(
+                    teamCode: matchResult.hostTeamCode,
+                    othersForce: globalForce,
+                  ));
+          var visitorForceBuilder = forceByTeam.putIfAbsent(
+              matchResult.visitorTeamCode!, () => ForceBuilder(teamCode: matchResult.visitorTeamCode));
+          hostForceBuilder.add(matchResult);
+          visitorForceBuilder.add(matchResult);
+        }
       });
 
       List<Event> eventsWithForce = events.map((event) {
@@ -142,22 +144,24 @@ class AgendaBloc extends Bloc<AgendaEvent, AgendaState> {
       Force globalForce = Force();
       Map<String, ForceBuilder> forceByTeam = {};
       allResults.forEach((matchResult) {
-        var hostForceBuilder = forceByTeam.putIfAbsent(
-            matchResult.hostTeamCode!,
-            () => ForceBuilder(
-                  teamCode: matchResult.hostTeamCode,
-                  othersForce: globalForce,
-                ));
-        var visitorForceBuilder = forceByTeam.putIfAbsent(
-            matchResult.visitorTeamCode!, () => ForceBuilder(teamCode: matchResult.visitorTeamCode));
-        hostForceBuilder.add(matchResult);
-        visitorForceBuilder.add(matchResult);
+        if (!_isForfeit(matchResult)) {
+          var hostForceBuilder = forceByTeam.putIfAbsent(
+              matchResult.hostTeamCode!,
+              () => ForceBuilder(
+                    teamCode: matchResult.hostTeamCode,
+                    othersForce: globalForce,
+                  ));
+          var visitorForceBuilder = forceByTeam.putIfAbsent(
+              matchResult.visitorTeamCode!, () => ForceBuilder(teamCode: matchResult.visitorTeamCode));
+          hostForceBuilder.add(matchResult);
+          visitorForceBuilder.add(matchResult);
+        }
       });
 
       List<Event> eventsWithForce = events.map((event) {
         if (event.type == EventType.Match) {
-          return event.withForce(
-              forceByTeam[event.hostCode]!.teamForce, forceByTeam[event.visitorCode]!.teamForce, globalForce);
+          return event.withForce(forceByTeam[event.hostCode]?.teamForce ?? Force.empty,
+              forceByTeam[event.visitorCode]?.teamForce ?? Force.empty, globalForce);
         } else {
           return event;
         }
@@ -177,5 +181,9 @@ class AgendaBloc extends Bloc<AgendaEvent, AgendaState> {
 
   bool Function(Event) _matchIsAfter(DateTime reference) {
     return (event) => event.date!.compareTo(reference) > 0;
+  }
+
+  bool _isForfeit(MatchResult matchResult) {
+    return !(matchResult.totalPointsHost != 0 && matchResult.totalPointsVisitor != 0);
   }
 }
