@@ -16,9 +16,18 @@ class TeamRankingTable extends StatefulWidget {
   late final int? _teamMatches;
   late final String? highlightTeamName;
   final bool showDetailed;
+  final VoidCallback? onPushPage;
+  final VoidCallback? onPopPage;
 
-  TeamRankingTable({Key? key, this.team, required this.ranking, this.highlightTeamName, this.showDetailed = false})
-      : super(key: key) {
+  TeamRankingTable({
+    Key? key,
+    this.team,
+    required this.ranking,
+    this.highlightTeamName,
+    this.showDetailed = false,
+    this.onPushPage,
+    this.onPopPage,
+  }) : super(key: key) {
     _teamRank = ranking.ranks?.firstWhereOrNull((rank) => rank.teamCode == team?.code);
     if (_teamRank != null)
       _teamMatches = (_teamRank?.wonMatches ?? 0) + (_teamRank?.lostMatches ?? 0);
@@ -271,9 +280,13 @@ class _TeamRankingTableState extends State<TeamRankingTable> {
   }
 
   _goToTeamDetails(BuildContext context, String teamCode) {
+    if (widget.onPushPage != null) widget.onPushPage!();
     Future.wait([_repository.loadTeam(teamCode), _repository.loadTeamClub(teamCode)]).then((results) {
       RouterFacade.push(
-          context: context, builder: (_) => TeamDetailPage(team: results[0] as Team, club: results[1] as Club));
+          context: context,
+          builder: (_) => TeamDetailPage(team: results[0] as Team, club: results[1] as Club)).then((_) {
+        if (widget.onPopPage != null) widget.onPopPage!();
+      });
     });
   }
 }

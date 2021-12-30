@@ -23,22 +23,14 @@ class _CompetitionLandscapePageState extends State<CompetitionLandscapePage>
 
   @override
   void initState() {
-    super.initState();
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.landscapeRight,
-      DeviceOrientation.landscapeLeft,
-    ]);
+    _switchToLandscape();
     _scrollController = ScrollController();
+    super.initState();
   }
 
   @override
   void dispose() {
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.landscapeRight,
-      DeviceOrientation.landscapeLeft,
-      DeviceOrientation.portraitUp,
-      DeviceOrientation.portraitDown,
-    ]);
+    _switchToAllOrientation();
     super.dispose();
   }
 
@@ -86,10 +78,28 @@ class _CompetitionLandscapePageState extends State<CompetitionLandscapePage>
             ranking: ranking,
             highlightTeamName: highlightTeamName,
             showDetailed: true,
+            onPushPage: () => _switchToAllOrientation(),
+            onPopPage: () => _switchToLandscape(),
           ),
         ),
       ],
     );
+  }
+
+  _switchToAllOrientation() {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeRight,
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+  }
+
+  _switchToLandscape() {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeRight,
+      DeviceOrientation.landscapeLeft,
+    ]);
   }
 
   @override

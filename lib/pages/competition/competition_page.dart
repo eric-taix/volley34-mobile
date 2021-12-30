@@ -232,7 +232,10 @@ class _CompetitionPageState extends State<CompetitionPage> with SingleTickerProv
         ),
         Padding(
           padding: const EdgeInsets.only(top: 18.0, left: 18, right: 8),
-          child: TeamRankingTable(ranking: ranking, highlightTeamName: highlightTeamName),
+          child: TeamRankingTable(
+            ranking: ranking,
+            highlightTeamName: highlightTeamName,
+          ),
         ),
       ],
     );
