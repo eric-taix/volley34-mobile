@@ -1,8 +1,10 @@
 import 'package:fluid_bottom_nav_bar/fluid_bottom_nav_bar.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:upgrader/upgrader.dart';
 import 'package:v34/commons/feature_tour.dart';
 import 'package:v34/commons/show_dialog.dart';
 import 'package:v34/menu.dart';
@@ -38,30 +40,35 @@ class _AppPageState extends State<AppPage> {
       drawer: AppMenu(),
       backgroundColor: Theme.of(context).canvasColor,
       extendBody: true,
-      body: BlocListener<MessageCubit, MessageState>(
-        listener: (BuildContext context, state) {
-          if (state is NewMessage) {
-            showAlertDialog(
-              context,
-              state.title,
-              state.message,
-              onPressed: () {
-                BlocProvider.of<MessageCubit>(context).clearMessage();
-              },
-            );
-          }
-          if (state is NewHelp) {
-            showHelpDialog(
-              context,
-              state.title,
-              state.paragraphs,
-              onPressed: () {
-                BlocProvider.of<MessageCubit>(context).clearMessage();
-              },
-            );
-          }
-        },
-        child: _child,
+      body: UpgradeAlert(
+        debugDisplayOnce: kDebugMode,
+        debugLogging: true,
+        showIgnore: false,
+        child: BlocListener<MessageCubit, MessageState>(
+          listener: (BuildContext context, state) {
+            if (state is NewMessage) {
+              showAlertDialog(
+                context,
+                state.title,
+                state.message,
+                onPressed: () {
+                  BlocProvider.of<MessageCubit>(context).clearMessage();
+                },
+              );
+            }
+            if (state is NewHelp) {
+              showHelpDialog(
+                context,
+                state.title,
+                state.paragraphs,
+                onPressed: () {
+                  BlocProvider.of<MessageCubit>(context).clearMessage();
+                },
+              );
+            }
+          },
+          child: _child,
+        ),
       ),
       bottomNavigationBar: FluidNavBar(
         icons: [
