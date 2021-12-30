@@ -1,6 +1,7 @@
 import 'package:add_2_calendar/add_2_calendar.dart' as addToCalendar;
 import 'package:feature_discovery/feature_discovery.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -19,6 +20,7 @@ import 'package:v34/pages/dashboard/blocs/gymnasium_bloc.dart';
 import 'package:v34/pages/match/edit_match.dart';
 import 'package:v34/pages/match/match_info.dart';
 import 'package:v34/pages/match/postpone_match.dart';
+import 'package:v34/pages/scoreboard/scoreboard_page.dart';
 import 'package:v34/repositories/repository.dart';
 import 'package:v34/utils/launch.dart';
 
@@ -321,15 +323,18 @@ class _EventInfoState extends State<EventInfo> with SingleTickerProviderStateMix
                 toggleButtonColor: Theme.of(context).colorScheme.secondary,
                 toggleButtonMargin: 18,
                 items: [
-                  /*
-                  Icon(
-                      icon,
-                      size: iconSize,
-                      color: iconColor ?? Colors.white,
-                    )
-                  */
                   CircularMenuItem(
-                    icon: Icon(Icons.play_arrow, size: 30, color: Theme.of(context).textTheme.bodyText2!.color),
+                    icon: SvgPicture.asset("assets/scoreboard.svg",
+                        width: 30, color: Theme.of(context).textTheme.bodyText2!.color),
+                    onTap: kDebugMode
+                        ? () {
+                            _closeMenu();
+                            RouterFacade.push(
+                              context: context,
+                              builder: (_) => ScoreBoardPage(),
+                            );
+                          }
+                        : null,
                   ),
                   CircularMenuItem(
                     icon: Icon(Icons.edit, size: 30, color: Theme.of(context).textTheme.bodyText2!.color),

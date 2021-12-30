@@ -71,6 +71,7 @@ flutter:
   uses-material-design: true
 
   assets:
+    - assets/scoreboard.svg
     - assets/filter.svg
     - assets/attack.svg
     - assets/defense.svg

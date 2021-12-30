@@ -72,6 +72,7 @@ enum AnalyticsRoute {
   preferences,
   about,
   licence,
+  scoreboard,
   unknown_event,
 }
 
@@ -113,6 +114,8 @@ String screenClass(AnalyticsRoute route, {String? extra}) {
       return "About";
     case AnalyticsRoute.licence:
       return "Licence";
+    case AnalyticsRoute.scoreboard:
+      return "Scoreboard";
     case AnalyticsRoute.unknown_event:
       return "Unknown Event";
   }
@@ -156,6 +159,8 @@ String screenName(AnalyticsRoute route, {String? extra}) {
       return "/about";
     case AnalyticsRoute.licence:
       return "/licence";
+    case AnalyticsRoute.scoreboard:
+      return "/scoreboard";
     case AnalyticsRoute.unknown_event:
       return "/unknown_event";
   }
