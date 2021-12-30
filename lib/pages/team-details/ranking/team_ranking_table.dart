@@ -16,9 +16,18 @@ class TeamRankingTable extends StatefulWidget {
   late final int? _teamMatches;
   late final String? highlightTeamName;
   final bool showDetailed;
+  final VoidCallback? onPushPage;
+  final VoidCallback? onPopPage;
 
-  TeamRankingTable({Key? key, this.team, required this.ranking, this.highlightTeamName, this.showDetailed = false})
-      : super(key: key) {
+  TeamRankingTable({
+    Key? key,
+    this.team,
+    required this.ranking,
+    this.highlightTeamName,
+    this.showDetailed = false,
+    this.onPushPage,
+    this.onPopPage,
+  }) : super(key: key) {
     _teamRank = ranking.ranks?.firstWhereOrNull((rank) => rank.teamCode == team?.code);
     if (_teamRank != null)
       _teamMatches = (_teamRank?.wonMatches ?? 0) + (_teamRank?.lostMatches ?? 0);
@@ -53,11 +62,11 @@ class _TeamRankingTableState extends State<TeamRankingTable> {
                     ? (rankingSynthesis.teamCode == widget.team?.code
                         ? Theme.of(context).textTheme.bodyText2!.copyWith(fontWeight: FontWeight.bold)
                         : Theme.of(context).textTheme.bodyText1)
-                    : (widget.highlightTeamName != null
+                    : (widget.highlightTeamName != null && widget.highlightTeamName!.isNotEmpty
                         ? (rankingSynthesis.name!.toLowerCase().contains(widget.highlightTeamName!.toLowerCase())
                             ? Theme.of(context).textTheme.bodyText2!.copyWith(fontWeight: FontWeight.bold)
                             : Theme.of(context).textTheme.bodyText1!)
-                        : Theme.of(context).textTheme.bodyText2!.copyWith(fontWeight: FontWeight.bold));
+                        : Theme.of(context).textTheme.bodyText2!);
                 return MapEntry(
                   index,
                   InkWell(
@@ -201,7 +210,7 @@ class _TeamRankingTableState extends State<TeamRankingTable> {
           child: SizedBox(
             width: 60,
             child: Text(
-              "${rankingSynthesis.wonSets} pts",
+              "${rankingSynthesis.totalPoints} pts",
               style: lineStyle,
               textAlign: TextAlign.center,
             ),
@@ -271,9 +280,13 @@ class _TeamRankingTableState extends State<TeamRankingTable> {
   }
 
   _goToTeamDetails(BuildContext context, String teamCode) {
+    if (widget.onPushPage != null) widget.onPushPage!();
     Future.wait([_repository.loadTeam(teamCode), _repository.loadTeamClub(teamCode)]).then((results) {
       RouterFacade.push(
-          context: context, builder: (_) => TeamDetailPage(team: results[0] as Team, club: results[1] as Club));
+          context: context,
+          builder: (_) => TeamDetailPage(team: results[0] as Team, club: results[1] as Club)).then((_) {
+        if (widget.onPopPage != null) widget.onPopPage!();
+      });
     });
   }
 }

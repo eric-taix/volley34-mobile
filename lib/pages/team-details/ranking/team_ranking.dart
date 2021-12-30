@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:v34/commons/competition_badge.dart';
@@ -196,8 +197,8 @@ class _TeamRankingState extends State<TeamRanking> with RouteAwareAnalytics {
 
   Widget _buildAdvancedStats(BuildContext context, RankingTeamSynthesis? teamStats, Force force, Force globalForce) {
     List<double> setsDiffEvolution = TeamBloc.computePointsDiffs(widget.results, widget.team.code);
-    DateTime? startDate = widget.results.first.matchDate;
-    DateTime? endDate = widget.results.last.matchDate;
+    DateTime? startDate = widget.results.firstOrNull?.matchDate;
+    DateTime? endDate = widget.results.lastOrNull?.matchDate;
     List<double> cumulativeSetsDiffEvolution = TeamBloc.computeCumulativePointsDiffs(setsDiffEvolution);
     return Column(
       children: <Widget>[

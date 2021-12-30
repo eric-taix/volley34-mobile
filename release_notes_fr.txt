@@ -1,4 +1,8 @@
-- Page d'affichage des compétitions
-- Gestion des filtres des compétitions ainsi que d'un champ de recherche
-- Page de détails des compétitions avec l'ensemble des colonnes
-- Mise à jour des permissions pour Android & iOS
+- Prise en compte des forfaits dans la répartition des sets
+- Non prise en compte des forfaits dans le calcul des forces
+- Correction du graphe de classement quand une équipe avait des forfaits
+- Correction du titre de Matthieu dans le projet
+- Correction d'une erreur quand il n'y avait aucun résultat de match
+- Petites corrections esthétiques
+- Correction de l'orientation du téléphone quand on clique sur la ligne d'une équipe
+

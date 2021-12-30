@@ -68,7 +68,6 @@ class _StatisticsWidgetState extends State<StatisticsWidget> with SingleTickerPr
         minValue: 0,
         maxValue: widget.maxPoints.toDouble(),
         value: widget.points!.toDouble(),
-        lineWidth: 8,
         backgroundColor: widget.backgroundColor,
         leftTitle: LeftTitle(
           show: false,

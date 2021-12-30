@@ -9,13 +9,13 @@ et à leur offrir un verre à l'occasion.
 # Contributeurs
 
 ## Eric Taix (Mobile Lead Dev)
+_Membre du VCV (Vailhauquès Volley Club)_
 
-_Vice président du VCV (Vailhauquès Volley Club)_  
 https://github.com/eric-taix
 
 ## Matthieu Aubert (Product Owner)
 
-_Membre du VCV (Vailhauquès Volley Club)_
+_Vice président du VCV (Vailhauquès Volley Club)_  
 
 ## Thomas Foulon (Mobile Dev)
 

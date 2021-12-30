@@ -16,7 +16,8 @@ class SummaryWidget extends StatelessWidget {
     return List.generate(7, (i) {
       switch (i) {
         case 0:
-          return makeGroupData(context, 0, teamStats.nbSets30!.toDouble(), Colors.green, teamStats);
+          return makeGroupData(
+              context, 0, ((teamStats.nbSets30 ?? 0) + (teamStats.nbSetsF30 ?? 0)).toDouble(), Colors.green, teamStats);
         case 1:
           return makeGroupData(context, 1, teamStats.nbSets31!.toDouble(), Colors.greenAccent, teamStats);
         case 2:
@@ -26,7 +27,8 @@ class SummaryWidget extends StatelessWidget {
         case 4:
           return makeGroupData(context, 4, teamStats.nbSets13!.toDouble(), Colors.deepOrangeAccent, teamStats);
         case 5:
-          return makeGroupData(context, 5, teamStats.nbSets03!.toDouble(), Colors.redAccent, teamStats);
+          return makeGroupData(context, 5, ((teamStats.nbSets03 ?? 0) + (teamStats.nbSetsF03 ?? 0)).toDouble(),
+              Colors.redAccent, teamStats);
         default:
           return makeGroupData(
               context, 6, teamStats.nbSetsMI!.toDouble(), Theme.of(context).colorScheme.secondary, teamStats);

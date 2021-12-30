@@ -16,6 +16,11 @@ class PlaceValue {
   final int rank;
 
   PlaceValue(this.id, this.value, this.rank);
+
+  @override
+  String toString() {
+    return 'PlaceValue{id: $id, value: $value, rank: $rank}';
+  }
 }
 
 class Podium extends StatefulWidget {
@@ -201,11 +206,13 @@ class _PodiumState extends State<Podium> {
         groupsSpace: 6,
         barGroups: [
           ...places.asMap().entries.map((entry) {
+            var value = entry.value.placeValue.value;
+            if (value < -5) value = -5;
             return BarChartGroupData(
               x: 0,
               barRods: [
                 BarChartRodData(
-                  y: entry.value.placeValue.value,
+                  y: value,
                   width: 9,
                   colors: [
                     entry.value.highlight ? _getColor(entry.key, context) : Theme.of(context).cardTheme.color!.tiny(10),

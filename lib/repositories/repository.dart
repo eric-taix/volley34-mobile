@@ -150,7 +150,7 @@ class Repository {
   Future<List<RankingSynthesis>> loadAllRankingSynthesis() async {
     var rankings = await _teamProvider.loadAllRankingSynthesis();
     rankings.forEach((ranking) {
-      ranking.ranks?.sort((s1, s2) => s1.totalPoints!.compareTo(s2.totalPoints!));
+      ranking.ranks?.sort((s1, s2) => s1.rank!.compareTo(s2.rank!) * -1);
     });
     return rankings;
   }

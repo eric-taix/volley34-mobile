@@ -56,6 +56,7 @@ mixin RouteAwareAnalytics<T extends StatefulWidget> on State<T> implements Route
 enum AnalyticsRoute {
   dashboard,
   competitions,
+  competitions_details,
   clubs,
   gymnasiums,
   club_statistics,
@@ -71,6 +72,7 @@ enum AnalyticsRoute {
   preferences,
   about,
   licence,
+  scoreboard,
   unknown_event,
 }
 
@@ -80,6 +82,8 @@ String screenClass(AnalyticsRoute route, {String? extra}) {
       return "Dashboard";
     case AnalyticsRoute.competitions:
       return "Competitions";
+    case AnalyticsRoute.competitions_details:
+      return "Competitions Details";
     case AnalyticsRoute.clubs:
       return "Clubs";
     case AnalyticsRoute.gymnasiums:
@@ -110,6 +114,8 @@ String screenClass(AnalyticsRoute route, {String? extra}) {
       return "About";
     case AnalyticsRoute.licence:
       return "Licence";
+    case AnalyticsRoute.scoreboard:
+      return "Scoreboard";
     case AnalyticsRoute.unknown_event:
       return "Unknown Event";
   }
@@ -121,6 +127,8 @@ String screenName(AnalyticsRoute route, {String? extra}) {
       return "/";
     case AnalyticsRoute.competitions:
       return "/competitions";
+    case AnalyticsRoute.competitions_details:
+      return "/competitions/details";
     case AnalyticsRoute.clubs:
       return "/clubs";
     case AnalyticsRoute.gymnasiums:
@@ -151,6 +159,8 @@ String screenName(AnalyticsRoute route, {String? extra}) {
       return "/about";
     case AnalyticsRoute.licence:
       return "/licence";
+    case AnalyticsRoute.scoreboard:
+      return "/scoreboard";
     case AnalyticsRoute.unknown_event:
       return "/unknown_event";
   }

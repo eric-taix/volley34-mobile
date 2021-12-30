@@ -79,7 +79,7 @@ class _CompetitionPageState extends State<CompetitionPage> with SingleTickerProv
                             showItemsOnEmpty: true,
                             searchLabel: "Rechercher une équipe",
                             failure: Center(
-                              child: Text("Aucune équipe trouvé !"),
+                              child: Text("Aucune équipe trouvée", style: Theme.of(context).textTheme.bodyText1),
                             ),
                             filter: (ranking) => [
                                   if (ranking.ranks != null) ...ranking.ranks!.map((rank) => rank.name).toList(),
@@ -232,7 +232,10 @@ class _CompetitionPageState extends State<CompetitionPage> with SingleTickerProv
         ),
         Padding(
           padding: const EdgeInsets.only(top: 18.0, left: 18, right: 8),
-          child: TeamRankingTable(ranking: ranking, highlightTeamName: highlightTeamName),
+          child: TeamRankingTable(
+            ranking: ranking,
+            highlightTeamName: highlightTeamName,
+          ),
         ),
       ],
     );

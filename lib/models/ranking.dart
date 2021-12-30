@@ -7,11 +7,14 @@ class RankingTeamSynthesis {
   final int? wonPoints, lostPoints;
   final int? nbSets30, nbSets31, nbSets32;
   final int? nbSets03, nbSets13, nbSets23;
+  final int? nbSetsF30, nbSetsF03;
   final int? nbSetsMI;
   final int? forfeitMatches;
   final int? setsDiff, pointsDiff;
 
   factory RankingTeamSynthesis.empty() => RankingTeamSynthesis(
+        null,
+        null,
         null,
         null,
         null,
@@ -54,6 +57,8 @@ class RankingTeamSynthesis {
     this.forfeitMatches,
     this.setsDiff,
     this.pointsDiff,
+    this.nbSetsF30,
+    this.nbSetsF03,
   );
 
   factory RankingTeamSynthesis.fromJson(Map<String, dynamic> json) {
@@ -78,6 +83,8 @@ class RankingTeamSynthesis {
       json["Forfait"],
       json["SefDiff"],
       json["PointDiff"],
+      json["NbSets_3F"],
+      json["NbSets_F3"],
     );
   }
 }
@@ -101,6 +108,19 @@ class RankingSynthesis {
       this.division,
       this.pool,
       this.ranks});
+
+  RankingSynthesis copyWith({List<RankingTeamSynthesis>? ranks}) {
+    return RankingSynthesis(
+      competitionCode: this.competitionCode,
+      label: this.label,
+      fullLabel: this.fullLabel,
+      promoted: this.promoted,
+      relegated: this.relegated,
+      division: this.division,
+      pool: this.pool,
+      ranks: ranks ?? this.ranks,
+    );
+  }
 
   factory RankingSynthesis.fromJson(Map<String, dynamic> json) {
     return RankingSynthesis(
