@@ -55,5 +55,7 @@
         <string>Permet de localiser votre position par rapport aux gymnases</string>
         <key>NSLocationAlwaysUsageDescription</key>
         <string>Permet de localiser votre position par rapport aux gymnases</string>
+        <key>ITSAppUsesNonExemptEncryption</key>
+        <false/>
 	</dict>
 </plist>
