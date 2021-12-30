@@ -13,9 +13,9 @@ class MatchTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    TextStyle textStyle = allowDetails
-        ? Theme.of(context).textTheme.bodyText2!.copyWith(fontWeight: FontWeight.bold)
-        : Theme.of(context).textTheme.bodyText1!.copyWith(fontWeight: FontWeight.bold);
+    TextStyle textStyle =
+        allowDetails ? Theme.of(context).textTheme.bodyText2! : Theme.of(context).textTheme.bodyText1!;
+    allowDetails ? Theme.of(context).textTheme.bodyText2! : Theme.of(context).textTheme.bodyText1!;
     return Column(
       children: [
         Text(
@@ -23,7 +23,7 @@ class MatchTitle extends StatelessWidget {
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
           textAlign: TextAlign.center,
-          style: textStyle,
+          style: textStyle.copyWith(fontWeight: team.code == event.hostCode ? FontWeight.bold : FontWeight.normal),
         ),
         BlocBuilder<PreferencesBloc, PreferencesState>(
           builder: (context, state) => state is PreferencesUpdatedState && (state.showForceOnDashboard ?? false)
@@ -45,7 +45,7 @@ class MatchTitle extends StatelessWidget {
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
           textAlign: TextAlign.center,
-          style: textStyle,
+          style: textStyle.copyWith(fontWeight: team.code == event.visitorCode ? FontWeight.bold : FontWeight.normal),
         ),
       ],
     );
