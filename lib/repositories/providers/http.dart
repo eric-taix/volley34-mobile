@@ -34,6 +34,12 @@ class DebugCacheInterceptor extends InterceptorsWrapper {
     print("Request: ${response.realUri}");
     super.onResponse(response, handler);
   }
+
+  @override
+  void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
+    print("Response: ${options.uri}");
+    super.onRequest(options, handler);
+  }
 }
 
 class ServerErrorInterceptor extends InterceptorsWrapper {

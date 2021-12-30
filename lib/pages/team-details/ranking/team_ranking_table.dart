@@ -201,7 +201,7 @@ class _TeamRankingTableState extends State<TeamRankingTable> {
           child: SizedBox(
             width: 60,
             child: Text(
-              "${rankingSynthesis.wonSets} pts",
+              "${rankingSynthesis.totalPoints} pts",
               style: lineStyle,
               textAlign: TextAlign.center,
             ),
