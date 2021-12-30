@@ -52,7 +52,6 @@ class _ClubStatisticsState extends State<ClubStatistics> with RouteAwareAnalytic
                 child: ConstrainedBox(
                   constraints: BoxConstraints(maxWidth: 100, maxHeight: 80),
                   child: ArcGraph(
-                    lineWidth: 8,
                     minValue: 0,
                     maxValue: 1,
                     animationDuration: Duration(milliseconds: 1200),

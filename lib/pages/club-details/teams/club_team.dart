@@ -120,7 +120,6 @@ class _ClubTeamState extends State<ClubTeam> {
                                                   child: ConstrainedBox(
                                                     constraints: BoxConstraints(maxHeight: 100, maxWidth: 80),
                                                     child: ArcGraph(
-                                                      lineWidth: 8,
                                                       minValue: 0,
                                                       maxValue: 1,
                                                       backgroundColor: Theme.of(context).cardTheme.color,

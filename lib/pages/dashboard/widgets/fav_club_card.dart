@@ -75,7 +75,6 @@ class _FavoriteClubCardState extends State<FavoriteClubCard> {
                 ConstrainedBox(
                   constraints: BoxConstraints(maxWidth: 100, maxHeight: 210),
                   child: ArcGraph(
-                    lineWidth: 8,
                     minValue: 0,
                     maxValue: 1,
                     animationDuration: Duration(milliseconds: 1200),

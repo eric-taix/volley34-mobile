@@ -24,7 +24,7 @@ class ArcGraph extends StatefulWidget {
     required this.minValue,
     required this.maxValue,
     required this.value,
-    this.lineWidth = 8,
+    this.lineWidth = 10,
     this.openedAngle = math.pi / 4,
     LeftTitle? leftTitle,
     List<Color>? colors,
@@ -38,7 +38,7 @@ class ArcGraph extends StatefulWidget {
         assert((colors == null && stops == null) ||
             (colors ?? [Colors.red, Colors.orangeAccent, Colors.green]).length == (stops ?? [0.1, 0.5, 0.95]).length),
         this.leftTitle = leftTitle ?? LeftTitle(show: false),
-        this.colors = colors ?? [Colors.red, Colors.orangeAccent, Colors.green],
+        this.colors = colors ?? [Colors.red, Colors.yellow, Colors.green],
         this.stops = stops ?? [0.1, 0.5, 0.9];
 
   @override
@@ -186,8 +186,8 @@ class _ArcPainter extends CustomPainter {
     //canvas.translate(0, -leftTp.height / 2);
     canvas.drawArc(rect, startAngle, endAngle - openedAngle, false, arcPaint);
     //canvas.drawArc(rect, valueAngle, endAngle - valueAngle, false, arcBackgroundPaint);
-    canvas.drawCircle(Offset(0 + size.width / 2 + dy, 0 + size.height / 2 + dx), 12, valueBackgroundPaint);
-    canvas.drawCircle(Offset(0 + size.width / 2 + dy, 0 + size.height / 2 + dx), 6, valueForegroundPaint);
+    canvas.drawCircle(Offset(0 + size.width / 2 + dy, 0 + size.height / 2 + dx), lineWidth + 2, valueBackgroundPaint);
+    canvas.drawCircle(Offset(0 + size.width / 2 + dy, 0 + size.height / 2 + dx), lineWidth - 2, valueForegroundPaint);
     canvas.restore();
 
     canvas.save();
