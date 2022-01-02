@@ -11,6 +11,7 @@ import 'package:intl/intl.dart';
 import 'package:v34/commons/circular_menu/circular_menu.dart';
 import 'package:v34/commons/circular_menu/circular_menu_item.dart';
 import 'package:v34/commons/feature_tour.dart';
+import 'package:v34/commons/orientation_helper.dart';
 import 'package:v34/commons/router.dart';
 import 'package:v34/commons/timeline/details/event_place.dart';
 import 'package:v34/commons/timeline/postponed_badge.dart';
@@ -336,11 +337,13 @@ class _EventInfoState extends State<EventInfo> with SingleTickerProviderStateMix
                             _closeMenu();
                             RouterFacade.push(
                               context: context,
-                              builder: (_) => ScoreBoardPage(
-                                hostTeam: _hostTeam!,
-                                hostClub: _hostClub!,
-                                visitorTeam: _visitorTeam!,
-                                visitorClub: _visitorClub!,
+                              builder: (_) => OrientationHelper(
+                                child: ScoreBoardPage(
+                                  hostTeam: _hostTeam!,
+                                  hostClub: _hostClub!,
+                                  visitorTeam: _visitorTeam!,
+                                  visitorClub: _visitorClub!,
+                                ),
                               ),
                             );
                           }
