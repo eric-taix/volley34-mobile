@@ -1,5 +1,4 @@
 import 'package:fluid_bottom_nav_bar/fluid_bottom_nav_bar.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -41,7 +40,6 @@ class _AppPageState extends State<AppPage> {
       backgroundColor: Theme.of(context).canvasColor,
       extendBody: true,
       body: UpgradeAlert(
-        debugDisplayOnce: kDebugMode,
         debugLogging: true,
         showIgnore: false,
         child: BlocListener<MessageCubit, MessageState>(

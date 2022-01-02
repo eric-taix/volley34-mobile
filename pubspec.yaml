@@ -95,7 +95,12 @@ flutter:
     - assets/maps/map_style.txt
     - assets/court.png
     - assets/postponed-event.svg
+    - assets/double-arrow.svg
   fonts:
+    - family: OpenSans
+      fonts:
+        - asset: assets/fonts/OpenSans.ttf
+          weight: 400
     - family: Raleway
       fonts:
         - asset: assets/fonts/Raleway-Thin.ttf
