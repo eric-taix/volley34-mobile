@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_markdown/flutter_markdown.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 import 'package:v34/commons/loading.dart';
 import 'package:v34/utils/analytics.dart';
 
@@ -32,31 +31,7 @@ class _MarkdownPageState extends State<MarkdownPage> with RouteAwareAnalytics {
               padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
               child: Column(
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: FutureBuilder(
-                      future: PackageInfo.fromPlatform(),
-                      builder: (BuildContext context, AsyncSnapshot<PackageInfo> snapshot) {
-                        if (snapshot.hasData) {
-                          String appName = snapshot.data?.appName ?? "?";
-                          String version = snapshot.data?.version ?? "?";
-                          return RichText(
-                            text: TextSpan(
-                              text: "$appName ",
-                              style: Theme.of(context).textTheme.headline4,
-                              children: [
-                                TextSpan(text: "  - version $version", style: Theme.of(context).textTheme.bodyText2),
-                              ],
-                            ),
-                          );
-                        } else if (snapshot.hasError) {
-                          return Text("Version 0.0.0");
-                        } else {
-                          return SizedBox();
-                        }
-                      },
-                    ),
-                  ),
+                  if (widget.child != null) widget.child!,
                   Expanded(
                     child: Markdown(
                       styleSheet: MarkdownStyleSheet(

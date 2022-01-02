@@ -1,5 +1,6 @@
 import 'package:add_2_calendar/add_2_calendar.dart' as addToCalendar;
 import 'package:feature_discovery/feature_discovery.dart';
+import 'package:feature_flags/feature_flags.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +14,7 @@ import 'package:v34/commons/feature_tour.dart';
 import 'package:v34/commons/router.dart';
 import 'package:v34/commons/timeline/details/event_place.dart';
 import 'package:v34/commons/timeline/postponed_badge.dart';
+import 'package:v34/features_flag.dart';
 import 'package:v34/models/club.dart';
 import 'package:v34/models/event.dart';
 import 'package:v34/models/team.dart';
@@ -325,7 +327,7 @@ class _EventInfoState extends State<EventInfo> with SingleTickerProviderStateMix
                 items: [
                   CircularMenuItem(
                     icon: Icon(Icons.play_arrow_rounded, size: 30, color: Theme.of(context).textTheme.bodyText2!.color),
-                    onTap: kDebugMode &&
+                    onTap: Features.isFeatureEnabled(context, scoreboard_feature) &&
                             _hostTeam != null &&
                             _hostClub != null &&
                             _visitorTeam != null &&

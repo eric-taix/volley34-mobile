@@ -1,7 +1,10 @@
+import 'package:feature_flags/feature_flags.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:v34/commons/blocs/preferences_bloc.dart';
 import 'package:v34/commons/loading.dart';
+import 'package:v34/commons/paragraph.dart';
+import 'package:v34/features_flag.dart';
 import 'package:v34/utils/analytics.dart';
 
 class PreferencesPage extends StatefulWidget {
@@ -33,6 +36,7 @@ class _PreferencesPageState extends State<PreferencesPage> with RouteAwareAnalyt
               SizedBox(height: 30),
               _buildThemeOption(context, state),
               _buildForceInDashboard(context, state),
+              if (Features.isFeatureEnabled(context, experimental_features)) _buildFeaturesFlag(context),
               SizedBox(height: 50),
             ],
           );
@@ -43,6 +47,30 @@ class _PreferencesPageState extends State<PreferencesPage> with RouteAwareAnalyt
         }
       },
     );
+  }
+
+  Widget _buildFeaturesFlag(BuildContext context) {
+    return Column(children: [
+      Paragraph(
+        title: "Fonctionnalités Expérimentales",
+        bottomPadding: 28,
+      ),
+      ...FEATURES_FLAGS.map((featureFlag) {
+        return ListTile(
+          title: Row(
+            children: [
+              Expanded(child: Text(featureFlag, style: Theme.of(context).textTheme.bodyText2)),
+              Switch(
+                value: Features.isFeatureEnabled(context, featureFlag),
+                onChanged: (value) {
+                  Features.setFeature(context, featureFlag, value);
+                },
+              ),
+            ],
+          ),
+        );
+      }),
+    ]);
   }
 
   Widget _buildForceInDashboard(BuildContext context, PreferencesUpdatedState state) {
