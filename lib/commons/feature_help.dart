@@ -77,19 +77,6 @@ class FeatureHelp extends StatelessWidget {
             ),
           ],
         ),
-/*        Align(
-          alignment: Alignment.centerLeft,
-          child: Container(
-            child: IconButton(
-              icon: Icon(Icons.info_outline_rounded, color: Theme.of(context).textTheme.bodyText1!.color),
-              onPressed: () {
-                //BlocProvider.of<MessageCubit>(context).showHelp(title: title ?? "", paragraphs: paragraphs ?? []);
-                FeatureDiscovery.clearPreferences(context, [featureId]);
-                FeatureDiscovery.discoverFeatures(context, [featureId]);
-              },
-            ),
-          ),
-        )*/
       ],
     );
   }

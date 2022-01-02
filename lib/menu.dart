@@ -1,9 +1,15 @@
+import 'dart:async';
+
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:feature_flags/feature_flags.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:v34/commons/blocs/preferences_bloc.dart';
+import 'package:v34/features_flag.dart';
+import 'package:v34/message_cubit.dart';
 import 'package:v34/pages/markdown_page.dart';
 import 'package:v34/pages/preferences_page.dart';
 import 'package:v34/pages/profil/profil_page.dart';
@@ -15,6 +21,26 @@ class AppMenu extends StatefulWidget {
 }
 
 class _AppMenuState extends State<AppMenu> {
+  Timer? _tapFuture;
+  int _count = 0;
+
+  _onTap(BuildContext context) {
+    _tapFuture?.cancel();
+    _tapFuture = Timer(Duration(milliseconds: 1000), () {
+      _count = 0;
+    });
+    _count++;
+    if (_count == 7) {
+      Features.setFeature(
+        context,
+        experimental_features,
+        true,
+      );
+      BlocProvider.of<MessageCubit>(context)
+          .showMessage(title: "Information", message: "$experimental_features activé");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     Color textStyleColor = Theme.of(context).textTheme.headline1!.color!;
@@ -96,6 +122,35 @@ class _AppMenuState extends State<AppMenu> {
                     "A propos",
                     "assets/about.markdown",
                     analyticsRoute: AnalyticsRoute.about,
+                    child: GestureDetector(
+                      onTap: () => _onTap(context),
+                      child: Padding(
+                        padding: const EdgeInsets.all(18.0),
+                        child: FutureBuilder(
+                          future: PackageInfo.fromPlatform(),
+                          builder: (BuildContext context, AsyncSnapshot<PackageInfo> snapshot) {
+                            if (snapshot.hasData) {
+                              String appName = snapshot.data?.appName ?? "?";
+                              String version = snapshot.data?.version ?? "?";
+                              return RichText(
+                                text: TextSpan(
+                                  text: "$appName ",
+                                  style: Theme.of(context).textTheme.headline4,
+                                  children: [
+                                    TextSpan(
+                                        text: "  - version $version", style: Theme.of(context).textTheme.bodyText2),
+                                  ],
+                                ),
+                              );
+                            } else if (snapshot.hasError) {
+                              return Text("Version 0.0.0");
+                            } else {
+                              return SizedBox();
+                            }
+                          },
+                        ),
+                      ),
+                    ),
                   ))))),
       _MenuItemWithLeading(
           "License",

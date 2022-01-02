@@ -1,5 +1,6 @@
 import 'package:add_2_calendar/add_2_calendar.dart' as addToCalendar;
 import 'package:feature_discovery/feature_discovery.dart';
+import 'package:feature_flags/feature_flags.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -10,9 +11,11 @@ import 'package:intl/intl.dart';
 import 'package:v34/commons/circular_menu/circular_menu.dart';
 import 'package:v34/commons/circular_menu/circular_menu_item.dart';
 import 'package:v34/commons/feature_tour.dart';
+import 'package:v34/commons/orientation_helper.dart';
 import 'package:v34/commons/router.dart';
 import 'package:v34/commons/timeline/details/event_place.dart';
 import 'package:v34/commons/timeline/postponed_badge.dart';
+import 'package:v34/features_flag.dart';
 import 'package:v34/models/club.dart';
 import 'package:v34/models/event.dart';
 import 'package:v34/models/team.dart';
@@ -324,14 +327,24 @@ class _EventInfoState extends State<EventInfo> with SingleTickerProviderStateMix
                 toggleButtonMargin: 18,
                 items: [
                   CircularMenuItem(
-                    icon: SvgPicture.asset("assets/scoreboard.svg",
-                        width: 30, color: Theme.of(context).textTheme.bodyText2!.color),
-                    onTap: kDebugMode
+                    icon: Icon(Icons.play_arrow_rounded, size: 30, color: Theme.of(context).textTheme.bodyText2!.color),
+                    onTap: Features.isFeatureEnabled(context, scoreboard_feature) &&
+                            _hostTeam != null &&
+                            _hostClub != null &&
+                            _visitorTeam != null &&
+                            _visitorClub != null
                         ? () {
                             _closeMenu();
                             RouterFacade.push(
                               context: context,
-                              builder: (_) => ScoreBoardPage(),
+                              builder: (_) => OrientationHelper(
+                                child: ScoreBoardPage(
+                                  hostTeam: _hostTeam!,
+                                  hostClub: _hostClub!,
+                                  visitorTeam: _visitorTeam!,
+                                  visitorClub: _visitorClub!,
+                                ),
+                              ),
                             );
                           }
                         : null,
