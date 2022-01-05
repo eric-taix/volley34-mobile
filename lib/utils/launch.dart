@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:map_launcher/map_launcher.dart' as mapLauncher;
 import 'package:url_launcher/url_launcher.dart';
 import 'package:v34/models/gymnasium.dart';
@@ -26,6 +27,7 @@ void launchRoute(BuildContext context, Gymnasium gymnasium, {bool route = true})
     } else {
       showModalBottomSheet(
         context: context,
+        backgroundColor: Colors.white,
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.only(topLeft: Radius.circular(8), topRight: Radius.circular(8))),
         builder: (BuildContext context) {
@@ -43,12 +45,12 @@ void launchRoute(BuildContext context, Gymnasium gymnasium, {bool route = true})
                             map.showMarker(coords: coordinates, title: title!);
                           }
                         },
-                        title:
-                            Text(map.mapName, style: Theme.of(context).textTheme.bodyText1!.apply(fontSizeDelta: 1.5)),
-                        leading: Image(
-                          image: AssetImage(map.icon),
-                          height: 30.0,
-                          width: 30.0,
+                        title: Text(map.mapName,
+                            style: Theme.of(context).textTheme.bodyText1!.copyWith(color: Colors.black)),
+                        leading: SvgPicture.asset(
+                          map.icon,
+                          width: 50,
+                          height: 50,
                         ),
                       ),
                   ],
