@@ -20,13 +20,13 @@ abstract class TimelineItemWidget extends StatelessWidget {
 
   Color? color();
 
-  factory TimelineItemWidget.from(Event event, Team team) {
+  factory TimelineItemWidget.from(Event event, Team team, bool showForces) {
     var now = DateTime.now();
     var today = DateTime(now.year, now.month, now.day);
 
     switch (event.type) {
       case EventType.Match:
-        return _MatchTimelineItem(event, team, event.date!.compareTo(today) >= 0 || !event.hasResult);
+        return _MatchTimelineItem(event, team, event.date!.compareTo(today) >= 0 || !event.hasResult, showForces);
       case EventType.Meeting:
         return _MeetingTimelineItem(event);
       case EventType.Tournament:
@@ -85,13 +85,14 @@ class _MatchTimelineItem extends TimelineItemWidget {
   final Event event;
   final Team team;
   final bool allowDetails;
-  _MatchTimelineItem(this.event, this.team, this.allowDetails);
+  final bool showForces;
+  _MatchTimelineItem(this.event, this.team, this.allowDetails, this.showForces);
 
   @override
   Widget build(BuildContext context) {
     return _TimelineItemCard(
       children: <Widget>[
-        MatchTitle(allowDetails: allowDetails, event: event, team: team),
+        MatchTitle(allowDetails: allowDetails, event: event, team: team, showForces: showForces),
         if (allowDetails) _Place(event.place, event.date)
       ],
       onTap: allowDetails ? () => showEventDetails(context, event) : null,

@@ -9,7 +9,10 @@ class MatchTitle extends StatelessWidget {
   final Event event;
   final Team team;
   final bool allowDetails;
-  const MatchTitle({Key? key, required this.event, required this.team, required this.allowDetails}) : super(key: key);
+  final bool showForces;
+  const MatchTitle(
+      {Key? key, required this.event, required this.team, required this.allowDetails, required this.showForces})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +29,8 @@ class MatchTitle extends StatelessWidget {
           style: textStyle.copyWith(fontWeight: team.code == event.hostCode ? FontWeight.bold : FontWeight.normal),
         ),
         BlocBuilder<PreferencesBloc, PreferencesState>(
-          builder: (context, state) => state is PreferencesUpdatedState && (state.showForceOnDashboard ?? false)
+          builder: (context, state) => showForces ||
+                  (state is PreferencesUpdatedState && (state.showForceOnDashboard ?? false))
               ? ForceTeams(
                   hostForce: allowDetails ? event.hostForce : null,
                   visitorForce: allowDetails ? event.visitorForce : null,

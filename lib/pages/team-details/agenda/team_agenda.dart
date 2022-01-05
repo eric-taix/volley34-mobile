@@ -59,7 +59,8 @@ class _TeamAgendaState extends State<TeamAgenda> with RouteAwareAnalytics {
                                 events: [
                                   ...entry.value.map(
                                     (e) {
-                                      TimelineItemWidget timelineItemWidget = TimelineItemWidget.from(e, widget.team);
+                                      TimelineItemWidget timelineItemWidget =
+                                          TimelineItemWidget.from(e, widget.team, true);
                                       return TimelineEvent(
                                         child: timelineItemWidget,
                                         color: timelineItemWidget.color(),
