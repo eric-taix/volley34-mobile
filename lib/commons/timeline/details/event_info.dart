@@ -366,7 +366,8 @@ class _EventInfoState extends State<EventInfo> with SingleTickerProviderStateMix
                     },
                   ),
                   CircularMenuItem(
-                    icon: Icon(Icons.timer, size: 30, color: Theme.of(context).textTheme.bodyText2!.color),
+                    icon: SvgPicture.asset("assets/calendar-postpone3.svg",
+                        width: 30, color: Theme.of(context).textTheme.bodyText2!.color),
                     onTap: () {
                       _closeMenu();
                       RouterFacade.push(

@@ -42,7 +42,7 @@ class _SelectFavoriteTeamState extends State<SelectFavoriteTeam> {
       listener: (context, state) {
         if (state is PreferencesUpdatedState) {
           if (state.favoriteTeam != null && state.favoriteClub != null) {
-            Future.delayed(Duration(milliseconds: 1000), () => _close(context));
+            Future.delayed(Duration(milliseconds: 100), () => _close(context));
           }
         }
       },
@@ -96,7 +96,7 @@ class _SelectFavoriteTeamState extends State<SelectFavoriteTeam> {
 
   _save(BuildContext context) async {
     _preferencesBloc.add(PreferencesSaveEvent(favoriteClub: _selectedClub, favoriteTeam: _selectedTeam));
-    Navigator.of(context).pop();
+//    _close(context);
   }
 
   _close(BuildContext context) {

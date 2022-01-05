@@ -88,7 +88,7 @@ class PreferencesBloc extends Bloc<PreferencesEvent, PreferencesState> {
     } else if (event is PreferencesSaveEvent) {
       try {
         yield PreferencesSavingState();
-        await Future.delayed(Duration(milliseconds: 500), () => null);
+        //await Future.delayed(Duration(milliseconds: 500), () => null);
         if (event.themeMode != null) preferences.setString("theme", event.themeMode.toString());
         if (event.favoriteClub?.code != null) {
           await repository.setFavorite(event.favoriteClub!.code, FavoriteType.Club);

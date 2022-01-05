@@ -1,8 +1,5 @@
-import 'package:feature_discovery/feature_discovery.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:v34/app_page.dart';
 import 'package:v34/commons/blocs/preferences_bloc.dart';
 import 'package:v34/commons/loading.dart';
 import 'package:v34/commons/page/main_page.dart';
@@ -39,22 +36,6 @@ class _DashboardPageState extends State<DashboardPage> with RouteAwareAnalytics 
                 SelectFavoriteTeam(
               canClose: false,
             ),
-          );
-        } else if (state is PreferencesUpdatedState) {
-          Future.delayed(Duration(milliseconds: 1000)).then(
-            (_) {
-              SchedulerBinding.instance!.addPostFrameCallback((timeStamp) {
-                FeatureDiscovery.discoverFeatures(
-                  context,
-                  const <String>{
-                    MAIN_DASHBOARD,
-                    MAIN_COMPETITION,
-                    MAIN_CLUBS,
-                    MAIN_GYMNASIUMS,
-                  },
-                );
-              });
-            },
           );
         }
       },
