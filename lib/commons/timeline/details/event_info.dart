@@ -11,6 +11,7 @@ import 'package:intl/intl.dart';
 import 'package:v34/commons/circular_menu/circular_menu.dart';
 import 'package:v34/commons/circular_menu/circular_menu_item.dart';
 import 'package:v34/commons/feature_tour.dart';
+import 'package:v34/commons/loading.dart';
 import 'package:v34/commons/orientation_helper.dart';
 import 'package:v34/commons/router.dart';
 import 'package:v34/commons/timeline/details/event_place.dart';
@@ -144,7 +145,7 @@ class _EventInfoState extends State<EventInfo> with SingleTickerProviderStateMix
               Padding(
                 padding: const EdgeInsets.only(left: 8.0),
                 child: Text("Initialement prévu le ${_fullDateFormat.format(widget.event.initialDate!)}",
-                    style: Theme.of(context).textTheme.bodyText1),
+                    style: Theme.of(context).textTheme.bodyText1!.copyWith(fontStyle: FontStyle.italic)),
               ),
             ],
           ),
@@ -166,7 +167,11 @@ class _EventInfoState extends State<EventInfo> with SingleTickerProviderStateMix
             color: Theme.of(context).textTheme.bodyText1!.color,
             size: _iconSize,
           ),
-          title: Text(widget.event.place!, textAlign: TextAlign.left, style: Theme.of(context).textTheme.bodyText2),
+          title: BlocBuilder<GymnasiumBloc, GymnasiumState>(
+              builder: (context, state) => (state is GymnasiumLoadedState)
+                  ? Text(state.gymnasium.fullname!,
+                      textAlign: TextAlign.left, style: Theme.of(context).textTheme.bodyText2)
+                  : Loading.small()),
         ),
       ),
     ];
