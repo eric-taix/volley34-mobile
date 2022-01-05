@@ -49,7 +49,7 @@ class _AppPageState extends State<AppPage> {
                 context,
                 state.title,
                 state.message,
-                onPressed: () {
+                onPressed: (context) {
                   BlocProvider.of<MessageCubit>(context).clearMessage();
                 },
               );

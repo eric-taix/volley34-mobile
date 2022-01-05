@@ -3,6 +3,8 @@ PODS:
     - Flutter
   - audio_session (0.0.1):
     - Flutter
+  - device_info (0.0.1):
+    - Flutter
   - Firebase/Analytics (8.9.0):
     - Firebase/Core
   - Firebase/Core (8.9.0):
@@ -50,6 +52,10 @@ PODS:
     - GoogleUtilities/UserDefaults (~> 7.6)
     - PromisesObjC (< 3.0, >= 1.2)
   - Flutter (1.0.0)
+  - flutter_email_sender (0.0.1):
+    - Flutter
+  - flutter_mailer (0.0.1):
+    - Flutter
   - FMDB (2.7.5):
     - FMDB/standard (= 2.7.5)
   - FMDB/standard (2.7.5)
@@ -106,6 +112,8 @@ PODS:
     - GoogleUtilities/Logger
   - GoogleUtilities/UserDefaults (7.6.0):
     - GoogleUtilities/Logger
+  - image_picker (0.0.1):
+    - Flutter
   - just_audio (0.0.1):
     - Flutter
   - map_launcher (0.0.1):
@@ -137,11 +145,15 @@ PODS:
 DEPENDENCIES:
   - add_2_calendar (from `.symlinks/plugins/add_2_calendar/ios`)
   - audio_session (from `.symlinks/plugins/audio_session/ios`)
+  - device_info (from `.symlinks/plugins/device_info/ios`)
   - firebase_analytics (from `.symlinks/plugins/firebase_analytics/ios`)
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
   - Flutter (from `Flutter`)
+  - flutter_email_sender (from `.symlinks/plugins/flutter_email_sender/ios`)
+  - flutter_mailer (from `.symlinks/plugins/flutter_mailer/ios`)
   - geolocator_apple (from `.symlinks/plugins/geolocator_apple/ios`)
   - google_maps_flutter (from `.symlinks/plugins/google_maps_flutter/ios`)
+  - image_picker (from `.symlinks/plugins/image_picker/ios`)
   - just_audio (from `.symlinks/plugins/just_audio/ios`)
   - map_launcher (from `.symlinks/plugins/map_launcher/ios`)
   - package_info_plus (from `.symlinks/plugins/package_info_plus/ios`)
@@ -173,16 +185,24 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/add_2_calendar/ios"
   audio_session:
     :path: ".symlinks/plugins/audio_session/ios"
+  device_info:
+    :path: ".symlinks/plugins/device_info/ios"
   firebase_analytics:
     :path: ".symlinks/plugins/firebase_analytics/ios"
   firebase_core:
     :path: ".symlinks/plugins/firebase_core/ios"
   Flutter:
     :path: Flutter
+  flutter_email_sender:
+    :path: ".symlinks/plugins/flutter_email_sender/ios"
+  flutter_mailer:
+    :path: ".symlinks/plugins/flutter_mailer/ios"
   geolocator_apple:
     :path: ".symlinks/plugins/geolocator_apple/ios"
   google_maps_flutter:
     :path: ".symlinks/plugins/google_maps_flutter/ios"
+  image_picker:
+    :path: ".symlinks/plugins/image_picker/ios"
   just_audio:
     :path: ".symlinks/plugins/just_audio/ios"
   map_launcher:
@@ -207,6 +227,7 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   add_2_calendar: e9d68636aed37fb18e12f5a3d74c2e0589487af0
   audio_session: 4f3e461722055d21515cf3261b64c973c062f345
+  device_info: d7d233b645a32c40dfdc212de5cf646ca482f175
   Firebase: 13d8d96499e2635428d5bf0ec675df21f95d9a95
   firebase_analytics: 022be8bd68c73ddaa23b77895e9098afa7069cfb
   firebase_core: dfcae4c150a5e24436a0b7677c470478a234d5bf
@@ -215,6 +236,8 @@ SPEC CHECKSUMS:
   FirebaseCoreDiagnostics: 56fb7216d87e0e6ec2feddefa9d8a392fe8b2c18
   FirebaseInstallations: 830327b45345ffc859eaa9c17bcd5ae893fd5425
   Flutter: 50d75fe2f02b26cc09d224853bb45737f8b3214a
+  flutter_email_sender: 02d7443217d8c41483223627972bfdc09f74276b
+  flutter_mailer: 2ef5a67087bc8c6c4cefd04a178bf1ae2c94cd83
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   geolocator_apple: b741765c55dc21950e3e106e8b3584e55cf81ce5
   google_maps_flutter: abdb8dee6c52d4be36ad131ee6ebfacd14417c5a
@@ -222,6 +245,7 @@ SPEC CHECKSUMS:
   GoogleDataTransport: 629c20a4d363167143f30ea78320d5a7eb8bd940
   GoogleMaps: eb03e327edfd70b06de1e6e321653f73712df7ad
   GoogleUtilities: 684ee790a24f73ebb2d1d966e9711c203f2a4237
+  image_picker: 9aa50e1d8cdacdbed739e925b7eea16d014367e6
   just_audio: baa7252489dbcf47a4c7cc9ca663e9661c99aafa
   map_launcher: e325db1261d029ff33e08e03baccffe09593ffea
   nanopb: a0ba3315591a9ae0a16a309ee504766e90db0c96

@@ -4,11 +4,11 @@ import 'package:v34/light_theme.dart';
 
 const double CARD_BORDER_RADIUS = 18.0;
 const Color test = Color(0xfff5f5f6);
-const Color _mainColor = Color(0xFFC9334F);
+const Color mainColor = Color(0xFFC9334F);
 
 class AppTheme {
-  static ThemeData darkTheme() => buildDarkTheme(_mainColor);
-  static ThemeData lightTheme() => buildLightTheme(_mainColor);
+  static ThemeData darkTheme() => buildDarkTheme(mainColor);
+  static ThemeData lightTheme() => buildLightTheme(mainColor);
 }
 
 class OverlayStateColor extends MaterialStateColor {
