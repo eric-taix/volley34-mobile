@@ -116,6 +116,8 @@ class _EditMatchState extends State<EditMatch> {
                 showMatchDate: true,
                 showTeamLink: false,
               ),
+              Paragraph(title: "Informations"),
+              ..._buildInformation(context),
               Padding(
                 padding: const EdgeInsets.only(bottom: 18.0),
                 child: Paragraph(title: "Résultat"),
@@ -182,7 +184,6 @@ class _EditMatchState extends State<EditMatch> {
                   child: TextFormField(
                     controller: _commentsController,
                     focusNode: _commentsFocus,
-                    autofocus: true,
                     cursorWidth: 2,
                     style: Theme.of(context).textTheme.bodyText2!.copyWith(fontSize: 18),
                     autovalidateMode: AutovalidateMode.always,
@@ -192,8 +193,6 @@ class _EditMatchState extends State<EditMatch> {
                   ),
                 ),
               ),
-              Paragraph(title: "Informations"),
-              ..._buildInformation(context),
               Padding(
                 padding: const EdgeInsets.only(bottom: 18.0),
                 child: Paragraph(title: "Feuille de match"),
@@ -488,19 +487,42 @@ class _EditMatchState extends State<EditMatch> {
 
   TextFormField _createSetField(int index, bool hostSet) {
     int fieldIndex = index * 2 + (hostSet ? 0 : 1);
+
+    int hostSetWon = 0;
+    int visitorSetWon = 0;
+
+    if (index > 0) {
+      for (int set = 0; set < index; set++) {
+        int hostPoints = 0;
+        int visitorPoints = 0;
+        try {
+          hostPoints = int.parse(_setControllers[set * 2].text);
+        } catch (_) {}
+        ;
+        try {
+          visitorPoints = int.parse(_setControllers[set * 2 + 1].text);
+        } catch (_) {}
+        ;
+        if (_isSetWon(set, hostPoints, visitorPoints)) {
+          if (hostPoints > visitorPoints) {
+            hostSetWon++;
+          } else {
+            visitorSetWon++;
+          }
+        }
+      }
+    }
     return TextFormField(
       controller: _setControllers[fieldIndex],
       focusNode: _focusNodes[fieldIndex],
-      autofocus: true,
       textAlign: TextAlign.center,
       enableInteractiveSelection: false,
+      enabled: hostSetWon < 3 && visitorSetWon < 3,
       keyboardType: TextInputType.number,
       onEditingComplete: () {
         _focusNodes[fieldIndex].unfocus();
         if (fieldIndex < _focusNodes.length - 1) {
           _focusNodes[fieldIndex + 1].requestFocus();
-        } else {
-          _nameFocus.requestFocus();
         }
         _computeTotal();
       },
@@ -526,21 +548,31 @@ class _EditMatchState extends State<EditMatch> {
     _hostTotalPoints = 0;
     _visitorTotalPoints = 0;
     for (int index = 0; index < 5; index++) {
-      try {
-        int hostPoints = int.parse(_setControllers[index * 2].text);
-        int visitorPoints = int.parse(_setControllers[index * 2 + 1].text);
-        _hostTotalPoints += hostPoints;
-        _visitorTotalPoints += visitorPoints;
-        if (hostPoints >= 25 || visitorPoints >= 25) {
-          if (hostPoints >= visitorPoints + 2) {
-            _hostSets++;
-          } else if (hostPoints + 2 <= visitorPoints) {
-            _visitorSets++;
+      if (_hostSets >= 3 || _visitorSets >= 3) {
+        _setControllers[index * 2].text = "";
+        _setControllers[index * 2 + 1].text = "";
+      } else {
+        try {
+          int hostPoints = int.parse(_setControllers[index * 2].text);
+          int visitorPoints = int.parse(_setControllers[index * 2 + 1].text);
+          _hostTotalPoints += hostPoints;
+          _visitorTotalPoints += visitorPoints;
+          if (_isSetWon(index, hostPoints, visitorPoints)) {
+            if (hostPoints > visitorPoints) {
+              _hostSets++;
+            } else {
+              _visitorSets++;
+            }
           }
-        }
-      } catch (e) {}
+        } catch (e) {}
+      }
     }
     setState(() {});
+  }
+
+  bool _isSetWon(int setIndex, int points, int otherPoints) {
+    return ((points - otherPoints).abs() >= 2) &&
+        (points >= 25 || otherPoints >= 25 || (setIndex == 4 && (points >= 15 || otherPoints >= 15)));
   }
 
   List<Widget> _buildInformation(BuildContext context) {

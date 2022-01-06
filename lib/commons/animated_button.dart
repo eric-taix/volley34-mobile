@@ -38,12 +38,15 @@ class _AnimatedButtonState extends State<AnimatedButton> with SingleTickerProvid
                         widget.text,
                       ),
                     )
-                  : Center(
-                      child: SizedBox(
-                        width: PROGRESS_SIZE,
-                        height: PROGRESS_SIZE,
-                        child: CircularProgressIndicator(
-                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white70),
+                  : Padding(
+                      padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
+                      child: Center(
+                        child: SizedBox(
+                          width: PROGRESS_SIZE,
+                          height: PROGRESS_SIZE,
+                          child: CircularProgressIndicator(
+                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white70),
+                          ),
                         ),
                       ),
                     ),
