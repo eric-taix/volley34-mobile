@@ -332,7 +332,7 @@ class _EventInfoState extends State<EventInfo> with SingleTickerProviderStateMix
                 toggleButtonMargin: 18,
                 items: [
                   CircularMenuItem(
-                    icon: Icon(Icons.play_arrow_rounded, size: 30, color: Theme.of(context).textTheme.bodyText2!.color),
+                    icon: Icon(Icons.play_arrow_rounded, size: 30, color: Colors.white),
                     onTap: Features.isFeatureEnabled(context, scoreboard_feature) &&
                             _hostTeam != null &&
                             _hostClub != null &&
@@ -355,7 +355,7 @@ class _EventInfoState extends State<EventInfo> with SingleTickerProviderStateMix
                         : null,
                   ),
                   CircularMenuItem(
-                    icon: Icon(Icons.edit, size: 30, color: Theme.of(context).textTheme.bodyText2!.color),
+                    icon: Icon(Icons.edit, size: 30, color: Colors.white),
                     onTap: () {
                       _closeMenu();
                       RouterFacade.push(
@@ -371,8 +371,7 @@ class _EventInfoState extends State<EventInfo> with SingleTickerProviderStateMix
                     },
                   ),
                   CircularMenuItem(
-                    icon: SvgPicture.asset("assets/calendar-postpone3.svg",
-                        width: 30, color: Theme.of(context).textTheme.bodyText2!.color),
+                    icon: SvgPicture.asset("assets/calendar-postpone3.svg", width: 30, color: Colors.white),
                     onTap: () {
                       _closeMenu();
                       RouterFacade.push(
@@ -389,7 +388,7 @@ class _EventInfoState extends State<EventInfo> with SingleTickerProviderStateMix
                   ),
                   if (widget.event.matchCode != null && widget.event.matchCode!.isNotEmpty)
                     CircularMenuItem(
-                      icon: Icon(Icons.file_present, size: 30, color: Theme.of(context).textTheme.bodyText2!.color),
+                      icon: Icon(Icons.file_present, size: 30, color: Colors.white),
                       onTap: () {
                         FirebaseAnalytics.instance.logEvent(
                           name: "file_download",

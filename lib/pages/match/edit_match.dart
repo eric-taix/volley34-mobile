@@ -513,6 +513,7 @@ class _EditMatchState extends State<EditMatch> {
       }
     }
     return TextFormField(
+      style: Theme.of(context).textTheme.bodyText2,
       controller: _setControllers[fieldIndex],
       focusNode: _focusNodes[fieldIndex],
       textAlign: TextAlign.center,
