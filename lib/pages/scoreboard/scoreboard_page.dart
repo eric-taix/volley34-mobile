@@ -1,9 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:v34/commons/rounded_network_image.dart';
 import 'package:v34/models/club.dart';
 import 'package:v34/models/team.dart';
-import 'package:v34/pages/scoreboard/score_movement.dart';
 import 'package:v34/pages/scoreboard/score_panel.dart';
 import 'package:v34/utils/analytics.dart';
 
@@ -34,14 +35,38 @@ class _ScoreBoardPageState extends State<ScoreBoardPage> with RouteAwareAnalytic
   late int _visitorSets = 1;
   late Team _hostTeam;
   late Team _visitorTeam;
-  Fling? _hostScoreMovement;
-  Fling? _visitorMovement;
+  late Timer? _timer;
+  late Stopwatch _watch;
+  bool _playing = false;
 
   @override
   void initState() {
     super.initState();
     _hostTeam = widget.hostTeam;
     _visitorTeam = widget.visitorTeam;
+    _watch = Stopwatch();
+  }
+
+  _startPlaying() {
+    setState(() {
+      _playing = true;
+      _timer = Timer.periodic(Duration(seconds: 1), (_) => setState(() {}));
+      _watch.start();
+    });
+  }
+
+  _stopPlaying() {
+    setState(() {
+      _playing = false;
+      _timer?.cancel();
+      _watch.stop();
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
   }
 
   @override
@@ -76,19 +101,63 @@ class _ScoreBoardPageState extends State<ScoreBoardPage> with RouteAwareAnalytic
                               Expanded(flex: POINTS_FLEX, child: SizedBox()),
                               Expanded(
                                 flex: SETS_FLEX,
-                                child: FractionallySizedBox(
-                                  heightFactor: 0.4,
-                                  child: Row(
-                                    children: [
-                                      Expanded(
-                                          child: ScorePanel(
-                                              initialValue: _hostSets, color: Theme.of(context).colorScheme.secondary)),
-                                      Expanded(
-                                          child: ScorePanel(
+                                child: Column(
+                                  children: [
+                                    AspectRatio(
+                                      aspectRatio: 16 / 10,
+                                      child: Row(
+                                        children: [
+                                          Expanded(
+                                            child: ScorePanel(
+                                              initialValue: _hostSets,
+                                              color: Theme.of(context).colorScheme.secondary,
+                                            ),
+                                          ),
+                                          Expanded(
+                                            child: ScorePanel(
                                               initialValue: _visitorSets,
-                                              color: Theme.of(context).colorScheme.secondary)),
-                                    ],
-                                  ),
+                                              color: Theme.of(context).colorScheme.secondary,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(4.0),
+                                      child: Text(_watch.elapsed.toString().split(".").first.padLeft(8, "0"),
+                                          style:
+                                              Theme.of(context).textTheme.headline6!.copyWith(fontFamily: "OpenSans")),
+                                    ),
+                                    Expanded(
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              FloatingActionButton(
+                                                mini: true,
+                                                onPressed: _playing ? () => null : null,
+                                                child: Text("TM", style: TextStyle(fontWeight: FontWeight.bold)),
+                                                backgroundColor: _playing ? null : Colors.grey,
+                                              ),
+                                              FloatingActionButton(
+                                                mini: true,
+                                                onPressed: () => _playing ? _stopPlaying() : _startPlaying(),
+                                                child: Icon(_playing ? Icons.pause : Icons.play_arrow_rounded),
+                                              ),
+                                              FloatingActionButton(
+                                                mini: true,
+                                                onPressed: _playing ? () => null : null,
+                                                child: Text("TM", style: TextStyle(fontWeight: FontWeight.bold)),
+                                                backgroundColor: _playing ? null : Colors.grey,
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                               Expanded(flex: POINTS_FLEX, child: SizedBox()),
@@ -101,49 +170,57 @@ class _ScoreBoardPageState extends State<ScoreBoardPage> with RouteAwareAnalytic
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
                               Expanded(
-                                child: Row(
-                                  children: [
-                                    RoundedNetworkImage(
-                                      50,
-                                      _hostTeam.clubLogoUrl,
-                                      borderSize: 0,
-                                      backgroundColor: Colors.transparent,
-                                      padding: EdgeInsets.zero,
-                                    ),
-                                    Expanded(
-                                      child: Padding(
-                                        padding: EdgeInsets.only(left: 8, right: 8),
-                                        child: Text(_hostTeam.name!, style: Theme.of(context).textTheme.bodyText1),
+                                child: Padding(
+                                  padding: const EdgeInsets.only(left: 18.0),
+                                  child: Row(
+                                    children: [
+                                      RoundedNetworkImage(
+                                        40,
+                                        _hostTeam.clubLogoUrl,
+                                        borderSize: 0,
+                                        backgroundColor: Colors.transparent,
+                                        padding: EdgeInsets.zero,
                                       ),
-                                    ),
-                                  ],
+                                      Expanded(
+                                        child: Padding(
+                                          padding: EdgeInsets.only(left: 8, right: 8),
+                                          child: Text(_hostTeam.name!, style: Theme.of(context).textTheme.bodyText1),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                               IconButton(
-                                onPressed: () => _rotateTeam(),
+                                onPressed: _playing ? null : () => _rotateTeam(),
                                 icon: SvgPicture.asset(
                                   "assets/double-arrow.svg",
-                                  color: Theme.of(context).textTheme.headline1!.color,
+                                  color: _playing
+                                      ? Theme.of(context).textTheme.bodyText1!.color
+                                      : Theme.of(context).textTheme.bodyText2!.color,
                                 ),
                               ),
                               Expanded(
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    Expanded(
-                                        child: Padding(
-                                      padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-                                      child: Text(_visitorTeam.name!,
-                                          textAlign: TextAlign.end, style: Theme.of(context).textTheme.bodyText1),
-                                    )),
-                                    RoundedNetworkImage(
-                                      50,
-                                      _visitorTeam.clubLogoUrl,
-                                      borderSize: 0,
-                                      backgroundColor: Colors.transparent,
-                                      padding: EdgeInsets.zero,
-                                    ),
-                                  ],
+                                child: Padding(
+                                  padding: const EdgeInsets.only(right: 18.0),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      Expanded(
+                                          child: Padding(
+                                        padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+                                        child: Text(_visitorTeam.name!,
+                                            textAlign: TextAlign.end, style: Theme.of(context).textTheme.bodyText1),
+                                      )),
+                                      RoundedNetworkImage(
+                                        40,
+                                        _visitorTeam.clubLogoUrl,
+                                        borderSize: 0,
+                                        backgroundColor: Colors.transparent,
+                                        padding: EdgeInsets.zero,
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ],
@@ -164,13 +241,11 @@ class _ScoreBoardPageState extends State<ScoreBoardPage> with RouteAwareAnalytic
                                   context: context,
                                   score: _hostPoints,
                                   color: _hostColor,
-                                  movement: _hostScoreMovement,
-                                  onMovementStart: (type, initialPosition) => setState(() {
-                                    _updateColors();
-                                  }),
-                                  onMovementUpdate: (position, height) =>
-                                      setState(() => _hostScoreMovement = _hostScoreMovement?.update(position, height)),
-                                  onMovementEnd: (velocity) => setState(() {}),
+                                  onValueChanged: (value) {
+                                    _hostPoints = value;
+                                  },
+                                  diffPoints: _hostPoints - _visitorPoints,
+                                  enabled: _playing,
                                 ),
                               ),
                               Expanded(
@@ -183,10 +258,11 @@ class _ScoreBoardPageState extends State<ScoreBoardPage> with RouteAwareAnalytic
                                   context: context,
                                   score: _visitorPoints,
                                   color: _visitorColor,
-                                  movement: _visitorMovement,
-                                  onMovementStart: (_, __) => null,
-                                  onMovementUpdate: (_, __) => null,
-                                  onMovementEnd: (_) => null,
+                                  onValueChanged: (value) {
+                                    _visitorPoints = value;
+                                  },
+                                  diffPoints: _visitorPoints - _hostPoints,
+                                  enabled: _playing,
                                 ),
                               ),
                             ],
@@ -205,40 +281,28 @@ class _ScoreBoardPageState extends State<ScoreBoardPage> with RouteAwareAnalytic
     );
   }
 
-  Widget _buildGesturePanel(
-      {required BuildContext context,
-      required int score,
-      required Color color,
-      required Fling? movement,
-      required Function(FlingType, double initialDelta) onMovementStart,
-      required Function(double, double) onMovementUpdate,
-      required Function(Velocity) onMovementEnd}) {
+  Widget _buildGesturePanel({
+    required BuildContext context,
+    required int score,
+    required Color color,
+    required Function(int) onValueChanged,
+    required int diffPoints,
+    required bool enabled,
+  }) {
     return Stack(
       children: [
         ScorePanel(
           initialValue: score,
           color: color,
+          enabled: enabled,
+          onValueChanged: onValueChanged,
+          diffPoints: diffPoints,
         ),
-        /*LayoutBuilder(
-          builder: (BuildContext context, BoxConstraints constraints) {
-            return GestureDetector(
-              onVerticalDragStart: (dragStartDetails) => onMovementStart(
-                  dragStartDetails.localPosition.dy < constraints.maxHeight / 2
-                      ? ScoreMovementType.down
-                      : ScoreMovementType.up,
-                  dragStartDetails.localPosition.dy),
-              onVerticalDragUpdate: (dragUpdateDetails) =>
-                  onMovementUpdate(dragUpdateDetails.localPosition.dy, constraints.maxHeight),
-              onVerticalDragEnd: (dragEndDetails) => onMovementEnd(dragEndDetails.velocity),
-            );
-          },
-        ),*/
       ],
     );
   }
 
   void _rotateTeam() {
-    const int DELAY = 100;
     setState(() {
       int sets = _hostSets;
       int points = _hostPoints;

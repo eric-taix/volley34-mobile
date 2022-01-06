@@ -57,7 +57,7 @@ class DashboardAgendaState extends State<DashboardAgenda> with AutomaticKeepAliv
                     events: [
                       ...entry.value.map(
                         (e) {
-                          TimelineItemWidget timelineItemWidget = TimelineItemWidget.from(e, widget.team);
+                          TimelineItemWidget timelineItemWidget = TimelineItemWidget.from(e, widget.team, false);
                           return TimelineEvent(
                             child: timelineItemWidget,
                             color: timelineItemWidget.color(),

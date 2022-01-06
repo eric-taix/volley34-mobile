@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-void showAlertDialog(BuildContext context, String title, String message, {Function()? onPressed}) {
+void showAlertDialog(BuildContext context, String title, String message, {Function(BuildContext)? onPressed}) {
   showDialog(
     barrierDismissible: false,
     context: context,
@@ -11,7 +11,7 @@ void showAlertDialog(BuildContext context, String title, String message, {Functi
         actions: <Widget>[
           TextButton(
             onPressed: () {
-              if (onPressed != null) onPressed();
+              if (onPressed != null) onPressed(context);
               Navigator.pop(context);
             },
             child: Text("Fermer"),

@@ -7,7 +7,17 @@ import 'package:v34/pages/scoreboard/score_movement.dart';
 class ScorePanel extends StatefulWidget {
   final int initialValue;
   final Color color;
-  const ScorePanel({Key? key, required this.initialValue, required this.color}) : super(key: key);
+  final bool enabled;
+  final void Function(int)? onValueChanged;
+  final int diffPoints;
+  const ScorePanel({
+    Key? key,
+    required this.initialValue,
+    required this.color,
+    this.enabled = false,
+    this.onValueChanged,
+    this.diffPoints = 0,
+  }) : super(key: key);
 
   @override
   State<ScorePanel> createState() => _ScorePanelState();
@@ -16,30 +26,27 @@ class ScorePanel extends StatefulWidget {
 class _ScorePanelState extends State<ScorePanel> with SingleTickerProviderStateMixin {
   late int _value;
   late Color _valueColor;
-  late Color _backColor;
-  late Color _frontColor;
   late AnimationController _controller;
   late Animation<double> _autoAnimation;
   late Animation<double> _manualAnimation;
-  Fling _movement = Fling.none;
+  Fling _fling = Fling.none;
 
   @override
   void initState() {
     _value = widget.initialValue;
     _value = widget.initialValue;
     _valueColor = widget.color;
-    _backColor = widget.color;
-    _frontColor = widget.color;
 
     _controller = AnimationController(vsync: this, duration: Duration(milliseconds: 800));
     _controller.addStatusListener((status) {
       if (status == AnimationStatus.completed || status == AnimationStatus.dismissed) {
-        if ((status == AnimationStatus.completed && _movement.direction == FlingDirection.up) ||
-            (status == AnimationStatus.dismissed && _movement.direction == FlingDirection.down)) {
-          print("Completed $_value");
+        if ((status == AnimationStatus.completed && _fling.direction == FlingDirection.up) ||
+            (status == AnimationStatus.dismissed && _fling.direction == FlingDirection.down)) {
+          if (widget.onValueChanged != null)
+            widget.onValueChanged!(_fling.direction == FlingDirection.up ? _value + 1 : _value);
         }
         setState(() {
-          _movement = _movement.end();
+          _fling = _fling.end();
         });
       }
     });
@@ -54,8 +61,9 @@ class _ScorePanelState extends State<ScorePanel> with SingleTickerProviderStateM
 
   @override
   void didUpdateWidget(covariant ScorePanel oldWidget) {
-    if (oldWidget.initialValue != widget.initialValue) {
+    if (_value != widget.initialValue) {
       _value = widget.initialValue;
+      _controller.value = 0;
     }
     super.didUpdateWidget(oldWidget);
   }
@@ -73,60 +81,75 @@ class _ScorePanelState extends State<ScorePanel> with SingleTickerProviderStateM
         Expanded(
           child: LayoutBuilder(
             builder: (BuildContext context, BoxConstraints constraints) => GestureDetector(
-              onPanStart: (dragStartDetails) {
-                if (!_controller.isAnimating) {
-                  if (dragStartDetails.localPosition.dy > constraints.maxHeight / 2) {
-                    if (_controller.value == 1) {
-                      setState(() {});
-                      _value++;
-                      _controller.value = 0;
+              onPanStart: widget.enabled
+                  ? (dragStartDetails) {
+/*                      if (_controller.isAnimating) {
+                        if (_fling.direction == FlingDirection.up) {
+                          _controller.value = 1;
+                        } else if (_fling.direction == FlingDirection.down) {
+                          _controller.value = 0;
+                        }
+                      }*/
+                      if (!_controller.isAnimating) {
+                        if (dragStartDetails.localPosition.dy > constraints.maxHeight / 2) {
+                          if (_controller.value == 1) {
+                            setState(() {});
+                            _value++;
+                            _controller.value = 0;
+                          }
+                          _fling = _fling.start(FlingDirection.up, dragStartDetails.localPosition.dy);
+                        } else if (dragStartDetails.localPosition.dy < constraints.maxHeight / 2) {
+                          if (_controller.value == 0) {
+                            setState(() {});
+                            _value--;
+                            _controller.value = 1;
+                          }
+                          _fling = _fling.start(FlingDirection.down, dragStartDetails.localPosition.dy);
+                        }
+                      }
                     }
-                    _movement = _movement.start(FlingDirection.up, dragStartDetails.localPosition.dy);
-                  } else if (dragStartDetails.localPosition.dy < constraints.maxHeight / 2) {
-                    if (_controller.value == 0) {
-                      setState(() {});
-                      _value--;
-                      _controller.value = 1;
+                  : null,
+              onPanUpdate: widget.enabled
+                  ? (dragUpdateDetails) {
+                      _fling = _fling.update(dragUpdateDetails.localPosition.dy, constraints.maxHeight);
+                      _controller.value = _fling.delta;
                     }
-                    _movement = _movement.start(FlingDirection.down, dragStartDetails.localPosition.dy);
-                  }
-                }
-              },
-              onPanUpdate: (dragUpdateDetails) {
-                _movement = _movement.update(dragUpdateDetails.localPosition.dy, constraints.maxHeight);
-                _controller.value = _movement.delta;
-              },
-              onPanEnd: (dragEndDetails) {
-                const double MIN_VELOCITY = 600;
-                if (_movement.direction == FlingDirection.up) {
-                  if (_manualAnimation.value > pi || dragEndDetails.velocity.pixelsPerSecond.dy.abs() > MIN_VELOCITY) {
-                    _controller.forward();
-                  } else {
-                    setState(() {});
-                    _movement.auto(direction: FlingDirection.down);
-                    _controller.reverse();
-                  }
-                } else if (_movement.direction == FlingDirection.down) {
-                  if (_manualAnimation.value < pi || dragEndDetails.velocity.pixelsPerSecond.dy.abs() > MIN_VELOCITY) {
-                    _controller.reverse();
-                  } else {
-                    setState(() {});
-                    _movement.auto(direction: FlingDirection.up);
-                    _controller.forward();
-                  }
-                }
-              },
+                  : null,
+              onPanEnd: widget.enabled
+                  ? (dragEndDetails) {
+                      const double MIN_VELOCITY = 400;
+                      if (_fling.direction == FlingDirection.up) {
+                        if (_manualAnimation.value > pi ||
+                            dragEndDetails.velocity.pixelsPerSecond.dy.abs() > MIN_VELOCITY) {
+                          _controller.forward();
+                        } else {
+                          setState(() {});
+                          _fling.auto(direction: FlingDirection.down);
+                          _controller.reverse();
+                        }
+                      } else if (_fling.direction == FlingDirection.down) {
+                        if (_manualAnimation.value < pi ||
+                            dragEndDetails.velocity.pixelsPerSecond.dy.abs() > MIN_VELOCITY) {
+                          _controller.reverse();
+                        } else {
+                          setState(() {});
+                          _fling.auto(direction: FlingDirection.up);
+                          _controller.forward();
+                        }
+                      }
+                    }
+                  : null,
               child: Stack(
                 children: [
                   ScoreDigit(
                     value: "${_value + 1}",
-                    color: _valueColor,
+                    color: _getColor(1),
                   ),
                   AnimatedBuilder(
                     animation: _autoAnimation,
                     builder: (BuildContext context, Widget? child) {
-                      Animation animation = _movement.type == FlingType.auto
-                          ? (_movement.direction == FlingDirection.up
+                      Animation animation = _fling.type == FlingType.auto
+                          ? (_fling.direction == FlingDirection.up
                               ? _autoAnimation.value > _manualAnimation.value
                                   ? _autoAnimation
                                   : _manualAnimation
@@ -142,7 +165,7 @@ class _ScorePanelState extends State<ScorePanel> with SingleTickerProviderStateM
                           ..rotateX(animation.value <= 3 * pi / 2 ? animation.value : 3 * pi / 2),
                         child: ScoreDigit(
                           value: "${animation.value < pi / 2 ? _value : ""}",
-                          color: _valueColor,
+                          color: _getColor(0),
                           elevation: _controller.value == 0 ? 0 : 10,
                         ),
                       );
@@ -155,5 +178,9 @@ class _ScorePanelState extends State<ScorePanel> with SingleTickerProviderStateM
         ),
       ],
     );
+  }
+
+  Color _getColor(int inc) {
+    return widget.diffPoints + inc >= 2 && _value + inc >= 25 ? Colors.green : widget.color;
   }
 }

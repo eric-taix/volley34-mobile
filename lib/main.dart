@@ -1,10 +1,12 @@
 import 'package:bloc/bloc.dart';
 import 'package:feature_discovery/feature_discovery.dart';
 import 'package:feature_flags/feature_flags.dart';
+import 'package:feedback/feedback.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:splash_screen_view/SplashScreenView.dart';
 import 'package:v34/app_page.dart';
@@ -88,22 +90,35 @@ class _V34State extends State<V34> {
                 }
               },
               child: Features(
-                child: MaterialApp(
-                  debugShowCheckedModeBanner: false,
-                  title: "Volley34",
-                  theme: AppTheme.lightTheme(),
-                  darkTheme: AppTheme.darkTheme(),
-                  themeMode: _themeMode,
-                  home: SplashScreenView(
-                    navigateRoute: AppPage(),
-                    duration: 400,
-                    text: "Volley 34",
-                    textType: TextType.ScaleAnimatedText,
-                    textStyle: TextStyle(
-                        color: Color(0xFFF7FBFE), fontSize: 34, fontFamily: "Raleway", fontWeight: FontWeight.bold),
-                    backgroundColor: Color(0xFF262C41),
+                child: Directionality(
+                  textDirection: TextDirection.ltr,
+                  child: BetterFeedback(
+                    mode: FeedbackMode.navigate,
+                    localizationsDelegates: const [
+                      GlobalMaterialLocalizations.delegate,
+                      GlobalCupertinoLocalizations.delegate,
+                      GlobalWidgetsLocalizations.delegate,
+                      GlobalFeedbackLocalizationsDelegate(),
+                    ],
+                    localeOverride: const Locale('fr'),
+                    child: MaterialApp(
+                      debugShowCheckedModeBanner: false,
+                      title: "Volley34",
+                      theme: AppTheme.lightTheme(),
+                      darkTheme: AppTheme.darkTheme(),
+                      themeMode: _themeMode,
+                      home: SplashScreenView(
+                        navigateRoute: AppPage(),
+                        duration: 800,
+                        text: "Volley 34",
+                        textType: TextType.ScaleAnimatedText,
+                        textStyle: TextStyle(
+                            color: Color(0xFFF7FBFE), fontSize: 34, fontFamily: "Raleway", fontWeight: FontWeight.bold),
+                        backgroundColor: Color(0xFF262C41),
+                      ),
+                      navigatorObservers: [routeObserver],
+                    ),
                   ),
-                  navigatorObservers: [routeObserver],
                 ),
               ),
             ),
