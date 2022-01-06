@@ -178,5 +178,14 @@ ThemeData buildLightTheme(Color mainColor) {
       selectionColor: Color(0xFFC73551),
       selectionHandleColor: Color(0xFFC73551),
     ),
+    snackBarTheme: SnackBarThemeData(
+      backgroundColor: Colors.white,
+      contentTextStyle: TextStyle(color: Colors.black),
+      actionTextColor: Color(0xFFC73551),
+      elevation: 10,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(topLeft: Radius.circular(18), topRight: Radius.circular(18)),
+      ),
+    ),
   );
 }

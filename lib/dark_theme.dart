@@ -199,5 +199,14 @@ ThemeData buildDarkTheme(Color mainColor) {
       selectionColor: Color(0xFFC73551),
       selectionHandleColor: Color(0xFFC73551),
     ),
+    snackBarTheme: SnackBarThemeData(
+      backgroundColor: Color(0xFF373E5D),
+      contentTextStyle: TextStyle(color: Color(0xFFF7FBFE)),
+      actionTextColor: Color(0xFFC73551),
+      elevation: 10,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(topLeft: Radius.circular(18), topRight: Radius.circular(18)),
+      ),
+    ),
   );
 }
