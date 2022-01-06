@@ -268,7 +268,8 @@ class _EditMatchState extends State<EditMatch> {
         subject:
             "[Volley34 : Résultats et Classements] - Envoi du résultat du Match $hostTeamName reçoit $visitorTeamName",
         recipients: [
-          "resultat@volley34.fr",
+          senderEmail,
+          //"resultat@volley34.fr",
         ],
         isHTML: true,
         ccRecipients: [senderEmail],
