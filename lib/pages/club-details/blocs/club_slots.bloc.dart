@@ -1,23 +1,19 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:v34/models/gymnasium.dart';
 import 'package:v34/repositories/repository.dart';
 
 class GymnasiumSlot {
-  final String? name;
   final String? day;
   final TimeOfDay? time;
-  final String? town;
-  final String? postalCode;
-  final String? address;
+  final Gymnasium gymnasium;
 
-  GymnasiumSlot(
-      {this.name,
-      this.day,
-      this.time,
-      this.town,
-      this.postalCode,
-      this.address});
+  GymnasiumSlot({
+    this.day,
+    this.time,
+    required this.gymnasium,
+  });
 }
 
 //----- STATE
@@ -71,12 +67,9 @@ class ClubSlotsBloc extends Bloc<ClubSlotsEvent, ClubSlotsState> {
       var gymnasiums = await repository!.loadAllGymnasiums();
       final seen = Set<String>();
       slots.sort((slot1, slot2) => slot1.dayOfWeek!.compareTo(slot2.dayOfWeek!));
-      var gyms = slots
-          .where((slot) => seen
-              .add("${slot.gymnasiumCode}-${slot.dayOfWeek}-${slot.startTime}"))
-          .map((slot) {
-        var gymnasium = gymnasiums.firstWhere(
-            (gymnasium) => gymnasium.gymnasiumCode == slot.gymnasiumCode);
+      var gyms =
+          slots.where((slot) => seen.add("${slot.gymnasiumCode}-${slot.dayOfWeek}-${slot.startTime}")).map((slot) {
+        var gymnasium = gymnasiums.firstWhere((gymnasium) => gymnasium.gymnasiumCode == slot.gymnasiumCode);
         String? day;
         switch (slot.dayOfWeek) {
           case 0:
@@ -102,12 +95,10 @@ class ClubSlotsBloc extends Bloc<ClubSlotsEvent, ClubSlotsState> {
             break;
         }
         return GymnasiumSlot(
-            name: gymnasium.name,
-            day: day,
-            time: slot.startTime,
-            town: gymnasium.town,
-            postalCode: gymnasium.postalCode,
-            address: gymnasium.address);
+          day: day,
+          time: slot.startTime,
+          gymnasium: gymnasium,
+        );
       }).toList();
       yield ClubSlotsLoaded(slots: gyms);
     }

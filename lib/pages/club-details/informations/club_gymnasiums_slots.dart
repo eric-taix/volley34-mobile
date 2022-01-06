@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:v34/commons/paragraph.dart';
 import 'package:v34/pages/club-details/blocs/club_slots.bloc.dart';
 import 'package:v34/repositories/repository.dart';
+import 'package:v34/utils/launch.dart';
 
 class ClubGymnasiumsSlots extends StatefulWidget {
   final String? clubCode;
@@ -45,7 +46,7 @@ class _ClubGymnasiumsSlotsState extends State<ClubGymnasiumsSlots> {
               ...state.slots!.map(
                 (slot) {
                   return Padding(
-                    padding: const EdgeInsets.only(top: 28.0, right: 8.0, bottom: 8.0, left: 28.0),
+                    padding: const EdgeInsets.only(top: 28.0, right: 4.0, bottom: 8.0, left: 18.0),
                     child: Row(
                       children: <Widget>[
                         Padding(
@@ -83,10 +84,16 @@ class _ClubGymnasiumsSlotsState extends State<ClubGymnasiumsSlots> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-                              Text(slot.name!),
-                              Text("${slot.postalCode} - ${slot.town}", style: Theme.of(context).textTheme.bodyText1),
+                              Text(slot.gymnasium.name!),
+                              Text("${slot.gymnasium.postalCode} - ${slot.gymnasium.town}",
+                                  style: Theme.of(context).textTheme.bodyText1),
                             ],
                           ),
+                        ),
+                        TextButton.icon(
+                          icon: Icon(Icons.directions),
+                          onPressed: () => launchRoute(context, slot.gymnasium, route: false),
+                          label: Text("Itinéraire"),
                         ),
                       ],
                     ),
