@@ -8,6 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:intl/intl.dart';
+import 'package:maps_launcher/maps_launcher.dart';
 import 'package:v34/commons/circular_menu/circular_menu.dart';
 import 'package:v34/commons/circular_menu/circular_menu_item.dart';
 import 'package:v34/commons/feature_tour.dart';
@@ -115,19 +116,21 @@ class _EventInfoState extends State<EventInfo> with SingleTickerProviderStateMix
           ),
           title: EventDate(date: widget.event.date, endDate: widget.event.endDate, fullFormat: true)),
       ListTile(
-          leading: Icon(Icons.access_time, color: Theme.of(context).textTheme.bodyText1!.color, size: _iconSize),
-          title: FeatureTour(
-              title: "Date et heure",
-              featureId: "match_date_and_hour",
-              paragraphs: [
-                "Retrouvez la date et l'heure du match. Pour ajouter ce match à votre calendrier, cliquez sur le lien \"Ajouter au calendrier\""
-              ],
-              child: EventDate(
-                date: widget.event.date,
-                endDate: widget.event.endDate,
-                hour: true,
-                fullDay: widget.event.fullDay ?? false,
-              ))),
+        leading: Icon(Icons.access_time, color: Theme.of(context).textTheme.bodyText1!.color, size: _iconSize),
+        title: FeatureTour(
+          title: "Date et heure",
+          featureId: "match_date_and_hour",
+          paragraphs: [
+            "Retrouvez la date et l'heure du match. Pour ajouter ce match à votre calendrier, cliquez sur le lien \"Ajouter au calendrier\""
+          ],
+          child: EventDate(
+            date: widget.event.date,
+            endDate: widget.event.endDate,
+            hour: true,
+            fullDay: widget.event.fullDay ?? false,
+          ),
+        ),
+      ),
       ListTile(
         contentPadding: EdgeInsets.only(left: 0),
         title: Align(
@@ -166,17 +169,33 @@ class _EventInfoState extends State<EventInfo> with SingleTickerProviderStateMix
         paragraphs: [
           "Localisez l'emplacement du match sur la carte. En cliquant sur le lien \"Itinéraire\" : votre application de navigation vous guidera à votre destination.",
         ],
-        child: ListTile(
-          leading: Icon(
-            Icons.location_on,
-            color: Theme.of(context).textTheme.bodyText1!.color,
-            size: _iconSize,
-          ),
-          title: BlocBuilder<GymnasiumBloc, GymnasiumState>(
-              builder: (context, state) => (state is GymnasiumLoadedState)
-                  ? Text(state.gymnasium.fullname!,
-                      textAlign: TextAlign.left, style: Theme.of(context).textTheme.bodyText2)
-                  : Loading.small()),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ListTile(
+              leading: Icon(
+                Icons.location_on,
+                color: Theme.of(context).textTheme.bodyText1!.color,
+                size: _iconSize,
+              ),
+              title: widget.event.type == EventType.Match
+                  ? BlocBuilder<GymnasiumBloc, GymnasiumState>(
+                      builder: (context, state) => (state is GymnasiumLoadedState)
+                          ? Text(state.gymnasium.fullname!,
+                              textAlign: TextAlign.left, style: Theme.of(context).textTheme.bodyText2)
+                          : Loading.small())
+                  : Text(widget.event.place ?? "", style: Theme.of(context).textTheme.bodyText2),
+            ),
+            if (widget.event.place != null && widget.event.type != EventType.Match)
+              TextButton.icon(
+                onPressed: () => MapsLauncher.launchQuery(widget.event.place!),
+                icon: Icon(
+                  Icons.directions,
+                  size: 26,
+                ),
+                label: Text("Itinéraire"),
+              ),
+          ],
         ),
       ),
     ];
