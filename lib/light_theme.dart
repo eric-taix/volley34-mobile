@@ -79,7 +79,7 @@ ThemeData buildLightTheme(Color mainColor) {
       headline6: TextStyle(color: Color(0xff5c5e65), fontSize: 20, fontFamily: "Raleway", fontWeight: FontWeight.w300),
       subtitle1: TextStyle(color: Colors.white, fontSize: 20, fontFamily: "Raleway", fontWeight: FontWeight.bold),
       subtitle2: TextStyle(color: Color(0xff020202), fontSize: 14, fontFamily: "Raleway", fontWeight: FontWeight.bold),
-      bodyText2: TextStyle(color: Colors.black, fontSize: 14, fontFamily: "Raleway", fontWeight: FontWeight.w400),
+      bodyText2: TextStyle(color: Colors.black, fontSize: 14, fontFamily: "Raleway", fontWeight: FontWeight.w500),
       bodyText1: TextStyle(color: Color(0xff5e5e5e), fontSize: 14, fontFamily: "Raleway", fontWeight: FontWeight.w400),
       caption: TextStyle(color: Colors.black, fontSize: 16, fontFamily: "Raleway", fontWeight: FontWeight.bold),
     ),

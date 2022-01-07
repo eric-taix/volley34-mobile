@@ -58,9 +58,7 @@ abstract class _OtherTimelineItem extends TimelineItemWidget {
       Text(
         event.name!,
         textAlign: TextAlign.center,
-        style: Theme.of(context).textTheme.bodyText2!.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
+        style: Theme.of(context).textTheme.bodyText2!,
       ),
       _Place(event.place, event.date),
     ], onTap: () => showEventDetails(context, event));
