@@ -66,7 +66,8 @@ class _EventInfoState extends State<EventInfo> with SingleTickerProviderStateMix
     });
     _gymnasiumBloc = GymnasiumBloc(RepositoryProvider.of(context), GymnasiumUninitializedState());
     if (widget.event.type == EventType.Match) {
-      _gymnasiumBloc!.add(LoadGymnasiumEvent(gymnasiumCode: widget.event.gymnasiumCode));
+      _gymnasiumBloc!
+          .add(LoadGymnasiumsEvent(gymnasiumCodes: [widget.event.gymnasiumCode!, widget.event.initialGymnasiumCode!]));
     }
 
     if (widget.event.type == EventType.Match) {
@@ -131,6 +132,28 @@ class _EventInfoState extends State<EventInfo> with SingleTickerProviderStateMix
           ),
         ),
       ),
+      if (widget.event.postponedDate != null)
+        Padding(
+          padding: const EdgeInsets.only(left: 18.0, bottom: 18, top: 18),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              PostponedBadge(),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 28.0, right: 18),
+                  child: BlocBuilder<GymnasiumBloc, GymnasiumState>(
+                    builder: (context, state) => state is GymnasiumsLoadedState
+                        ? Text(
+                            "Initialement prévu le ${_fullDateFormat.format(widget.event.initialDate!)} à ${state.gymnasiums[1].fullname}",
+                            style: Theme.of(context).textTheme.bodyText1!.copyWith(fontStyle: FontStyle.italic))
+                        : Loading.small(),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
       ListTile(
         contentPadding: EdgeInsets.only(left: 0),
         title: Align(
@@ -144,20 +167,6 @@ class _EventInfoState extends State<EventInfo> with SingleTickerProviderStateMix
           ),
         ),
       ),
-      if (widget.event.postponedDate != null)
-        Padding(
-          padding: const EdgeInsets.only(left: 18.0, bottom: 18, top: 18),
-          child: Row(
-            children: [
-              PostponedBadge(),
-              Padding(
-                padding: const EdgeInsets.only(left: 8.0),
-                child: Text("Initialement prévu le ${_fullDateFormat.format(widget.event.initialDate!)}",
-                    style: Theme.of(context).textTheme.bodyText1!.copyWith(fontStyle: FontStyle.italic)),
-              ),
-            ],
-          ),
-        ),
     ];
   }
 
@@ -180,8 +189,8 @@ class _EventInfoState extends State<EventInfo> with SingleTickerProviderStateMix
               ),
               title: widget.event.type == EventType.Match
                   ? BlocBuilder<GymnasiumBloc, GymnasiumState>(
-                      builder: (context, state) => (state is GymnasiumLoadedState)
-                          ? Text(state.gymnasium.fullname!,
+                      builder: (context, state) => (state is GymnasiumsLoadedState)
+                          ? Text(state.gymnasiums[0].fullname!,
                               textAlign: TextAlign.left, style: Theme.of(context).textTheme.bodyText2)
                           : Loading.small())
                   : Text(widget.event.place ?? "", style: Theme.of(context).textTheme.bodyText2),
@@ -263,10 +272,13 @@ class _EventInfoState extends State<EventInfo> with SingleTickerProviderStateMix
 
   void _addEventToCalendar() async {
     final addToCalendar.Event event = addToCalendar.Event(
-        title: this.widget.event.name!,
-        location: this.widget.event.place!,
-        startDate: this.widget.event.date!,
-        endDate: this.widget.event.endDate ?? this.widget.event.date!.add(Duration(hours: 2)));
+        title: widget.event.name!,
+        location: widget.event.place!,
+        startDate: widget.event.date!,
+        endDate: widget.event.fullDay ?? false
+            ? widget.event.date!.add(Duration(hours: 1))
+            : (widget.event.endDate ?? this.widget.event.date!.add(Duration(hours: 2))),
+        allDay: widget.event.fullDay ?? false);
     await addToCalendar.Add2Calendar.addEvent2Cal(event);
   }
 

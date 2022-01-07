@@ -74,7 +74,7 @@ class _EventPlaceState extends State<EventPlace> {
     }
   }
 
-  Widget _buildGymnasiumLocationLoaded(GymnasiumLoadedState state) {
+  Widget _buildGymnasiumLocationLoaded(GymnasiumsLoadedState state) {
     return Column(
       children: [
         Container(
@@ -82,7 +82,7 @@ class _EventPlaceState extends State<EventPlace> {
           margin: EdgeInsets.symmetric(horizontal: 36.0),
           height: 250,
           child: GestureDetector(
-            onTap: () => launchRoute(context, state.gymnasium, route: false),
+            onTap: () => launchRoute(context, state.gymnasiums[0], route: false),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(20),
               child: AbsorbPointer(
@@ -90,12 +90,12 @@ class _EventPlaceState extends State<EventPlace> {
                 child: GoogleMap(
                     markers: [
                       Marker(
-                          markerId: MarkerId(state.gymnasium.gymnasiumCode!),
-                          position: LatLng(state.gymnasium.latitude!, state.gymnasium.longitude!),
+                          markerId: MarkerId(state.gymnasiums[0].gymnasiumCode!),
+                          position: LatLng(state.gymnasiums[0].latitude!, state.gymnasiums[0].longitude!),
                           icon: _marker ?? BitmapDescriptor.defaultMarkerWithHue(100))
                     ].toSet(),
-                    initialCameraPosition:
-                        CameraPosition(target: LatLng(state.gymnasium.latitude!, state.gymnasium.longitude!), zoom: 9),
+                    initialCameraPosition: CameraPosition(
+                        target: LatLng(state.gymnasiums[0].latitude!, state.gymnasiums[0].longitude!), zoom: 9),
                     myLocationEnabled: true,
                     myLocationButtonEnabled: false,
                     mapType: MapType.normal,
@@ -122,7 +122,7 @@ class _EventPlaceState extends State<EventPlace> {
               Padding(
                 padding: const EdgeInsets.only(right: 8.0),
                 child: TextButton.icon(
-                  onPressed: () => launchRoute(context, state.gymnasium, route: true),
+                  onPressed: () => launchRoute(context, state.gymnasiums[0], route: true),
                   icon: Icon(
                     Icons.directions,
                     size: 28,
@@ -130,13 +130,13 @@ class _EventPlaceState extends State<EventPlace> {
                   label: Text("Itinéraire"),
                 ),
               ),
-              if (state.gymnasium.phone != null && state.gymnasium.phone!.isNotEmpty)
+              if (state.gymnasiums[0].phone != null && state.gymnasiums[0].phone!.isNotEmpty)
                 Padding(
                   padding: const EdgeInsets.only(left: 8.0),
                   child: TextButton.icon(
                     icon: Icon(Icons.phone),
                     label: Text("Appeler"),
-                    onPressed: () => launchURL("tel:${state.gymnasium.phone}"),
+                    onPressed: () => launchURL("tel:${state.gymnasiums[0].phone}"),
                   ),
                 ),
             ],
@@ -155,7 +155,7 @@ class _EventPlaceState extends State<EventPlace> {
     if (widget.event.type == EventType.Match) {
       return BlocBuilder<GymnasiumBloc, GymnasiumState>(
         builder: (context, dynamic state) {
-          if (state is GymnasiumLoadedState) {
+          if (state is GymnasiumsLoadedState) {
             return Padding(padding: const EdgeInsets.only(top: 8.0), child: _buildGymnasiumLocationLoaded(state));
           } else {
             return Loading();
