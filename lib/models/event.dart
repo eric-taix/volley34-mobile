@@ -36,6 +36,7 @@ class Event extends Equatable {
 
   // Tournament & Meeting
   final DateTime? endDate;
+  final bool? fullDay;
   final String? contactName, contactPhone, contactEmail;
   final String? description;
   final String? clubCode;
@@ -53,6 +54,7 @@ class Event extends Equatable {
     this.visitorName,
     this.visitorCode,
     this.endDate,
+    this.fullDay,
     this.contactName,
     this.contactPhone,
     this.contactEmail,
@@ -96,6 +98,7 @@ class Event extends Equatable {
         name: json["CalendarEventName"],
         place: json["CalendarEventPlace"],
         endDate: DateTime.parse(json["CalendarEventEndDate"]),
+        fullDay: json["CalendarEventFullDay"],
         description: json["CalendarEventDesciption"],
         clubCode: json["CodeClub"],
         contactName: json["CalendarEventContactName"],
@@ -110,6 +113,7 @@ class Event extends Equatable {
   Event withForce(Force hostForce, Force visitorForce, Force globalForce) {
     return Event(
       date: _date,
+      fullDay: fullDay,
       name: name,
       place: place,
       gymnasiumCode: _gymnasiumCode,

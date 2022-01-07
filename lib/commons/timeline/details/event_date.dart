@@ -8,6 +8,8 @@ class EventDate extends StatelessWidget {
   final DateTime? endDate;
   final bool fullFormat;
   final bool hour;
+  final bool fullDay;
+
   final Widget Function(BuildContext, DateTime?, DateTime?)? dateBuilder;
 
   const EventDate({
@@ -16,6 +18,7 @@ class EventDate extends StatelessWidget {
     this.endDate,
     this.fullFormat = false,
     this.hour = false,
+    this.fullDay = false,
     this.dateBuilder,
   }) : super(key: key);
 
@@ -32,8 +35,12 @@ class EventDate extends StatelessWidget {
     DateFormat toHourFormat = DateFormat("'à 'HH:mm", "FR");
     String dateStr;
     if (hour) {
-      dateStr =
-          (endDate == null) ? hourFormat.format(date!) : fromHourFormat.format(date!) + toHourFormat.format(endDate!);
+      if (fullDay) {
+        dateStr = "Toute la journée";
+      } else {
+        dateStr =
+            (endDate == null) ? hourFormat.format(date!) : fromHourFormat.format(date!) + toHourFormat.format(endDate!);
+      }
     } else {
       dateStr = fullFormat ? fullDateFormat.format(date!) : dateFormat.format(date!);
     }

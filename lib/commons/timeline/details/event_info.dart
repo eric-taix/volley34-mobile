@@ -122,7 +122,12 @@ class _EventInfoState extends State<EventInfo> with SingleTickerProviderStateMix
               paragraphs: [
                 "Retrouvez la date et l'heure du match. Pour ajouter ce match à votre calendrier, cliquez sur le lien \"Ajouter au calendrier\""
               ],
-              child: EventDate(date: widget.event.date, endDate: widget.event.endDate, hour: true))),
+              child: EventDate(
+                date: widget.event.date,
+                endDate: widget.event.endDate,
+                hour: true,
+                fullDay: widget.event.fullDay ?? false,
+              ))),
       ListTile(
         contentPadding: EdgeInsets.only(left: 0),
         title: Align(
