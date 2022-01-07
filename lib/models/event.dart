@@ -9,7 +9,11 @@ class Event extends Equatable {
   DateTime? get date => _postponedDate ?? _date;
   DateTime? get initialDate => _date;
 
-  final String? place;
+  late final String? _place;
+  late final String? _postponedPlace;
+  String? get place => _postponedPlace ?? _place;
+  String? get initialPlace => _place;
+
   final EventType? type;
   final String? name;
 
@@ -46,7 +50,8 @@ class Event extends Equatable {
   Event({
     DateTime? date,
     this.name,
-    this.place,
+    String? place,
+    String? postponedPlace,
     String? gymnasiumCode,
     this.type,
     this.hostName,
@@ -73,6 +78,8 @@ class Event extends Equatable {
     _gymnasiumCode = gymnasiumCode;
     _postponedDate = postponedDate;
     _postponedGymnasiumCode = postponedGymnasiumCode;
+    _place = place;
+    _postponedPlace = postponedPlace;
   }
 
   factory Event.fromJson(json) {
@@ -81,6 +88,7 @@ class Event extends Equatable {
         date: DateTime.parse(json["DateMatch"]),
         name: json["CalendarEventName"] ?? json["LibelleMatch"],
         place: json["NomGymnase"],
+        postponedPlace: json["NomGymnaseRevise"],
         gymnasiumCode: json["GymnaseCode"],
         hostName: json["NomLocaux"],
         hostCode: json["EquipeLocauxCode"],
@@ -115,7 +123,8 @@ class Event extends Equatable {
       date: _date,
       fullDay: fullDay,
       name: name,
-      place: place,
+      place: _place,
+      postponedPlace: _postponedPlace,
       gymnasiumCode: _gymnasiumCode,
       type: type,
       hostName: hostName,

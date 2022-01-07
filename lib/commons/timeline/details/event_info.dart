@@ -66,8 +66,7 @@ class _EventInfoState extends State<EventInfo> with SingleTickerProviderStateMix
     });
     _gymnasiumBloc = GymnasiumBloc(RepositoryProvider.of(context), GymnasiumUninitializedState());
     if (widget.event.type == EventType.Match) {
-      _gymnasiumBloc!
-          .add(LoadGymnasiumsEvent(gymnasiumCodes: [widget.event.gymnasiumCode!, widget.event.initialGymnasiumCode!]));
+      _gymnasiumBloc!.add(LoadGymnasiumEvent(gymnasiumCode: widget.event.gymnasiumCode));
     }
 
     if (widget.event.type == EventType.Match) {
@@ -143,9 +142,9 @@ class _EventInfoState extends State<EventInfo> with SingleTickerProviderStateMix
                 child: Padding(
                   padding: const EdgeInsets.only(left: 28.0, right: 18),
                   child: BlocBuilder<GymnasiumBloc, GymnasiumState>(
-                    builder: (context, state) => state is GymnasiumsLoadedState
+                    builder: (context, state) => state is GymnasiumLoadedState
                         ? Text(
-                            "Initialement prévu le ${_fullDateFormat.format(widget.event.initialDate!)} à ${state.gymnasiums[1].fullname}",
+                            "Initialement prévu le ${_fullDateFormat.format(widget.event.initialDate!)} à ${widget.event.initialPlace}",
                             style: Theme.of(context).textTheme.bodyText1!.copyWith(fontStyle: FontStyle.italic))
                         : Loading.small(),
                   ),
@@ -189,8 +188,8 @@ class _EventInfoState extends State<EventInfo> with SingleTickerProviderStateMix
               ),
               title: widget.event.type == EventType.Match
                   ? BlocBuilder<GymnasiumBloc, GymnasiumState>(
-                      builder: (context, state) => (state is GymnasiumsLoadedState)
-                          ? Text(state.gymnasiums[0].fullname!,
+                      builder: (context, state) => (state is GymnasiumLoadedState)
+                          ? Text(state.gymnasium.fullname!,
                               textAlign: TextAlign.left, style: Theme.of(context).textTheme.bodyText2)
                           : Loading.small())
                   : Text(widget.event.place ?? "", style: Theme.of(context).textTheme.bodyText2),

@@ -50,7 +50,6 @@ class _AppMenuState extends State<AppMenu> {
   @override
   Widget build(BuildContext context) {
     Color textStyleColor = Theme.of(context).textTheme.bodyText2!.color!;
-    Color disableTextStyleColor = Theme.of(context).textTheme.bodyText1!.color!;
     NavigatorState navigator = Navigator.of(context);
     return Drawer(
       child: ListView(

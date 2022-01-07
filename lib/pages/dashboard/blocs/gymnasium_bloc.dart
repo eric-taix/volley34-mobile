@@ -23,15 +23,6 @@ class GymnasiumLoadedState extends GymnasiumState {
   List<Object> get props => [gymnasium];
 }
 
-class GymnasiumsLoadedState extends GymnasiumState {
-  final List<Gymnasium> gymnasiums;
-
-  GymnasiumsLoadedState({required this.gymnasiums});
-
-  @override
-  List<Object> get props => [gymnasiums];
-}
-
 // EVENTS
 
 abstract class GymnasiumEvent extends Equatable {
@@ -48,15 +39,6 @@ class LoadGymnasiumEvent extends GymnasiumEvent {
   List<Object?> get props => [gymnasiumCode];
 }
 
-class LoadGymnasiumsEvent extends GymnasiumEvent {
-  final List<String> gymnasiumCodes;
-
-  LoadGymnasiumsEvent({required this.gymnasiumCodes});
-
-  @override
-  List<Object?> get props => [gymnasiumCodes];
-}
-
 // BLOC
 
 class GymnasiumBloc extends Bloc<GymnasiumEvent, GymnasiumState> {
@@ -70,9 +52,6 @@ class GymnasiumBloc extends Bloc<GymnasiumEvent, GymnasiumState> {
       yield GymnasiumLoadingState();
       Gymnasium gymnasium = await repository.loadGymnasium(event.gymnasiumCode);
       yield GymnasiumLoadedState(gymnasium: gymnasium);
-    } else if (event is LoadGymnasiumsEvent) {
-      var gymnasiums = await Future.wait(event.gymnasiumCodes.map(repository.loadGymnasium));
-      yield GymnasiumsLoadedState(gymnasiums: gymnasiums);
     }
   }
 }

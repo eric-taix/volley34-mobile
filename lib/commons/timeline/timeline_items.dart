@@ -144,10 +144,10 @@ class _TimelineItemCard extends StatelessWidget {
 
 class _Place extends StatefulWidget {
   final String? place;
-  final DateTime? dateTime;
+  final DateTime? date;
   final bool? fullDay;
 
-  _Place(this.place, this.dateTime, this.fullDay);
+  _Place(this.place, this.date, this.fullDay);
 
   @override
   State<_Place> createState() => _PlaceState();
@@ -164,7 +164,7 @@ class _PlaceState extends State<_Place> {
         children: [
           Expanded(
             child: Text(
-              "${widget.fullDay ?? false ? "Toute la journée" : _dateFormat.format(widget.dateTime!)} - ${widget.place}",
+              "${widget.fullDay ?? false ? "Toute la journée" : _dateFormat.format(widget.date!)} - ${widget.place}",
               style: Theme.of(context).textTheme.bodyText1,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
