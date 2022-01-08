@@ -96,7 +96,7 @@ class _CompetitionPageState extends State<CompetitionPage> with SingleTickerProv
                             padding: EdgeInsets.only(bottom: 0),
                             child: ValueListenableBuilder<String?>(
                                 builder: (context, value, __) =>
-                                    _buildCompetitionRankingTable(ranking, highlightTeamName: value),
+                                    _buildCompetitionRankingTable(context, ranking, highlightTeamName: value),
                                 valueListenable: _query),
                           );
                         },
@@ -185,9 +185,7 @@ class _CompetitionPageState extends State<CompetitionPage> with SingleTickerProv
                                 top: false,
                                 bottom: false,
                                 right: Platform.isIOS && MediaQuery.of(context).orientation == Orientation.landscape,
-                                child: _buildCompetitionRankingTable(
-                                  ranking,
-                                ),
+                                child: _buildCompetitionRankingTable(context, ranking),
                               );
                             },
                             childCount: (state is RankingLoadedState ? state.rankings.length : 0) + 1,
@@ -204,7 +202,7 @@ class _CompetitionPageState extends State<CompetitionPage> with SingleTickerProv
     );
   }
 
-  _buildCompetitionRankingTable(RankingSynthesis ranking, {String? highlightTeamName}) {
+  _buildCompetitionRankingTable(BuildContext context, RankingSynthesis ranking, {String? highlightTeamName}) {
     return Column(
       children: [
         Padding(
@@ -216,6 +214,7 @@ class _CompetitionPageState extends State<CompetitionPage> with SingleTickerProv
           child: TeamRankingTable(
             ranking: ranking,
             highlightTeamName: highlightTeamName,
+            showDetailed: MediaQuery.of(context).orientation == Orientation.landscape,
           ),
         ),
       ],
