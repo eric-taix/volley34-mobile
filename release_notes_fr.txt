@@ -1,9 +1,8 @@
-- Correction du calcul du nombre de sets lors de la saisie d'un résultat
-- Correction du crash sous iOS quand une carte était affichée
-- Correction du gymnase lors d'un report
-- Affichage des icones des applications de carte quand plusieurs sont disponibles
-- Correction du délai de fermeture lors de la 1ère sélection du club et de l'équipe
-- Affichage des forces dans l'agenda d'une équipe quelque soit la préférence pour le dashboard
-- Ajout d'un système de soumission de bug via email
-- Ajout d'un système de vérification de mise à jour disponible sur les stores
-
+- Correction du lieu d'un match reporté sur la liste des prochains événements et l'agenda d'une équipe
+- Gestion des événements se déroulant sur une journée complète (affichage dans l'application, ajout en tant qu'évenement sur une journée sur les agendas des téléphones)
+- Utilisation du français lors de l'ajout d'un événement sur iOS au lieu de l'anglais
+- Affichage du gymnase initial lors de l'affichage des infos d'un match reporté et saut de ligne si nécessaire
+- Ajout du bouton pour lancer l'itinéraire pour tous les événements du moment qu'un lieu est défini
+- Ajout d'un bouton de lancement d'itinéraire pour chaque créneau d'un club
+- Correction de la couleur des champs de saisie d'un résultat pour le thème light
+- Correction de la couleur des icons des applications de cartographie (si plusieurs applications sont installés sur le téléphone)
