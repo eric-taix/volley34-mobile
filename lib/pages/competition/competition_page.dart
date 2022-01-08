@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:badges/badges.dart';
 import 'package:fluid_bottom_nav_bar/fluid_bottom_nav_bar.dart';
 import 'package:flutter/material.dart';
@@ -63,159 +65,138 @@ class _CompetitionPageState extends State<CompetitionPage> with SingleTickerProv
       child: BlocBuilder<RankingCubit, RankingState>(
         bloc: _rankingCubit,
         builder: (context, state) {
-          return Stack(
-            children: [
-              MainPage(
-                title: "Compétitions",
-                scrollController: _scrollController,
-                actions: [
-                  if (state is RankingLoadedState)
-                    IconButton(
-                      icon: Icon(Icons.search),
-                      onPressed: () => showSearch(
-                        context: context,
-                        delegate: SearchPage<RankingSynthesis>(
-                            items: state.rankings,
-                            showItemsOnEmpty: true,
-                            searchLabel: "Rechercher une équipe",
-                            failure: Center(
-                              child: Text("Aucune équipe trouvée", style: Theme.of(context).textTheme.bodyText1),
-                            ),
-                            filter: (ranking) => [
-                                  if (ranking.ranks != null) ...ranking.ranks!.map((rank) => rank.name).toList(),
-                                ],
-                            onQueryUpdate: (query, filteredItems) =>
-                                SchedulerBinding.instance!.addPostFrameCallback((timeStamp) {
-                                  _query.value = query;
-                                  setState(() {
-                                    _filteredRankings = filteredItems;
-                                  });
-                                }),
-                            builder: (ranking) {
-                              return Padding(
-                                padding: EdgeInsets.only(bottom: 0),
-                                child: ValueListenableBuilder<String?>(
-                                    builder: (context, value, __) =>
-                                        _buildCompetitionRankingTable(ranking, highlightTeamName: value),
-                                    valueListenable: _query),
-                              );
-                            },
-                            bottomPadding: 88,
-                            barTheme: Theme.of(context).copyWith(
-                              textTheme: TextTheme(headline6: Theme.of(context).textTheme.headline4),
-                              inputDecorationTheme:
-                                  InputDecorationTheme(hintStyle: Theme.of(context).textTheme.headline5),
-                            ),
-                            stackedWidgets: [
-                              Positioned(
-                                bottom: 10,
-                                right: -10,
-                                child: ScrollingFabAnimated(
-                                  width: 170,
-                                  color: Theme.of(context).colorScheme.secondary,
-                                  icon: Icon(Icons.stay_primary_landscape_rounded),
-                                  text: Padding(
-                                    padding: const EdgeInsets.only(left: 0.0),
-                                    child: Text(
-                                      "Afficher le détail",
-                                      style: Theme.of(context).floatingActionButtonTheme.extendedTextStyle,
-                                    ),
-                                  ),
-                                  scrollController: _scrollController,
-                                  onPress: () {
-                                    RouterFacade.push(
-                                      context: context,
-                                      builder: (_) => CompetitionLandscapePage(rankings: _filteredRankings),
-                                    );
-                                  },
+          return MainPage(
+            title: "Compétitions",
+            scrollController: _scrollController,
+            actions: [
+              if (state is RankingLoadedState)
+                IconButton(
+                  icon: Icon(Icons.search),
+                  onPressed: () => showSearch(
+                    context: context,
+                    delegate: SearchPage<RankingSynthesis>(
+                        items: state.rankings,
+                        showItemsOnEmpty: true,
+                        searchLabel: "Rechercher une équipe",
+                        failure: Center(
+                          child: Text("Aucune équipe trouvée", style: Theme.of(context).textTheme.bodyText1),
+                        ),
+                        filter: (ranking) => [
+                              if (ranking.ranks != null) ...ranking.ranks!.map((rank) => rank.name).toList(),
+                            ],
+                        onQueryUpdate: (query, filteredItems) =>
+                            SchedulerBinding.instance!.addPostFrameCallback((timeStamp) {
+                              _query.value = query;
+                              setState(() {
+                                _filteredRankings = filteredItems;
+                              });
+                            }),
+                        builder: (ranking) {
+                          return Padding(
+                            padding: EdgeInsets.only(bottom: 0),
+                            child: ValueListenableBuilder<String?>(
+                                builder: (context, value, __) =>
+                                    _buildCompetitionRankingTable(ranking, highlightTeamName: value),
+                                valueListenable: _query),
+                          );
+                        },
+                        bottomPadding: 88,
+                        barTheme: Theme.of(context).copyWith(
+                          textTheme: TextTheme(headline6: Theme.of(context).textTheme.headline4),
+                          inputDecorationTheme: InputDecorationTheme(hintStyle: Theme.of(context).textTheme.headline5),
+                        ),
+                        stackedWidgets: [
+                          Positioned(
+                            bottom: 10,
+                            right: -10,
+                            child: ScrollingFabAnimated(
+                              width: 170,
+                              color: Theme.of(context).colorScheme.secondary,
+                              icon: Icon(Icons.stay_primary_landscape_rounded),
+                              text: Padding(
+                                padding: const EdgeInsets.only(left: 0.0),
+                                child: Text(
+                                  "Afficher le détail",
+                                  style: Theme.of(context).floatingActionButtonTheme.extendedTextStyle,
                                 ),
                               ),
-                            ]),
-                      ),
-                    ),
-                  Badge(
-                    showBadge: _filter.count > 0,
-                    padding: EdgeInsets.all(5),
-                    animationDuration: Duration(milliseconds: 200),
-                    position: BadgePosition(top: 0, end: 0),
-                    badgeColor: Theme.of(context).colorScheme.secondary,
-                    animationType: BadgeAnimationType.scale,
-                    badgeContent: Text("${_filter.count}", style: Theme.of(context).textTheme.bodyText2),
-                    child: IconButton(
-                      icon: Icon(Icons.tune_rounded),
-                      onPressed: () => showMaterialModalBottomSheet(
-                        expand: false,
-                        enableDrag: true,
-                        bounce: true,
-                        shape: RoundedRectangleBorder(
-                          side: BorderSide.none,
-                          borderRadius: BorderRadius.only(topLeft: Radius.circular(18), topRight: Radius.circular(18)),
-                        ),
-                        elevation: 4,
-                        context: context,
-                        builder: (context) => Container(
-                          height: 2 * MediaQuery.of(context).size.height / 3,
-                          child: FilterOptions(
-                            filter: _filter,
-                            onFilterUpdated: (filter) => setState(
-                              () {
-                                setState(() {
-                                  _filter = filter;
-                                  _loadRanking();
-                                });
+                              scrollController: _scrollController,
+                              onPress: () {
+                                RouterFacade.push(
+                                  context: context,
+                                  builder: (_) => CompetitionLandscapePage(rankings: _filteredRankings),
+                                );
                               },
                             ),
                           ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-                slivers: [
-                  state is RankingLoadedState
-                      ? (state.rankings.length != 0
-                          ? SliverList(
-                              delegate: SliverChildBuilderDelegate(
-                                (context, index) {
-                                  if (index == ((state is RankingLoadedState ? state.rankings.length : 0) + 1) - 1) {
-                                    return SizedBox(height: FluidNavBar.nominalHeight + 88);
-                                  }
-                                  RankingSynthesis ranking = state.rankings[index];
-                                  return _buildCompetitionRankingTable(ranking);
-                                },
-                                childCount: (state is RankingLoadedState ? state.rankings.length : 0) + 1,
-                              ),
-                            )
-                          : SliverFillRemaining(child: Center(child: Text("Aucun résultat"))))
-                      : SliverFillRemaining(
-                          child: Center(child: state is RankingLoadingState ? Loading() : SizedBox()),
-                        ),
-                ],
-              ),
-              if (state is RankingLoadedState)
-                Positioned(
-                  right: -10,
-                  bottom: 70,
-                  child: ScrollingFabAnimated(
-                    width: 170,
-                    color: Theme.of(context).colorScheme.secondary,
-                    icon: Icon(Icons.stay_primary_landscape_rounded),
-                    text: Padding(
-                      padding: const EdgeInsets.only(left: 0.0),
-                      child: Text(
-                        "Afficher le détail",
-                        style: Theme.of(context).floatingActionButtonTheme.extendedTextStyle,
-                      ),
-                    ),
-                    scrollController: _scrollController,
-                    onPress: () {
-                      RouterFacade.push(
-                        context: context,
-                        builder: (_) => CompetitionLandscapePage(rankings: state.rankings),
-                      );
-                    },
+                        ]),
                   ),
                 ),
+              Badge(
+                showBadge: _filter.count > 0,
+                padding: EdgeInsets.all(5),
+                animationDuration: Duration(milliseconds: 200),
+                position: BadgePosition(top: 0, end: 0),
+                badgeColor: Theme.of(context).colorScheme.secondary,
+                animationType: BadgeAnimationType.scale,
+                badgeContent: Text("${_filter.count}", style: Theme.of(context).textTheme.bodyText2),
+                child: IconButton(
+                  icon: Icon(Icons.tune_rounded),
+                  onPressed: () => showMaterialModalBottomSheet(
+                    expand: false,
+                    enableDrag: true,
+                    bounce: true,
+                    shape: RoundedRectangleBorder(
+                      side: BorderSide.none,
+                      borderRadius: BorderRadius.only(topLeft: Radius.circular(18), topRight: Radius.circular(18)),
+                    ),
+                    elevation: 4,
+                    context: context,
+                    builder: (context) => Container(
+                      height: 2 * MediaQuery.of(context).size.height / 3,
+                      child: FilterOptions(
+                        filter: _filter,
+                        onFilterUpdated: (filter) => setState(
+                          () {
+                            setState(() {
+                              _filter = filter;
+                              _loadRanking();
+                            });
+                          },
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+            slivers: [
+              state is RankingLoadedState
+                  ? (state.rankings.length != 0
+                      ? SliverList(
+                          delegate: SliverChildBuilderDelegate(
+                            (context, index) {
+                              if (index == ((state is RankingLoadedState ? state.rankings.length : 0) + 1) - 1) {
+                                return SizedBox(height: FluidNavBar.nominalHeight + 88);
+                              }
+                              RankingSynthesis ranking = state.rankings[index];
+                              return SafeArea(
+                                left: false,
+                                top: false,
+                                bottom: false,
+                                right: Platform.isIOS && MediaQuery.of(context).orientation == Orientation.landscape,
+                                child: _buildCompetitionRankingTable(
+                                  ranking,
+                                ),
+                              );
+                            },
+                            childCount: (state is RankingLoadedState ? state.rankings.length : 0) + 1,
+                          ),
+                        )
+                      : SliverFillRemaining(child: Center(child: Text("Aucun résultat"))))
+                  : SliverFillRemaining(
+                      child: Center(child: state is RankingLoadingState ? Loading() : SizedBox()),
+                    ),
             ],
           );
         },
