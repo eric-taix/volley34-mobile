@@ -4,8 +4,13 @@ import 'package:flutter/material.dart';
 
 class OrientationHelper extends StatefulWidget {
   final Widget child;
-
-  const OrientationHelper({Key? key, required this.child}) : super(key: key);
+  final String title;
+  final double? top;
+  final double? bottom;
+  final double right;
+  const OrientationHelper(
+      {Key? key, required this.child, this.title = "Tourner votre téléphone", this.top, this.right = 20, this.bottom})
+      : super(key: key);
 
   @override
   State<OrientationHelper> createState() => _OrientationHelperState();
@@ -42,6 +47,8 @@ class _OrientationHelperState extends State<OrientationHelper> with SingleTicker
           _controller.reverse();
         }),
       );
+    } else {
+      _controller.reset();
     }
     super.didChangeDependencies();
   }
@@ -53,8 +60,9 @@ class _OrientationHelperState extends State<OrientationHelper> with SingleTicker
       children: [
         widget.child,
         Positioned(
-          top: 40,
-          right: 20,
+          top: widget.top,
+          right: widget.right,
+          bottom: widget.bottom,
           child: AnimatedBuilder(
             animation: _controller,
             builder: (BuildContext context, Widget? child) {
@@ -66,7 +74,7 @@ class _OrientationHelperState extends State<OrientationHelper> with SingleTicker
             child: Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(18),
-                color: Theme.of(context).textTheme.headline1!.color!.withOpacity(0.2),
+                color: Theme.of(context).bottomAppBarColor,
               ),
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -79,11 +87,12 @@ class _OrientationHelperState extends State<OrientationHelper> with SingleTicker
                         builder: (BuildContext context, Widget? child) {
                           return Transform.rotate(angle: _skakeAnimation.value, child: child);
                         },
-                        child: Icon(Icons.stay_primary_landscape_rounded,
-                            color: Theme.of(context).textTheme.bodyText2!.color, size: 30),
+                        child:
+                            Icon(Icons.stay_primary_landscape_rounded, color: Theme.of(context).canvasColor, size: 30),
                       ),
                     ),
-                    Text("Tourner votre téléphone", style: Theme.of(context).textTheme.bodyText2),
+                    Text(widget.title,
+                        style: Theme.of(context).textTheme.bodyText1!.copyWith(color: Theme.of(context).canvasColor)),
                   ],
                 ),
               ),

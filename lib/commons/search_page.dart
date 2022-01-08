@@ -6,7 +6,7 @@ typedef ResultBuilder<T> = Widget Function(T t);
 /// This class helps to implement a search view, using [SearchDelegate].
 /// It can show suggestion & unsuccessful-search widgets.
 class SearchPage<T> extends SearchDelegate<T?> {
-  final List<Widget>? stackedWidgets;
+  final List<Widget>? actions;
 
   /// Set this to true to display the complete list instead of the [suggestion].
   /// This is useful to give your users the chance to explore all the items in the
@@ -82,7 +82,7 @@ class SearchPage<T> extends SearchDelegate<T?> {
     this.itemEndsWith = false,
     this.onQueryUpdate,
     this.searchStyle,
-    this.stackedWidgets,
+    this.actions,
     this.bottomPadding = 0,
   }) : super(
           searchFieldLabel: searchLabel,
@@ -126,7 +126,8 @@ class SearchPage<T> extends SearchDelegate<T?> {
           icon: Icon(Icons.clear),
           onPressed: () => query = '',
         ),
-      )
+      ),
+      if (actions != null) ...actions!,
     ];
   }
 
@@ -164,7 +165,6 @@ class SearchPage<T> extends SearchDelegate<T?> {
               : result.isEmpty
                   ? failure
                   : ListView(children: [...result.map(builder).toList(), SizedBox(height: bottomPadding)]),
-          if (stackedWidgets != null) ...stackedWidgets!,
         ],
       ),
     );

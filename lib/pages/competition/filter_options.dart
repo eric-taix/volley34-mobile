@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:badges/badges.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
@@ -106,7 +108,11 @@ class _FilterOptionsState extends State<FilterOptions> {
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             Padding(
-                              padding: const EdgeInsets.only(right: 8.0),
+                              padding: EdgeInsets.only(
+                                  right: 8.0 +
+                                      (MediaQuery.of(context).orientation == Orientation.landscape && Platform.isIOS
+                                          ? 10
+                                          : 0)),
                               child: TextButton(
                                 onPressed: _filter.count > 0 ? () => _reinitFilters() : null,
                                 child: Text("Réinitialiser"),
