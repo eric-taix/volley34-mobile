@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:map_launcher/map_launcher.dart' as mapLauncher;
 import 'package:v34/commons/loading.dart';
 import 'package:v34/commons/marker/map-marker.dart';
 import 'package:v34/models/event.dart';
@@ -75,59 +74,6 @@ class _EventPlaceState extends State<EventPlace> {
     }
   }
 
-  void _launchMap(GymnasiumLoadedState state, bool route) async {
-    try {
-      final coordinates = mapLauncher.Coords(state.gymnasium.latitude!, state.gymnasium.longitude!);
-      final title = state.gymnasium.name;
-      final availableMaps = await mapLauncher.MapLauncher.installedMaps;
-
-      if (availableMaps.length == 1) {
-        if (route) {
-          availableMaps.first.showDirections(destination: coordinates, destinationTitle: title);
-        } else {
-          availableMaps.first.showMarker(coords: coordinates, title: title!);
-        }
-      } else {
-        showModalBottomSheet(
-          context: context,
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.only(topLeft: Radius.circular(8), topRight: Radius.circular(8))),
-          builder: (BuildContext context) {
-            return SafeArea(
-              child: SingleChildScrollView(
-                child: Container(
-                  child: Wrap(
-                    children: <Widget>[
-                      for (var map in availableMaps)
-                        ListTile(
-                          onTap: () {
-                            if (route) {
-                              map.showDirections(destination: coordinates, destinationTitle: title);
-                            } else {
-                              map.showMarker(coords: coordinates, title: title!);
-                            }
-                          },
-                          title: Text(map.mapName,
-                              style: Theme.of(context).textTheme.bodyText1!.apply(fontSizeDelta: 1.5)),
-                          leading: Image(
-                            image: AssetImage(map.icon),
-                            height: 30.0,
-                            width: 30.0,
-                          ),
-                        ),
-                    ],
-                  ),
-                ),
-              ),
-            );
-          },
-        );
-      }
-    } catch (e) {
-      print(e);
-    }
-  }
-
   Widget _buildGymnasiumLocationLoaded(GymnasiumLoadedState state) {
     return Column(
       children: [
@@ -136,7 +82,7 @@ class _EventPlaceState extends State<EventPlace> {
           margin: EdgeInsets.symmetric(horizontal: 36.0),
           height: 250,
           child: GestureDetector(
-            onTap: () => _launchMap(state, false),
+            onTap: () => launchRoute(context, state.gymnasium, route: false),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(20),
               child: AbsorbPointer(
@@ -176,7 +122,7 @@ class _EventPlaceState extends State<EventPlace> {
               Padding(
                 padding: const EdgeInsets.only(right: 8.0),
                 child: TextButton.icon(
-                  onPressed: () => _launchMap(state, true),
+                  onPressed: () => launchRoute(context, state.gymnasium, route: true),
                   icon: Icon(
                     Icons.directions,
                     size: 28,

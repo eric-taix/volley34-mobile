@@ -498,11 +498,9 @@ class _EditMatchState extends State<EditMatch> {
         try {
           hostPoints = int.parse(_setControllers[set * 2].text);
         } catch (_) {}
-        ;
         try {
           visitorPoints = int.parse(_setControllers[set * 2 + 1].text);
         } catch (_) {}
-        ;
         if (_isSetWon(set, hostPoints, visitorPoints)) {
           if (hostPoints > visitorPoints) {
             hostSetWon++;
@@ -513,6 +511,7 @@ class _EditMatchState extends State<EditMatch> {
       }
     }
     return TextFormField(
+      style: Theme.of(context).textTheme.bodyText2,
       controller: _setControllers[fieldIndex],
       focusNode: _focusNodes[fieldIndex],
       textAlign: TextAlign.center,

@@ -171,7 +171,6 @@ class ForceGraphPainter extends CustomPainter {
     final double strokeWidth = 8;
     final colors = [Colors.red, Colors.orange, Colors.yellow, Colors.green];
     final stops = List.generate(colors.length, (index) => (index * max / (colors.length)));
-    final invertedStops = stops.reversed.toList();
     final inversedColors = colors.reversed.toList();
 
     final gradient = LinearGradient(colors: colors, stops: stops);

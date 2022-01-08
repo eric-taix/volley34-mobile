@@ -58,11 +58,9 @@ abstract class _OtherTimelineItem extends TimelineItemWidget {
       Text(
         event.name!,
         textAlign: TextAlign.center,
-        style: Theme.of(context).textTheme.bodyText2!.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
+        style: Theme.of(context).textTheme.bodyText2!,
       ),
-      _Place(event.place, event.date),
+      _Place(event.place, event.date, event.fullDay),
     ], onTap: () => showEventDetails(context, event));
   }
 }
@@ -93,7 +91,7 @@ class _MatchTimelineItem extends TimelineItemWidget {
     return _TimelineItemCard(
       children: <Widget>[
         MatchTitle(allowDetails: allowDetails, event: event, team: team, showForces: showForces),
-        if (allowDetails) _Place(event.place, event.date)
+        if (allowDetails) _Place(event.place, event.date, false)
       ],
       onTap: allowDetails ? () => showEventDetails(context, event) : null,
       topRightWidget: event.postponedDate != null ? PostponedBadge() : SizedBox(),
@@ -146,9 +144,10 @@ class _TimelineItemCard extends StatelessWidget {
 
 class _Place extends StatefulWidget {
   final String? place;
-  final DateTime? dateTime;
+  final DateTime? date;
+  final bool? fullDay;
 
-  _Place(this.place, this.dateTime);
+  _Place(this.place, this.date, this.fullDay);
 
   @override
   State<_Place> createState() => _PlaceState();
@@ -165,7 +164,7 @@ class _PlaceState extends State<_Place> {
         children: [
           Expanded(
             child: Text(
-              "${_dateFormat.format(widget.dateTime!)} - ${widget.place}",
+              "${widget.fullDay ?? false ? "Toute la journée" : _dateFormat.format(widget.date!)} - ${widget.place}",
               style: Theme.of(context).textTheme.bodyText1,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,

@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:v34/commons/animated_button.dart';
 import 'package:v34/commons/ensure_visible_when_focused.dart';
 import 'package:v34/commons/paragraph.dart';
+import 'package:v34/commons/show_dialog.dart';
 import 'package:v34/models/club.dart';
 import 'package:v34/models/team.dart';
 import 'package:v34/pages/match/match_info.dart';
@@ -95,13 +96,13 @@ class _PostPoneMatchState extends State<PostPoneMatch> {
                 showTeamLink: false,
                 showMatchDate: true,
               ),
+              Paragraph(title: "Informations"),
+              ..._buildInformation(context),
               Padding(
                 padding: const EdgeInsets.only(bottom: 18.0),
                 child: Paragraph(title: "Report"),
               ),
               ..._buildReport(context),
-              Paragraph(title: "Informations"),
-              ..._buildInformation(context),
               Padding(
                 padding: const EdgeInsets.only(top: 58.0),
                 child: Row(
@@ -263,6 +264,17 @@ class _PostPoneMatchState extends State<PostPoneMatch> {
           ],
         ),
       ),
+      if (_initiatorTeamCode == null)
+        Padding(
+          padding: const EdgeInsets.only(left: 28.0),
+          child: Text(
+            "L'équipe qui a fait la demande est obligatoire",
+            style: Theme.of(context)
+                .textTheme
+                .bodyText2!
+                .copyWith(color: Theme.of(context).inputDecorationTheme.errorStyle!.color!),
+          ),
+        ),
       Padding(
         padding: const EdgeInsets.only(top: 32.0, left: 28, right: 28),
         child: EnsureVisibleWhenFocused(
@@ -280,6 +292,13 @@ class _PostPoneMatchState extends State<PostPoneMatch> {
           ),
         ),
       ),
+      Padding(
+        padding: const EdgeInsets.only(left: 28.0, top: 8, right: 28),
+        child: Text(
+          "Merci d'indiquer la nouvelle date ainsi que le gymnase où se déroulera le match.",
+          style: Theme.of(context).textTheme.bodyText1!.copyWith(fontStyle: FontStyle.italic),
+        ),
+      )
     ];
   }
 
@@ -315,28 +334,44 @@ class _PostPoneMatchState extends State<PostPoneMatch> {
       ccRecipients: [senderEmail],
     );
 
-    final MailerResponse response = await FlutterMailer.send(mailOptions);
-    String platformResponse;
-    switch (response) {
-      case MailerResponse.saved:
-        platformResponse = "L'e-mail a été sauvegardé en brouillon";
-        break;
-      case MailerResponse.sent:
-        platformResponse = "L'e-mail a été envoyé";
-        break;
-      case MailerResponse.cancelled:
-        platformResponse = "L'e-mail a été annulé. Merci";
-        break;
-      case MailerResponse.android:
-        platformResponse = "L'e-mail a été envoyé. Merci";
-        break;
-      default:
-        platformResponse = "Nous avons reçu une réponse inconnue de votre client d'e-mail !";
-        break;
+    try {
+      final MailerResponse response = await FlutterMailer.send(mailOptions);
+      String platformResponse;
+      switch (response) {
+        case MailerResponse.saved:
+          platformResponse = "L'e-mail a été sauvegardé en brouillon";
+          break;
+        case MailerResponse.sent:
+          platformResponse = "L'e-mail a été envoyé";
+          break;
+        case MailerResponse.cancelled:
+          platformResponse = "L'e-mail a été annulé. Merci";
+          break;
+        case MailerResponse.android:
+          platformResponse = "L'e-mail a été envoyé. Merci";
+          break;
+        default:
+          platformResponse = "Nous avons reçu une réponse inconnue de votre client d'e-mail !";
+          break;
+      }
+      final snackBar = SnackBar(content: Text(platformResponse));
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    } catch (e) {
+      final snackBar = SnackBar(
+        content: Text("Désolé mais une erreur s'est produite en essayant d'envoyer le mail. "
+            "Avez-vous une application mail d'installée sur votre téléphone ?"),
+        duration: Duration(minutes: 1),
+        action: SnackBarAction(
+          label: "Fermer",
+          onPressed: () {
+            ScaffoldMessenger.of(context).hideCurrentSnackBar();
+          },
+        ),
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      showAlertDialog(context, "Oooops", "Une erreur s'est produite", onPressed: (_) => null);
     }
     Navigator.of(context).pop();
-    final snackBar = SnackBar(content: Text(platformResponse));
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
     return Future.value();
   }
 }

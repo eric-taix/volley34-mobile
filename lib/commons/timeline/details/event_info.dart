@@ -8,6 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:intl/intl.dart';
+import 'package:maps_launcher/maps_launcher.dart';
 import 'package:v34/commons/circular_menu/circular_menu.dart';
 import 'package:v34/commons/circular_menu/circular_menu_item.dart';
 import 'package:v34/commons/feature_tour.dart';
@@ -115,14 +116,43 @@ class _EventInfoState extends State<EventInfo> with SingleTickerProviderStateMix
           ),
           title: EventDate(date: widget.event.date, endDate: widget.event.endDate, fullFormat: true)),
       ListTile(
-          leading: Icon(Icons.access_time, color: Theme.of(context).textTheme.bodyText1!.color, size: _iconSize),
-          title: FeatureTour(
-              title: "Date et heure",
-              featureId: "match_date_and_hour",
-              paragraphs: [
-                "Retrouvez la date et l'heure du match. Pour ajouter ce match à votre calendrier, cliquez sur le lien \"Ajouter au calendrier\""
-              ],
-              child: EventDate(date: widget.event.date, endDate: widget.event.endDate, hour: true))),
+        leading: Icon(Icons.access_time, color: Theme.of(context).textTheme.bodyText1!.color, size: _iconSize),
+        title: FeatureTour(
+          title: "Date et heure",
+          featureId: "match_date_and_hour",
+          paragraphs: [
+            "Retrouvez la date et l'heure du match. Pour ajouter ce match à votre calendrier, cliquez sur le lien \"Ajouter au calendrier\""
+          ],
+          child: EventDate(
+            date: widget.event.date,
+            endDate: widget.event.endDate,
+            hour: true,
+            fullDay: widget.event.fullDay ?? false,
+          ),
+        ),
+      ),
+      if (widget.event.postponedDate != null)
+        Padding(
+          padding: const EdgeInsets.only(left: 18.0, bottom: 18, top: 18),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              PostponedBadge(),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 28.0, right: 18),
+                  child: BlocBuilder<GymnasiumBloc, GymnasiumState>(
+                    builder: (context, state) => state is GymnasiumLoadedState
+                        ? Text(
+                            "Initialement prévu le ${_fullDateFormat.format(widget.event.initialDate!)} à ${widget.event.initialPlace}",
+                            style: Theme.of(context).textTheme.bodyText1!.copyWith(fontStyle: FontStyle.italic))
+                        : Loading.small(),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
       ListTile(
         contentPadding: EdgeInsets.only(left: 0),
         title: Align(
@@ -136,20 +166,6 @@ class _EventInfoState extends State<EventInfo> with SingleTickerProviderStateMix
           ),
         ),
       ),
-      if (widget.event.postponedDate != null)
-        Padding(
-          padding: const EdgeInsets.only(left: 18.0, bottom: 18, top: 18),
-          child: Row(
-            children: [
-              PostponedBadge(),
-              Padding(
-                padding: const EdgeInsets.only(left: 8.0),
-                child: Text("Initialement prévu le ${_fullDateFormat.format(widget.event.initialDate!)}",
-                    style: Theme.of(context).textTheme.bodyText1!.copyWith(fontStyle: FontStyle.italic)),
-              ),
-            ],
-          ),
-        ),
     ];
   }
 
@@ -161,17 +177,33 @@ class _EventInfoState extends State<EventInfo> with SingleTickerProviderStateMix
         paragraphs: [
           "Localisez l'emplacement du match sur la carte. En cliquant sur le lien \"Itinéraire\" : votre application de navigation vous guidera à votre destination.",
         ],
-        child: ListTile(
-          leading: Icon(
-            Icons.location_on,
-            color: Theme.of(context).textTheme.bodyText1!.color,
-            size: _iconSize,
-          ),
-          title: BlocBuilder<GymnasiumBloc, GymnasiumState>(
-              builder: (context, state) => (state is GymnasiumLoadedState)
-                  ? Text(state.gymnasium.fullname!,
-                      textAlign: TextAlign.left, style: Theme.of(context).textTheme.bodyText2)
-                  : Loading.small()),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ListTile(
+              leading: Icon(
+                Icons.location_on,
+                color: Theme.of(context).textTheme.bodyText1!.color,
+                size: _iconSize,
+              ),
+              title: widget.event.type == EventType.Match
+                  ? BlocBuilder<GymnasiumBloc, GymnasiumState>(
+                      builder: (context, state) => (state is GymnasiumLoadedState)
+                          ? Text(state.gymnasium.fullname!,
+                              textAlign: TextAlign.left, style: Theme.of(context).textTheme.bodyText2)
+                          : Loading.small())
+                  : Text(widget.event.place ?? "", style: Theme.of(context).textTheme.bodyText2),
+            ),
+            if (widget.event.place != null && widget.event.type != EventType.Match)
+              TextButton.icon(
+                onPressed: () => MapsLauncher.launchQuery(widget.event.place!),
+                icon: Icon(
+                  Icons.directions,
+                  size: 26,
+                ),
+                label: Text("Itinéraire"),
+              ),
+          ],
         ),
       ),
     ];
@@ -239,10 +271,13 @@ class _EventInfoState extends State<EventInfo> with SingleTickerProviderStateMix
 
   void _addEventToCalendar() async {
     final addToCalendar.Event event = addToCalendar.Event(
-        title: this.widget.event.name!,
-        location: this.widget.event.place!,
-        startDate: this.widget.event.date!,
-        endDate: this.widget.event.endDate ?? this.widget.event.date!.add(Duration(hours: 2)));
+        title: widget.event.name!,
+        location: widget.event.place!,
+        startDate: widget.event.date!,
+        endDate: widget.event.fullDay ?? false
+            ? widget.event.date!.add(Duration(hours: 1))
+            : (widget.event.endDate ?? this.widget.event.date!.add(Duration(hours: 2))),
+        allDay: widget.event.fullDay ?? false);
     await addToCalendar.Add2Calendar.addEvent2Cal(event);
   }
 
@@ -332,7 +367,7 @@ class _EventInfoState extends State<EventInfo> with SingleTickerProviderStateMix
                 toggleButtonMargin: 18,
                 items: [
                   CircularMenuItem(
-                    icon: Icon(Icons.play_arrow_rounded, size: 30, color: Theme.of(context).textTheme.bodyText2!.color),
+                    icon: Icon(Icons.play_arrow_rounded, size: 30, color: Colors.white),
                     onTap: Features.isFeatureEnabled(context, scoreboard_feature) &&
                             _hostTeam != null &&
                             _hostClub != null &&
@@ -355,7 +390,7 @@ class _EventInfoState extends State<EventInfo> with SingleTickerProviderStateMix
                         : null,
                   ),
                   CircularMenuItem(
-                    icon: Icon(Icons.edit, size: 30, color: Theme.of(context).textTheme.bodyText2!.color),
+                    icon: Icon(Icons.edit, size: 30, color: Colors.white),
                     onTap: () {
                       _closeMenu();
                       RouterFacade.push(
@@ -371,8 +406,7 @@ class _EventInfoState extends State<EventInfo> with SingleTickerProviderStateMix
                     },
                   ),
                   CircularMenuItem(
-                    icon: SvgPicture.asset("assets/calendar-postpone3.svg",
-                        width: 30, color: Theme.of(context).textTheme.bodyText2!.color),
+                    icon: SvgPicture.asset("assets/calendar-postpone3.svg", width: 30, color: Colors.white),
                     onTap: () {
                       _closeMenu();
                       RouterFacade.push(
@@ -389,7 +423,7 @@ class _EventInfoState extends State<EventInfo> with SingleTickerProviderStateMix
                   ),
                   if (widget.event.matchCode != null && widget.event.matchCode!.isNotEmpty)
                     CircularMenuItem(
-                      icon: Icon(Icons.file_present, size: 30, color: Theme.of(context).textTheme.bodyText2!.color),
+                      icon: Icon(Icons.file_present, size: 30, color: Colors.white),
                       onTap: () {
                         FirebaseAnalytics.instance.logEvent(
                           name: "file_download",
