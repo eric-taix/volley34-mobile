@@ -42,7 +42,7 @@ class TeamRankingTable extends StatefulWidget {
 class _TeamRankingTableState extends State<TeamRankingTable> {
   late Repository _repository;
 
-  double extraColumnWidth = 70;
+  double extraColumnWidth = 60;
 
   @override
   void initState() {
@@ -176,7 +176,7 @@ class _TeamRankingTableState extends State<TeamRankingTable> {
   }
 
   _buildRow(RankingTeamSynthesis rankingSynthesis, int index, TextStyle? lineStyle) {
-    double width = widget.showDetailed ? 60 : 38;
+    double width = widget.showDetailed ? extraColumnWidth : 48;
     return Row(
       children: [
         Padding(
@@ -214,7 +214,7 @@ class _TeamRankingTableState extends State<TeamRankingTable> {
         Padding(
           padding: const EdgeInsets.only(left: 12.0),
           child: SizedBox(
-            width: 60,
+            width: width,
             child: Text(
               "${rankingSynthesis.totalPoints} pts",
               style: lineStyle,
