@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:v34/commons/competition_badge.dart';
 import 'package:v34/commons/feature_help.dart';
 import 'package:v34/commons/force_widget.dart';
+import 'package:v34/commons/landscape_helper.dart';
 import 'package:v34/commons/paragraph.dart';
 import 'package:v34/commons/podium_widget.dart';
 import 'package:v34/models/force.dart';
@@ -152,15 +153,7 @@ class _TeamRankingState extends State<TeamRanking> with RouteAwareAnalytics {
             ),
           ),
         ),
-        Padding(
-          padding: EdgeInsets.only(top: 8),
-          child: MediaQuery.of(context).orientation != Orientation.landscape
-              ? Text(
-                  "* Tourner votre téléphone pour plus de détails",
-                  style: TextStyle(fontStyle: FontStyle.italic, color: Theme.of(context).textTheme.bodyText1!.color!),
-                )
-              : SizedBox(height: 18),
-        ),
+        LandscapeHelper(),
       ],
     );
   }

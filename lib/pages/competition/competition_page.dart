@@ -8,8 +8,8 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:v34/commons/competition_badge.dart';
+import 'package:v34/commons/landscape_helper.dart';
 import 'package:v34/commons/loading.dart';
-import 'package:v34/commons/orientation_helper.dart';
 import 'package:v34/commons/page/main_page.dart';
 import 'package:v34/models/ranking.dart';
 import 'package:v34/pages/competition/bloc/competition_cubit.dart';
@@ -86,7 +86,8 @@ class _CompetitionPageState extends State<CompetitionPage> with SingleTickerProv
       position: BadgePosition(top: 0, end: 0),
       badgeColor: Theme.of(context).colorScheme.secondary,
       animationType: BadgeAnimationType.scale,
-      badgeContent: Text("${_filter.count}", style: Theme.of(context).textTheme.bodyText2),
+      badgeContent:
+          Text("${_filter.count}", style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Colors.white)),
       child: IconButton(
         icon: Icon(Icons.tune_rounded),
         onPressed: () => showMaterialModalBottomSheet(
@@ -116,7 +117,7 @@ class _CompetitionPageState extends State<CompetitionPage> with SingleTickerProv
         ),
       ),
     );
-
+    bool portrait = MediaQuery.of(context).orientation == Orientation.portrait;
     return BlocProvider(
       create: (context) => _competitionCubit,
       child: BlocListener<RankingCubit, RankingState>(
@@ -129,41 +130,39 @@ class _CompetitionPageState extends State<CompetitionPage> with SingleTickerProv
           }
         },
         bloc: _rankingCubit,
-        child: OrientationHelper(
-          bottom: 80,
-          right: 10,
-          title: "Pour afficher les détails",
-          child: MainPage(
-            title: "Compétitions",
-            actions: [
-              filterButton,
-            ],
-            onSearch: (query) {
-              _query = query.toLowerCase();
-              _filterRankings();
-            },
-            slivers: [
-              _filteredRankings != null
-                  ? (_filteredRankings!.length != 0
-                      ? SliverList(
-                          delegate: SliverChildBuilderDelegate(
-                            (context, index) {
-                              if (index == _filteredRankings!.length) {
-                                return SizedBox(height: FluidNavBar.nominalHeight + 88);
-                              }
-                              RankingSynthesis ranking = _filteredRankings![index];
-                              return _buildCompetitionRankingTable(context, ranking,
-                                  highlightTeamNames: _query.isNotEmpty ? _query.split(" ") : null);
-                            },
-                            childCount: _filteredRankings!.length + 1,
-                          ),
-                        )
-                      : SliverFillRemaining(child: Center(child: Text("Aucun résultat"))))
-                  : SliverFillRemaining(
-                      child: Center(child: Loading()),
-                    ),
-            ],
-          ),
+        child: MainPage(
+          title: "Compétitions",
+          actions: [
+            filterButton,
+          ],
+          onSearch: (query) {
+            _query = query.toLowerCase();
+            _filterRankings();
+          },
+          slivers: [
+            _filteredRankings != null
+                ? (_filteredRankings!.length != 0
+                    ? SliverList(
+                        delegate: SliverChildBuilderDelegate(
+                          (context, index) {
+                            if (index == 0 && portrait) {
+                              return LandscapeHelper();
+                            }
+                            if (index == _filteredRankings!.length + (portrait ? 1 : 0)) {
+                              return SizedBox(height: FluidNavBar.nominalHeight + 28);
+                            }
+                            RankingSynthesis ranking = _filteredRankings![index + (portrait ? -1 : 0)];
+                            return _buildCompetitionRankingTable(context, ranking,
+                                highlightTeamNames: _query.isNotEmpty ? _query.split(" ") : null);
+                          },
+                          childCount: _filteredRankings!.length + 1 + (portrait ? 1 : 0),
+                        ),
+                      )
+                    : SliverFillRemaining(child: Center(child: Text("Aucun résultat"))))
+                : SliverFillRemaining(
+                    child: Center(child: Loading()),
+                  ),
+          ],
         ),
       ),
     );
