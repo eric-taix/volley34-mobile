@@ -14,7 +14,7 @@ class TeamRankingTable extends StatefulWidget {
   final RankingSynthesis ranking;
   late final RankingTeamSynthesis? _teamRank;
   late final int? _teamMatches;
-  late final String? highlightTeamName;
+  late final List<String>? highlightTeamNames;
   final bool showDetailed;
   final VoidCallback? onPushPage;
   final VoidCallback? onPopPage;
@@ -23,7 +23,7 @@ class TeamRankingTable extends StatefulWidget {
     Key? key,
     this.team,
     required this.ranking,
-    this.highlightTeamName,
+    this.highlightTeamNames,
     this.showDetailed = false,
     this.onPushPage,
     this.onPopPage,
@@ -41,6 +41,8 @@ class TeamRankingTable extends StatefulWidget {
 
 class _TeamRankingTableState extends State<TeamRankingTable> {
   late Repository _repository;
+
+  double extraColumnWidth = 70;
 
   @override
   void initState() {
@@ -62,8 +64,12 @@ class _TeamRankingTableState extends State<TeamRankingTable> {
                     ? (rankingSynthesis.teamCode == widget.team?.code
                         ? Theme.of(context).textTheme.bodyText2!.copyWith(fontWeight: FontWeight.bold)
                         : Theme.of(context).textTheme.bodyText1)
-                    : (widget.highlightTeamName != null && widget.highlightTeamName!.isNotEmpty
-                        ? (rankingSynthesis.name!.toLowerCase().contains(widget.highlightTeamName!.toLowerCase())
+                    : (widget.highlightTeamNames != null && widget.highlightTeamNames!.isNotEmpty
+                        ? (widget.highlightTeamNames!.fold(
+                                true,
+                                (bool previousValue, teamName) =>
+                                    rankingSynthesis.name!.toLowerCase().contains(teamName.toLowerCase()) &&
+                                    previousValue)
                             ? Theme.of(context).textTheme.bodyText2!.copyWith(fontWeight: FontWeight.bold)
                             : Theme.of(context).textTheme.bodyText1!)
                         : Theme.of(context).textTheme.bodyText2!);
@@ -107,7 +113,7 @@ class _TeamRankingTableState extends State<TeamRankingTable> {
         Padding(
           padding: const EdgeInsets.only(left: 12.0),
           child: SizedBox(
-            width: 60,
+            width: extraColumnWidth,
             child: Text(
               "Totaux",
               style: lineStyle,
@@ -116,15 +122,15 @@ class _TeamRankingTableState extends State<TeamRankingTable> {
           ),
         ),
         SizedBox(
-            width: 60,
+            width: extraColumnWidth,
             child: Text(
-              "Joués",
+              widget.team != null ? "D. Matchs" : "Joués",
               style: lineStyle,
               textAlign: TextAlign.center,
             )),
         if (widget.showDetailed)
           SizedBox(
-              width: 60,
+              width: extraColumnWidth,
               child: Text(
                 "Gagnés",
                 style: lineStyle,
@@ -132,7 +138,7 @@ class _TeamRankingTableState extends State<TeamRankingTable> {
               )),
         if (widget.showDetailed)
           SizedBox(
-              width: 60,
+              width: extraColumnWidth,
               child: Text(
                 "Perdus",
                 style: lineStyle,
@@ -140,7 +146,7 @@ class _TeamRankingTableState extends State<TeamRankingTable> {
               )),
         if (widget.showDetailed)
           SizedBox(
-              width: 60,
+              width: extraColumnWidth,
               child: Text(
                 "Forfaits",
                 style: lineStyle,
@@ -148,7 +154,7 @@ class _TeamRankingTableState extends State<TeamRankingTable> {
               )),
         if (widget.showDetailed)
           SizedBox(
-              width: 60,
+              width: extraColumnWidth,
               child: Text(
                 "D. Sets",
                 style: lineStyle,
@@ -156,7 +162,7 @@ class _TeamRankingTableState extends State<TeamRankingTable> {
               )),
         if (widget.showDetailed)
           SizedBox(
-              width: 60,
+              width: extraColumnWidth,
               child: Text(
                 "D. Points",
                 style: lineStyle,

@@ -328,7 +328,7 @@ class _PostPoneMatchState extends State<PostPoneMatch> {
           "[Volley34 : Résultats et Classements] - Notification de report du Match ${hostTeam.name} reçoit ${visitorTeam.name}",
       recipients: [
         senderEmail,
-        //"resultat@volley34.fr",
+        "resultat@volley34.fr",
       ],
       isHTML: true,
       ccRecipients: [senderEmail],

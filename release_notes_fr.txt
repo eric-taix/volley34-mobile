@@ -1,8 +1,4 @@
-- Correction du lieu d'un match reporté sur la liste des prochains événements et l'agenda d'une équipe
-- Gestion des événements se déroulant sur une journée complète (affichage dans l'application, ajout en tant qu'évenement sur une journée sur les agendas des téléphones)
-- Utilisation du français lors de l'ajout d'un événement sur iOS au lieu de l'anglais
-- Affichage du gymnase initial lors de l'affichage des infos d'un match reporté et saut de ligne si nécessaire
-- Ajout du bouton pour lancer l'itinéraire pour tous les événements du moment qu'un lieu est défini
-- Ajout d'un bouton de lancement d'itinéraire pour chaque créneau d'un club
-- Correction de la couleur des champs de saisie d'un résultat pour le thème light
-- Correction de la couleur des icons des applications de cartographie (si plusieurs applications sont installés sur le téléphone)
+- Affichage du détail de la table des scores dans le détail d'une équipe en mode paysage
+- Réduction de la taille du bouton d'itinéraire dans la liste des créneaux d'un club
+- Affichage du détail des compétitions en orientation paysage
+- Envoie des résultats et reports sur l'adresse mail de volley34
