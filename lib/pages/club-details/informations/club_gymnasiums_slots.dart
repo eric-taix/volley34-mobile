@@ -90,10 +90,9 @@ class _ClubGymnasiumsSlotsState extends State<ClubGymnasiumsSlots> {
                             ],
                           ),
                         ),
-                        TextButton.icon(
-                          icon: Icon(Icons.directions),
+                        IconButton(
+                          icon: Icon(Icons.directions, color: Theme.of(context).colorScheme.secondary),
                           onPressed: () => launchRoute(context, slot.gymnasium, route: false),
-                          label: Text("Itinéraire"),
                         ),
                       ],
                     ),
