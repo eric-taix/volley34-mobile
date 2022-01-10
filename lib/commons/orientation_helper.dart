@@ -8,8 +8,15 @@ class OrientationHelper extends StatefulWidget {
   final double? top;
   final double? bottom;
   final double right;
+  final double width;
   const OrientationHelper(
-      {Key? key, required this.child, this.title = "Tourner votre téléphone", this.top, this.right = 20, this.bottom})
+      {Key? key,
+      required this.child,
+      this.title = "Tourner votre téléphone",
+      this.top,
+      this.right = 20,
+      this.bottom,
+      this.width = 220})
       : super(key: key);
 
   @override
@@ -22,33 +29,43 @@ class _OrientationHelperState extends State<OrientationHelper> with SingleTicker
   late AnimationController _controller;
   late Animation _translateAnimation;
   late Animation _skakeAnimation;
+  Future? _animationFuture;
 
   @override
   void initState() {
-    _controller = AnimationController(vsync: this, duration: Duration(milliseconds: 2000));
-    _translateAnimation = Tween<double>(begin: 0.0, end: 220.0).animate(CurvedAnimation(
+    super.initState();
+    _controller = AnimationController(vsync: this, duration: Duration(milliseconds: 4000));
+    _controller.addListener(() {
+      if (mounted) setState(() {});
+    });
+    _translateAnimation = Tween<double>(begin: -widget.width, end: widget.right).animate(CurvedAnimation(
       parent: _controller,
-      curve: Interval(0, 0.3, curve: Curves.easeInOut),
+      curve: Interval(0, 0.3, curve: Curves.elasticOut),
     ));
     _skakeAnimation = Tween<double>(begin: 0.0, end: 2 * pi).animate(CurvedAnimation(
       parent: _controller,
-      curve: Interval(0.6, 1, curve: Curves.easeInOut),
+      curve: Interval(0.8, 1, curve: Curves.easeInOut),
     ));
-    super.initState();
+  }
+
+  @override
+  void dispose() {
+    //_controller.dispose();
+    super.dispose();
   }
 
   @override
   void didChangeDependencies() {
     if (MediaQuery.of(context).orientation == Orientation.portrait) {
-      Future.delayed(Duration(milliseconds: 3000), () {
-        _controller.forward();
+      _animationFuture = Future.delayed(Duration(milliseconds: 2000), () {
+        if (mounted) _controller.forward();
       }).then(
-        (_) => Future.delayed(Duration(milliseconds: 8000), () {
-          _controller.reverse();
+        (_) => Future.delayed(Duration(milliseconds: 4000), () {
+          if (mounted) _controller.reverse();
         }),
       );
     } else {
-      _controller.reset();
+      if (mounted) _controller.reset();
     }
     super.didChangeDependencies();
   }
@@ -61,16 +78,10 @@ class _OrientationHelperState extends State<OrientationHelper> with SingleTicker
         widget.child,
         Positioned(
           top: widget.top,
-          right: widget.right,
+          right: _translateAnimation.value,
           bottom: widget.bottom,
-          child: AnimatedBuilder(
-            animation: _controller,
-            builder: (BuildContext context, Widget? child) {
-              return SizedBox(
-                width: _translateAnimation.value,
-                child: child,
-              );
-            },
+          child: SizedBox(
+            width: widget.width,
             child: Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(18),
@@ -91,8 +102,12 @@ class _OrientationHelperState extends State<OrientationHelper> with SingleTicker
                             Icon(Icons.stay_primary_landscape_rounded, color: Theme.of(context).canvasColor, size: 30),
                       ),
                     ),
-                    Text(widget.title,
-                        style: Theme.of(context).textTheme.bodyText1!.copyWith(color: Theme.of(context).canvasColor)),
+                    Expanded(
+                      child: Text(widget.title,
+                          maxLines: 1,
+                          overflow: TextOverflow.clip,
+                          style: Theme.of(context).textTheme.bodyText1!.copyWith(color: Theme.of(context).canvasColor)),
+                    ),
                   ],
                 ),
               ),

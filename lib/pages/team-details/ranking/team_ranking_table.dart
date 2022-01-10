@@ -42,6 +42,8 @@ class TeamRankingTable extends StatefulWidget {
 class _TeamRankingTableState extends State<TeamRankingTable> {
   late Repository _repository;
 
+  double extraColumnWidth = 70;
+
   @override
   void initState() {
     super.initState();
@@ -111,7 +113,7 @@ class _TeamRankingTableState extends State<TeamRankingTable> {
         Padding(
           padding: const EdgeInsets.only(left: 12.0),
           child: SizedBox(
-            width: 60,
+            width: extraColumnWidth,
             child: Text(
               "Totaux",
               style: lineStyle,
@@ -120,15 +122,15 @@ class _TeamRankingTableState extends State<TeamRankingTable> {
           ),
         ),
         SizedBox(
-            width: 60,
+            width: extraColumnWidth,
             child: Text(
-              "Joués",
+              widget.team != null ? "D. Matchs" : "Joués",
               style: lineStyle,
               textAlign: TextAlign.center,
             )),
         if (widget.showDetailed)
           SizedBox(
-              width: 60,
+              width: extraColumnWidth,
               child: Text(
                 "Gagnés",
                 style: lineStyle,
@@ -136,7 +138,7 @@ class _TeamRankingTableState extends State<TeamRankingTable> {
               )),
         if (widget.showDetailed)
           SizedBox(
-              width: 60,
+              width: extraColumnWidth,
               child: Text(
                 "Perdus",
                 style: lineStyle,
@@ -144,7 +146,7 @@ class _TeamRankingTableState extends State<TeamRankingTable> {
               )),
         if (widget.showDetailed)
           SizedBox(
-              width: 60,
+              width: extraColumnWidth,
               child: Text(
                 "Forfaits",
                 style: lineStyle,
@@ -152,7 +154,7 @@ class _TeamRankingTableState extends State<TeamRankingTable> {
               )),
         if (widget.showDetailed)
           SizedBox(
-              width: 60,
+              width: extraColumnWidth,
               child: Text(
                 "D. Sets",
                 style: lineStyle,
@@ -160,7 +162,7 @@ class _TeamRankingTableState extends State<TeamRankingTable> {
               )),
         if (widget.showDetailed)
           SizedBox(
-              width: 60,
+              width: extraColumnWidth,
               child: Text(
                 "D. Points",
                 style: lineStyle,

@@ -144,8 +144,22 @@ class _TeamRankingState extends State<TeamRanking> with RouteAwareAnalytics {
             featureId: TEAM_RANKING_FEATURE,
             title: "Détail du classement",
             paragraphs: ["Le classement en détail, vos points ainsi que la différence de matchs joués."],
-            child: TeamRankingTable(key: _teamRankingKey, team: widget.team, ranking: widget.ranking),
+            child: TeamRankingTable(
+              key: _teamRankingKey,
+              team: widget.team,
+              ranking: widget.ranking,
+              showDetailed: MediaQuery.of(context).orientation == Orientation.landscape,
+            ),
           ),
+        ),
+        Padding(
+          padding: EdgeInsets.only(top: 8),
+          child: MediaQuery.of(context).orientation != Orientation.landscape
+              ? Text(
+                  "* Tourner votre téléphone pour plus de détails",
+                  style: TextStyle(fontStyle: FontStyle.italic, color: Theme.of(context).textTheme.bodyText1!.color!),
+                )
+              : SizedBox(height: 18),
         ),
       ],
     );
