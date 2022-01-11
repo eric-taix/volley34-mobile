@@ -83,12 +83,13 @@ class _TeamRankingState extends State<TeamRanking> with RouteAwareAnalytics {
   }
 
   Widget _buildCompetitionDescription(BuildContext context) {
+    String? pool = getClassificationPool(widget.ranking.pool);
     return Padding(
       padding: const EdgeInsets.only(top: 8, bottom: 8.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text("${getClassificationCategory(widget.ranking.division)} - ${getClassificationPool(widget.ranking.pool)}",
+          Text("${getClassificationCategory(widget.ranking.division)}${pool != null ? " - ${pool}" : ""}",
               style: Theme.of(context).textTheme.headline4),
           Padding(
             padding: const EdgeInsets.only(left: 18.0),
