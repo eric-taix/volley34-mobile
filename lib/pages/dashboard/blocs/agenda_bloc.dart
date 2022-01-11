@@ -121,7 +121,9 @@ class AgendaBloc extends Bloc<AgendaEvent, AgendaState> {
       List<Event> eventsWithForce = events.map((event) {
         if (event.type == EventType.Match) {
           return event.withForce(
-              forceByTeam[event.hostCode]!.teamForce, forceByTeam[event.visitorCode]!.teamForce, globalForce);
+              forceByTeam[event.hostCode]?.teamForce ?? ForceBuilder(teamCode: event.hostCode).teamForce,
+              forceByTeam[event.visitorCode]?.teamForce ?? ForceBuilder(teamCode: event.visitorCode).teamForce,
+              globalForce);
         } else {
           return event;
         }
