@@ -71,7 +71,7 @@ class _ForceComparisonState extends State<ForceComparison> with SingleTickerProv
             ),
           ),
         _buildRow(
-          SvgPicture.asset("assets/attack.svg", width: 24, color: Theme.of(context).textTheme.bodyText1!.color),
+          SvgPicture.asset("assets/attack.svg", width: 20, color: Theme.of(context).textTheme.bodyText1!.color),
           CustomPaint(
             painter: ForceGraphPainter(
               value: _animation.value *
@@ -84,7 +84,7 @@ class _ForceComparisonState extends State<ForceComparison> with SingleTickerProv
           ),
         ),
         _buildRow(
-          SvgPicture.asset("assets/defense.svg", width: 20, color: Theme.of(context).textTheme.bodyText1!.color),
+          SvgPicture.asset("assets/defense.svg", width: 14, color: Theme.of(context).textTheme.bodyText1!.color),
           CustomPaint(
             painter: ForceGraphPainter(
               value: _animation.value *

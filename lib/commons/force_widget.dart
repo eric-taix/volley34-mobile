@@ -168,7 +168,7 @@ class ForceGraphPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final double barTranslationX = 8;
 
-    final double strokeWidth = 8;
+    final double strokeWidth = 6;
     final colors = [Colors.red, Colors.orange, Colors.yellow, Colors.green];
     final stops = List.generate(colors.length, (index) => (index * max / (colors.length)));
     final inversedColors = colors.reversed.toList();

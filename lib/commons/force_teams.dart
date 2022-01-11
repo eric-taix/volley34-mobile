@@ -6,7 +6,7 @@ import 'package:v34/models/force.dart';
 class ForceTeams extends StatelessWidget {
   static const double OUTER_PADDING = 12;
   static const double INNER_PADDING = 0;
-  static const double ICON_SIZE = 24;
+  static const double ICON_SIZE = 16;
 
   final Force? hostForce;
   final Force? visitorForce;

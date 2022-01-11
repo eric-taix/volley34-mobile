@@ -31,6 +31,7 @@ class Event extends Equatable {
   final Force? visitorForce;
   final Force? globalForce;
   final String? matchCode;
+  final String? competitionCode;
   late final DateTime? _postponedDate;
   late final String? _postponedGymnasiumCode;
   final bool hasResult;
@@ -70,6 +71,7 @@ class Event extends Equatable {
     this.visitorForce,
     this.globalForce,
     this.matchCode,
+    this.competitionCode,
     this.hasResult = false,
     DateTime? postponedDate,
     String? postponedGymnasiumCode,
@@ -96,6 +98,7 @@ class Event extends Equatable {
         visitorCode: json["EquipeVisiteursCode"],
         type: EventType.Match,
         matchCode: json["MatchCode"],
+        competitionCode: json["CompetitionCode"],
         postponedDate: json["DateMatchRevisee"] != null ? DateTime.parse(json["DateMatchRevisee"]) : null,
         postponedGymnasiumCode: json["GymnaseCodeRevise"],
         hasResult: false,
@@ -142,6 +145,7 @@ class Event extends Equatable {
       visitorForce: visitorForce,
       globalForce: globalForce,
       matchCode: matchCode,
+      competitionCode: competitionCode,
       postponedDate: _postponedDate,
       postponedGymnasiumCode: _postponedGymnasiumCode,
       hasResult: hasResult,

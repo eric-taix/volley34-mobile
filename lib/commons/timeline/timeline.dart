@@ -91,27 +91,29 @@ class _TimelineState extends State<Timeline> {
                       circleColor: item.events!.first.color,
                     ),
                   ),
-                  Expanded(child: item.events!.first.child!),
+                  Expanded(child: Padding(padding: EdgeInsets.only(top: 18), child: item.events!.first.child!)),
                 ],
               ),
             ),
             ...item.events!.skip(1).map((event) {
               return IntrinsicHeight(
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    NoEventDate(),
-                    Padding(
-                      padding: const EdgeInsets.only(right: 8.0),
-                      child: Line(
-                        circleRadius: circleRadius,
-                        lineWidth: lineWidth,
-                        circleLineWidth: circleLineWidth,
-                        circleColor: item.events!.first.color,
+                child: Container(
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      NoEventDate(),
+                      Padding(
+                        padding: const EdgeInsets.only(right: 8.0),
+                        child: Line(
+                          circleRadius: circleRadius,
+                          lineWidth: lineWidth,
+                          circleLineWidth: circleLineWidth,
+                          circleColor: item.events!.first.color,
+                        ),
                       ),
-                    ),
-                    Expanded(child: event.child!),
-                  ],
+                      Expanded(child: event.child!),
+                    ],
+                  ),
                 ),
               );
             }),
