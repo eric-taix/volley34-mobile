@@ -1,4 +1,8 @@
-- Affichage du détail de la table des scores dans le détail d'une équipe en mode paysage
-- Réduction de la taille du bouton d'itinéraire dans la liste des créneaux d'un club
-- Affichage du détail des compétitions en orientation paysage
-- Envoie des résultats et reports sur l'adresse mail de volley34
+- Affichage de multiples compétitions dans le dashboard d'une équipe
+- Limitation de la taille du podium en mode paysage
+- Correction défaut d'affichage de poule quand une compétition ne contient pas de poule
+- Cache la promotion ou relégation si l'équipe n'a pas encore joué de match
+- Correction de l'affichage des statistiques d'une équipe quand aucun match n'a été joué
+- Affichage de la compétition sur les événements et les résultats
+- Correction d'une erreur lors de l'affichage des forces sans match joué
+

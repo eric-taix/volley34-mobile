@@ -39,15 +39,17 @@ class _LineGraphState extends State<LineGraph> {
   @override
   void initState() {
     super.initState();
-    _results = List.generate(widget.results.length, (_) => 0.0);
+    _results = List.generate(widget.results.length > 1 ? widget.results.length : 2, (_) => 0.0);
     _maxY = widget.results.reduce(max);
     _minY = widget.results.reduce(min);
 
-    Future.delayed(Duration(milliseconds: 400), () {
-      setState(() {
-        _results = widget.results;
+    if (widget.results.length > 1) {
+      Future.delayed(Duration(milliseconds: 400), () {
+        setState(() {
+          _results = widget.results;
+        });
       });
-    });
+    }
   }
 
   @override

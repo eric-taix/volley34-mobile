@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
+import 'package:v34/commons/competition_rich_text.dart';
 import 'package:v34/commons/router.dart';
 import 'package:v34/commons/timeline/match_title.dart';
 import 'package:v34/commons/timeline/postponed_badge.dart';
@@ -88,13 +89,33 @@ class _MatchTimelineItem extends TimelineItemWidget {
 
   @override
   Widget build(BuildContext context) {
-    return _TimelineItemCard(
-      children: <Widget>[
-        MatchTitle(allowDetails: allowDetails, event: event, team: team, showForces: showForces),
-        if (allowDetails) _Place(event.place, event.date, false)
+    return Stack(
+      clipBehavior: Clip.none,
+      alignment: Alignment.center,
+      children: [
+        _TimelineItemCard(
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.only(top: 8.0),
+              child: MatchTitle(allowDetails: allowDetails, event: event, team: team, showForces: showForces),
+            ),
+            if (allowDetails) _Place(event.place, event.date, false),
+          ],
+          onTap: allowDetails ? () => showEventDetails(context, event) : null,
+          topRightWidget: event.postponedDate != null ? PostponedBadge() : SizedBox(),
+        ),
+        Positioned(
+          top: -12,
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 30.0),
+            child: CompetitionRichText(
+              competitionCode: event.competitionCode,
+              blackAndWhite: true,
+              showText: true,
+            ),
+          ),
+        ),
       ],
-      onTap: allowDetails ? () => showEventDetails(context, event) : null,
-      topRightWidget: event.postponedDate != null ? PostponedBadge() : SizedBox(),
     );
   }
 

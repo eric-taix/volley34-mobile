@@ -19,25 +19,29 @@ class SummaryWidget extends StatelessWidget {
           return makeGroupData(
               context, 0, ((teamStats.nbSets30 ?? 0) + (teamStats.nbSetsF30 ?? 0)).toDouble(), Colors.green, teamStats);
         case 1:
-          return makeGroupData(context, 1, teamStats.nbSets31!.toDouble(), Colors.greenAccent, teamStats);
+          return makeGroupData(context, 1, teamStats.nbSets31?.toDouble() ?? 0, Colors.greenAccent, teamStats);
         case 2:
-          return makeGroupData(context, 2, teamStats.nbSets32!.toDouble(), Colors.yellowAccent, teamStats);
+          return makeGroupData(context, 2, teamStats.nbSets32?.toDouble() ?? 0, Colors.yellowAccent, teamStats);
         case 3:
-          return makeGroupData(context, 3, teamStats.nbSets23!.toDouble(), Colors.orangeAccent, teamStats);
+          return makeGroupData(context, 3, teamStats.nbSets23?.toDouble() ?? 0, Colors.orangeAccent, teamStats);
         case 4:
-          return makeGroupData(context, 4, teamStats.nbSets13!.toDouble(), Colors.deepOrangeAccent, teamStats);
+          return makeGroupData(context, 4, teamStats.nbSets13?.toDouble() ?? 0, Colors.deepOrangeAccent, teamStats);
         case 5:
           return makeGroupData(context, 5, ((teamStats.nbSets03 ?? 0) + (teamStats.nbSetsF03 ?? 0)).toDouble(),
               Colors.redAccent, teamStats);
         default:
           return makeGroupData(
-              context, 6, teamStats.nbSetsMI!.toDouble(), Theme.of(context).colorScheme.secondary, teamStats);
+              context, 6, teamStats.nbSetsMI?.toDouble() ?? 0, Theme.of(context).colorScheme.secondary, teamStats);
       }
     });
   }
 
   BarChartGroupData makeGroupData(
       BuildContext context, int x, double y, Color barColor, RankingTeamSynthesis teamStats) {
+    int countMatches = ((teamStats.wonMatches ?? 0) + (teamStats.lostMatches ?? 0));
+    if (countMatches == 0) {
+      countMatches = 1;
+    }
     return BarChartGroupData(
       x: x,
       showingTooltipIndicators: [0],
@@ -48,7 +52,7 @@ class SummaryWidget extends StatelessWidget {
           width: 12,
           backDrawRodData: BackgroundBarChartRodData(
             show: true,
-            y: (teamStats.wonMatches! + teamStats.lostMatches!).toDouble(),
+            y: countMatches.toDouble(),
             colors: [Theme.of(context).cardTheme.color!.tiny(10)],
           ),
         ),

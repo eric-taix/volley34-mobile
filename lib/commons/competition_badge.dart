@@ -5,9 +5,15 @@ class CompetitionBadge extends StatelessWidget {
   final String? competitionCode;
   final TextStyle? labelStyle;
   final bool showSubTitle;
+  final bool blackAndWhite;
 
   const CompetitionBadge(
-      {Key? key, this.deltaSize = 1, required this.competitionCode, this.labelStyle, this.showSubTitle = true})
+      {Key? key,
+      this.deltaSize = 1,
+      required this.competitionCode,
+      this.labelStyle,
+      this.showSubTitle = true,
+      this.blackAndWhite = false})
       : super(key: key);
 
   _CompetitionBadgePainter _drawCompetitionBadge(BuildContext context) {
@@ -18,18 +24,18 @@ class CompetitionBadge extends StatelessWidget {
         return _CompetitionBadgePainter(
             context: context,
             label: "4",
-            leftColor: Colors.blue,
-            rightColor: Colors.blue,
-            labelStyle: labelStyle,
+            leftColor: blackAndWhite ? Theme.of(context).textTheme.bodyText1!.color! : Colors.blue,
+            rightColor: blackAndWhite ? Theme.of(context).textTheme.bodyText1!.color! : Colors.blue,
+            labelStyle: blackAndWhite ? Theme.of(context).textTheme.bodyText2 : labelStyle,
             subtitleStyle: subTitleStyle,
             subtitle: showSubTitle ? getBadgeTitle(competitionCode!) : null);
       case 2:
         return _CompetitionBadgePainter(
             context: context,
             label: "6",
-            leftColor: Colors.blue,
-            labelStyle: labelStyle,
-            rightColor: Colors.blue,
+            leftColor: blackAndWhite ? Theme.of(context).textTheme.bodyText1!.color! : Colors.blue,
+            labelStyle: blackAndWhite ? Theme.of(context).textTheme.bodyText2 : labelStyle,
+            rightColor: blackAndWhite ? Theme.of(context).textTheme.bodyText1!.color! : Colors.blue,
             subtitleStyle: subTitleStyle,
             subtitle: showSubTitle ? getBadgeTitle(competitionCode!) : null);
       case 3:
@@ -38,8 +44,8 @@ class CompetitionBadge extends StatelessWidget {
             context: context,
             label: "4",
             labelStyle: labelStyle,
-            leftColor: Colors.blue,
-            rightColor: Colors.pinkAccent,
+            leftColor: blackAndWhite ? Theme.of(context).textTheme.bodyText1!.color! : Colors.blue,
+            rightColor: blackAndWhite ? Theme.of(context).textTheme.bodyText2!.color! : Colors.pinkAccent,
             subtitleStyle: subTitleStyle,
             subtitle: showSubTitle ? getBadgeTitle(competitionCode!) : null);
       case 5:
@@ -47,8 +53,8 @@ class CompetitionBadge extends StatelessWidget {
             context: context,
             label: "6",
             labelStyle: labelStyle,
-            leftColor: Colors.blue,
-            rightColor: Colors.pinkAccent,
+            leftColor: blackAndWhite ? Theme.of(context).textTheme.bodyText1!.color! : Colors.blue,
+            rightColor: blackAndWhite ? Theme.of(context).textTheme.bodyText2!.color! : Colors.pinkAccent,
             subtitleStyle: subTitleStyle,
             subtitle: showSubTitle ? getBadgeTitle(competitionCode!) : null);
       case 6:
@@ -56,8 +62,8 @@ class CompetitionBadge extends StatelessWidget {
             context: context,
             label: "4",
             labelStyle: labelStyle,
-            leftColor: Colors.pinkAccent,
-            rightColor: Colors.pinkAccent,
+            leftColor: blackAndWhite ? Theme.of(context).textTheme.bodyText2!.color! : Colors.pinkAccent,
+            rightColor: blackAndWhite ? Theme.of(context).textTheme.bodyText2!.color! : Colors.pinkAccent,
             subtitleStyle: subTitleStyle,
             subtitle: showSubTitle ? getBadgeTitle(competitionCode!) : null);
       case 7:
@@ -65,16 +71,16 @@ class CompetitionBadge extends StatelessWidget {
             context: context,
             label: "6",
             labelStyle: labelStyle,
-            leftColor: Colors.pinkAccent,
-            rightColor: Colors.pinkAccent,
+            leftColor: blackAndWhite ? Theme.of(context).textTheme.bodyText2!.color! : Colors.pinkAccent,
+            rightColor: blackAndWhite ? Theme.of(context).textTheme.bodyText2!.color! : Colors.pinkAccent,
             subtitleStyle: subTitleStyle,
             subtitle: showSubTitle ? getBadgeTitle(competitionCode!) : null);
       default:
         return _CompetitionBadgePainter(
             context: context,
             label: "?",
-            leftColor: Colors.blue,
-            rightColor: Colors.blue,
+            leftColor: blackAndWhite ? Theme.of(context).textTheme.bodyText1!.color! : Colors.blue,
+            rightColor: blackAndWhite ? Theme.of(context).textTheme.bodyText1!.color! : Colors.blue,
             labelStyle: labelStyle,
             subtitleStyle: subTitleStyle,
             subtitle: showSubTitle ? getBadgeTitle(competitionCode!) : null);

@@ -19,7 +19,7 @@ class EvolutionWidget extends StatelessWidget {
         super(key: key);
 
   Widget _buildGraph(BuildContext context) {
-    if (evolution.length > 1) {
+    if (evolution.length >= 0) {
       return SizedBox(
         height: miniGraphHeight,
         child: FractionallySizedBox(

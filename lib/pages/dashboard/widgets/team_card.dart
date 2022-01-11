@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:page_view_indicators/circle_page_indicator.dart';
 import 'package:v34/commons/cards/titled_card.dart';
 import 'package:v34/commons/loading.dart';
 import 'package:v34/commons/podium_widget.dart';
@@ -18,12 +19,13 @@ class TeamCard extends StatefulWidget {
   final bool currentlyDisplayed;
   final double distance;
   final double cardHeight;
-  TeamCard(
-      {required this.team,
-      required this.currentlyDisplayed,
-      required this.distance,
-      required this.club,
-      this.cardHeight = 190});
+  TeamCard({
+    required this.team,
+    required this.currentlyDisplayed,
+    required this.distance,
+    required this.club,
+    this.cardHeight = 190,
+  });
 
   @override
   _TeamCardState createState() => _TeamCardState();
@@ -31,6 +33,7 @@ class TeamCard extends StatefulWidget {
 
 class _TeamCardState extends State<TeamCard> {
   late TeamRankingBloc _classificationBloc;
+  final _currentPageNotifier = ValueNotifier<int>(0);
 
   @override
   void initState() {
@@ -62,33 +65,49 @@ class _TeamCardState extends State<TeamCard> {
     return Expanded(child: Text("Aucune donnée", textAlign: TextAlign.center));
   }
 
-  List<Widget> _getPodiumWidget(state) {
+  Widget _getPodiumWidgets(state) {
     if (state is TeamRankingLoadedState) {
-      List<Widget> result = state.rankings
-          .expand((classification) {
-            return [
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 18.0, right: 8.0),
-                  child: PodiumWidget(
-                    showTrailing: true,
-                    classification: classification,
-                    highlightedTeamCode: state.highlightedTeamCode,
-                    currentlyDisplayed: widget.currentlyDisplayed,
+      return state.rankings.length != 0
+          ? Stack(
+              children: [
+                PageView.builder(
+                  onPageChanged: (pageIndex) => _currentPageNotifier.value = pageIndex,
+                  itemBuilder: (context, index) {
+                    return Padding(
+                      padding: const EdgeInsets.only(left: 18.0, right: 8.0, bottom: 18),
+                      child: PodiumWidget(
+                        showTrailing: true,
+                        classification: state.rankings[index],
+                        highlightedTeamCode: state.highlightedTeamCode,
+                        currentlyDisplayed: widget.currentlyDisplayed,
+                      ),
+                    );
+                  },
+                  itemCount: state.rankings.length,
+                ),
+                Positioned(
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  child: CirclePageIndicator(
+                    itemCount: state.rankings.length > 1 ? state.rankings.length : 0,
+                    currentPageNotifier: _currentPageNotifier,
+                    selectedDotColor: Theme.of(context).colorScheme.secondary,
+                    selectedSize: 12,
+                    selectedBorderColor: Theme.of(context).colorScheme.secondary,
+                    dotColor: Theme.of(context).cardTheme.color,
+                    size: 11,
+                    borderColor: Theme.of(context).colorScheme.secondary,
+                    borderWidth: 2,
                   ),
                 ),
-              ),
-              VerticalDivider(thickness: 0.9, indent: 38, endIndent: 38)
-            ];
-          })
-          .take(state.rankings.length * 2 - 1)
-          .toList();
-      if (result.isEmpty) result.add(_noPodiumData());
-      return result;
+              ],
+            )
+          : _noPodiumData();
     } else if (state is TeamRankingLoadingState) {
-      return [Center(child: Loading(loaderType: LoaderType.THREE_BOUNCE))];
+      return Center(child: Loading(loaderType: LoaderType.THREE_BOUNCE));
     } else {
-      return [];
+      return SizedBox();
     }
   }
 
@@ -108,10 +127,7 @@ class _TeamCardState extends State<TeamCard> {
               padding: const EdgeInsets.only(top: 8, bottom: 0.0),
               child: Container(
                 height: cardBodyHeight - 80,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: _getPodiumWidget(state),
-                ),
+                child: _getPodiumWidgets(state),
               ),
             ),
             onTap: () => RouterFacade.push(

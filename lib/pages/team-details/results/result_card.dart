@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:v34/commons/competition_rich_text.dart';
 import 'package:v34/commons/fluid_expansion_card/fluid_expansion_card.dart';
 import 'package:v34/models/match_result.dart';
 import 'package:v34/models/team.dart';
@@ -26,17 +27,31 @@ class ResultCard extends StatelessWidget {
         result.sets!.fold(0, (count, set) => set.visitorpoint != null && set.hostPoint != null ? count + 1 : count);
     return Padding(
       padding: const EdgeInsets.only(top: 8.0, bottom: 18.0),
-      child: FluidExpansionCard(
-        topCardHeight: 100,
-        topCardWidget: _buildResult(context),
-        bottomCardHeight: (countSet + 1) * 41.0 + 18,
-        bottomCardWidget: Padding(
-          padding: const EdgeInsets.only(top: 18.0),
-          child: _buildResultDetails(context),
-        ),
-        borderRadius: 12,
-        width: MediaQuery.of(context).size.width - 40,
-        color: Theme.of(context).cardTheme.color,
+      child: Stack(
+        alignment: Alignment.center,
+        clipBehavior: Clip.none,
+        children: [
+          FluidExpansionCard(
+            topCardHeight: 120,
+            topCardWidget: _buildResult(context),
+            bottomCardHeight: (countSet + 1) * 41.0 + 18,
+            bottomCardWidget: Padding(
+              padding: const EdgeInsets.only(top: 18.0),
+              child: _buildResultDetails(context),
+            ),
+            borderRadius: 12,
+            width: MediaQuery.of(context).size.width - 40,
+            color: Theme.of(context).cardTheme.color,
+          ),
+          Positioned(
+            top: -14,
+            child: CompetitionRichText(
+              competitionCode: result.competitionCode,
+              blackAndWhite: true,
+              showText: true,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -74,7 +89,7 @@ class ResultCard extends StatelessWidget {
                             "Set n°",
                             style: Theme.of(context).textTheme.bodyText1,
                           ),
-                          Icon(_setIcons[index], color: Theme.of(context).textTheme.bodyText1!.color!),
+                          Icon(ResultCard._setIcons[index], color: Theme.of(context).textTheme.bodyText1!.color!),
                         ],
                       ),
                     ),
@@ -150,83 +165,83 @@ class ResultCard extends StatelessWidget {
       scoreColor = team.code == result.hostTeamCode ? Colors.red : Colors.green;
       resultString = "perd contre";
     }
-
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: Row(children: [
-        Container(
-          decoration: BoxDecoration(
-              border: Border(right: BorderSide(color: Theme.of(context).textTheme.bodyText1!.color!, width: 0))),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 18.0),
-            child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-              Expanded(
-                child: Center(
-                  child: RichText(
-                    text: TextSpan(
-                        text: "${result.totalSetsHost}",
-                        style: TextStyle(
-                          fontSize: 28.0,
-                          fontWeight: FontWeight.bold,
-                          color: (team.code == result.hostTeamCode)
-                              ? scoreColor
-                              : Theme.of(context).textTheme.bodyText2!.color,
-                        ),
-                        children: [
-                          TextSpan(
-                              text: " - ",
-                              style: TextStyle(
-                                fontSize: 28.0,
-                                color: Theme.of(context).textTheme.bodyText1!.color,
-                              )),
-                          TextSpan(
-                              text: "${result.totalSetsVisitor}",
-                              style: TextStyle(
-                                fontSize: 28.0,
-                                color: (team.code == result.visitorTeamCode)
-                                    ? scoreColor
-                                    : Theme.of(context).textTheme.bodyText2!.color,
-                              )),
-                        ]),
+      child: SizedBox(
+        height: 70,
+        child: Row(children: [
+          Container(
+            decoration: BoxDecoration(
+                border: Border(right: BorderSide(color: Theme.of(context).textTheme.bodyText1!.color!, width: 0))),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 18.0),
+              child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+                Expanded(
+                  child: Center(
+                    child: RichText(
+                      text: TextSpan(
+                          text: "${result.totalSetsHost}",
+                          style: TextStyle(
+                            fontSize: 28.0,
+                            fontWeight: FontWeight.bold,
+                            color: (team.code == result.hostTeamCode)
+                                ? scoreColor
+                                : Theme.of(context).textTheme.bodyText2!.color,
+                          ),
+                          children: [
+                            TextSpan(
+                                text: " - ",
+                                style: TextStyle(
+                                  fontSize: 28.0,
+                                  color: Theme.of(context).textTheme.bodyText1!.color,
+                                )),
+                            TextSpan(
+                                text: "${result.totalSetsVisitor}",
+                                style: TextStyle(
+                                  fontSize: 28.0,
+                                  color: (team.code == result.visitorTeamCode)
+                                      ? scoreColor
+                                      : Theme.of(context).textTheme.bodyText2!.color,
+                                )),
+                          ]),
+                    ),
                   ),
                 ),
-              ),
-              Text("${_dateFormat.format(result.matchDate!)}", style: Theme.of(context).textTheme.bodyText1),
-            ]),
+                Text("${_dateFormat.format(result.matchDate!)}", style: Theme.of(context).textTheme.bodyText1),
+              ]),
+            ),
           ),
-        ),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                "${result.hostName}",
-                textAlign: TextAlign.center,
-                overflow: TextOverflow.ellipsis,
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyText2!
-                    .copyWith(fontWeight: FontWeight.bold, color: result.hostTeamCode == team.code ? scoreColor : null),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  resultString,
-                  style: Theme.of(context).textTheme.bodyText1,
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  "${result.hostName}",
+                  textAlign: TextAlign.center,
+                  overflow: TextOverflow.ellipsis,
+                  style: Theme.of(context).textTheme.bodyText2!.copyWith(
+                      fontWeight: FontWeight.bold, color: result.hostTeamCode == team.code ? scoreColor : null),
                 ),
-              ),
-              Text(
-                "${result.visitorName}",
-                textAlign: TextAlign.center,
-                overflow: TextOverflow.ellipsis,
-                style: Theme.of(context).textTheme.bodyText2!.copyWith(
-                    fontWeight: FontWeight.bold, color: result.visitorTeamCode == team.code ? scoreColor : null),
-              ),
-            ],
-          ),
-        )
-      ]),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    resultString,
+                    style: Theme.of(context).textTheme.bodyText1,
+                  ),
+                ),
+                Text(
+                  "${result.visitorName}",
+                  textAlign: TextAlign.center,
+                  overflow: TextOverflow.ellipsis,
+                  style: Theme.of(context).textTheme.bodyText2!.copyWith(
+                      fontWeight: FontWeight.bold, color: result.visitorTeamCode == team.code ? scoreColor : null),
+                ),
+              ],
+            ),
+          )
+        ]),
+      ),
     );
   }
 

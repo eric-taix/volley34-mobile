@@ -168,7 +168,7 @@ class ForceGraphPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final double barTranslationX = 8;
 
-    final double strokeWidth = 8;
+    final double strokeWidth = 6;
     final colors = [Colors.red, Colors.orange, Colors.yellow, Colors.green];
     final stops = List.generate(colors.length, (index) => (index * max / (colors.length)));
     final inversedColors = colors.reversed.toList();
@@ -222,8 +222,10 @@ class ForceGraphPainter extends CustomPainter {
       ..style = PaintingStyle.fill;
 
     const double circleRadius = 8;
-    canvas.drawCircle(point, 10, circleBackgroundPaint);
-    canvas.drawCircle(point, circleRadius, circleForegroundPaint);
+    if (!value.isNaN) {
+      canvas.drawCircle(point, 10, circleBackgroundPaint);
+      canvas.drawCircle(point, circleRadius, circleForegroundPaint);
+    }
 
     if (showValue) {
       TextSpan span = new TextSpan(text: "${((value / ref) * 100).toInt()}%", style: textStyle);

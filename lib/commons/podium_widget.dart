@@ -47,56 +47,65 @@ class _PodiumWidgetState extends State<PodiumWidget> {
               teamClassification.rank ?? -1);
         }).toList() ??
         <PlaceValue>[];
+    var totalMatches = widget.classification.ranks?.fold<double>(
+            0,
+            (previous, teamClassification) =>
+                previous + (teamClassification.lostMatches ?? 0) + (teamClassification.wonMatches ?? 0)) ??
+        0;
     var highlightedIndex = placeValues.indexWhere((placeValue) => placeValue.id == widget.highlightedTeamCode);
-    return Stack(
-      children: [
-        Container(
-          alignment: Alignment.bottomRight,
-          height: 50,
-          child: AnimatedOpacity(
-            opacity: _cupOpacity,
-            duration: Duration(milliseconds: 1800),
-            curve: Curves.easeInOut,
-            child: FaIcon(
-              FontAwesomeIcons.trophy,
-              size: 44,
-              color: _getRankColor(placeValues[highlightedIndex].rank),
+    return FractionallySizedBox(
+      widthFactor: MediaQuery.of(context).orientation == Orientation.landscape ? 0.5 : 1,
+      child: Stack(
+        children: [
+          Container(
+            alignment: Alignment.bottomRight,
+            height: 50,
+            child: AnimatedOpacity(
+              opacity: _cupOpacity,
+              duration: Duration(milliseconds: 1800),
+              curve: Curves.easeInOut,
+              child: FaIcon(
+                FontAwesomeIcons.trophy,
+                size: 44,
+                color: _getRankColor(placeValues[highlightedIndex].rank),
+              ),
             ),
           ),
-        ),
-        Podium(
-          placeValues,
-          active: widget.currentlyDisplayed,
-          title: widget.title ?? widget.classification.label ?? "",
-          highlightedIndex: highlightedIndex,
-          promoted: widget.classification.promoted,
-          relegated: widget.classification.relegated,
-          trailing: widget.showTrailing
-              ? Padding(
-                  padding: const EdgeInsets.only(left: 8.0),
-                  child: Row(
-                    children: [
-                      ConstrainedBox(
-                        constraints: BoxConstraints(maxHeight: 20, maxWidth: 45),
-                        child: CompetitionBadge(
-                          showSubTitle: false,
-                          competitionCode: widget.classification.competitionCode,
-                          labelStyle: TextStyle(color: Colors.white, fontSize: 14),
+          Podium(
+            placeValues,
+            active: widget.currentlyDisplayed,
+            title: widget.title ?? widget.classification.label ?? "",
+            highlightedIndex: highlightedIndex,
+            promoted: widget.classification.promoted,
+            relegated: widget.classification.relegated,
+            showPromotedRelegated: totalMatches > 0,
+            trailing: widget.showTrailing
+                ? Padding(
+                    padding: const EdgeInsets.only(left: 8.0),
+                    child: Row(
+                      children: [
+                        ConstrainedBox(
+                          constraints: BoxConstraints(maxHeight: 20, maxWidth: 45),
+                          child: CompetitionBadge(
+                            showSubTitle: false,
+                            competitionCode: widget.classification.competitionCode,
+                            labelStyle: TextStyle(color: Colors.white, fontSize: 14),
+                          ),
                         ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 8.0, top: 8.0, bottom: 8.0),
-                        child: Text(
-                          "${getClassificationCategory(widget.classification.division)}",
-                          style: Theme.of(context).textTheme.bodyText1,
-                        ),
-                      )
-                    ],
-                  ),
-                )
-              : SizedBox(),
-        ),
-      ],
+                        Padding(
+                          padding: const EdgeInsets.only(left: 8.0, top: 8.0, bottom: 8.0),
+                          child: Text(
+                            "${getClassificationCategory(widget.classification.division)}",
+                            style: Theme.of(context).textTheme.bodyText1,
+                          ),
+                        )
+                      ],
+                    ),
+                  )
+                : SizedBox(),
+          ),
+        ],
+      ),
     );
   }
 

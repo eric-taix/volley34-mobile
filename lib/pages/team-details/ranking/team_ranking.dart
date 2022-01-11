@@ -83,12 +83,13 @@ class _TeamRankingState extends State<TeamRanking> with RouteAwareAnalytics {
   }
 
   Widget _buildCompetitionDescription(BuildContext context) {
+    String? pool = getClassificationPool(widget.ranking.pool);
     return Padding(
       padding: const EdgeInsets.only(top: 8, bottom: 8.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text("${getClassificationCategory(widget.ranking.division)} - ${getClassificationPool(widget.ranking.pool)}",
+          Text("${getClassificationCategory(widget.ranking.division)}${pool != null ? " - ${pool}" : ""}",
               style: Theme.of(context).textTheme.headline4),
           Padding(
             padding: const EdgeInsets.only(left: 18.0),
@@ -105,9 +106,12 @@ class _TeamRankingState extends State<TeamRanking> with RouteAwareAnalytics {
 
   Widget _buildPodium(BuildContext context, RankingTeamSynthesis teamStats) {
     String title = "";
-    if (teamStats.rank! <= widget.ranking.promoted!) {
+
+    int totalMatches = (teamStats.wonMatches ?? 0) + (teamStats.lostMatches ?? 0);
+    if (totalMatches > 0 && teamStats.rank! <= widget.ranking.promoted!) {
       title = "Promue";
-    } else if (widget.ranking.ranks != null &&
+    } else if (totalMatches > 0 &&
+        widget.ranking.ranks != null &&
         widget.ranking.ranks!.length - teamStats.rank! < widget.ranking.relegated!) {
       title = "Reléguée";
     } else {
