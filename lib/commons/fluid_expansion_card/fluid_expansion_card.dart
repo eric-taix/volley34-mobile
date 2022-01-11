@@ -21,13 +21,13 @@ class FluidExpansionCard extends StatefulWidget {
     this.color = const Color(0xff5858FF),
     this.width = 300,
     this.topCardHeight = 300,
-    this.bottomCardHeight = 300,
+    this.bottomCardHeight = 320,
     this.borderRadius = 25,
     this.topCardWidget,
     this.bottomCardWidget,
     this.slimeEnabled = true,
-  })  : assert(topCardHeight >= 80, 'Height of Top Card must be atleast 150.'),
-        assert(bottomCardHeight >= 100, 'Height of Bottom Card must be atleast 100.'),
+  })  : assert(topCardHeight >= 80, 'Height of Top Card must be at least 150.'),
+        assert(bottomCardHeight >= 100, 'Height of Bottom Card must be at least 100.'),
         assert(width >= 100, 'Width must be atleast 100.'),
         assert(borderRadius <= 30 && borderRadius >= 0, 'Border Radius must neither exceed 30 nor be negative');
 
@@ -87,7 +87,7 @@ class _FluidExpansionCardState extends State<FluidExpansionCard> with TickerProv
     isSeparated = false;
     activeAnimation = 'Idle';
     initialBottomDimension = widget.topCardHeight;
-    finalBottomDimension = widget.bottomCardHeight;
+    finalBottomDimension = widget.bottomCardHeight + 20;
     bottomDimension = initialBottomDimension;
     topCardWidget =
         (widget.topCardWidget != null) ? widget.topCardWidget : simpleTextWidget('This is Top Card Widget.');
@@ -174,7 +174,7 @@ class _FluidExpansionCardState extends State<FluidExpansionCard> with TickerProv
                           elevation: Theme.of(context).cardTheme.elevation!,
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(widget.borderRadius)),
                           child: Container(
-                            height: bottomDimension,
+                            height: bottomDimension ?? 0 - 200,
                             width: widget.width,
                             decoration: BoxDecoration(
                               color: widget.color,
@@ -214,7 +214,7 @@ class _FluidExpansionCardState extends State<FluidExpansionCard> with TickerProv
                           ),
                           SizedBox(
                             // Determine the height of the topCard
-                            height: bottomDimension! - 4,
+                            height: bottomDimension! - 0,
                           ),
                         ],
                       ),
