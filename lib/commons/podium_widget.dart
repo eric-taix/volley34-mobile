@@ -47,6 +47,11 @@ class _PodiumWidgetState extends State<PodiumWidget> {
               teamClassification.rank ?? -1);
         }).toList() ??
         <PlaceValue>[];
+    var totalMatches = widget.classification.ranks?.fold<double>(
+            0,
+            (previous, teamClassification) =>
+                previous + (teamClassification.lostMatches ?? 0) + (teamClassification.wonMatches ?? 0)) ??
+        0;
     var highlightedIndex = placeValues.indexWhere((placeValue) => placeValue.id == widget.highlightedTeamCode);
     return Stack(
       children: [
@@ -71,6 +76,7 @@ class _PodiumWidgetState extends State<PodiumWidget> {
           highlightedIndex: highlightedIndex,
           promoted: widget.classification.promoted,
           relegated: widget.classification.relegated,
+          showPromotedRelegated: totalMatches > 0,
           trailing: widget.showTrailing
               ? Padding(
                   padding: const EdgeInsets.only(left: 8.0),

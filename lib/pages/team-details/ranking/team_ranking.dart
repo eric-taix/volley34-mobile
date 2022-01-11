@@ -105,9 +105,12 @@ class _TeamRankingState extends State<TeamRanking> with RouteAwareAnalytics {
 
   Widget _buildPodium(BuildContext context, RankingTeamSynthesis teamStats) {
     String title = "";
-    if (teamStats.rank! <= widget.ranking.promoted!) {
+
+    int totalMatches = (teamStats.wonMatches ?? 0) + (teamStats.lostMatches ?? 0);
+    if (totalMatches > 0 && teamStats.rank! <= widget.ranking.promoted!) {
       title = "Promue";
-    } else if (widget.ranking.ranks != null &&
+    } else if (totalMatches > 0 &&
+        widget.ranking.ranks != null &&
         widget.ranking.ranks!.length - teamStats.rank! < widget.ranking.relegated!) {
       title = "Reléguée";
     } else {

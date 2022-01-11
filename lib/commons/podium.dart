@@ -31,14 +31,18 @@ class Podium extends StatefulWidget {
   final int? promoted;
   final int? relegated;
   final Widget? trailing;
+  final bool showPromotedRelegated;
 
-  Podium(this.placeValues,
-      {this.title = "",
-      this.active = true,
-      this.highlightedIndex,
-      this.promoted = 0,
-      this.relegated = 0,
-      this.trailing});
+  Podium(
+    this.placeValues, {
+    this.title = "",
+    this.active = true,
+    this.highlightedIndex,
+    this.promoted = 0,
+    this.relegated = 0,
+    this.trailing,
+    this.showPromotedRelegated = true,
+  });
 
   @override
   _PodiumState createState() => _PodiumState();
@@ -224,7 +228,7 @@ class _PodiumState extends State<Podium> {
                   ),
                 ),
               ],
-              showingTooltipIndicators: [0],
+              showingTooltipIndicators: widget.showPromotedRelegated ? [0] : [],
             );
           }),
         ],
@@ -260,6 +264,7 @@ class _PodiumState extends State<Podium> {
 
   Color _getColor(int placeIndex, BuildContext context) {
     var podiumLength = placeValues!.length;
+    if (!widget.showPromotedRelegated) return Colors.blueAccent;
     if (placeIndex >= podiumLength - widget.promoted!) return Colors.green;
     if (placeIndex <= widget.relegated!) return Colors.deepOrangeAccent;
     return Colors.blueAccent;
