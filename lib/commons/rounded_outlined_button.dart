@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 class RoundedOutlinedButton extends StatelessWidget {
   final Widget child;
   final Function()? onPressed;
-  final IconData? leadingIcon;
-  final IconData? trailingIcon;
+  final Widget? leadingIcon;
+  final Widget? trailingIcon;
 
   const RoundedOutlinedButton({Key? key, required this.child, this.onPressed, this.leadingIcon, this.trailingIcon})
       : super(key: key);
@@ -23,13 +23,13 @@ class RoundedOutlinedButton extends StatelessWidget {
           if (leadingIcon != null)
             Padding(
               padding: const EdgeInsets.only(right: 8.0),
-              child: Icon(leadingIcon),
+              child: leadingIcon,
             ),
           child,
           if (trailingIcon != null)
             Padding(
               padding: const EdgeInsets.only(left: 8.0),
-              child: Icon(trailingIcon),
+              child: trailingIcon,
             ),
         ],
       ),

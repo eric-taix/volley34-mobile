@@ -10,7 +10,6 @@ import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:intl/intl.dart';
 import 'package:maps_launcher/maps_launcher.dart';
 import 'package:v34/commons/circular_menu/circular_menu.dart';
-import 'package:v34/commons/circular_menu/circular_menu_item.dart';
 import 'package:v34/commons/feature_tour.dart';
 import 'package:v34/commons/loading.dart';
 import 'package:v34/commons/orientation_helper.dart';
@@ -54,7 +53,7 @@ class _EventInfoState extends State<EventInfo> with SingleTickerProviderStateMix
 
   GlobalKey<CircularMenuState> menuKey = GlobalKey<CircularMenuState>();
   late final ScrollController _scrollController;
-
+  late final AnimationController _animationController;
   late GymnasiumBloc? _gymnasiumBloc;
 
   @override
@@ -64,6 +63,11 @@ class _EventInfoState extends State<EventInfo> with SingleTickerProviderStateMix
     _scrollController.addListener(() {
       _closeMenu();
     });
+
+    _animationController = AnimationController(vsync: this, duration: Duration(milliseconds: 400));
+    _animationController.addListener(() => setState(() {}));
+    _animationController.forward();
+
     _gymnasiumBloc = GymnasiumBloc(RepositoryProvider.of(context), GymnasiumUninitializedState());
     if (widget.event.type == EventType.Match) {
       _gymnasiumBloc!.add(LoadGymnasiumEvent(gymnasiumCode: widget.event.gymnasiumCode));
@@ -102,6 +106,7 @@ class _EventInfoState extends State<EventInfo> with SingleTickerProviderStateMix
 
   @override
   void dispose() {
+    _animationController.dispose();
     _scrollController.dispose();
     super.dispose();
   }
@@ -282,6 +287,7 @@ class _EventInfoState extends State<EventInfo> with SingleTickerProviderStateMix
   }
 
   List<Widget> _buildTitle(BuildContext context) {
+    Color color = Colors.white; //Theme.of(context).colorScheme.secondary;
     if (widget.event.type == EventType.Match) {
       return [
         MatchInfo(
@@ -296,6 +302,108 @@ class _EventInfoState extends State<EventInfo> with SingleTickerProviderStateMix
           globalForce: widget.event.globalForce,
           visitorForce: widget.event.visitorForce,
         ),
+        if (widget.event.type == EventType.Match)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 0.0),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                _buildBarButton(context,
+                    tag: "btn-edit",
+                    icon: Icon(Icons.edit),
+                    label: Text(
+                      "Saisir\nle résultat",
+                      textAlign: TextAlign.center,
+                    ), onPressed: () {
+                  _closeMenu();
+                  RouterFacade.push(
+                    context: context,
+                    builder: (_) => EditMatch(
+                      hostTeam: _hostTeam!,
+                      visitorTeam: _visitorTeam!,
+                      hostClub: _hostClub!,
+                      visitorClub: _visitorClub!,
+                      matchDate: widget.event.date!,
+                    ),
+                  );
+                }, defaultAction: true),
+                _buildBarButton(
+                  context,
+                  tag: "btn-postpone",
+                  icon: SvgPicture.asset("assets/calendar-postpone3.svg", width: 30, color: color),
+                  label: Text(
+                    "Reporter\nle match",
+                    textAlign: TextAlign.center,
+                  ),
+                  onPressed: () {
+                    _closeMenu();
+                    RouterFacade.push(
+                      context: context,
+                      builder: (_) => PostPoneMatch(
+                        hostTeam: _hostTeam!,
+                        visitorTeam: _visitorTeam!,
+                        hostClub: _hostClub!,
+                        visitorClub: _visitorClub!,
+                        matchDate: widget.event.date!,
+                      ),
+                    );
+                  },
+                ),
+                if (Features.isFeatureEnabled(context, scoreboard_feature) &&
+                    _hostTeam != null &&
+                    _hostClub != null &&
+                    _visitorTeam != null &&
+                    _visitorClub != null)
+                  _buildBarButton(
+                    context,
+                    tag: "btn-play",
+                    icon: Icon(Icons.play_arrow_rounded, size: 30, color: color),
+                    label: Text(
+                      "Score",
+                    ),
+                    onPressed: () {
+                      _closeMenu();
+                      RouterFacade.push(
+                        context: context,
+                        builder: (_) => OrientationHelper(
+                          child: ScoreBoardPage(
+                            hostTeam: _hostTeam!,
+                            hostClub: _hostClub!,
+                            visitorTeam: _visitorTeam!,
+                            visitorClub: _visitorClub!,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+              ],
+            ),
+          ),
+        if (widget.event.matchCode != null && widget.event.matchCode!.isNotEmpty)
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              TextButton.icon(
+                onPressed: () {
+                  FirebaseAnalytics.instance.logEvent(
+                    name: "file_download",
+                    parameters: filterOutNulls(<String, String?>{
+                      "file_name": "FDM_${widget.event.matchCode!}",
+                      "file_extension": "pdf",
+                    }),
+                  );
+                  _closeMenu();
+                  launchURL("https://www.volley34.fr/Data/FDM/FDM_${widget.event.matchCode!}.pdf");
+                },
+                icon: Icon(Icons.file_present, size: 30, color: Theme.of(context).colorScheme.secondary),
+                label: Text(
+                  "Télécharger la feuille de match",
+                  textAlign: TextAlign.start,
+                ),
+              ),
+            ],
+          ),
         _divider,
       ];
     } else if (widget.event.type == EventType.Unknown) {
@@ -317,6 +425,39 @@ class _EventInfoState extends State<EventInfo> with SingleTickerProviderStateMix
     }
   }
 
+  Widget _buildBarButton(BuildContext context,
+      {String? tag,
+      required Widget icon,
+      required Widget label,
+      required void Function()? onPressed,
+      bool defaultAction = false}) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          FloatingActionButton(
+            heroTag: tag,
+            onPressed: onPressed,
+            backgroundColor: defaultAction ? null : Theme.of(context).canvasColor,
+            child: icon,
+            shape: defaultAction
+                ? null
+                : CircleBorder(side: BorderSide(color: Theme.of(context).colorScheme.secondary, width: 2)),
+          ),
+          SizedBox(
+            height: 50 * _animationController.value,
+            child: Padding(
+              padding: const EdgeInsets.only(top: 18.0),
+              child: label,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -326,193 +467,52 @@ class _EventInfoState extends State<EventInfo> with SingleTickerProviderStateMix
         child: Stack(
           children: [
             Container(
-              child: ListView(
-                controller: _scrollController,
-                children: [
-                  ..._buildTitle(context),
-                  ..._buildDateAndHour(context),
-                  _divider,
-                  ..._buildPlace(context),
-                  EventPlace(
-                    event: widget.event,
-                    onCameraMoveStarted: () => _closeMenu(),
-                  ),
-                  if (widget.event.clubCode != null && widget.event.clubCode!.isNotEmpty) ...[
+              child: NotificationListener(
+                onNotification: (notification) {
+                  if (notification is ScrollUpdateNotification) {
+                    if (notification.metrics.extentBefore > 100 &&
+                        _animationController.status != AnimationStatus.reverse) {
+                      _animationController.reverse();
+                    } else if (notification.metrics.extentBefore < 100 &&
+                        _animationController.status != AnimationStatus.forward) {
+                      _animationController.forward();
+                    }
+                  }
+                  return false;
+                },
+                child: ListView(
+                  controller: _scrollController,
+                  children: [
+                    ..._buildTitle(context),
+                    ..._buildDateAndHour(context),
                     _divider,
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 4.0),
-                      child: _buildOrganizerClub(context),
+                    ..._buildPlace(context),
+                    EventPlace(
+                      event: widget.event,
+                      onCameraMoveStarted: () => _closeMenu(),
                     ),
+                    if (widget.event.clubCode != null && widget.event.clubCode!.isNotEmpty) ...[
+                      _divider,
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 4.0),
+                        child: _buildOrganizerClub(context),
+                      ),
+                    ],
+                    if (widget.event.description != null && widget.event.description!.isNotEmpty) ...[
+                      _divider,
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 4.0),
+                        child: _buildDescription(context),
+                      ),
+                    ],
+                    if (widget.event.contactName != null && widget.event.contactName!.isNotEmpty) ...[
+                      _divider,
+                      Padding(padding: const EdgeInsets.symmetric(vertical: 4.0), child: _buildContact(context)),
+                    ],
                   ],
-                  if (widget.event.description != null && widget.event.description!.isNotEmpty) ...[
-                    _divider,
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 4.0),
-                      child: _buildDescription(context),
-                    ),
-                  ],
-                  if (widget.event.contactName != null && widget.event.contactName!.isNotEmpty) ...[
-                    _divider,
-                    Padding(padding: const EdgeInsets.symmetric(vertical: 4.0), child: _buildContact(context)),
-                  ],
-                ],
+                ),
               ),
             ),
-            if (widget.event.type == EventType.Match)
-              CircularMenu(
-                key: menuKey,
-                alignment: Alignment.bottomRight,
-                radius: 120,
-                toggleButtonColor: Theme.of(context).colorScheme.secondary,
-                toggleButtonMargin: 18,
-                items: [
-                  CircularMenuItem(
-                    icon: Icon(Icons.play_arrow_rounded, size: 30, color: Colors.white),
-                    onTap: Features.isFeatureEnabled(context, scoreboard_feature) &&
-                            _hostTeam != null &&
-                            _hostClub != null &&
-                            _visitorTeam != null &&
-                            _visitorClub != null
-                        ? () {
-                            _closeMenu();
-                            RouterFacade.push(
-                              context: context,
-                              builder: (_) => OrientationHelper(
-                                child: ScoreBoardPage(
-                                  hostTeam: _hostTeam!,
-                                  hostClub: _hostClub!,
-                                  visitorTeam: _visitorTeam!,
-                                  visitorClub: _visitorClub!,
-                                ),
-                              ),
-                            );
-                          }
-                        : null,
-                  ),
-                  CircularMenuItem(
-                    icon: Icon(Icons.edit, size: 30, color: Colors.white),
-                    onTap: () {
-                      _closeMenu();
-                      RouterFacade.push(
-                        context: context,
-                        builder: (_) => EditMatch(
-                          hostTeam: _hostTeam!,
-                          visitorTeam: _visitorTeam!,
-                          hostClub: _hostClub!,
-                          visitorClub: _visitorClub!,
-                          matchDate: widget.event.date!,
-                        ),
-                      );
-                    },
-                  ),
-                  CircularMenuItem(
-                    icon: SvgPicture.asset("assets/calendar-postpone3.svg", width: 30, color: Colors.white),
-                    onTap: () {
-                      _closeMenu();
-                      RouterFacade.push(
-                        context: context,
-                        builder: (_) => PostPoneMatch(
-                          hostTeam: _hostTeam!,
-                          visitorTeam: _visitorTeam!,
-                          hostClub: _hostClub!,
-                          visitorClub: _visitorClub!,
-                          matchDate: widget.event.date!,
-                        ),
-                      );
-                    },
-                  ),
-                  if (widget.event.matchCode != null && widget.event.matchCode!.isNotEmpty)
-                    CircularMenuItem(
-                      icon: Icon(Icons.file_present, size: 30, color: Colors.white),
-                      onTap: () {
-                        FirebaseAnalytics.instance.logEvent(
-                          name: "file_download",
-                          parameters: filterOutNulls(<String, String?>{
-                            "file_name": "FDM_${widget.event.matchCode!}",
-                            "file_extension": "pdf",
-                          }),
-                        );
-                        _closeMenu();
-                        launchURL("https://www.volley34.fr/Data/FDM/FDM_${widget.event.matchCode!}.pdf");
-                      },
-                    ),
-                ],
-              ),
-            Align(
-              alignment: Alignment.bottomRight,
-              child: FeatureTour(
-                title: "Actions",
-                featureId: "match_actions",
-                paragraphsChildren: [
-                  Text("Ouvrez le menu pour découvrir les actions possibles :",
-                      style: Theme.of(context).textTheme.bodyText2, textScaleFactor: 1.2),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 8.0),
-                    child: RichText(
-                      textScaleFactor: 1.2,
-                      text: TextSpan(
-                        style: Theme.of(context).textTheme.bodyText2,
-                        children: [
-                          WidgetSpan(alignment: PlaceholderAlignment.middle, child: Icon(Icons.play_arrow)),
-                          TextSpan(text: " Démarrez le match (prochainement)"),
-                        ],
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 8.0),
-                    child: RichText(
-                      textScaleFactor: 1.2,
-                      text: TextSpan(
-                        style: Theme.of(context).textTheme.bodyText2,
-                        children: [
-                          WidgetSpan(
-                            alignment: PlaceholderAlignment.middle,
-                            child: Icon(Icons.edit),
-                          ),
-                          TextSpan(text: " Saisissez le score"),
-                        ],
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 8.0),
-                    child: RichText(
-                      textScaleFactor: 1.2,
-                      text: TextSpan(
-                        style: Theme.of(context).textTheme.bodyText2,
-                        children: [
-                          WidgetSpan(alignment: PlaceholderAlignment.middle, child: Icon(Icons.timer)),
-                          TextSpan(text: " Reportez le match"),
-                        ],
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 8.0),
-                    child: RichText(
-                      textScaleFactor: 1.2,
-                      text: TextSpan(
-                        style: Theme.of(context).textTheme.bodyText2,
-                        children: [
-                          WidgetSpan(alignment: PlaceholderAlignment.middle, child: Icon(Icons.file_present)),
-                          TextSpan(text: " Téléchargez la feuille de match"),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-                target: Icon(Icons.menu, color: Theme.of(context).cardTheme.color),
-                child: Padding(
-                  padding: const EdgeInsets.only(right: 88.0, bottom: 88),
-                  child: SizedBox(),
-                ),
-                onComplete: () {
-                  menuKey.currentState?.forwardAnimation();
-                  return Future.value(true);
-                },
-              ),
-            )
           ],
         ),
       ),

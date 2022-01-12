@@ -30,9 +30,9 @@ class EventDate extends StatelessWidget {
   Widget build(BuildContext context) {
     DateFormat dateFormat = DateFormat('EEE dd/M', "FR");
     DateFormat fullDateFormat = DateFormat("EEEE dd MMMM", "FR");
-    DateFormat hourFormat = DateFormat("À HH:mm", "FR");
-    DateFormat fromHourFormat = DateFormat("'De 'HH:mm ", "FR");
-    DateFormat toHourFormat = DateFormat("'à 'HH:mm", "FR");
+    DateFormat hourFormat = DateFormat("À HH' h 'mm", "FR");
+    DateFormat fromHourFormat = DateFormat("'De 'HH' h 'hmm ", "FR");
+    DateFormat toHourFormat = DateFormat("'à 'HH' h 'mm", "FR");
     String dateStr;
     if (hour) {
       if (fullDay) {

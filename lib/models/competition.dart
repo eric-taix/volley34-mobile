@@ -76,15 +76,41 @@ class Competition {
   }
 }
 
-class CompetitionCode {
+class TeamCompetition {
   final String code;
+  final int season;
   final PlaySex sex;
   final PlayType type;
   final String label;
   final DateTime start;
   final DateTime end;
-  final int division;
-  final int pool;
+  final String division;
+  final String pool;
 
-  CompetitionCode(this.code, this.sex, this.type, this.label, this.start, this.end, this.division, this.pool);
+  TeamCompetition({
+    required this.code,
+    required this.season,
+    required this.sex,
+    required this.type,
+    required this.label,
+    required this.start,
+    required this.end,
+    required this.division,
+    required this.pool,
+  });
+
+  factory TeamCompetition.fromJson(Map<String, dynamic> json) {
+    print(json);
+    return TeamCompetition(
+      code: json["CompetitionCode"],
+      season: json["Saison"],
+      sex: playSexFromJson(json["RegroupementSexe"]),
+      type: playTypeFromJson(json["TypedeJeu"]),
+      label: json["LibelleCompetition"],
+      start: DateTime.parse(json["DateDebut"]),
+      end: DateTime.parse(json["DateFin"]),
+      division: json["division"],
+      pool: json["poule"],
+    );
+  }
 }

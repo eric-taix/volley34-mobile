@@ -22,3 +22,12 @@ class CompetitionLoadedState extends CompetitionInitialState {
   @override
   List<Object> get props => [competitions];
 }
+
+class CompetitionTeamLoadedState extends CompetitionInitialState {
+  final List<TeamCompetition> competitions;
+
+  CompetitionTeamLoadedState(this.competitions);
+
+  @override
+  List<Object> get props => [competitions];
+}

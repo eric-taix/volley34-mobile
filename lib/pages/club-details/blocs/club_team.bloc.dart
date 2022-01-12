@@ -32,6 +32,11 @@ class CompetitionFullPath {
   final String pool;
 
   CompetitionFullPath(this.competitionCode, this.division, this.pool);
+
+  @override
+  String toString() {
+    return 'CompetitionFullPath{competitionCode: $competitionCode, division: $division, pool: $pool}';
+  }
 }
 
 //---- STATE
@@ -189,9 +194,9 @@ class TeamBloc extends Bloc<TeamEvent, TeamState> {
     if (event is TeamLoadDivisionPoolResults) {
       yield TeamSlidingStatsLoading();
       var matchResults = (await Future.wait(event.competitionsFullPath.map((competitionFullPath) async {
-        print("XXXX $competitionFullPath");
         var results = await repository.loadResults(
             competitionFullPath.competitionCode, competitionFullPath.division, competitionFullPath.pool);
+        print("Results length;: ${results.length} for $competitionFullPath");
         return results;
       })))
           .expand((results) => results)
@@ -201,6 +206,7 @@ class TeamBloc extends Bloc<TeamEvent, TeamState> {
       ForceBuilder forceBuilder = matchResults.fold<ForceBuilder>(
           ForceBuilder(teamCode: event.teamCode), (forceBuilder, matchResult) => forceBuilder..add(matchResult));
 
+      // Faire une map<competitionCode, forces>
       yield TeamDivisionPoolResultsLoaded(
         teamResults: matchResults
             .where((matchResult) =>
