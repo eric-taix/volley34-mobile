@@ -75,3 +75,16 @@ class Competition {
     );
   }
 }
+
+class CompetitionCode {
+  final String code;
+  final PlaySex sex;
+  final PlayType type;
+  final String label;
+  final DateTime start;
+  final DateTime end;
+  final int division;
+  final int pool;
+
+  CompetitionCode(this.code, this.sex, this.type, this.label, this.start, this.end, this.division, this.pool);
+}

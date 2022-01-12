@@ -189,6 +189,7 @@ class TeamBloc extends Bloc<TeamEvent, TeamState> {
     if (event is TeamLoadDivisionPoolResults) {
       yield TeamSlidingStatsLoading();
       var matchResults = (await Future.wait(event.competitionsFullPath.map((competitionFullPath) async {
+        print("XXXX $competitionFullPath");
         var results = await repository.loadResults(
             competitionFullPath.competitionCode, competitionFullPath.division, competitionFullPath.pool);
         return results;
