@@ -339,6 +339,7 @@ class _AppBarWithImageState extends State<AppBarWithImage> with TickerProviderSt
                     return SafeArea(
                       top: false,
                       bottom: false,
+                      left: false,
                       child: Builder(
                         builder: (BuildContext context) {
                           return CustomScrollView(
@@ -348,7 +349,7 @@ class _AppBarWithImageState extends State<AppBarWithImage> with TickerProviderSt
                                 handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
                               ),
                               SliverPadding(
-                                padding: const EdgeInsets.only(top: 0.0, right: 8.0, bottom: 48.0, left: 8.0),
+                                padding: const EdgeInsets.only(top: 0.0, right: 0.0, bottom: 48.0, left: 0.0),
                                 sliver: widget.pageBuilder(context, index),
                               ),
                             ],

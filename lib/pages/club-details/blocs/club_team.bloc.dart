@@ -206,7 +206,7 @@ class TeamBloc extends Bloc<TeamEvent, TeamState> {
       ForceBuilder forceBuilder = matchResults.fold<ForceBuilder>(
           ForceBuilder(teamCode: event.teamCode), (forceBuilder, matchResult) => forceBuilder..add(matchResult));
 
-      // Faire une map<competitionCode, forces>
+      // TODO Faire une map<competitionCode, forces>
       yield TeamDivisionPoolResultsLoaded(
         teamResults: matchResults
             .where((matchResult) =>

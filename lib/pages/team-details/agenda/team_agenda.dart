@@ -45,7 +45,7 @@ class _TeamAgendaState extends State<TeamAgenda> with RouteAwareAnalytics {
               delegate: SliverChildListDelegate(
                 [
                   Padding(
-                    padding: const EdgeInsets.only(right: 8.0),
+                    padding: const EdgeInsets.only(left: 8.0, right: 8.0),
                     child: Timeline(
                       [
                         ...groupBy(state.events,

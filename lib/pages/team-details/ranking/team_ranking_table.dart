@@ -42,7 +42,7 @@ class TeamRankingTable extends StatefulWidget {
 class _TeamRankingTableState extends State<TeamRankingTable> {
   late Repository _repository;
 
-  double extraColumnWidth = 60;
+  double extraColumnWidth = 65;
 
   @override
   void initState() {
@@ -98,6 +98,7 @@ class _TeamRankingTableState extends State<TeamRankingTable> {
 
   _buildHeader(TextStyle? lineStyle) {
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
           padding: const EdgeInsets.only(right: 8.0),
