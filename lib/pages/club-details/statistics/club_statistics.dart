@@ -50,7 +50,7 @@ class _ClubStatisticsState extends State<ClubStatistics> with RouteAwareAnalytic
               StatRow(
                 title: "Victoires",
                 child: ConstrainedBox(
-                  constraints: BoxConstraints(maxWidth: 100, maxHeight: 80),
+                  constraints: BoxConstraints(maxWidth: 140, maxHeight: 100),
                   child: ArcGraph(
                     minValue: 0,
                     maxValue: 1,
@@ -105,7 +105,7 @@ class _ClubStatisticsState extends State<ClubStatistics> with RouteAwareAnalytic
   }
 
   Widget _buildPieChart(BuildContext context, bool loaded, MatchesPlayed? matchesPlayed) {
-    const double POSITION_OFFSET = 3.2;
+    const double POSITION_OFFSET = 3.6;
     return PieChart(
       PieChartData(
         sectionsSpace: 8,
@@ -125,7 +125,7 @@ class _ClubStatisticsState extends State<ClubStatistics> with RouteAwareAnalytic
           ),
           PieChartSectionData(
             radius: loaded && matchesPlayed != null ? (matchesPlayed.lost > matchesPlayed.won ? 15 : 8) : 8,
-            value: loaded && matchesPlayed != null ? matchesPlayed.won.toDouble() : 1,
+            value: loaded && matchesPlayed != null ? matchesPlayed.lost.toDouble() : 1,
             title: "${loaded && matchesPlayed != null ? "${matchesPlayed.lost} Déf." : 0}",
             titleStyle: Theme.of(context).textTheme.bodyText1,
             titlePositionPercentageOffset: loaded && matchesPlayed != null
