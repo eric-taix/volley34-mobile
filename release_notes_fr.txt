@@ -1,8 +1,8 @@
-- Affichage de multiples compétitions dans le dashboard d'une équipe
-- Limitation de la taille du podium en mode paysage
-- Correction défaut d'affichage de poule quand une compétition ne contient pas de poule
-- Cache la promotion ou relégation si l'équipe n'a pas encore joué de match
-- Correction de l'affichage des statistiques d'une équipe quand aucun match n'a été joué
-- Affichage de la compétition sur les événements et les résultats
-- Correction d'une erreur lors de l'affichage des forces sans match joué
-
+- Ajout d'un bouton pour charger plus d'événements
+- Correction du calcul des forces pour les équipes participant à plusieurs compétitions
+- Affichage de la date reportée pour les matchs joués et reportés + affichage du badge de report
+- Correction d'un bug pour les clubs n'ayant encore aucun match joué
+- Correction d'un bug pour les clubs ayant 0 défaite ou 0 match gagné
+- Amélioration de l'alignement de l'entête de la table des classement en mode paysage
+- Correction des statistiques pour les équipes jouant dans plusieurs compétitions
+- Changement de la façon d'afficher les boutons d'action dans le détail d'un match

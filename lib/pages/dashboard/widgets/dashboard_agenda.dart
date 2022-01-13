@@ -4,14 +4,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:v34/commons/loading.dart';
 import 'package:v34/commons/timeline/timeline.dart';
 import 'package:v34/commons/timeline/timeline_items.dart';
+import 'package:v34/models/club.dart';
 import 'package:v34/models/team.dart';
 import 'package:v34/pages/dashboard/blocs/agenda_bloc.dart';
 import 'package:v34/repositories/repository.dart';
 
 class DashboardAgenda extends StatefulWidget {
   final Team team;
-
-  const DashboardAgenda({Key? key, required this.team}) : super(key: key);
+  final Club club;
+  const DashboardAgenda({Key? key, required this.team, required this.club}) : super(key: key);
 
   @override
   DashboardAgendaState createState() => DashboardAgendaState();
@@ -20,7 +21,7 @@ class DashboardAgenda extends StatefulWidget {
 class DashboardAgendaState extends State<DashboardAgenda> with AutomaticKeepAliveClientMixin {
   // AutomaticKeepAliveClientMixin permits to preserve this state when scrolling on the dashboard
 
-  AgendaBloc? _agendaBloc;
+  late final AgendaBloc _agendaBloc;
 
   @override
   void initState() {
@@ -30,7 +31,7 @@ class DashboardAgendaState extends State<DashboardAgenda> with AutomaticKeepAliv
   }
 
   void _loadTeamsMonthAgenda() {
-    _agendaBloc!.add(LoadTeamMonthAgenda(teamCode: widget.team.code, days: 30));
+    _agendaBloc.add(LoadTeamMonthAgenda(teamCode: widget.team.code, days: 30));
   }
 
   @override
@@ -45,29 +46,42 @@ class DashboardAgendaState extends State<DashboardAgenda> with AutomaticKeepAliv
     if (state is AgendaLoaded) {
       return Padding(
         padding: EdgeInsets.only(right: 18, left: 18),
-        child: Timeline(
-          [
-            ...groupBy(state.events, (dynamic event) => DateTime(event.date.year, event.date.month, event.date.day))
-                .entries
-                .expand(
-              (entry) {
-                return [
-                  TimelineItem(
-                    date: entry.key,
-                    events: [
-                      ...entry.value.map(
-                        (e) {
-                          TimelineItemWidget timelineItemWidget = TimelineItemWidget.from(e, widget.team, false);
-                          return TimelineEvent(
-                            child: timelineItemWidget,
-                            color: timelineItemWidget.color(),
-                          );
-                        },
+        child: Column(
+          children: [
+            Timeline(
+              [
+                ...groupBy(state.events, (dynamic event) => DateTime(event.date.year, event.date.month, event.date.day))
+                    .entries
+                    .expand(
+                  (entry) {
+                    return [
+                      TimelineItem(
+                        date: entry.key,
+                        events: [
+                          ...entry.value.map(
+                            (e) {
+                              TimelineItemWidget timelineItemWidget = TimelineItemWidget.from(e, widget.team, false);
+                              return TimelineEvent(
+                                child: timelineItemWidget,
+                                color: timelineItemWidget.color(),
+                              );
+                            },
+                          )
+                        ],
                       )
-                    ],
-                  )
-                ];
-              },
+                    ];
+                  },
+                ),
+              ],
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 68.0),
+              child: TextButton(
+                child: Text("Voir plus d'événements"),
+                onPressed: () => _agendaBloc.add(
+                  LoadTeamFullAgenda(teamCode: widget.team.code!, loadPlayedMatches: false),
+                ),
+              ),
             ),
           ],
         ),
@@ -83,7 +97,7 @@ class DashboardAgendaState extends State<DashboardAgenda> with AutomaticKeepAliv
     return BlocBuilder<AgendaBloc, AgendaState>(
       bloc: _agendaBloc,
       builder: (context, state) {
-        return Padding(padding: const EdgeInsets.only(top: 18, bottom: 88.0), child: _buildTimeline(state));
+        return Padding(padding: const EdgeInsets.only(top: 18), child: _buildTimeline(state));
       },
     );
   }

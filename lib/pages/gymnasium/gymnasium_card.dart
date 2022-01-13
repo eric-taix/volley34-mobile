@@ -61,7 +61,7 @@ class GymnasiumCard extends StatelessWidget {
                             Padding(
                               padding: const EdgeInsets.symmetric(vertical: 2.0, horizontal: 2.0),
                               child: RoundedOutlinedButton(
-                                leadingIcon: Icons.phone,
+                                leadingIcon: Icon(Icons.phone),
                                 onPressed: () => launchURL("tel:${gymnasium.phone}"),
                                 child: Text("Appeler"),
                               ),

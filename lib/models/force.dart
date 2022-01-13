@@ -1,5 +1,13 @@
 import 'match_result.dart';
 
+class ForceVsGlobal {
+  final Force teamForce;
+  final Force globalForce;
+
+  factory ForceVsGlobal.empty() => ForceVsGlobal(teamForce: Force(), globalForce: Force());
+  ForceVsGlobal({required this.teamForce, required this.globalForce});
+}
+
 class Force {
   int _homeAttack = 0;
   int _homeDefense = 0;

@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -6,7 +7,6 @@ import 'package:v34/models/match_result.dart';
 import 'package:v34/models/ranking.dart';
 import 'package:v34/models/team.dart';
 import 'package:v34/repositories/repository.dart';
-
 //---- MODEL
 
 class TeamCompetitionSynthesis extends Equatable {
@@ -32,6 +32,11 @@ class CompetitionFullPath {
   final String pool;
 
   CompetitionFullPath(this.competitionCode, this.division, this.pool);
+
+  @override
+  String toString() {
+    return 'CompetitionFullPath{competitionCode: $competitionCode, division: $division, pool: $pool}';
+  }
 }
 
 //---- STATE
@@ -85,14 +90,13 @@ class TeamResultsLoaded extends TeamState {
 class TeamDivisionPoolResultsLoaded extends TeamState {
   final List<MatchResult> teamResults;
   final List<MatchResult> allResults;
-  final Force teamForce;
-  final Force divisionGlobalForce;
+  final Map<String, ForceVsGlobal> forceByCompetitionCode;
 
-  TeamDivisionPoolResultsLoaded(
-      {required this.teamResults,
-      required this.allResults,
-      required this.teamForce,
-      required this.divisionGlobalForce});
+  TeamDivisionPoolResultsLoaded({
+    required this.teamResults,
+    required this.allResults,
+    required this.forceByCompetitionCode,
+  });
 
   @override
   List<Object?> get props => [teamResults, allResults];
@@ -197,8 +201,13 @@ class TeamBloc extends Bloc<TeamEvent, TeamState> {
           .toList()
         ..sort((m1, m2) => m1.matchDate!.compareTo(m2.matchDate!));
 
-      ForceBuilder forceBuilder = matchResults.fold<ForceBuilder>(
-          ForceBuilder(teamCode: event.teamCode), (forceBuilder, matchResult) => forceBuilder..add(matchResult));
+      Map<String, ForceVsGlobal> forceByCompetition =
+          matchResults.groupListsBy((matchResult) => matchResult.competitionCode).map((competitionCode, matchResults) {
+        ForceBuilder forceBuilder = matchResults.fold<ForceBuilder>(
+            ForceBuilder(teamCode: event.teamCode), (forceBuilder, matchResult) => forceBuilder..add(matchResult));
+        return MapEntry(
+            competitionCode!, ForceVsGlobal(teamForce: forceBuilder.teamForce, globalForce: forceBuilder.othersForce));
+      });
 
       yield TeamDivisionPoolResultsLoaded(
         teamResults: matchResults
@@ -206,8 +215,7 @@ class TeamBloc extends Bloc<TeamEvent, TeamState> {
                 matchResult.hostTeamCode == event.teamCode || matchResult.visitorTeamCode == event.teamCode)
             .toList(),
         allResults: matchResults.toList(),
-        teamForce: forceBuilder.teamForce,
-        divisionGlobalForce: forceBuilder.othersForce,
+        forceByCompetitionCode: forceByCompetition,
       );
     }
   }

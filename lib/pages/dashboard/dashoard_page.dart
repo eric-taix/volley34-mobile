@@ -113,12 +113,15 @@ class _DashboardPageState extends State<DashboardPage> with RouteAwareAnalytics 
                       when<PreferencesUpdatedState>(
                         stateIs<PreferencesUpdatedState>(),
                         (_, state) => state.favoriteTeam != null
-                            ? DashboardAgenda(team: state.favoriteTeam!)
+                            ? Padding(
+                                padding: const EdgeInsets.only(top: 28, bottom: 88.0),
+                                child: DashboardAgenda(team: state.favoriteTeam!, club: state.favoriteClub!),
+                              )
                             : _buildNoFavorite(context, "Sélectionnez votre équipe dans votre profil"),
                       ),
                     ],
                     defaultBuilder: (_, state) => Container(height: 250),
-                  )
+                  ),
                 ],
               ),
             ),
