@@ -12,20 +12,13 @@ class RoundedTitledCard extends StatelessWidget {
   final String? logoUrl;
   final ButtonBar? buttonBar;
 
-  RoundedTitledCard(
-      {this.title,
-      this.onTap,
-      this.body,
-      this.heroTag,
-      this.logoUrl,
-      this.buttonBar});
+  RoundedTitledCard({this.title, this.onTap, this.body, this.heroTag, this.logoUrl, this.buttonBar});
 
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: <Widget>[
         TitledCard(
-          icon: SizedBox(width: 10),
           title: title!,
           onTap: onTap,
           body: body,
@@ -36,8 +29,7 @@ class RoundedTitledCard extends StatelessWidget {
           child: Hero(
             tag: heroTag!,
             child: RoundedNetworkImage(40, logoUrl,
-                circleColor:
-                    Theme.of(context).cardTheme.titleBackgroundColor(context)),
+                circleColor: Theme.of(context).cardTheme.titleBackgroundColor(context)),
           ),
         )
       ],
