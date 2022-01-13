@@ -62,10 +62,7 @@ class _TeamDetailPageState extends State<TeamDetailPage> {
           ));
         }
       },
-      child: BlocConsumer<TeamRankingBloc, TeamRankingState>(
-        listener: (context, rankingState) {
-          if (rankingState is TeamRankingLoadedState) {}
-        },
+      child: BlocBuilder<TeamRankingBloc, TeamRankingState>(
         bloc: _rankingBloc,
         builder: (context, state) {
           int? initialPosition;
