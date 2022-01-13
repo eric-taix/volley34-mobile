@@ -35,7 +35,7 @@ class _ClubStatisticsState extends State<ClubStatistics> with RouteAwareAnalytic
   @override
   void dispose() {
     super.dispose();
-    _clubStatsBloc!.close();
+    _clubStatsBloc?.close();
   }
 
   @override
@@ -113,26 +113,30 @@ class _ClubStatisticsState extends State<ClubStatistics> with RouteAwareAnalytic
         sections: [
           PieChartSectionData(
             radius: loaded && matchesPlayed != null ? (matchesPlayed.won > matchesPlayed.lost ? 15 : 8) : 8,
-            value: loaded && matchesPlayed != null ? matchesPlayed.won.toDouble() : 1,
+            value: loaded && matchesPlayed != null
+                ? (matchesPlayed.won != 0 ? matchesPlayed.won.toDouble() : 0.000001)
+                : 1,
             title: "${loaded && matchesPlayed != null ? "${matchesPlayed.won} Vict." : 0}",
             titlePositionPercentageOffset: loaded && matchesPlayed != null
                 ? (matchesPlayed.won > matchesPlayed.lost ? POSITION_OFFSET - 1.3 : POSITION_OFFSET - 0.5)
                 : POSITION_OFFSET - 0.5,
             titleStyle: Theme.of(context).textTheme.bodyText1,
-            color: loaded
-                ? _getSectionColor(matchesPlayed!.won, matchesPlayed.total)
+            color: loaded && matchesPlayed != null
+                ? _getSectionColor(matchesPlayed.won, matchesPlayed.total)
                 : Theme.of(context).colorScheme.primaryVariant,
           ),
           PieChartSectionData(
             radius: loaded && matchesPlayed != null ? (matchesPlayed.lost > matchesPlayed.won ? 15 : 8) : 8,
-            value: loaded && matchesPlayed != null ? matchesPlayed.lost.toDouble() : 1,
+            value: loaded && matchesPlayed != null
+                ? (matchesPlayed.lost != 0 ? matchesPlayed.lost.toDouble() : 0.000001)
+                : 1,
             title: "${loaded && matchesPlayed != null ? "${matchesPlayed.lost} Déf." : 0}",
             titleStyle: Theme.of(context).textTheme.bodyText1,
             titlePositionPercentageOffset: loaded && matchesPlayed != null
                 ? (matchesPlayed.lost > matchesPlayed.won ? POSITION_OFFSET - 1.3 : POSITION_OFFSET - 0.5)
                 : POSITION_OFFSET - 0.5,
-            color: loaded
-                ? _getSectionColor(matchesPlayed!.lost, matchesPlayed.total, invert: true)
+            color: loaded && matchesPlayed != null
+                ? _getSectionColor(matchesPlayed.lost, matchesPlayed.total, invert: true)
                 : Theme.of(context).colorScheme.primaryVariant,
           ),
         ],
@@ -144,7 +148,7 @@ class _ClubStatisticsState extends State<ClubStatistics> with RouteAwareAnalytic
 
   Color _getSectionColor(int nb, int total, {bool invert = false}) {
     const int NB_COLOR = 7;
-    var colorGroup = (((nb * 100) / total) / (100 / NB_COLOR)).ceil();
+    var colorGroup = total != 0 ? (((nb * 100) / total) / (100 / NB_COLOR)).ceil() : 4;
     if (invert) {
       colorGroup = NB_COLOR - 1 - colorGroup;
     }
