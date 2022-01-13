@@ -31,7 +31,8 @@ class AgendaLoading extends AgendaState {
 }
 
 class AgendaLoaded extends AgendaState {
-  AgendaLoaded(List<Event> events) : super(events);
+  final bool hasMore;
+  AgendaLoaded(List<Event> events, this.hasMore) : super(events);
 }
 
 //--- Events
@@ -132,7 +133,7 @@ class AgendaBloc extends Bloc<AgendaEvent, AgendaState> {
       }).toList();
 
       eventsWithForce.sort((event1, event2) => event1.date!.compareTo(event2.date!));
-      yield AgendaLoaded(eventsWithForce);
+      yield AgendaLoaded(eventsWithForce, true);
     } else if (event is LoadTeamFullAgenda) {
       DateTime now = DateTime.now();
       var today = DateTime(now.year, now.month, now.day);
@@ -183,7 +184,7 @@ class AgendaBloc extends Bloc<AgendaEvent, AgendaState> {
 
       allEvents.sort((event1, event2) => event1.date!.compareTo(event2.date!));
 
-      yield AgendaLoaded(allEvents);
+      yield AgendaLoaded(allEvents, false);
     }
   }
 
