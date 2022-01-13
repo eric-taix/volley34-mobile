@@ -90,9 +90,14 @@ class _TeamDetailPageState extends State<TeamDetailPage> {
                   bloc: _teamBloc,
                   builder: (context, teamState) {
                     if (teamState is TeamDivisionPoolResultsLoaded) {
-                      if (index < state.rankings.length)
-                        return _buildTeamRanking(state.rankings[index], teamState.teamResults, teamState.teamForce,
-                            teamState.divisionGlobalForce);
+                      if (index < state.rankings.length) {
+                        String? competitionCode = state.rankings[index].competitionCode;
+                        ForceVsGlobal? forceVsGlobal = competitionCode != null
+                            ? teamState.forceByCompetitionCode[competitionCode]
+                            : ForceVsGlobal.empty();
+                        return _buildTeamRanking(state.rankings[index], teamState.teamResults,
+                            forceVsGlobal?.teamForce ?? Force(), forceVsGlobal?.globalForce ?? Force());
+                      }
                       if (index == state.rankings.length)
                         return TeamResults(
                           showOnlyTeam: _showAllTeams,
