@@ -29,7 +29,12 @@ class MatchResult {
   final String? visitorName;
   final String? hostTeamCode;
   final String? visitorTeamCode;
-  final DateTime? matchDate;
+
+  late final DateTime? _matchDate;
+  late final DateTime? _postponedDate;
+  DateTime? get matchDate => _postponedDate ?? _matchDate;
+  DateTime? get initialDate => _matchDate;
+
   final String? competitionCode;
   final MatchResultType resultType;
   final String? winnerCode;
@@ -47,11 +52,15 @@ class MatchResult {
     this.visitorName,
     this.hostTeamCode,
     this.visitorTeamCode,
-    this.matchDate,
+    DateTime? matchDate,
+    DateTime? postponedDate,
     this.competitionCode,
     this.winnerCode,
     required this.resultType,
-  });
+  }) {
+    _matchDate = matchDate;
+    _postponedDate = postponedDate;
+  }
 
   factory MatchResult.fromJson(Map<String, dynamic> json) {
     var match = json["matchs"];
@@ -77,6 +86,7 @@ class MatchResult {
         hostTeamCode: match["EquipeLocauxCode"],
         visitorTeamCode: match["EquipeVisiteursCode"],
         matchDate: DateTime.parse(match["DateMatch"].toString()),
+        postponedDate: match["DateMatchRevisee"] != null ? DateTime.parse(match["DateMatchRevisee"]) : null,
         competitionCode: match["CompetitionCode"],
         winnerCode: match["EquipeVictorieuseCode"]);
   }
