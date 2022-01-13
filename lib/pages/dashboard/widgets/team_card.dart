@@ -142,8 +142,17 @@ class _TeamCardState extends State<TeamCard> {
                 child: _getPodiumWidgets(state),
               ),
             ),
-            onTap: () => RouterFacade.push(
-                context: context, builder: (_) => TeamDetailPage(team: widget.team, club: widget.club!)),
+            onTap: state is TeamRankingLoadedState
+                ? () => RouterFacade.push(
+                      context: context,
+                      builder: (_) => TeamDetailPage(
+                        team: widget.team,
+                        club: widget.club!,
+                        openedPage: OpenedPage.COMPETITION,
+                        openedCompetitionCode: state.rankings[_pageController.page!.toInt()].competitionCode,
+                      ),
+                    )
+                : null,
           ),
         );
       },
