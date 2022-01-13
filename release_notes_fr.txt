@@ -1,3 +1,2 @@
-- Ajout de flèches pour changer de competitions dans les cartes des équipes
-- Modification du graphisme des cartes
-- Lors de multiples compétitions par équipe, le click ouvre la bonne compétition
+- Suppression du bouton "Voir plus d'événements" quand tous les événement sont chargés
+- Correction problème de pageview dans la liste des équipes d'un club

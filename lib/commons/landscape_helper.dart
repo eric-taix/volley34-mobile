@@ -9,7 +9,7 @@ class LandscapeHelper extends StatelessWidget {
         ? Padding(
             padding: EdgeInsets.only(top: 18),
             child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Padding(
@@ -17,11 +17,9 @@ class LandscapeHelper extends StatelessWidget {
                   child:
                       Icon(Icons.stay_primary_landscape_rounded, color: Theme.of(context).textTheme.bodyText1!.color!),
                 ),
-                Expanded(
-                  child: Text(
-                    "Tournez votre téléphone pour plus de détails",
-                    style: TextStyle(fontStyle: FontStyle.italic, color: Theme.of(context).textTheme.bodyText1!.color!),
-                  ),
+                Text(
+                  "Tournez votre téléphone pour plus de détails",
+                  style: TextStyle(fontStyle: FontStyle.italic, color: Theme.of(context).textTheme.bodyText1!.color!),
                 ),
               ],
             ))
