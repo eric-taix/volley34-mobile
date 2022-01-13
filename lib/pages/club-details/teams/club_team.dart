@@ -1,7 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:page_view_indicators/circle_page_indicator.dart';
+import 'package:page_view_indicators/animated_circle_page_indicator.dart';
+import 'package:page_view_indicators/arrow_page_indicator.dart';
 import 'package:v34/commons/cards/titled_card.dart';
 import 'package:v34/commons/favorite/favorite.dart';
 import 'package:v34/commons/favorite/favorite_icon.dart';
@@ -32,10 +33,12 @@ class ClubTeam extends StatefulWidget {
 class _ClubTeamState extends State<ClubTeam> {
   TeamBloc? _teamBloc;
   final _currentPageNotifier = ValueNotifier<int>(0);
+  late final PageController _pageController;
 
   @override
   void initState() {
     super.initState();
+    _pageController = PageController();
     _teamBloc = TeamBloc(repository: RepositoryProvider.of<Repository>(context))
       ..add(TeamLoadAverageSlidingResult(team: widget.team, last: 100, count: 1));
   }
@@ -49,35 +52,49 @@ class _ClubTeamState extends State<ClubTeam> {
   @override
   Widget build(BuildContext context) {
     final double miniGraphHeight = 80;
-    return TitledCard(
-      title: widget.team.name!,
-      bodyPadding: EdgeInsets.only(top: 18, bottom: 8, right: 0, left: 0),
-      onTap: () => RouterFacade.push(
-          context: context,
-          builder: (_) => TeamDetailPage(
-                team: widget.team,
-                club: widget.club,
-              )),
-      buttonBar: ButtonBar(
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.only(right: 12.0),
-            child: FavoriteIcon(
-              widget.team.code,
-              FavoriteType.Team,
+    return BlocBuilder<TeamBloc, TeamState>(
+      bloc: _teamBloc,
+      builder: (context, state) => TitledCard(
+        title: widget.team.name!,
+        bodyPadding: EdgeInsets.only(top: 18, bottom: 8, right: 0, left: 0),
+        onTap: state is TeamSlidingStatsLoaded
+            ? () => RouterFacade.push(
+                  context: context,
+                  builder: (_) => TeamDetailPage(
+                    team: widget.team,
+                    club: widget.club,
+                    openedPage: OpenedPage.COMPETITION,
+                    openedCompetitionCode:
+                        state.competitions[_pageController.page!.toInt()].rankingSynthesis!.competitionCode,
+                  ),
+                )
+            : null,
+        buttonBar: ButtonBar(
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.only(right: 12.0),
+              child: FavoriteIcon(
+                widget.team.code,
+                FavoriteType.Team,
+              ),
             ),
-          ),
-        ],
-      ),
-      body: BlocBuilder(
-        bloc: _teamBloc,
-        builder: (context, dynamic state) {
-          return Container(
-            height: 300,
-            child: (state is TeamSlidingStatsLoaded)
-                ? Stack(
-                    children: [
-                      PageView(
+          ],
+        ),
+        body: Container(
+          height: 300,
+          child: (state is TeamSlidingStatsLoaded)
+              ? Stack(
+                  children: [
+                    ArrowPageIndicator(
+                      currentPageNotifier: _currentPageNotifier,
+                      pageController: _pageController,
+                      iconSize: state.competitions.length > 1 ? ArrowPageIndicator.defaultIconSize : 0,
+                      itemCount: state.competitions.length > 1 ? state.competitions.length : 0,
+                      iconPadding: EdgeInsets.only(bottom: 12),
+                      iconColor: Theme.of(context).colorScheme.secondary,
+                      isInside: true,
+                      child: PageView(
+                        controller: _pageController,
                         onPageChanged: (pageIndex) => _currentPageNotifier.value = pageIndex,
                         children: [
                           ...state.competitions.map(
@@ -166,27 +183,27 @@ class _ClubTeamState extends State<ClubTeam> {
                           ),
                         ],
                       ),
-                      Positioned(
-                        left: 0,
-                        right: 0,
-                        bottom: 0,
-                        child: CirclePageIndicator(
-                          itemCount: state.competitions.length > 1 ? state.competitions.length : 0,
-                          currentPageNotifier: _currentPageNotifier,
-                          selectedDotColor: Theme.of(context).colorScheme.secondary,
-                          selectedSize: 12,
-                          selectedBorderColor: Theme.of(context).colorScheme.secondary,
-                          dotColor: Theme.of(context).cardTheme.color,
-                          size: 12,
-                          borderColor: Theme.of(context).colorScheme.secondary,
-                          borderWidth: 4,
-                        ),
+                    ),
+                    Positioned(
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      child: AnimatedCirclePageIndicator(
+                        itemCount: state.competitions.length > 1 ? state.competitions.length : 0,
+                        currentPageNotifier: _currentPageNotifier,
+                        radius: 3,
+                        activeRadius: 2,
+                        fillColor: Colors.transparent,
+                        activeColor: Theme.of(context).colorScheme.secondary,
+                        spacing: 8,
+                        borderColor: Theme.of(context).colorScheme.secondary,
+                        borderWidth: 1,
                       ),
-                    ],
-                  )
-                : Loading(),
-          );
-        },
+                    ),
+                  ],
+                )
+              : Loading(),
+        ),
       ),
     );
   }

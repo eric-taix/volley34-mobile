@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:tinycolor2/tinycolor2.dart';
-import 'package:v34/utils/extensions.dart';
 
 class TitledCard extends StatelessWidget {
   final Widget? icon;
@@ -36,28 +35,25 @@ class TitledCard extends StatelessWidget {
           child: IntrinsicHeight(
             child: Column(
               children: [
-                Container(
-                  decoration: BoxDecoration(color: Theme.of(context).cardTheme.titleBackgroundColor(context)),
-                  height: 40,
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 8.0, right: 8.0, bottom: 8.0, left: 18.0),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        if (icon != null)
-                          Padding(
-                            padding: const EdgeInsets.only(right: 18.0),
-                            child: icon,
-                          ),
-                        Expanded(
-                            child: Text(
+                Padding(
+                  padding: const EdgeInsets.only(top: 8.0, bottom: 8),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      if (icon != null)
+                        Padding(
+                          padding: const EdgeInsets.only(right: 18.0),
+                          child: icon,
+                        ),
+                      Expanded(
+                        child: Text(
                           title,
                           style: Theme.of(context).textTheme.caption,
                           overflow: TextOverflow.ellipsis,
-                        )),
-                        Icon(Icons.arrow_forward_ios, color: Theme.of(context).textTheme.caption!.color, size: 12),
-                      ],
-                    ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 Expanded(
@@ -101,7 +97,7 @@ class TitledCard extends StatelessWidget {
       ),
       if (buttonBar != null)
         Positioned(
-          right: 30,
+          right: 10,
           top: 30,
           child: buttonBar!,
         )

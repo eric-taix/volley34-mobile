@@ -1,8 +1,3 @@
-- Ajout d'un bouton pour charger plus d'événements
-- Correction du calcul des forces pour les équipes participant à plusieurs compétitions
-- Affichage de la date reportée pour les matchs joués et reportés + affichage du badge de report
-- Correction d'un bug pour les clubs n'ayant encore aucun match joué
-- Correction d'un bug pour les clubs ayant 0 défaite ou 0 match gagné
-- Amélioration de l'alignement de l'entête de la table des classement en mode paysage
-- Correction des statistiques pour les équipes jouant dans plusieurs compétitions
-- Changement de la façon d'afficher les boutons d'action dans le détail d'un match
+- Ajout de flèches pour changer de competitions dans les cartes des équipes
+- Modification du graphisme des cartes
+- Lors de multiples compétitions par équipe, le click ouvre la bonne compétition
