@@ -46,7 +46,7 @@ class EventDate extends StatelessWidget {
     }
     dateStr = _capitalize(dateStr);
     return Padding(
-      padding: const EdgeInsets.only(right: 0.0),
+      padding: const EdgeInsets.only(top: 18, right: 0.0),
       child: Container(
         constraints: BoxConstraints(minWidth: dateColumnWidth, maxWidth: dateColumnWidth),
         child: Builder(

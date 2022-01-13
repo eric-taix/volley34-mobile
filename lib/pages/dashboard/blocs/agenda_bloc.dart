@@ -60,7 +60,9 @@ class LoadTeamMonthAgenda extends AgendaEvent {
 
 class LoadTeamFullAgenda extends AgendaEvent {
   final String teamCode;
-  LoadTeamFullAgenda({required this.teamCode});
+  final bool loadPlayedMatches;
+
+  LoadTeamFullAgenda({required this.teamCode, this.loadPlayedMatches = true});
 
   @override
   List<Object?> get props => [teamCode];
@@ -132,7 +134,11 @@ class AgendaBloc extends Bloc<AgendaEvent, AgendaState> {
       eventsWithForce.sort((event1, event2) => event1.date!.compareTo(event2.date!));
       yield AgendaLoaded(eventsWithForce);
     } else if (event is LoadTeamFullAgenda) {
-      List<Event> events = await repository.loadTeamFullAgenda(event.teamCode);
+      DateTime now = DateTime.now();
+      var today = DateTime(now.year, now.month, now.day);
+      List<Event> events = (await repository.loadTeamFullAgenda(event.teamCode))
+          .where((evt) => event.loadPlayedMatches || evt.type != EventType.Match || evt.date!.compareTo(today) >= 0)
+          .toList();
       List<RankingSynthesis> rankings = await repository.loadTeamRankingSynthesis(event.teamCode);
       List<CompetitionFullPath> competitionsFullPath = rankings
           .map((ranking) => CompetitionFullPath(ranking.competitionCode!, ranking.division!, ranking.pool!))

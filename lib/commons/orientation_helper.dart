@@ -29,7 +29,6 @@ class _OrientationHelperState extends State<OrientationHelper> with SingleTicker
   late AnimationController _controller;
   late Animation _translateAnimation;
   late Animation _skakeAnimation;
-  Future? _animationFuture;
 
   @override
   void initState() {
@@ -57,7 +56,7 @@ class _OrientationHelperState extends State<OrientationHelper> with SingleTicker
   @override
   void didChangeDependencies() {
     if (MediaQuery.of(context).orientation == Orientation.portrait) {
-      _animationFuture = Future.delayed(Duration(milliseconds: 2000), () {
+      Future.delayed(Duration(milliseconds: 2000), () {
         if (mounted) _controller.forward();
       }).then(
         (_) => Future.delayed(Duration(milliseconds: 4000), () {

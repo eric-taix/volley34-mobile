@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:v34/commons/app_bar/app_bar_with_image.dart';
@@ -16,11 +17,15 @@ import 'package:v34/pages/team-details/ranking/team_ranking.dart';
 import 'package:v34/pages/team-details/results/team_results.dart';
 import 'package:v34/repositories/repository.dart';
 
+enum OpenedPage { COMPETITION, RESULTS, AGENDA }
+
 class TeamDetailPage extends StatefulWidget {
   final Team team;
   final Club club;
+  final OpenedPage? openedPage;
+  final String? openedCompetitionCode;
 
-  TeamDetailPage({required this.team, required this.club});
+  TeamDetailPage({required this.team, required this.club, this.openedPage, this.openedCompetitionCode});
 
   @override
   State<TeamDetailPage> createState() => _TeamDetailPageState();
@@ -63,10 +68,29 @@ class _TeamDetailPageState extends State<TeamDetailPage> {
         },
         bloc: _rankingBloc,
         builder: (context, state) {
+          int? initialPosition;
+          if (state is TeamRankingLoadedState && widget.openedPage != null) {
+            switch (widget.openedPage!) {
+              case OpenedPage.COMPETITION:
+                initialPosition = state.rankings
+                    .asMap()
+                    .entries
+                    .firstWhereOrNull((ranking) => ranking.value.competitionCode == widget.openedCompetitionCode)
+                    ?.key;
+                break;
+              case OpenedPage.RESULTS:
+                initialPosition = state.rankings.length;
+                break;
+              case OpenedPage.AGENDA:
+                initialPosition = state.rankings.length + 1;
+                break;
+            }
+          }
           return AppBarWithImage(
             widget.team.name,
             "hero-logo-${widget.team.code}",
             key: ValueKey("teamDetailPage"),
+            initPosition: initialPosition,
             subTitle: widget.club.name ?? "",
             logoUrl: widget.team.clubLogoUrl,
             favorite: Favorite(
