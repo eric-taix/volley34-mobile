@@ -100,7 +100,6 @@ class TeamCompetition {
   });
 
   factory TeamCompetition.fromJson(Map<String, dynamic> json) {
-    print(json);
     return TeamCompetition(
       code: json["CompetitionCode"],
       season: json["Saison"],

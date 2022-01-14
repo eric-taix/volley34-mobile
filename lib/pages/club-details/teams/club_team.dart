@@ -51,7 +51,6 @@ class _ClubTeamState extends State<ClubTeam> {
 
   @override
   Widget build(BuildContext context) {
-    print("Build ${widget.team.name} pc: ${_pageController.hasClients ? _pageController.page : "???"}");
     final double miniGraphHeight = 80;
     return BlocBuilder<TeamBloc, TeamState>(
       bloc: _teamBloc,
@@ -89,7 +88,6 @@ class _ClubTeamState extends State<ClubTeam> {
                     AnimatedBuilder(
                         animation: _currentPageNotifier,
                         builder: (_, __) {
-                          print("${widget.team.name} page: ${_currentPageNotifier.value}");
                           return ArrowPageIndicator(
                             currentPageNotifier: _currentPageNotifier,
                             pageController: _pageController,
@@ -102,7 +100,6 @@ class _ClubTeamState extends State<ClubTeam> {
                               key: PageStorageKey("club-team-${widget.team.code}"),
                               controller: _pageController,
                               onPageChanged: (pageIndex) {
-                                print("OnPageChanged ${widget.team.name} : $pageIndex");
                                 _currentPageNotifier.value = pageIndex;
                               },
                               children: [

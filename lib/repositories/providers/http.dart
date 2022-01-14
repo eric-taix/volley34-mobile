@@ -37,7 +37,6 @@ class DebugCacheInterceptor extends InterceptorsWrapper {
 
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
-    print("Response: ${options.uri}");
     super.onRequest(options, handler);
   }
 }
