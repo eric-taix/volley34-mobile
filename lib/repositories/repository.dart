@@ -148,7 +148,7 @@ class Repository {
 
   /// Load classification synthesis
   Future<List<RankingSynthesis>> loadTeamRankingSynthesis(String? teamCode) async {
-    return await _teamProvider.loadClassificationSynthesis(teamCode);
+    return await _teamProvider.loadRankingSynthesis(teamCode);
   }
 
   /// Load all classifications synthesis
