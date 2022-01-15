@@ -64,7 +64,7 @@ class _EventInfoState extends State<EventInfo> with SingleTickerProviderStateMix
       _closeMenu();
     });
 
-    _animationController = AnimationController(vsync: this, duration: Duration(milliseconds: 400));
+    _animationController = AnimationController(vsync: this, duration: Duration(milliseconds: 250));
     _animationController.addListener(() => setState(() {}));
     _animationController.forward();
 
@@ -287,7 +287,7 @@ class _EventInfoState extends State<EventInfo> with SingleTickerProviderStateMix
   }
 
   List<Widget> _buildTitle(BuildContext context) {
-    Color color = Colors.white; //Theme.of(context).colorScheme.secondary;
+    Color color = Theme.of(context).textTheme.bodyText2!.color!;
     if (widget.event.type == EventType.Match) {
       return [
         MatchInfo(
@@ -360,7 +360,7 @@ class _EventInfoState extends State<EventInfo> with SingleTickerProviderStateMix
                     tag: "btn-play",
                     icon: Icon(Icons.play_arrow_rounded, size: 30, color: color),
                     label: Text(
-                      "Score",
+                      "Scoreur",
                     ),
                     onPressed: () {
                       _closeMenu();
