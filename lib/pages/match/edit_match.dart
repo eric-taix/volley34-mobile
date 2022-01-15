@@ -1,11 +1,11 @@
 import 'dart:convert';
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mailer/flutter_mailer.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:images_picker/images_picker.dart';
 import 'package:v34/commons/animated_button.dart';
 import 'package:v34/commons/ensure_visible_when_focused.dart';
 import 'package:v34/commons/paragraph.dart';
@@ -36,6 +36,8 @@ class EditMatch extends StatefulWidget {
 class _EditMatchState extends State<EditMatch> {
   final _formKey = GlobalKey<FormState>();
   String? _scoreSheetPhotoPath;
+  bool _showPhotoFullScreen = false;
+
   static const bool PHOTO_REQUIRED = false;
 
   late final List<TextEditingController> _setControllers;
@@ -103,135 +105,166 @@ class _EditMatchState extends State<EditMatch> {
           borderRadius: BorderRadius.only(bottomLeft: Radius.circular(10), bottomRight: Radius.circular(10)),
         ),
       ),
-      body: Form(
-        key: _formKey,
-        autovalidateMode: AutovalidateMode.always,
-        child: FocusScope(
-          child: ListView(
-            children: [
-              MatchInfo(
-                hostTeam: widget.hostTeam,
-                visitorTeam: widget.visitorTeam,
-                hostClub: widget.hostClub,
-                visitorClub: widget.visitorClub,
-                date: widget.matchDate,
-                showMatchDate: true,
-                showTeamLink: false,
-              ),
-              Paragraph(title: "Informations"),
-              ..._buildInformation(context),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 18.0),
-                child: Paragraph(title: "Résultat"),
-              ),
-              ...List.generate(5, (index) {
-                return Padding(
-                  padding: const EdgeInsets.only(left: 18.0, right: 18, top: 4, bottom: 4),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(right: 4.0),
-                        child: Text("Set n° ", style: Theme.of(context).textTheme.bodyText1),
-                      ),
-                      SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(4)),
-                            color: Theme.of(context).textTheme.bodyText1!.color,
-                          ),
-                          child: Center(
-                            child: Text(
-                              "${index + 1}",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyText1!
-                                  .copyWith(color: Theme.of(context).canvasColor, fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 18.0, right: 8),
-                        child: SizedBox(
-                          width: 78,
-                          height: 40,
-                          child: _createSetField(index, true),
-                        ),
-                      ),
-                      Text("/",
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyText2!
-                              .copyWith(fontSize: 18, fontWeight: FontWeight.bold)),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 8.0),
-                        child: SizedBox(
-                          width: 78,
-                          height: 40,
-                          child: _createSetField(index, false),
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              }),
-              _buildCurrentResult(context),
-              Padding(
-                padding: const EdgeInsets.only(top: 32.0, left: 28, right: 28),
-                child: EnsureVisibleWhenFocused(
-                  focusNode: _commentsFocus,
-                  child: TextFormField(
-                    controller: _commentsController,
-                    focusNode: _commentsFocus,
-                    cursorWidth: 2,
-                    style: Theme.of(context).textTheme.bodyText2!.copyWith(fontSize: 18),
-                    autovalidateMode: AutovalidateMode.always,
-                    keyboardType: TextInputType.multiline,
-                    maxLines: 5,
-                    decoration: InputDecoration(labelText: "Commentaires"),
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 18.0),
-                child: Paragraph(title: "Feuille de match"),
-              ),
-              _buildScoreSheetPhoto(),
-              Padding(
-                padding: const EdgeInsets.only(top: 58.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+      body: _showPhotoFullScreen
+          ? _buildFullScreenImage(context)
+          : Form(
+              key: _formKey,
+              autovalidateMode: AutovalidateMode.always,
+              child: FocusScope(
+                child: ListView(
                   children: [
-                    AnimatedButton(
-                      onPressed: (_formKey.currentState?.validate() ?? false) &&
-                              ((PHOTO_REQUIRED && _scoreSheetPhotoPath != null) || !PHOTO_REQUIRED) &&
-                              _userTeam != null &&
-                              _setControllers[0].text.isNotEmpty &&
-                              _setControllers[1].text.isNotEmpty
-                          ? () => _sendResult(
-                                context,
-                                name: _nameController.text,
-                                senderEmail: _emailController.text,
-                                hostTeamName: widget.hostTeam.name!,
-                                visitorTeamName: widget.visitorTeam.name!,
-                                scoreSheetPath: _scoreSheetPhotoPath,
-                                userTeam: _userTeam!,
-                                comments: _commentsController.text,
-                              )
-                          : null,
-                      text: "Envoyer",
+                    MatchInfo(
+                      hostTeam: widget.hostTeam,
+                      visitorTeam: widget.visitorTeam,
+                      hostClub: widget.hostClub,
+                      visitorClub: widget.visitorClub,
+                      date: widget.matchDate,
+                      showMatchDate: true,
+                      showTeamLink: false,
                     ),
+                    Paragraph(title: "Informations"),
+                    ..._buildInformation(context),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 18.0),
+                      child: Paragraph(title: "Résultat"),
+                    ),
+                    ...List.generate(5, (index) {
+                      return Padding(
+                        padding: const EdgeInsets.only(left: 18.0, right: 18, top: 4, bottom: 4),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(right: 4.0),
+                              child: Text("Set n° ", style: Theme.of(context).textTheme.bodyText1),
+                            ),
+                            SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.all(Radius.circular(4)),
+                                  color: Theme.of(context).textTheme.bodyText1!.color,
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    "${index + 1}",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyText1!
+                                        .copyWith(color: Theme.of(context).canvasColor, fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 18.0, right: 8),
+                              child: SizedBox(
+                                width: 78,
+                                height: 40,
+                                child: _createSetField(index, true),
+                              ),
+                            ),
+                            Text("/",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyText2!
+                                    .copyWith(fontSize: 18, fontWeight: FontWeight.bold)),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 8.0),
+                              child: SizedBox(
+                                width: 78,
+                                height: 40,
+                                child: _createSetField(index, false),
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    }),
+                    _buildCurrentResult(context),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 32.0, left: 28, right: 28),
+                      child: EnsureVisibleWhenFocused(
+                        focusNode: _commentsFocus,
+                        child: TextFormField(
+                          controller: _commentsController,
+                          focusNode: _commentsFocus,
+                          cursorWidth: 2,
+                          style: Theme.of(context).textTheme.bodyText2!.copyWith(fontSize: 18),
+                          autovalidateMode: AutovalidateMode.always,
+                          keyboardType: TextInputType.multiline,
+                          maxLines: 5,
+                          decoration: InputDecoration(labelText: "Commentaires"),
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 18.0),
+                      child: Paragraph(title: "Feuille de match"),
+                    ),
+                    _buildScoreSheetPhoto(),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 58.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          AnimatedButton(
+                            onPressed: (_formKey.currentState?.validate() ?? false) &&
+                                    ((PHOTO_REQUIRED && _scoreSheetPhotoPath != null) || !PHOTO_REQUIRED) &&
+                                    _userTeam != null &&
+                                    _setControllers[0].text.isNotEmpty &&
+                                    _setControllers[1].text.isNotEmpty
+                                ? () => _sendResult(
+                                      context,
+                                      name: _nameController.text,
+                                      senderEmail: _emailController.text,
+                                      hostTeamName: widget.hostTeam.name!,
+                                      visitorTeamName: widget.visitorTeam.name!,
+                                      scoreSheetPath: _scoreSheetPhotoPath,
+                                      userTeam: _userTeam!,
+                                      comments: _commentsController.text,
+                                    )
+                                : null,
+                            text: "Envoyer",
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 50),
                   ],
                 ),
               ),
-              SizedBox(height: 50),
-            ],
+            ),
+    );
+  }
+
+  _buildFullScreenImage(BuildContext context) {
+    return Stack(
+      children: [
+        Container(
+          child: Center(
+            child: Image.file(
+              File(_scoreSheetPhotoPath!),
+              fit: BoxFit.cover,
+              height: 400,
+              width: 400,
+            ),
           ),
         ),
-      ),
+        Positioned(
+          top: 10,
+          right: 0,
+          child: TextButton(
+            child: Text("Fermer"),
+            onPressed: () => setState(
+              () {
+                _showPhotoFullScreen = false;
+              },
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -275,27 +308,10 @@ class _EditMatchState extends State<EditMatch> {
         ccRecipients: [senderEmail],
         attachments: scoreSheetPath != null ? [scoreSheetPath] : []);
 
-    final MailerResponse response = await FlutterMailer.send(mailOptions);
-    String platformResponse;
-    switch (response) {
-      case MailerResponse.saved:
-        platformResponse = "L'e-mail a été sauvegardé en brouillon";
-        break;
-      case MailerResponse.sent:
-        platformResponse = "L'e-mail a été envoyé";
-        break;
-      case MailerResponse.cancelled:
-        platformResponse = "L'e-mail a été annulé. Merci";
-        break;
-      case MailerResponse.android:
-        platformResponse = "L'e-mail a été envoyé. Merci";
-        break;
-      default:
-        platformResponse = "Nous avons reçu une réponse inconnue de votre client d'e-mail !";
-        break;
-    }
+    await FlutterMailer.send(mailOptions);
     Navigator.of(context).pop();
-    final snackBar = SnackBar(content: Text(platformResponse));
+    final snackBar =
+        SnackBar(content: Text("Une copie de l'e-mail contenant le résultat du match vous a été envoyé. Merci."));
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
     return Future.value();
   }
@@ -319,15 +335,35 @@ class _EditMatchState extends State<EditMatch> {
                         ? Theme.of(context).inputDecorationTheme.errorBorder!.borderSide.width
                         : Theme.of(context).inputDecorationTheme.enabledBorder!.borderSide.width,
                   ),
-                  borderRadius: BorderRadius.all(Radius.circular(20))),
+                  borderRadius: BorderRadius.circular(20)),
               child: Padding(
-                padding: const EdgeInsets.all(18.0),
+                padding: const EdgeInsets.all(0.0),
                 child: _scoreSheetPhotoPath != null
-                    ? Image.file(
-                        File(_scoreSheetPhotoPath!),
-                        fit: BoxFit.contain,
-                        height: 200,
-                        width: 100,
+                    ? Stack(
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(20),
+                            child: Image.file(
+                              File(_scoreSheetPhotoPath!),
+                              fit: BoxFit.cover,
+                              height: 400,
+                              width: 400,
+                            ),
+                          ),
+                          if (_scoreSheetPhotoPath != null)
+                            Positioned(
+                              left: -5,
+                              top: -5,
+                              child: IconButton(
+                                icon: Icon(Icons.zoom_out_map_rounded),
+                                onPressed: () => setState(
+                                  () {
+                                    _showPhotoFullScreen = true;
+                                  },
+                                ),
+                              ),
+                            )
+                        ],
                       )
                     : Center(child: Text("Aucune photo", style: Theme.of(context).textTheme.bodyText1)),
               ),
@@ -346,9 +382,12 @@ class _EditMatchState extends State<EditMatch> {
                     final bytes = await photo.readAsBytes();
                     final imageEncoded = base64.encode(bytes);
                     //log(imageEncoded);
-                    setState(() {
-                      _scoreSheetPhotoPath = photo.path;
-                    });
+                    await ImagesPicker.saveImageToAlbum(File(photo.path), albumName: "Volley34");
+                    setState(
+                      () {
+                        _scoreSheetPhotoPath = photo.path;
+                      },
+                    );
                   }
                 },
               ),
@@ -587,7 +626,6 @@ class _EditMatchState extends State<EditMatch> {
           child: TextFormField(
             focusNode: _nameFocus,
             controller: _nameController,
-            autofocus: true,
             style: Theme.of(context).textTheme.bodyText2!.copyWith(fontSize: 18),
             cursorWidth: 2,
             enableSuggestions: true,
@@ -616,7 +654,6 @@ class _EditMatchState extends State<EditMatch> {
           child: TextFormField(
             controller: _emailController,
             focusNode: _emailFocus,
-            autofocus: true,
             autovalidateMode: AutovalidateMode.always,
             style: Theme.of(context).textTheme.bodyText2!.copyWith(fontSize: 18),
             cursorWidth: 2,
