@@ -15,10 +15,8 @@ class MatchInfo extends StatelessWidget {
   static const double ICON_SIZE = 20;
 
   final Team? hostTeam;
-  final Force? hostForce;
   final Team? visitorTeam;
-  final Force? visitorForce;
-  final Force? globalForce;
+  final Forces? forces;
   final Club? hostClub;
   final Club? visitorClub;
   final DateTime? date;
@@ -36,9 +34,7 @@ class MatchInfo extends StatelessWidget {
     required this.date,
     required this.showTeamLink,
     required this.showMatchDate,
-    this.hostForce,
-    this.visitorForce,
-    this.globalForce,
+    this.forces,
   }) : super(key: key);
 
   @override
@@ -53,9 +49,9 @@ class MatchInfo extends StatelessWidget {
           FractionallySizedBox(
             widthFactor: 0.8,
             child: ForceTeams(
-              hostForce: hostForce,
-              visitorForce: visitorForce,
-              globalForce: globalForce,
+              forces: forces,
+              hostCode: hostTeam!.code!,
+              visitorCode: visitorTeam!.code!,
               showDivider: true,
               backgroundColor: Theme.of(context).primaryColor,
             ),

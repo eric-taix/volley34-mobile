@@ -32,9 +32,9 @@ class MatchTitle extends StatelessWidget {
           builder: (context, state) => showForces ||
                   (state is PreferencesUpdatedState && (state.showForceOnDashboard ?? false))
               ? ForceTeams(
-                  hostForce: allowDetails ? event.hostForce : null,
-                  visitorForce: allowDetails ? event.visitorForce : null,
-                  globalForce: event.globalForce,
+                  forces: allowDetails ? event.forces : null,
+                  hostCode: event.hostCode!,
+                  visitorCode: event.visitorCode!,
                   receiveText: allowDetails ? "reçoit" : "a reçu",
                   showDivider: allowDetails,
                   backgroundColor: allowDetails ? Theme.of(context).cardTheme.color! : Theme.of(context).canvasColor,

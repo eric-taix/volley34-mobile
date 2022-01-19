@@ -113,11 +113,8 @@ class _TeamDetailPageState extends State<TeamDetailPage> {
                     if (teamState is TeamDivisionPoolResultsLoaded) {
                       if (index < state.rankings.length) {
                         String? competitionCode = state.rankings[index].competitionCode;
-                        ForceVsGlobal? forceVsGlobal = competitionCode != null
-                            ? teamState.forceByCompetitionCode[competitionCode]
-                            : ForceVsGlobal.empty();
-                        return _buildTeamRanking(state.rankings[index], teamState.teamResults,
-                            forceVsGlobal?.teamForce ?? Force(), forceVsGlobal?.globalForce ?? Force());
+                        Forces forces = teamState.forceByCompetitionCode.putIfAbsent(competitionCode, () => Forces());
+                        return _buildTeamRanking(state.rankings[index], teamState.teamResults, forces);
                       }
                       if (index == state.rankings.length)
                         return TeamResults(
@@ -151,13 +148,12 @@ class _TeamDetailPageState extends State<TeamDetailPage> {
     return TeamAgenda(team: widget.team);
   }
 
-  Widget _buildTeamRanking(RankingSynthesis? ranking, List<MatchResult> results, Force teamForce, Force globalForce) {
+  Widget _buildTeamRanking(RankingSynthesis ranking, List<MatchResult> results, Forces forces) {
     return TeamRanking(
       team: widget.team,
-      ranking: ranking ?? RankingSynthesis(),
-      results: results.where((result) => result.competitionCode == ranking?.competitionCode).toList(),
-      teamForce: teamForce,
-      globalForce: globalForce,
+      ranking: ranking,
+      results: results.where((result) => result.competitionCode == ranking.competitionCode).toList(),
+      forces: forces,
     );
   }
 }

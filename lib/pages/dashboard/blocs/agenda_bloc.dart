@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -97,36 +98,25 @@ class AgendaBloc extends Bloc<AgendaEvent, AgendaState> {
           (await repository.loadTeamAgenda(event.teamCode, event.days)).where(_matchIsAfter(today)).toList();
       List<RankingSynthesis> rankings = await repository.loadTeamRankingSynthesis(event.teamCode);
       List<CompetitionFullPath> competitionsFullPath = rankings
-          .map((ranking) => CompetitionFullPath(ranking.competitionCode!, ranking.division!, ranking.pool!))
+          .map((ranking) => CompetitionFullPath(ranking.competitionCode, ranking.division!, ranking.pool!))
           .toList();
 
       var allResults = (await Future.wait(competitionsFullPath.map((competitionFullPath) => repository.loadResults(
               competitionFullPath.competitionCode, competitionFullPath.division, competitionFullPath.pool))))
-          .expand((e) => e);
+          .expand((e) => e)
+          .toList();
 
-      Force globalForce = Force();
-      Map<String, ForceBuilder> forceByTeam = {};
-      allResults.forEach((matchResult) {
-        if (!_isForfeit(matchResult)) {
-          var hostForceBuilder = forceByTeam.putIfAbsent(
-              matchResult.hostTeamCode!,
-              () => ForceBuilder(
-                    teamCode: matchResult.hostTeamCode,
-                    othersForce: globalForce,
-                  ));
-          var visitorForceBuilder = forceByTeam.putIfAbsent(
-              matchResult.visitorTeamCode!, () => ForceBuilder(teamCode: matchResult.visitorTeamCode));
-          hostForceBuilder.add(matchResult);
-          visitorForceBuilder.add(matchResult);
-        }
+      Map<String, Forces> forceByCompetition =
+          allResults.groupListsBy((matchResult) => matchResult.competitionCode).map((competitionCode, matchResults) {
+        Forces forceBuilder =
+            matchResults.fold<Forces>(Forces(), (forceBuilder, matchResult) => forceBuilder..add(matchResult));
+        return MapEntry(competitionCode!, forceBuilder);
       });
 
       List<Event> eventsWithForce = events.map((event) {
         if (event.type == EventType.Match) {
-          return event.withForce(
-              forceByTeam[event.hostCode]?.teamForce ?? ForceBuilder(teamCode: event.hostCode).teamForce,
-              forceByTeam[event.visitorCode]?.teamForce ?? ForceBuilder(teamCode: event.visitorCode).teamForce,
-              globalForce);
+          Forces competitionForces = forceByCompetition.putIfAbsent(event.competitionCode ?? "", () => Forces());
+          return event.withForce(competitionForces);
         } else {
           return event;
         }
@@ -142,7 +132,7 @@ class AgendaBloc extends Bloc<AgendaEvent, AgendaState> {
           .toList();
       List<RankingSynthesis> rankings = await repository.loadTeamRankingSynthesis(event.teamCode);
       List<CompetitionFullPath> competitionsFullPath = rankings
-          .map((ranking) => CompetitionFullPath(ranking.competitionCode!, ranking.division!, ranking.pool!))
+          .map((ranking) => CompetitionFullPath(ranking.competitionCode, ranking.division!, ranking.pool!))
           .toList();
 
       Iterable<MatchResult> allResults = (await Future.wait(competitionsFullPath.map((competitionFullPath) =>
@@ -150,27 +140,17 @@ class AgendaBloc extends Bloc<AgendaEvent, AgendaState> {
                   competitionFullPath.competitionCode, competitionFullPath.division, competitionFullPath.pool))))
           .expand((e) => e);
 
-      Force globalForce = Force();
-      Map<String, ForceBuilder> forceByTeam = {};
-      allResults.forEach((matchResult) {
-        if (!_isForfeit(matchResult)) {
-          var hostForceBuilder = forceByTeam.putIfAbsent(
-              matchResult.hostTeamCode!,
-              () => ForceBuilder(
-                    teamCode: matchResult.hostTeamCode,
-                    othersForce: globalForce,
-                  ));
-          var visitorForceBuilder = forceByTeam.putIfAbsent(
-              matchResult.visitorTeamCode!, () => ForceBuilder(teamCode: matchResult.visitorTeamCode));
-          hostForceBuilder.add(matchResult);
-          visitorForceBuilder.add(matchResult);
-        }
+      Map<String, Forces> forceByCompetition =
+          allResults.groupListsBy((matchResult) => matchResult.competitionCode).map((competitionCode, matchResults) {
+        Forces forceBuilder =
+            matchResults.fold<Forces>(Forces(), (forceBuilder, matchResult) => forceBuilder..add(matchResult));
+        return MapEntry(competitionCode!, forceBuilder);
       });
 
       List<Event> eventsWithForce = events.map((event) {
         if (event.type == EventType.Match) {
-          return event.withForce(forceByTeam[event.hostCode]?.teamForce ?? Force.empty,
-              forceByTeam[event.visitorCode]?.teamForce ?? Force.empty, globalForce);
+          Forces competitionForces = forceByCompetition.putIfAbsent(event.competitionCode ?? "", () => Forces());
+          return event.withForce(competitionForces);
         } else {
           return event;
         }
@@ -190,9 +170,5 @@ class AgendaBloc extends Bloc<AgendaEvent, AgendaState> {
 
   bool Function(Event) _matchIsAfter(DateTime reference) {
     return (event) => event.date!.compareTo(reference) > 0;
-  }
-
-  bool _isForfeit(MatchResult matchResult) {
-    return !(matchResult.totalPointsHost != 0 && matchResult.totalPointsVisitor != 0);
   }
 }

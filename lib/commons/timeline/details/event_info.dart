@@ -288,7 +288,7 @@ class _EventInfoState extends State<EventInfo> with SingleTickerProviderStateMix
 
   List<Widget> _buildTitle(BuildContext context) {
     Color color = Theme.of(context).textTheme.bodyText2!.color!;
-    if (widget.event.type == EventType.Match) {
+    if (widget.event.type == EventType.Match && _hostTeam != null && _visitorTeam != null) {
       return [
         MatchInfo(
           hostTeam: _hostTeam,
@@ -298,9 +298,7 @@ class _EventInfoState extends State<EventInfo> with SingleTickerProviderStateMix
           date: widget.event.date,
           showMatchDate: false,
           showTeamLink: true,
-          hostForce: widget.event.hostForce,
-          globalForce: widget.event.globalForce,
-          visitorForce: widget.event.visitorForce,
+          forces: widget.event.forces,
         ),
         if (widget.event.type == EventType.Match)
           Padding(

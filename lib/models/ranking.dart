@@ -90,7 +90,7 @@ class RankingTeamSynthesis {
 }
 
 class RankingSynthesis {
-  final String? competitionCode;
+  final String competitionCode;
   final int? promoted;
   final int? relegated;
   final String? label;
@@ -100,7 +100,7 @@ class RankingSynthesis {
   final List<RankingTeamSynthesis>? ranks;
 
   RankingSynthesis(
-      {this.competitionCode,
+      {required this.competitionCode,
       this.label,
       this.fullLabel,
       this.promoted,

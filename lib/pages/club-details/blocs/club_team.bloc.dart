@@ -70,7 +70,7 @@ class TeamSlidingStatsLoading extends TeamState {
 }
 
 class TeamSlidingStatsLoaded extends TeamState {
-  final List<TeamCompetitionSynthesis> competitions;
+  final Map<String, TeamCompetitionSynthesis> competitions;
 
   TeamSlidingStatsLoaded({required this.competitions});
 
@@ -90,7 +90,7 @@ class TeamResultsLoaded extends TeamState {
 class TeamDivisionPoolResultsLoaded extends TeamState {
   final List<MatchResult> teamResults;
   final List<MatchResult> allResults;
-  final Map<String, ForceVsGlobal> forceByCompetitionCode;
+  final Map<String, Forces> forceByCompetitionCode;
 
   TeamDivisionPoolResultsLoaded({
     required this.teamResults,
@@ -146,8 +146,18 @@ class TeamBloc extends Bloc<TeamEvent, TeamState> {
     if (event is TeamLoadSlidingResult) {
       yield TeamSlidingStatsLoading();
       var results = await repository.loadTeamLastMatchesResult(event.code, event.last!);
-      var pointDiffs = computePointsDiffs(results, event.code);
-      yield TeamSlidingStatsLoaded(competitions: [TeamCompetitionSynthesis(pointsDiffEvolution: pointDiffs)]);
+      var pointDiffsByCompetitionCode = results
+          .where((result) => result.competitionCode != null)
+          .groupListsBy((result) => result.competitionCode!)
+          .map(
+            (key, value) => MapEntry(
+              key,
+              TeamCompetitionSynthesis(
+                pointsDiffEvolution: computePointsDiffs(results, event.code),
+              ),
+            ),
+          );
+      yield TeamSlidingStatsLoaded(competitions: pointDiffsByCompetitionCode);
     }
 
     if (event is TeamLoadAverageSlidingResult) {
@@ -157,7 +167,7 @@ class TeamBloc extends Bloc<TeamEvent, TeamState> {
       }).toList();
 
       var competitions = await Future.wait(rankings.map((ranking) async {
-        var matchResults = await repository.loadResults(ranking.competitionCode!, ranking.division, ranking.pool);
+        var matchResults = await repository.loadResults(ranking.competitionCode, ranking.division, ranking.pool);
         var pointDiffs = computePointsDiffs(matchResults, event.team.code);
         double sum = 0;
         var sumPointDiffs = List.generate(pointDiffs.length, (index) {
@@ -173,15 +183,19 @@ class TeamBloc extends Bloc<TeamEvent, TeamState> {
             wonMatches++;
           }
         });
-        return TeamCompetitionSynthesis(
-          rankingSynthesis: ranking,
-          pointsDiffEvolution: sumPointDiffs,
-          totalMatches: totalMatches,
-          wonMatches: wonMatches,
-        );
+
+        return MapEntry(
+            ranking.competitionCode,
+            TeamCompetitionSynthesis(
+              rankingSynthesis: ranking,
+              pointsDiffEvolution: sumPointDiffs,
+              totalMatches: totalMatches,
+              wonMatches: wonMatches,
+            ));
       }));
 
-      yield TeamSlidingStatsLoaded(competitions: competitions);
+      yield TeamSlidingStatsLoaded(
+          competitions: Map.fromIterable(competitions, key: (entry) => entry.key, value: (entry) => entry.value));
     }
 
     if (event is TeamLoadResults) {
@@ -191,6 +205,7 @@ class TeamBloc extends Bloc<TeamEvent, TeamState> {
     }
 
     if (event is TeamLoadDivisionPoolResults) {
+      print("Competition FullPath: ${event.competitionsFullPath}");
       yield TeamSlidingStatsLoading();
       var matchResults = (await Future.wait(event.competitionsFullPath.map((competitionFullPath) async {
         var results = await repository.loadResults(
@@ -201,12 +216,11 @@ class TeamBloc extends Bloc<TeamEvent, TeamState> {
           .toList()
         ..sort((m1, m2) => m1.matchDate!.compareTo(m2.matchDate!));
 
-      Map<String, ForceVsGlobal> forceByCompetition =
+      Map<String, Forces> forceByCompetition =
           matchResults.groupListsBy((matchResult) => matchResult.competitionCode).map((competitionCode, matchResults) {
-        ForceBuilder forceBuilder = matchResults.fold<ForceBuilder>(
-            ForceBuilder(teamCode: event.teamCode), (forceBuilder, matchResult) => forceBuilder..add(matchResult));
-        return MapEntry(
-            competitionCode!, ForceVsGlobal(teamForce: forceBuilder.teamForce, globalForce: forceBuilder.othersForce));
+        Forces forceBuilder =
+            matchResults.fold<Forces>(Forces(), (forceBuilder, matchResult) => forceBuilder..add(matchResult));
+        return MapEntry(competitionCode!, forceBuilder);
       });
 
       yield TeamDivisionPoolResultsLoaded(
