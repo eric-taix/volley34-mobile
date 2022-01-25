@@ -25,7 +25,6 @@ class ScorePanel extends StatefulWidget {
 
 class _ScorePanelState extends State<ScorePanel> with SingleTickerProviderStateMixin {
   late int _value;
-  late Color _valueColor;
   late AnimationController _controller;
   late Animation<double> _autoAnimation;
   late Animation<double> _manualAnimation;
@@ -35,7 +34,6 @@ class _ScorePanelState extends State<ScorePanel> with SingleTickerProviderStateM
   void initState() {
     _value = widget.initialValue;
     _value = widget.initialValue;
-    _valueColor = widget.color;
 
     _controller = AnimationController(vsync: this, duration: Duration(milliseconds: 800));
     _controller.addStatusListener((status) {

@@ -322,19 +322,6 @@ class _ScoreBoardPageState extends State<ScoreBoardPage> with RouteAwareAnalytic
     });
   }
 
-  void _updateColors() {
-    if (_hostPoints >= 25 && (_hostPoints - _visitorPoints >= 2)) {
-      _hostColor = Colors.green;
-    } else {
-      _hostColor = Theme.of(context).textTheme.headline1!.color!;
-    }
-    if (_visitorPoints >= 25 && (_visitorPoints - _hostPoints >= 2)) {
-      _visitorColor = Colors.green;
-    } else {
-      _visitorColor = Theme.of(context).textTheme.headline1!.color!;
-    }
-  }
-
   @override
   AnalyticsRoute get route => AnalyticsRoute.scoreboard;
 }

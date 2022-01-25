@@ -50,7 +50,11 @@ class Repository {
   }
 
   Future<List<TeamCompetition>> loadTeamCompetitions(Team team) async {
-    var competitions = await _competitionProvider.loadTeamCompetitions(team.code!);
+    return loadTeamCompetitionsFromCode(team.code!);
+  }
+
+  Future<List<TeamCompetition>> loadTeamCompetitionsFromCode(String code) async {
+    var competitions = await _competitionProvider.loadTeamCompetitions(code);
     return competitions;
   }
 
@@ -64,8 +68,7 @@ class Repository {
     var divisions = await _globalProvider.loadDivisions();
     var divisionFilter = divisions.firstWhereOrNull((division) => division.code == divisionCode);
     var divisionId = divisionFilter != null ? int.tryParse(divisionFilter.id) : null;
-    return (await _resultProvider.loadResults(
-            competition, divisionId != null ? "${divisionId - 1}" : divisionCode, pool))
+    return (await _resultProvider.loadResults(competition, divisionId != null ? "$divisionId" : divisionCode, pool))
         .where((matchResult) => VALID_MATCH_RESULT_TYPES.contains(matchResult.resultType))
         .sorted((m1, m2) => m1.matchDate!.compareTo(m2.matchDate!))
         .toList();

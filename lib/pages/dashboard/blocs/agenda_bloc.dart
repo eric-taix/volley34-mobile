@@ -4,10 +4,10 @@ import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:v34/models/competition.dart';
 import 'package:v34/models/event.dart';
 import 'package:v34/models/force.dart';
 import 'package:v34/models/match_result.dart';
-import 'package:v34/models/ranking.dart';
 import 'package:v34/pages/club-details/blocs/club_team.bloc.dart';
 import 'package:v34/repositories/repository.dart';
 
@@ -96,9 +96,9 @@ class AgendaBloc extends Bloc<AgendaEvent, AgendaState> {
 
       List<Event> events =
           (await repository.loadTeamAgenda(event.teamCode, event.days)).where(_matchIsAfter(today)).toList();
-      List<RankingSynthesis> rankings = await repository.loadTeamRankingSynthesis(event.teamCode);
-      List<CompetitionFullPath> competitionsFullPath = rankings
-          .map((ranking) => CompetitionFullPath(ranking.competitionCode, ranking.division!, ranking.pool!))
+      List<TeamCompetition> competitions = await repository.loadTeamCompetitionsFromCode(event.teamCode!);
+      List<CompetitionFullPath> competitionsFullPath = competitions
+          .map((competition) => CompetitionFullPath(competition.code, competition.division, competition.pool))
           .toList();
 
       var allResults = (await Future.wait(competitionsFullPath.map((competitionFullPath) => repository.loadResults(
@@ -130,9 +130,9 @@ class AgendaBloc extends Bloc<AgendaEvent, AgendaState> {
       List<Event> events = (await repository.loadTeamFullAgenda(event.teamCode))
           .where((evt) => event.loadPlayedMatches || evt.type != EventType.Match || evt.date!.compareTo(today) >= 0)
           .toList();
-      List<RankingSynthesis> rankings = await repository.loadTeamRankingSynthesis(event.teamCode);
-      List<CompetitionFullPath> competitionsFullPath = rankings
-          .map((ranking) => CompetitionFullPath(ranking.competitionCode, ranking.division!, ranking.pool!))
+      List<TeamCompetition> competitions = await repository.loadTeamCompetitionsFromCode(event.teamCode);
+      List<CompetitionFullPath> competitionsFullPath = competitions
+          .map((competition) => CompetitionFullPath(competition.code, competition.division, competition.pool))
           .toList();
 
       Iterable<MatchResult> allResults = (await Future.wait(competitionsFullPath.map((competitionFullPath) =>

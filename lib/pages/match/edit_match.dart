@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -379,8 +378,8 @@ class _EditMatchState extends State<EditMatch> {
                   final ImagePicker _picker = ImagePicker();
                   final XFile? photo = await _picker.pickImage(source: ImageSource.camera);
                   if (photo != null) {
-                    final bytes = await photo.readAsBytes();
-                    final imageEncoded = base64.encode(bytes);
+                    //final bytes = await photo.readAsBytes();
+                    //final imageEncoded = base64.encode(bytes);
                     //log(imageEncoded);
                     await ImagesPicker.saveImageToAlbum(File(photo.path), albumName: "Volley34");
                     setState(

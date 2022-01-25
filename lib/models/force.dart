@@ -7,8 +7,6 @@ class _TeamForce {
   double _defense = 0;
   double _count = 0;
 
-  static final empty = _TeamForce();
-
   _TeamForce({double attack = 0, double defense = 0, double count = 0}) {
     _attack = attack;
     _defense = defense;

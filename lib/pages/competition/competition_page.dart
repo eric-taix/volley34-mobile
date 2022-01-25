@@ -70,13 +70,6 @@ class _CompetitionPageState extends State<CompetitionPage> with SingleTickerProv
           null
       : false;
 
-  bool _competitionFilter(RankingSynthesis ranking, List<String> queryWords) {
-    return queryWords.fold(true, (previousValue, queryWord) {
-      return (ranking.fullLabel != null ? ranking.fullLabel!.toLowerCase().contains(queryWord) : false) &&
-          previousValue;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     var filterButton = Badge(

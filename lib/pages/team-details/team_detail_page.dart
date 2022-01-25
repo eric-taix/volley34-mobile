@@ -1,4 +1,5 @@
 import 'package:collection/collection.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:v34/commons/app_bar/app_bar_with_image.dart';
@@ -35,7 +36,7 @@ class _TeamDetailPageState extends State<TeamDetailPage> {
   late final TeamRankingBloc _rankingBloc;
   late final TeamBloc _teamBloc;
   late final CompetitionCubit _competitionCubit;
-  bool _showAllTeams = false;
+  ValueNotifier<bool> _showAllTeams = ValueNotifier(false);
 
   @override
   void initState() {
@@ -117,17 +118,16 @@ class _TeamDetailPageState extends State<TeamDetailPage> {
                         return _buildTeamRanking(state.rankings[index], teamState.teamResults, forces);
                       }
                       if (index == state.rankings.length)
-                        return TeamResults(
-                          showOnlyTeam: _showAllTeams,
-                          team: widget.team,
-                          results: _showAllTeams ? teamState.allResults : teamState.teamResults,
-                          onChanged: (onlyTeam) {
-                            setState(
-                              () {
-                                _showAllTeams = onlyTeam;
-                              },
-                            );
-                          },
+                        return AnimatedBuilder(
+                          animation: _showAllTeams,
+                          builder: (BuildContext context, Widget? child) => TeamResults(
+                            showOnlyTeam: _showAllTeams.value,
+                            team: widget.team,
+                            results: _showAllTeams.value ? teamState.allResults : teamState.teamResults,
+                            onChanged: (onlyTeam) {
+                              _showAllTeams.value = onlyTeam;
+                            },
+                          ),
                         );
                       if (index == state.rankings.length + 1)
                         return _buildTeamAgenda(state.rankings[0], teamState.teamResults);
