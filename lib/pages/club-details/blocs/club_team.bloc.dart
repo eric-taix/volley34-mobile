@@ -2,6 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:v34/models/competition.dart';
 import 'package:v34/models/force.dart';
 import 'package:v34/models/match_result.dart';
 import 'package:v34/models/ranking.dart';
@@ -166,8 +167,9 @@ class TeamBloc extends Bloc<TeamEvent, TeamState> {
         return ranking..ranks?.sort(sortByRank);
       }).toList();
 
-      var competitions = await Future.wait(rankings.map((ranking) async {
-        var matchResults = await repository.loadResults(ranking.competitionCode, ranking.division, ranking.pool);
+      List<TeamCompetition> competitions = await repository.loadTeamCompetitions(event.team);
+      var teamCompetitionsSynthesis = await Future.wait(competitions.map((competition) async {
+        var matchResults = await repository.loadResults(competition.code, competition.division, competition.pool);
         var pointDiffs = computePointsDiffs(matchResults, event.team.code);
         double sum = 0;
         var sumPointDiffs = List.generate(pointDiffs.length, (index) {
@@ -185,9 +187,9 @@ class TeamBloc extends Bloc<TeamEvent, TeamState> {
         });
 
         return MapEntry(
-            ranking.competitionCode,
+            competition.code,
             TeamCompetitionSynthesis(
-              rankingSynthesis: ranking,
+              rankingSynthesis: rankings.firstWhere((ranking) => ranking.competitionCode == competition.code),
               pointsDiffEvolution: sumPointDiffs,
               totalMatches: totalMatches,
               wonMatches: wonMatches,
@@ -195,7 +197,8 @@ class TeamBloc extends Bloc<TeamEvent, TeamState> {
       }));
 
       yield TeamSlidingStatsLoaded(
-          competitions: Map.fromIterable(competitions, key: (entry) => entry.key, value: (entry) => entry.value));
+          competitions:
+              Map.fromIterable(teamCompetitionsSynthesis, key: (entry) => entry.key, value: (entry) => entry.value));
     }
 
     if (event is TeamLoadResults) {
