@@ -43,7 +43,7 @@ class DashboardAgendaState extends State<DashboardAgenda> with AutomaticKeepAliv
   }
 
   Widget _buildTimeline(AgendaState state) {
-    if (state is AgendaLoaded || state is AgendaLoading) {
+    if (state is AgendaLoaded) {
       return Padding(
         padding: EdgeInsets.only(right: 18, left: 18),
         child: Column(
@@ -74,20 +74,11 @@ class DashboardAgendaState extends State<DashboardAgenda> with AutomaticKeepAliv
                 ),
               ],
             ),
-            if (state is AgendaLoaded && state.hasMore)
-              Padding(
-                padding: const EdgeInsets.only(left: 68.0),
-                child: TextButton(
-                  child: Text("Voir plus d'événements"),
-                  onPressed: () => _agendaBloc.add(
-                    LoadTeamFullAgenda(teamCode: widget.team.code!, loadPlayedMatches: false),
-                  ),
-                ),
-              ),
-            if (state is AgendaLoading) Container(height: 150, child: Center(child: Loading())),
           ],
         ),
       );
+    } else if (state is AgendaLoading) {
+      return Container(height: 150, child: Center(child: Loading()));
     } else {
       return SizedBox();
     }

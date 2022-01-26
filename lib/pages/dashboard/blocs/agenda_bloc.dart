@@ -94,8 +94,11 @@ class AgendaBloc extends Bloc<AgendaEvent, AgendaState> {
       var now = DateTime.now();
       var today = DateTime(now.year, now.month, now.day);
 
-      List<Event> events =
+      List<Event> events2 =
           (await repository.loadTeamAgenda(event.teamCode, event.days)).where(_matchIsAfter(today)).toList();
+
+      List<Event> events = await repository.loadTeamFullAgenda(event.teamCode);
+
       List<TeamCompetition> competitions = await repository.loadTeamCompetitionsFromCode(event.teamCode!);
       List<CompetitionFullPath> competitionsFullPath = competitions
           .map((competition) => CompetitionFullPath(competition.code, competition.division, competition.pool))
@@ -122,8 +125,15 @@ class AgendaBloc extends Bloc<AgendaEvent, AgendaState> {
         }
       }).toList();
 
-      eventsWithForce.sort((event1, event2) => event1.date!.compareTo(event2.date!));
-      yield AgendaLoaded(eventsWithForce, true);
+      var resultByMatchCode =
+          Map.fromIterable(allResults, key: (result) => (result as MatchResult).matchCode, value: (result) => result);
+      var allEvents = eventsWithForce
+          .map((evt) => resultByMatchCode[evt.matchCode] != null ? evt.withResult() : evt)
+          .where((evt) => (evt.type == EventType.Match && !evt.hasResult) || evt.date!.compareTo(today) >= 0)
+          .toList();
+
+      allEvents.sort((event1, event2) => event1.date!.compareTo(event2.date!));
+      yield AgendaLoaded(allEvents, true);
     } else if (event is LoadTeamFullAgenda) {
       DateTime now = DateTime.now();
       var today = DateTime(now.year, now.month, now.day);
