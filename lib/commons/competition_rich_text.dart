@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:v34/commons/competition_badge.dart';
 import 'package:v34/models/competition.dart';
 import 'package:v34/repositories/repository.dart';
+import 'package:v34/utils/competition_text.dart';
 
 class CompetitionRichText extends StatefulWidget {
   final String? competitionCode;
@@ -71,7 +72,7 @@ class _CompetitionRichTextState extends State<CompetitionRichText> {
                       child: Padding(
                         padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 8.0, bottom: 8.0),
                         child: Text(
-                          "${competition.competitionLabel}",
+                          extractEnhanceDivisionLabel(competition.competitionLabel),
                           style: Theme.of(context).textTheme.bodyText1!.copyWith(fontSize: 10),
                         ),
                       ),

@@ -9,7 +9,7 @@ typedef TeamFavoriteChangeCallback = void Function(Team team);
 class DashboardClubTeam extends StatelessWidget {
   final Team team;
   final Club club;
-  static final double cardHeight = 260;
+  static final double cardHeight = 320;
 
   const DashboardClubTeam({Key? key, required this.team, required this.club}) : super(key: key);
 

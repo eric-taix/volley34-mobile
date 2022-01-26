@@ -94,9 +94,6 @@ class AgendaBloc extends Bloc<AgendaEvent, AgendaState> {
       var now = DateTime.now();
       var today = DateTime(now.year, now.month, now.day);
 
-      List<Event> events2 =
-          (await repository.loadTeamAgenda(event.teamCode, event.days)).where(_matchIsAfter(today)).toList();
-
       List<Event> events = await repository.loadTeamFullAgenda(event.teamCode);
 
       List<TeamCompetition> competitions = await repository.loadTeamCompetitionsFromCode(event.teamCode!);
@@ -176,9 +173,5 @@ class AgendaBloc extends Bloc<AgendaEvent, AgendaState> {
 
       yield AgendaLoaded(allEvents, false);
     }
-  }
-
-  bool Function(Event) _matchIsAfter(DateTime reference) {
-    return (event) => event.date!.compareTo(reference) > 0;
   }
 }

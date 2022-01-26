@@ -179,6 +179,7 @@ class _PodiumState extends State<Podium> {
             padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 18.0, bottom: 0),
             child: Container(
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   Expanded(child: _buildBarChart(context)),
                   Padding(
@@ -187,10 +188,11 @@ class _PodiumState extends State<Podium> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(widget.title, style: Theme.of(context).textTheme.bodyText1),
-                        if (widget.trailing != null) widget.trailing!,
                       ],
                     ),
                   ),
+                  if (widget.trailing != null)
+                    Row(mainAxisAlignment: MainAxisAlignment.center, children: [widget.trailing!]),
                 ],
               ),
             ),

@@ -77,7 +77,7 @@ class _TeamCardState extends State<TeamCard> {
                   currentPageNotifier: _currentPageNotifier,
                   pageController: _pageController,
                   itemCount: state.rankings.length,
-                  iconPadding: EdgeInsets.only(top: 98),
+                  iconPadding: EdgeInsets.only(top: 92),
                   iconColor: Theme.of(context).colorScheme.secondary,
                   isInside: true,
                   child: PageView.builder(
@@ -138,7 +138,7 @@ class _TeamCardState extends State<TeamCard> {
             body: Padding(
               padding: const EdgeInsets.only(top: 8, bottom: 0.0),
               child: Container(
-                height: cardBodyHeight - 80,
+                height: cardBodyHeight - 60,
                 child: _getPodiumWidgets(state),
               ),
             ),
