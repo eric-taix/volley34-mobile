@@ -17,6 +17,7 @@ import 'package:v34/pages/team-details/agenda/team_agenda.dart';
 import 'package:v34/pages/team-details/ranking/team_ranking.dart';
 import 'package:v34/pages/team-details/results/team_results.dart';
 import 'package:v34/repositories/repository.dart';
+import 'package:v34/utils/competition_text.dart';
 
 enum OpenedPage { COMPETITION, RESULTS, AGENDA }
 
@@ -99,7 +100,7 @@ class _TeamDetailPageState extends State<TeamDetailPage> {
             tabBuilder: (context, index) {
               if (state is TeamRankingLoadedState) {
                 if (index < state.rankings.length) {
-                  return Text(state.rankings[index].label ?? "?");
+                  return Text(extractEnhanceDivisionLabel(state.rankings[index].fullLabel!));
                 }
                 if (index == state.rankings.length) return Text("Résultats");
                 if (index == state.rankings.length + 1) return Text("Agenda");
