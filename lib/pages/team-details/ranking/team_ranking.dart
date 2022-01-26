@@ -88,7 +88,7 @@ class _TeamRankingState extends State<TeamRanking> with RouteAwareAnalytics {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text("${getClassificationCategory(widget.ranking.division)}${pool != null ? " - $pool" : ""}",
+          Text("${getDivisionLabel(widget.ranking.division)}${pool != null ? " - $pool" : ""}",
               style: Theme.of(context).textTheme.headline4),
           Padding(
             padding: const EdgeInsets.only(left: 18.0),

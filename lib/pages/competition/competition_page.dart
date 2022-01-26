@@ -2,13 +2,12 @@ import 'dart:io';
 
 import 'package:badges/badges.dart';
 import 'package:collection/collection.dart';
-import 'package:fluid_bottom_nav_bar/fluid_bottom_nav_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:v34/commons/competition_badge.dart';
-import 'package:v34/commons/landscape_helper.dart';
 import 'package:v34/commons/loading.dart';
 import 'package:v34/commons/page/main_page.dart';
 import 'package:v34/models/ranking.dart';
@@ -111,6 +110,22 @@ class _CompetitionPageState extends State<CompetitionPage> with SingleTickerProv
       ),
     );
     bool portrait = MediaQuery.of(context).orientation == Orientation.portrait;
+    Map<String, List<RankingSynthesis>>? rankingsPerCompetition;
+    if (_filteredRankings != null) {
+      rankingsPerCompetition =
+          groupBy<RankingSynthesis, String>(_filteredRankings!, (ranking) => ranking.fullLabel!).map(
+        (key, value) => MapEntry(
+          key,
+          value
+            ..sort(
+              (r1, r2) {
+                return getDivisionOrder(r1.division).compareTo(getDivisionOrder(r2.division));
+              },
+            ),
+        ),
+      );
+    }
+
     return BlocProvider(
       create: (context) => _competitionCubit,
       child: BlocListener<RankingCubit, RankingState>(
@@ -133,7 +148,62 @@ class _CompetitionPageState extends State<CompetitionPage> with SingleTickerProv
             _filterRankings();
           },
           slivers: [
-            _filteredRankings != null
+            if (rankingsPerCompetition != null)
+              ...rankingsPerCompetition.entries
+                  .map(
+                    (entry) => SliverStickyHeader(
+                      header: Container(
+                        color: Theme.of(context).canvasColor,
+                        child: Padding(
+                          padding: EdgeInsets.only(top: portrait ? 38.0 : 4.0),
+                          child: Container(
+                            height: 60.0,
+                            color: Theme.of(context).cardTheme.color,
+                            padding: EdgeInsets.symmetric(horizontal: 16.0),
+                            alignment: Alignment.centerLeft,
+                            child: _buildCompetitionTitle(
+                                entry.key, entry.value.length > 0 ? entry.value[0].competitionCode : null),
+                          ),
+                        ),
+                      ),
+                      sliver: SliverList(
+                        delegate: SliverChildBuilderDelegate(
+                          (context, index) {
+                            RankingSynthesis ranking = entry.value[index];
+                            return _buildCompetitionRankingTable(context, ranking,
+                                highlightTeamNames: _query.isNotEmpty ? _query.split(" ") : null);
+                          },
+                          childCount: entry.value.length,
+                        ),
+                      ),
+                    ),
+                  )
+                  .toList(),
+
+            /*SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                        (context, index) {
+                          if (index == 0) {
+                            return Paragraph(
+                              titleWidget: _buildCompetitionTitle(
+                                  entry.key, entry.value.length > 0 ? entry.value[0].competitionCode : null),
+                            );
+                          } else {
+                            RankingSynthesis ranking = entry.value[index - 1];
+                            return _buildCompetitionRankingTable(context, ranking,
+                                highlightTeamNames: _query.isNotEmpty ? _query.split(" ") : null);
+                          }
+                        },
+                        childCount: entry.value.length + 1,
+                      ),
+                    ),
+                  )
+                  .toList(),*/
+            if (rankingsPerCompetition == null)
+              SliverFillRemaining(
+                child: Center(child: Loading()),
+              ),
+            /*       _filteredRankings != null
                 ? (_filteredRankings!.length != 0
                     ? SliverList(
                         delegate: SliverChildBuilderDelegate(
@@ -154,10 +224,30 @@ class _CompetitionPageState extends State<CompetitionPage> with SingleTickerProv
                     : SliverFillRemaining(child: Center(child: Text("Aucun résultat"))))
                 : SliverFillRemaining(
                     child: Center(child: Loading()),
-                  ),
+                  ),*/
+            SliverToBoxAdapter(
+              child: SizedBox(height: 80),
+            ),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildCompetitionTitle(String fullLabel, String? competitionCode) {
+    return Row(
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(right: 8.0),
+          child: Text(extractEnhanceDivisionLabel(fullLabel), style: Theme.of(context).textTheme.headline6),
+        ),
+        if (competitionCode != null)
+          CompetitionBadge(
+            competitionCode: competitionCode,
+            deltaSize: 0.6,
+            showSubTitle: false,
+          )
+      ],
     );
   }
 
@@ -195,29 +285,8 @@ class _CompetitionPageState extends State<CompetitionPage> with SingleTickerProv
       padding: const EdgeInsets.only(top: 28, bottom: 8.0),
       child: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.only(bottom: 8.0),
-            child: Text(ranking.label!, style: Theme.of(context).textTheme.bodyText2),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(right: 18.0),
-                child: SizedBox(
-                  width: 56,
-                  height: 25,
-                  child: CompetitionBadge(
-                    competitionCode: ranking.competitionCode,
-                    deltaSize: 0.6,
-                    showSubTitle: false,
-                  ),
-                ),
-              ),
-              Text("${getClassificationCategory(ranking.division)} $poolLabel",
-                  style: Theme.of(context).textTheme.headline5),
-            ],
-          ),
+          Text("${getDivisionLabel(ranking.division)} $poolLabel",
+              style: Theme.of(context).textTheme.headline5!.copyWith(fontSize: 15)),
         ],
       ),
     );

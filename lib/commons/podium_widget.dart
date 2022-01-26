@@ -95,7 +95,7 @@ class _PodiumWidgetState extends State<PodiumWidget> {
                         Padding(
                           padding: const EdgeInsets.only(left: 8.0, top: 8.0, bottom: 8.0),
                           child: Text(
-                            "${getClassificationCategory(widget.classification.division)}",
+                            "${getDivisionLabel(widget.classification.division)}",
                             style: Theme.of(context).textTheme.bodyText1,
                           ),
                         )

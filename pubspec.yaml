@@ -58,6 +58,7 @@ dependencies:
   flutter_email_sender: ^5.0.2
   maps_launcher: ^2.0.1
   images_picker: ^1.2.10
+  flutter_sticky_header: ^0.6.0
 dev_dependencies:
   dependency_validator: ^3.0.0
   flutter_launcher_icons: "^0.9.2"
