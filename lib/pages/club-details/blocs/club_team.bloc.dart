@@ -168,6 +168,7 @@ class TeamBloc extends Bloc<TeamEvent, TeamState> {
       }).toList();
 
       List<TeamCompetition> competitions = await repository.loadTeamCompetitions(event.team);
+      print(competitions);
       var teamCompetitionsSynthesis = await Future.wait(competitions.map((competition) async {
         var matchResults = await repository.loadResults(competition.code, competition.division, competition.pool);
         var pointDiffs = computePointsDiffs(matchResults, event.team.code);
@@ -208,7 +209,6 @@ class TeamBloc extends Bloc<TeamEvent, TeamState> {
     }
 
     if (event is TeamLoadDivisionPoolResults) {
-      print("Competition FullPath: ${event.competitionsFullPath}");
       yield TeamSlidingStatsLoading();
       var matchResults = (await Future.wait(event.competitionsFullPath.map((competitionFullPath) async {
         var results = await repository.loadResults(

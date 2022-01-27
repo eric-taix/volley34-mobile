@@ -97,6 +97,7 @@ class AgendaBloc extends Bloc<AgendaEvent, AgendaState> {
       List<Event> events = await repository.loadTeamFullAgenda(event.teamCode);
 
       List<TeamCompetition> competitions = await repository.loadTeamCompetitionsFromCode(event.teamCode!);
+      print(competitions);
       List<CompetitionFullPath> competitionsFullPath = competitions
           .map((competition) => CompetitionFullPath(competition.code, competition.division, competition.pool))
           .toList();
@@ -138,6 +139,7 @@ class AgendaBloc extends Bloc<AgendaEvent, AgendaState> {
           .where((evt) => event.loadPlayedMatches || evt.type != EventType.Match || evt.date!.compareTo(today) >= 0)
           .toList();
       List<TeamCompetition> competitions = await repository.loadTeamCompetitionsFromCode(event.teamCode);
+      print(competitions);
       List<CompetitionFullPath> competitionsFullPath = competitions
           .map((competition) => CompetitionFullPath(competition.code, competition.division, competition.pool))
           .toList();
