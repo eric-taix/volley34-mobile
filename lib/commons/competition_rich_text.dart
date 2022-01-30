@@ -70,10 +70,10 @@ class _CompetitionRichTextState extends State<CompetitionRichText> {
                     IgnorePointer(
                       ignoring: false,
                       child: Padding(
-                        padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 8.0, bottom: 8.0),
+                        padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 10.0, bottom: 12.0),
                         child: Text(
                           extractEnhanceDivisionLabel(competition.competitionLabel),
-                          style: Theme.of(context).textTheme.bodyText1!.copyWith(fontSize: 10),
+                          style: Theme.of(context).textTheme.bodyText1!.copyWith(fontSize: 12),
                         ),
                       ),
                     )

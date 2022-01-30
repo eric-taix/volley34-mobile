@@ -105,14 +105,11 @@ class _MatchTimelineItem extends TimelineItemWidget {
           topRightWidget: event.postponedDate != null ? PostponedBadge() : SizedBox(),
         ),
         Positioned(
-          top: -12,
-          child: Padding(
-            padding: const EdgeInsets.only(bottom: 30.0),
-            child: CompetitionRichText(
-              competitionCode: event.competitionCode,
-              blackAndWhite: true,
-              showText: true,
-            ),
+          top: -20,
+          child: CompetitionRichText(
+            competitionCode: event.competitionCode,
+            blackAndWhite: true,
+            showText: true,
           ),
         ),
       ],
