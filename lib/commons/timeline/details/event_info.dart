@@ -348,7 +348,7 @@ class _EventInfoState extends State<EventInfo> with SingleTickerProviderStateMix
                     );
                   },
                 ),
-                if (Features.isFeatureEnabled(context, scoreboard_feature) &&
+                if (Features.isFeatureEnabled(context, experimental_scoreboard_feature) &&
                     _hostTeam != null &&
                     _hostClub != null &&
                     _visitorTeam != null &&
