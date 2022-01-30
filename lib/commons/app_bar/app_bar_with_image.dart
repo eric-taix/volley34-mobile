@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:page_view_indicators/animated_circle_page_indicator.dart';
 import 'package:v34/commons/app_bar/animated_logo.dart';
 import 'package:v34/commons/app_bar/app_bar.dart';
 import 'package:v34/commons/favorite/favorite.dart';
@@ -207,7 +208,7 @@ class _AppBarWithImageState extends State<AppBarWithImage> with TickerProviderSt
   late TabController controller;
   late int _currentCount;
   late int _currentPosition;
-
+  final _currentPageNotifier = ValueNotifier<int>(0);
   @override
   void initState() {
     _currentPosition = widget.initPosition ?? 0;
@@ -271,6 +272,7 @@ class _AppBarWithImageState extends State<AppBarWithImage> with TickerProviderSt
   onPositionChange() {
     if (!controller.indexIsChanging) {
       _currentPosition = controller.index;
+      _currentPageNotifier.value = _currentPosition;
       if (widget.onPositionChange != null && widget.onPositionChange is ValueChanged<int>) {
         widget.onPositionChange!(_currentPosition);
       }
@@ -300,30 +302,47 @@ class _AppBarWithImageState extends State<AppBarWithImage> with TickerProviderSt
                   subTitle: widget.subTitle,
                   heroTag: widget.heroTag,
                   favorite: widget.favorite,
-                  bottom: Container(
-                    width: double.infinity,
-                    color: Theme.of(context).canvasColor,
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: 0),
-                      child: Container(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: <Widget>[
-                            TabBar(
-                              isScrollable: true,
-                              controller: controller,
-                              //indicatorPadding: EdgeInsets.symmetric(horizontal: 12.0),
-                              tabs: List.generate(
-                                widget.itemCount,
-                                (index) {
-                                  return widget.tabBuilder(context, index);
-                                },
+                  bottom: Stack(
+                    children: [
+                      Container(
+                        width: double.infinity,
+                        color: Theme.of(context).canvasColor,
+                        child: Container(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: <Widget>[
+                              TabBar(
+                                isScrollable: true,
+                                controller: controller,
+                                //indicatorPadding: EdgeInsets.symmetric(horizontal: 12.0),
+                                tabs: List.generate(
+                                  widget.itemCount,
+                                  (index) {
+                                    return widget.tabBuilder(context, index);
+                                  },
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
-                    ),
+                      Positioned(
+                        top: 20,
+                        right: 0,
+                        left: 0,
+                        child: AnimatedCirclePageIndicator(
+                          itemCount: widget.itemCount,
+                          currentPageNotifier: _currentPageNotifier,
+                          radius: 3,
+                          activeRadius: 2,
+                          fillColor: Colors.transparent,
+                          activeColor: Theme.of(context).colorScheme.secondary,
+                          spacing: 8,
+                          borderColor: Theme.of(context).colorScheme.secondary,
+                          borderWidth: 1,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
