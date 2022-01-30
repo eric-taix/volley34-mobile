@@ -126,7 +126,6 @@ class _TeamCardState extends State<TeamCard> {
   @override
   Widget build(BuildContext context) {
     var absDistance = widget.distance.abs() > 1 ? 1 : widget.distance.abs();
-    final double cardBodyHeight = widget.cardHeight - 15;
     return BlocBuilder<TeamRankingBloc, TeamRankingState>(
       bloc: _classificationBloc,
       builder: (context, state) {
@@ -138,7 +137,7 @@ class _TeamCardState extends State<TeamCard> {
             body: Padding(
               padding: const EdgeInsets.only(top: 8, bottom: 0.0),
               child: Container(
-                height: cardBodyHeight - 60,
+                height: widget.cardHeight,
                 child: _getPodiumWidgets(state),
               ),
             ),
