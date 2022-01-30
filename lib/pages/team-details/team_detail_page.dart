@@ -130,8 +130,7 @@ class _TeamDetailPageState extends State<TeamDetailPage> {
                             },
                           ),
                         );
-                      if (index == state.rankings.length + 1)
-                        return _buildTeamAgenda(state.rankings[0], teamState.teamResults);
+                      if (index == state.rankings.length + 1) return _buildTeamAgenda();
                     }
                     return SliverFillRemaining(child: Center(child: Loading()));
                   },
@@ -145,7 +144,7 @@ class _TeamDetailPageState extends State<TeamDetailPage> {
     );
   }
 
-  Widget _buildTeamAgenda(RankingSynthesis? ranking, List<MatchResult> results) {
+  Widget _buildTeamAgenda() {
     return TeamAgenda(team: widget.team);
   }
 

@@ -64,8 +64,13 @@ class _TeamCardState extends State<TeamCard> {
     _classificationBloc.close();
   }
 
-  Widget _noPodiumData() {
-    return Expanded(child: Text("Aucune donnée", textAlign: TextAlign.center));
+  Widget _noPodiumData(BuildContext context) {
+    return Center(
+        child: Text(
+      "Aucune donnée",
+      textAlign: TextAlign.center,
+      style: Theme.of(context).textTheme.bodyText1,
+    ));
   }
 
   Widget _getPodiumWidgets(state) {
@@ -115,7 +120,7 @@ class _TeamCardState extends State<TeamCard> {
                 ),
               ],
             )
-          : _noPodiumData();
+          : _noPodiumData(context);
     } else if (state is TeamRankingLoadingState) {
       return Center(child: Loading(loaderType: LoaderType.THREE_BOUNCE));
     } else {
@@ -141,17 +146,18 @@ class _TeamCardState extends State<TeamCard> {
                 child: _getPodiumWidgets(state),
               ),
             ),
-            onTap: state is TeamRankingLoadedState
-                ? () => RouterFacade.push(
-                      context: context,
-                      builder: (_) => TeamDetailPage(
-                        team: widget.team,
-                        club: widget.club!,
-                        openedPage: OpenedPage.COMPETITION,
-                        openedCompetitionCode: state.rankings[_pageController.page!.toInt()].competitionCode,
-                      ),
-                    )
-                : null,
+            onTap: () => RouterFacade.push(
+              context: context,
+              builder: (_) => TeamDetailPage(
+                team: widget.team,
+                club: widget.club!,
+                openedPage:
+                    state is TeamRankingLoadedState && _pageController.hasClients ? OpenedPage.COMPETITION : null,
+                openedCompetitionCode: state is TeamRankingLoadedState && _pageController.hasClients
+                    ? state.rankings[_pageController.page!.toInt()].competitionCode
+                    : null,
+              ),
+            ),
           ),
         );
       },
