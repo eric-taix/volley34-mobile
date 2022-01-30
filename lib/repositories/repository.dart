@@ -65,10 +65,7 @@ class Repository {
 
   /// Loads match results
   Future<List<MatchResult>> loadResults(String competition, String? divisionCode, String? pool) async {
-    var divisions = await _globalProvider.loadDivisions();
-    var divisionFilter = divisions.firstWhereOrNull((division) => division.code == divisionCode);
-    var divisionId = divisionFilter != null ? int.tryParse(divisionFilter.id) : null;
-    return (await _resultProvider.loadResults(competition, divisionId != null ? "$divisionId" : divisionCode, pool))
+    return (await _resultProvider.loadResults(competition, divisionCode, pool))
         .where((matchResult) => VALID_MATCH_RESULT_TYPES.contains(matchResult.resultType))
         .sorted((m1, m2) => m1.matchDate!.compareTo(m2.matchDate!))
         .toList();
