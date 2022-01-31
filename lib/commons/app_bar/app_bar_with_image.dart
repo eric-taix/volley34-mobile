@@ -208,10 +208,11 @@ class _AppBarWithImageState extends State<AppBarWithImage> with TickerProviderSt
   late TabController controller;
   late int _currentCount;
   late int _currentPosition;
-  final _currentPageNotifier = ValueNotifier<int>(0);
+  late final ValueNotifier<int> _currentPageNotifier;
   @override
   void initState() {
     _currentPosition = widget.initPosition ?? 0;
+    _currentPageNotifier = ValueNotifier<int>(_currentPosition);
     controller = TabController(
       length: widget.itemCount,
       vsync: this,
@@ -231,10 +232,11 @@ class _AppBarWithImageState extends State<AppBarWithImage> with TickerProviderSt
       controller.dispose();
 
       _currentPosition = widget.initPosition ?? _currentPosition;
-
+      _currentPageNotifier.value = _currentPosition;
       if (_currentPosition > widget.itemCount - 1) {
         _currentPosition = widget.itemCount - 1;
         _currentPosition = _currentPosition < 0 ? 0 : _currentPosition;
+        _currentPageNotifier.value = _currentPosition;
         if (widget.onPositionChange is ValueChanged<int>) {
           WidgetsBinding.instance?.addPostFrameCallback((_) {
             if (mounted) {
@@ -333,13 +335,14 @@ class _AppBarWithImageState extends State<AppBarWithImage> with TickerProviderSt
                         child: AnimatedCirclePageIndicator(
                           itemCount: widget.itemCount,
                           currentPageNotifier: _currentPageNotifier,
-                          radius: 3,
-                          activeRadius: 2,
+                          radius: 4,
+                          activeRadius: 3,
                           fillColor: Colors.transparent,
                           activeColor: Theme.of(context).colorScheme.secondary,
                           spacing: 8,
                           borderColor: Theme.of(context).colorScheme.secondary,
                           borderWidth: 1,
+                          duration: Duration(milliseconds: 100),
                         ),
                       ),
                     ],

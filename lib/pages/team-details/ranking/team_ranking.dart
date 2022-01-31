@@ -82,7 +82,6 @@ class _TeamRankingState extends State<TeamRanking> with RouteAwareAnalytics {
 
   Widget _buildCompetitionDescription(BuildContext context) {
     String? pool = getClassificationPool(widget.ranking.pool);
-    print("Competition description: ${widget.ranking.competitionCode} for team ${widget.team.code}");
     return Padding(
       padding: const EdgeInsets.only(top: 8, bottom: 8.0),
       child: Row(

@@ -211,8 +211,8 @@ class _ClubTeamState extends State<ClubTeam> {
                       child: AnimatedCirclePageIndicator(
                         itemCount: state.competitions.length > 1 ? state.competitions.length : 0,
                         currentPageNotifier: _currentPageNotifier,
-                        radius: 3,
-                        activeRadius: 2,
+                        radius: 4,
+                        activeRadius: 3,
                         fillColor: Colors.transparent,
                         activeColor: Theme.of(context).colorScheme.secondary,
                         spacing: 8,
