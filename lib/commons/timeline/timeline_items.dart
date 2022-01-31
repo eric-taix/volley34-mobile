@@ -110,6 +110,7 @@ class _MatchTimelineItem extends TimelineItemWidget {
             competitionCode: event.competitionCode,
             blackAndWhite: true,
             showText: true,
+            allowDetails: allowDetails,
           ),
         ),
       ],
@@ -135,7 +136,7 @@ class _TimelineItemCard extends StatelessWidget {
       shape: onTap != null
           ? null
           : RoundedRectangleBorder(
-              side: BorderSide(color: Theme.of(context).cardTheme.color!, width: 2),
+              side: BorderSide(color: Theme.of(context).cardTheme.color!, width: 1),
               borderRadius: Theme.of(context).cardTheme.shape is RoundedRectangleBorder
                   ? (Theme.of(context).cardTheme.shape as RoundedRectangleBorder).borderRadius
                   : BorderRadius.circular(18),

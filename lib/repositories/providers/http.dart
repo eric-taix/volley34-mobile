@@ -20,6 +20,7 @@ void initDio(MessageCubit messageCubit) {
 
   dio = Dio(BaseOptions(
     baseUrl: "http://api.volley34.fr/v1/",
+    //baseUrl: "http://apitest.volley34.fr/v1/",
   ))
     ..interceptors.add(DioCacheInterceptor(
       options: defaultCacheOptions,
@@ -53,6 +54,7 @@ class ServerErrorInterceptor extends InterceptorsWrapper {
           message: "Impossible de contacter le serveur. Merci d'essayer à nouveau dans quelques minutes.");
     } else if (err.response != null) {
       if ((err.response!.statusCode ?? 0) >= 500) {
+        print("Error for request ${err.response?.realUri ?? "-nop-"} [${err.error} - ${err.response?.data}]");
         messageCubit.showMessage(
             message: "Le serveur a rencontré un problème. Merci d'essayer à nouveau dans quelques minutes.");
       } else {

@@ -11,14 +11,16 @@ class CompetitionRichText extends StatefulWidget {
   final bool showText;
   final bool showBadge;
   final bool blackAndWhite;
+  final bool allowDetails;
 
-  const CompetitionRichText(
-      {Key? key,
-      required this.competitionCode,
-      this.showText = false,
-      this.blackAndWhite = false,
-      this.showBadge = false})
-      : super(key: key);
+  const CompetitionRichText({
+    Key? key,
+    required this.competitionCode,
+    this.showText = false,
+    this.blackAndWhite = false,
+    this.showBadge = false,
+    required this.allowDetails,
+  }) : super(key: key);
 
   @override
   State<CompetitionRichText> createState() => _CompetitionRichTextState();
@@ -47,8 +49,14 @@ class _CompetitionRichTextState extends State<CompetitionRichText> {
 
     return competition != null
         ? Container(
-            decoration:
-                BoxDecoration(color: Theme.of(context).cardTheme.color, borderRadius: BorderRadius.circular(16)),
+            decoration: BoxDecoration(
+              color: widget.allowDetails ? Theme.of(context).cardTheme.color : Theme.of(context).canvasColor,
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(
+                width: 1,
+                color: widget.allowDetails ? Colors.transparent : Theme.of(context).cardTheme.color!,
+              ),
+            ),
             child: Padding(
               padding: const EdgeInsets.only(left: 8.0, right: 8.0),
               child: Row(
@@ -56,21 +64,17 @@ class _CompetitionRichTextState extends State<CompetitionRichText> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   if (widget.showBadge)
-                    SizedBox(
-                      height: 16,
-                      width: 34,
-                      child: CompetitionBadge(
-                        showSubTitle: false,
-                        competitionCode: widget.competitionCode,
-                        labelStyle: TextStyle(color: Colors.white, fontSize: 9),
-                        blackAndWhite: widget.blackAndWhite,
-                      ),
+                    CompetitionBadge(
+                      showSubTitle: false,
+                      competitionCode: widget.competitionCode,
+                      labelStyle: TextStyle(color: Colors.white, fontSize: 9),
+                      blackAndWhite: widget.blackAndWhite,
                     ),
                   if (widget.showText)
                     IgnorePointer(
                       ignoring: false,
                       child: Padding(
-                        padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 10.0, bottom: 12.0),
+                        padding: const EdgeInsets.only(left: 18.0, right: 18.0, top: 8.0, bottom: 8.0),
                         child: Text(
                           extractEnhanceDivisionLabel(competition.competitionLabel),
                           style: Theme.of(context).textTheme.bodyText1!.copyWith(fontSize: 12),

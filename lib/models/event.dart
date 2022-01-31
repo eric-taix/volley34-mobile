@@ -170,6 +170,7 @@ class Event extends Equatable {
       postponedDate: _postponedDate,
       postponedGymnasiumCode: _postponedGymnasiumCode,
       hasResult: true,
+      competitionCode: competitionCode,
     );
   }
 

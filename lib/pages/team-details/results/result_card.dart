@@ -45,11 +45,12 @@ class ResultCard extends StatelessWidget {
             color: Theme.of(context).cardTheme.color,
           ),
           Positioned(
-            top: -14,
+            top: -20,
             child: CompetitionRichText(
               competitionCode: result.competitionCode,
               blackAndWhite: true,
               showText: true,
+              allowDetails: true,
             ),
           ),
         ],
