@@ -5,6 +5,7 @@ import 'package:v34/commons/competition_rich_text.dart';
 import 'package:v34/commons/router.dart';
 import 'package:v34/commons/timeline/match_title.dart';
 import 'package:v34/commons/timeline/postponed_badge.dart';
+import 'package:v34/models/competition.dart';
 import 'package:v34/models/event.dart';
 import 'package:v34/models/team.dart';
 
@@ -21,13 +22,14 @@ abstract class TimelineItemWidget extends StatelessWidget {
 
   Color? color();
 
-  factory TimelineItemWidget.from(Event event, Team team, bool showForces) {
+  factory TimelineItemWidget.from(Event event, Team team, bool showForces, List<Competition> competitions) {
     var now = DateTime.now();
     var today = DateTime(now.year, now.month, now.day);
 
     switch (event.type) {
       case EventType.Match:
-        return _MatchTimelineItem(event, team, event.date!.compareTo(today) >= 0 || !event.hasResult, showForces);
+        return _MatchTimelineItem(
+            event, team, event.date!.compareTo(today) >= 0 || !event.hasResult, showForces, competitions);
       case EventType.Meeting:
         return _MeetingTimelineItem(event);
       case EventType.Tournament:
@@ -85,7 +87,9 @@ class _MatchTimelineItem extends TimelineItemWidget {
   final Team team;
   final bool allowDetails;
   final bool showForces;
-  _MatchTimelineItem(this.event, this.team, this.allowDetails, this.showForces);
+  final List<Competition> competitions;
+
+  _MatchTimelineItem(this.event, this.team, this.allowDetails, this.showForces, this.competitions);
 
   @override
   Widget build(BuildContext context) {
@@ -111,6 +115,7 @@ class _MatchTimelineItem extends TimelineItemWidget {
             blackAndWhite: true,
             showText: true,
             allowDetails: allowDetails,
+            competitions: competitions,
           ),
         ),
       ],

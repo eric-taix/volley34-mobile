@@ -20,7 +20,6 @@ class CompetitionCubit extends Cubit<CompetitionState> {
   void loadTeamCompetitions(Team team) async {
     emit(CompetitionLoadingState());
     var competitions = await repository.loadTeamCompetitions(team);
-    print("Load team competition for ${team.code}: ${competitions.map((e) => "${e.code}/${e.division}/${e.pool}")}");
     emit(CompetitionTeamLoadedState(competitions));
   }
 }

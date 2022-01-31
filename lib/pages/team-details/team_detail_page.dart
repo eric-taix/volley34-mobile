@@ -6,6 +6,7 @@ import 'package:v34/commons/app_bar/app_bar_with_image.dart';
 import 'package:v34/commons/favorite/favorite.dart';
 import 'package:v34/commons/loading.dart';
 import 'package:v34/models/club.dart';
+import 'package:v34/models/competition.dart';
 import 'package:v34/models/force.dart';
 import 'package:v34/models/match_result.dart';
 import 'package:v34/models/ranking.dart';
@@ -38,6 +39,7 @@ class _TeamDetailPageState extends State<TeamDetailPage> {
   late final TeamBloc _teamBloc;
   late final CompetitionCubit _competitionCubit;
   ValueNotifier<bool> _showAllTeams = ValueNotifier(false);
+  List<Competition>? _competitions;
 
   @override
   void initState() {
@@ -48,6 +50,11 @@ class _TeamDetailPageState extends State<TeamDetailPage> {
     _rankingBloc.add(LoadTeamRankingEvent(widget.team));
     _competitionCubit = CompetitionCubit(repository);
     _competitionCubit.loadTeamCompetitions(widget.team);
+    repository.loadAllCompetitions().then((competitions) {
+      setState(() {
+        _competitions = competitions;
+      });
+    });
   }
 
   @override
@@ -122,6 +129,7 @@ class _TeamDetailPageState extends State<TeamDetailPage> {
                         return AnimatedBuilder(
                           animation: _showAllTeams,
                           builder: (BuildContext context, Widget? child) => TeamResults(
+                            competitions: _competitions,
                             showOnlyTeam: _showAllTeams.value,
                             team: widget.team,
                             results: _showAllTeams.value ? teamState.allResults : teamState.teamResults,
@@ -145,7 +153,7 @@ class _TeamDetailPageState extends State<TeamDetailPage> {
   }
 
   Widget _buildTeamAgenda() {
-    return TeamAgenda(team: widget.team);
+    return TeamAgenda(team: widget.team, competitions: _competitions);
   }
 
   Widget _buildTeamRanking(RankingSynthesis ranking, List<MatchResult> results, Forces forces) {

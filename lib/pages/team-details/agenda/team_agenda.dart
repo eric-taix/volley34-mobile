@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:v34/commons/loading.dart';
 import 'package:v34/commons/timeline/timeline.dart';
 import 'package:v34/commons/timeline/timeline_items.dart';
+import 'package:v34/models/competition.dart';
 import 'package:v34/models/team.dart';
 import 'package:v34/pages/dashboard/blocs/agenda_bloc.dart';
 import 'package:v34/repositories/repository.dart';
@@ -12,8 +13,9 @@ import 'package:v34/utils/analytics.dart';
 
 class TeamAgenda extends StatefulWidget {
   final Team team;
+  final List<Competition>? competitions;
 
-  TeamAgenda({required this.team});
+  TeamAgenda({required this.team, required this.competitions});
 
   @override
   _TeamAgendaState createState() => _TeamAgendaState();
@@ -40,7 +42,7 @@ class _TeamAgendaState extends State<TeamAgenda> with RouteAwareAnalytics {
     return BlocBuilder(
         bloc: _agendaBloc,
         builder: (context, dynamic state) {
-          if (state is AgendaLoaded) {
+          if (state is AgendaLoaded && widget.competitions != null) {
             return SliverList(
               delegate: SliverChildListDelegate(
                 [
@@ -60,7 +62,7 @@ class _TeamAgendaState extends State<TeamAgenda> with RouteAwareAnalytics {
                                   ...entry.value.map(
                                     (e) {
                                       TimelineItemWidget timelineItemWidget =
-                                          TimelineItemWidget.from(e, widget.team, true);
+                                          TimelineItemWidget.from(e, widget.team, true, widget.competitions!);
                                       return TimelineEvent(
                                         child: timelineItemWidget,
                                         color: timelineItemWidget.color(),
