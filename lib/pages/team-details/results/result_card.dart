@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:v34/commons/competition_rich_text.dart';
 import 'package:v34/commons/fluid_expansion_card/fluid_expansion_card.dart';
 import 'package:v34/commons/timeline/postponed_badge.dart';
+import 'package:v34/models/competition.dart';
 import 'package:v34/models/match_result.dart';
 import 'package:v34/models/team.dart';
 import 'package:v34/pages/team-details/results/result_bar.dart';
@@ -11,6 +12,7 @@ import 'package:v34/pages/team-details/results/result_bar.dart';
 class ResultCard extends StatelessWidget {
   final Team team;
   final MatchResult result;
+  final List<Competition> competitions;
 
   static final List<IconData> _setIcons = [
     Icons.looks_one,
@@ -20,7 +22,7 @@ class ResultCard extends StatelessWidget {
     Icons.looks_5
   ];
 
-  const ResultCard({Key? key, required this.team, required this.result}) : super(key: key);
+  const ResultCard({Key? key, required this.team, required this.result, required this.competitions}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -45,11 +47,13 @@ class ResultCard extends StatelessWidget {
             color: Theme.of(context).cardTheme.color,
           ),
           Positioned(
-            top: -14,
+            top: -20,
             child: CompetitionRichText(
+              competitions: competitions,
               competitionCode: result.competitionCode,
               blackAndWhite: true,
               showText: true,
+              allowDetails: true,
             ),
           ),
         ],

@@ -16,41 +16,53 @@ class MatchTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var now = DateTime.now();
+    var today = DateTime(now.year, now.month, now.day);
+
     TextStyle textStyle =
         allowDetails ? Theme.of(context).textTheme.bodyText2! : Theme.of(context).textTheme.bodyText1!;
     allowDetails ? Theme.of(context).textTheme.bodyText2! : Theme.of(context).textTheme.bodyText1!;
-    return Column(
+    return Stack(
+      clipBehavior: Clip.none,
       children: [
-        Text(
-          event.hostName!,
-          maxLines: 2,
-          overflow: TextOverflow.ellipsis,
-          textAlign: TextAlign.center,
-          style: textStyle.copyWith(fontWeight: team.code == event.hostCode ? FontWeight.bold : FontWeight.normal),
+        Column(
+          children: [
+            Text(
+              event.hostName!,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.center,
+              style: textStyle.copyWith(fontWeight: team.code == event.hostCode ? FontWeight.bold : FontWeight.normal),
+            ),
+            BlocBuilder<PreferencesBloc, PreferencesState>(
+              builder: (context, state) =>
+                  showForces || (state is PreferencesUpdatedState && (state.showForceOnDashboard ?? false))
+                      ? ForceTeams(
+                          forces: allowDetails ? event.forces : null,
+                          hostCode: event.hostCode!,
+                          visitorCode: event.visitorCode!,
+                          receiveText: allowDetails ? "reçoit" : "a reçu",
+                          showDivider: allowDetails,
+                          backgroundColor:
+                              allowDetails ? Theme.of(context).cardTheme.color! : Theme.of(context).canvasColor,
+                        )
+                      : Padding(
+                          padding: const EdgeInsets.only(top: 18.0, bottom: 18),
+                          child: Text("reçoit", style: Theme.of(context).textTheme.bodyText1),
+                        ),
+            ),
+            Text(
+              event.visitorName!,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.center,
+              style:
+                  textStyle.copyWith(fontWeight: team.code == event.visitorCode ? FontWeight.bold : FontWeight.normal),
+            ),
+          ],
         ),
-        BlocBuilder<PreferencesBloc, PreferencesState>(
-          builder: (context, state) => showForces ||
-                  (state is PreferencesUpdatedState && (state.showForceOnDashboard ?? false))
-              ? ForceTeams(
-                  hostForce: allowDetails ? event.hostForce : null,
-                  visitorForce: allowDetails ? event.visitorForce : null,
-                  globalForce: event.globalForce,
-                  receiveText: allowDetails ? "reçoit" : "a reçu",
-                  showDivider: allowDetails,
-                  backgroundColor: allowDetails ? Theme.of(context).cardTheme.color! : Theme.of(context).canvasColor,
-                )
-              : Padding(
-                  padding: const EdgeInsets.only(top: 18.0, bottom: 18),
-                  child: Text("reçoit", style: Theme.of(context).textTheme.bodyText1),
-                ),
-        ),
-        Text(
-          event.visitorName!,
-          maxLines: 2,
-          overflow: TextOverflow.ellipsis,
-          textAlign: TextAlign.center,
-          style: textStyle.copyWith(fontWeight: team.code == event.visitorCode ? FontWeight.bold : FontWeight.normal),
-        ),
+        if (event.date!.compareTo(today) < 0 && !event.hasResult)
+          Positioned(top: -14, left: -4, child: Icon(Icons.warning_rounded, size: 18, color: Colors.red)),
       ],
     );
   }

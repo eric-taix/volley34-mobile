@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:v34/models/competition.dart';
 import 'package:v34/models/ranking.dart';
 import 'package:v34/models/team.dart';
 import 'package:v34/repositories/repository.dart';
@@ -33,8 +34,9 @@ class TeamRankingLoadingState extends TeamRankingState {}
 class TeamRankingLoadedState extends TeamRankingState {
   final String? highlightedTeamCode;
   final List<RankingSynthesis> rankings;
+  final String? firstShownCompetition;
 
-  TeamRankingLoadedState(this.highlightedTeamCode, this.rankings);
+  TeamRankingLoadedState(this.highlightedTeamCode, this.rankings, this.firstShownCompetition);
 
   @override
   List<Object?> get props => [highlightedTeamCode, rankings];
@@ -58,7 +60,18 @@ class TeamRankingBloc extends Bloc<TeamRankingEvent, TeamRankingState> {
         });
         return classification;
       }).toList();
-      yield TeamRankingLoadedState(event.team.code, rankings);
+
+      var competitions = await repository.loadAllCompetitions();
+      var teamRankingsCode = rankings.map((ranking) => ranking.competitionCode);
+      var teamCompetitions = competitions.where((competition) => teamRankingsCode.contains(competition.code)).toList();
+      yield TeamRankingLoadedState(event.team.code, rankings, teamCompetitions.firstShownCompetition()?.code);
     }
   }
+}
+
+extension DateTimeExtension on DateTime {
+  operator <(DateTime other) => this.compareTo(other) < 0;
+  operator >(DateTime other) => this.compareTo(other) > 0;
+  operator <=(DateTime other) => this.compareTo(other) <= 0;
+  operator >=(DateTime other) => this.compareTo(other) >= 0;
 }

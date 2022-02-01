@@ -108,7 +108,8 @@ class _V34State extends State<V34> {
                       darkTheme: AppTheme.darkTheme(),
                       themeMode: _themeMode,
                       home: SplashScreenView(
-                        navigateRoute: AppPage(),
+                        navigateRoute: AppPage(), //Scorer(
+                        //team1: Team(name: "VCV1"), team2: Team(name: "VBSMT / Les bras cassés")), //,
                         duration: 800,
                         text: "Volley 34",
                         textType: TextType.ScaleAnimatedText,

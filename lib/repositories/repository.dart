@@ -50,7 +50,11 @@ class Repository {
   }
 
   Future<List<TeamCompetition>> loadTeamCompetitions(Team team) async {
-    var competitions = await _competitionProvider.loadTeamCompetitions(team.code!);
+    return loadTeamCompetitionsFromCode(team.code!);
+  }
+
+  Future<List<TeamCompetition>> loadTeamCompetitionsFromCode(String code) async {
+    var competitions = await _competitionProvider.loadTeamCompetitions(code);
     return competitions;
   }
 
@@ -61,9 +65,7 @@ class Repository {
 
   /// Loads match results
   Future<List<MatchResult>> loadResults(String competition, String? divisionCode, String? pool) async {
-    var divisions = await _globalProvider.loadDivisions();
-    var divisionFilter = divisions.firstWhereOrNull((division) => division.code == divisionCode);
-    return (await _resultProvider.loadResults(competition, divisionFilter?.id ?? divisionCode, pool))
+    return (await _resultProvider.loadResults(competition, divisionCode, pool))
         .where((matchResult) => VALID_MATCH_RESULT_TYPES.contains(matchResult.resultType))
         .sorted((m1, m2) => m1.matchDate!.compareTo(m2.matchDate!))
         .toList();
@@ -148,7 +150,7 @@ class Repository {
 
   /// Load classification synthesis
   Future<List<RankingSynthesis>> loadTeamRankingSynthesis(String? teamCode) async {
-    return await _teamProvider.loadClassificationSynthesis(teamCode);
+    return await _teamProvider.loadRankingSynthesis(teamCode);
   }
 
   /// Load all classifications synthesis

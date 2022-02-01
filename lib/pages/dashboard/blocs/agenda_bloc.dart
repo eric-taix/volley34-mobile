@@ -1,12 +1,13 @@
 import 'dart:async';
 
+import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:v34/models/competition.dart';
 import 'package:v34/models/event.dart';
 import 'package:v34/models/force.dart';
 import 'package:v34/models/match_result.dart';
-import 'package:v34/models/ranking.dart';
 import 'package:v34/pages/club-details/blocs/club_team.bloc.dart';
 import 'package:v34/repositories/repository.dart';
 
@@ -93,56 +94,54 @@ class AgendaBloc extends Bloc<AgendaEvent, AgendaState> {
       var now = DateTime.now();
       var today = DateTime(now.year, now.month, now.day);
 
-      List<Event> events =
-          (await repository.loadTeamAgenda(event.teamCode, event.days)).where(_matchIsAfter(today)).toList();
-      List<RankingSynthesis> rankings = await repository.loadTeamRankingSynthesis(event.teamCode);
-      List<CompetitionFullPath> competitionsFullPath = rankings
-          .map((ranking) => CompetitionFullPath(ranking.competitionCode!, ranking.division!, ranking.pool!))
+      List<Event> events = await repository.loadTeamFullAgenda(event.teamCode);
+
+      List<TeamCompetition> competitions = await repository.loadTeamCompetitionsFromCode(event.teamCode!);
+      print(competitions);
+      List<CompetitionFullPath> competitionsFullPath = competitions
+          .map((competition) => CompetitionFullPath(competition.code, competition.division, competition.pool))
           .toList();
 
       var allResults = (await Future.wait(competitionsFullPath.map((competitionFullPath) => repository.loadResults(
               competitionFullPath.competitionCode, competitionFullPath.division, competitionFullPath.pool))))
-          .expand((e) => e);
+          .expand((e) => e)
+          .toList();
 
-      Force globalForce = Force();
-      Map<String, ForceBuilder> forceByTeam = {};
-      allResults.forEach((matchResult) {
-        if (!_isForfeit(matchResult)) {
-          var hostForceBuilder = forceByTeam.putIfAbsent(
-              matchResult.hostTeamCode!,
-              () => ForceBuilder(
-                    teamCode: matchResult.hostTeamCode,
-                    othersForce: globalForce,
-                  ));
-          var visitorForceBuilder = forceByTeam.putIfAbsent(
-              matchResult.visitorTeamCode!, () => ForceBuilder(teamCode: matchResult.visitorTeamCode));
-          hostForceBuilder.add(matchResult);
-          visitorForceBuilder.add(matchResult);
-        }
+      Map<String, Forces> forceByCompetition =
+          allResults.groupListsBy((matchResult) => matchResult.competitionCode).map((competitionCode, matchResults) {
+        Forces forceBuilder =
+            matchResults.fold<Forces>(Forces(), (forceBuilder, matchResult) => forceBuilder..add(matchResult));
+        return MapEntry(competitionCode!, forceBuilder);
       });
 
       List<Event> eventsWithForce = events.map((event) {
         if (event.type == EventType.Match) {
-          return event.withForce(
-              forceByTeam[event.hostCode]?.teamForce ?? ForceBuilder(teamCode: event.hostCode).teamForce,
-              forceByTeam[event.visitorCode]?.teamForce ?? ForceBuilder(teamCode: event.visitorCode).teamForce,
-              globalForce);
+          Forces competitionForces = forceByCompetition.putIfAbsent(event.competitionCode ?? "", () => Forces());
+          return event.withForce(competitionForces);
         } else {
           return event;
         }
       }).toList();
 
-      eventsWithForce.sort((event1, event2) => event1.date!.compareTo(event2.date!));
-      yield AgendaLoaded(eventsWithForce, true);
+      var resultByMatchCode =
+          Map.fromIterable(allResults, key: (result) => (result as MatchResult).matchCode, value: (result) => result);
+      var allEvents = eventsWithForce
+          .map((evt) => resultByMatchCode[evt.matchCode] != null ? evt.withResult() : evt)
+          .where((evt) => (evt.type == EventType.Match && !evt.hasResult) || evt.date!.compareTo(today) >= 0)
+          .toList();
+
+      allEvents.sort((event1, event2) => event1.date!.compareTo(event2.date!));
+      yield AgendaLoaded(allEvents, true);
     } else if (event is LoadTeamFullAgenda) {
       DateTime now = DateTime.now();
       var today = DateTime(now.year, now.month, now.day);
       List<Event> events = (await repository.loadTeamFullAgenda(event.teamCode))
           .where((evt) => event.loadPlayedMatches || evt.type != EventType.Match || evt.date!.compareTo(today) >= 0)
           .toList();
-      List<RankingSynthesis> rankings = await repository.loadTeamRankingSynthesis(event.teamCode);
-      List<CompetitionFullPath> competitionsFullPath = rankings
-          .map((ranking) => CompetitionFullPath(ranking.competitionCode!, ranking.division!, ranking.pool!))
+      List<TeamCompetition> competitions = await repository.loadTeamCompetitionsFromCode(event.teamCode);
+      print(competitions);
+      List<CompetitionFullPath> competitionsFullPath = competitions
+          .map((competition) => CompetitionFullPath(competition.code, competition.division, competition.pool))
           .toList();
 
       Iterable<MatchResult> allResults = (await Future.wait(competitionsFullPath.map((competitionFullPath) =>
@@ -150,27 +149,17 @@ class AgendaBloc extends Bloc<AgendaEvent, AgendaState> {
                   competitionFullPath.competitionCode, competitionFullPath.division, competitionFullPath.pool))))
           .expand((e) => e);
 
-      Force globalForce = Force();
-      Map<String, ForceBuilder> forceByTeam = {};
-      allResults.forEach((matchResult) {
-        if (!_isForfeit(matchResult)) {
-          var hostForceBuilder = forceByTeam.putIfAbsent(
-              matchResult.hostTeamCode!,
-              () => ForceBuilder(
-                    teamCode: matchResult.hostTeamCode,
-                    othersForce: globalForce,
-                  ));
-          var visitorForceBuilder = forceByTeam.putIfAbsent(
-              matchResult.visitorTeamCode!, () => ForceBuilder(teamCode: matchResult.visitorTeamCode));
-          hostForceBuilder.add(matchResult);
-          visitorForceBuilder.add(matchResult);
-        }
+      Map<String, Forces> forceByCompetition =
+          allResults.groupListsBy((matchResult) => matchResult.competitionCode).map((competitionCode, matchResults) {
+        Forces forceBuilder =
+            matchResults.fold<Forces>(Forces(), (forceBuilder, matchResult) => forceBuilder..add(matchResult));
+        return MapEntry(competitionCode!, forceBuilder);
       });
 
       List<Event> eventsWithForce = events.map((event) {
         if (event.type == EventType.Match) {
-          return event.withForce(forceByTeam[event.hostCode]?.teamForce ?? Force.empty,
-              forceByTeam[event.visitorCode]?.teamForce ?? Force.empty, globalForce);
+          Forces competitionForces = forceByCompetition.putIfAbsent(event.competitionCode ?? "", () => Forces());
+          return event.withForce(competitionForces);
         } else {
           return event;
         }
@@ -186,13 +175,5 @@ class AgendaBloc extends Bloc<AgendaEvent, AgendaState> {
 
       yield AgendaLoaded(allEvents, false);
     }
-  }
-
-  bool Function(Event) _matchIsAfter(DateTime reference) {
-    return (event) => event.date!.compareTo(reference) > 0;
-  }
-
-  bool _isForfeit(MatchResult matchResult) {
-    return !(matchResult.totalPointsHost != 0 && matchResult.totalPointsVisitor != 0);
   }
 }

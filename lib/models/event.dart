@@ -27,9 +27,8 @@ class Event extends Equatable {
   String? get gymnasiumCode => _postponedGymnasiumCode ?? _gymnasiumCode;
   String? get initialGymnasiumCode => _gymnasiumCode;
 
-  final Force? hostForce;
-  final Force? visitorForce;
-  final Force? globalForce;
+  final Forces? forces;
+
   final String? matchCode;
   final String? competitionCode;
   late final DateTime? _postponedDate;
@@ -67,9 +66,7 @@ class Event extends Equatable {
     this.clubCode,
     this.description,
     this.imageUrl,
-    this.hostForce,
-    this.visitorForce,
-    this.globalForce,
+    this.forces,
     this.matchCode,
     this.competitionCode,
     this.hasResult = false,
@@ -121,7 +118,7 @@ class Event extends Equatable {
     }
   }
 
-  Event withForce(Force hostForce, Force visitorForce, Force globalForce) {
+  Event withForce(Forces forces) {
     return Event(
       date: _date,
       fullDay: fullDay,
@@ -141,9 +138,7 @@ class Event extends Equatable {
       clubCode: clubCode,
       description: description,
       imageUrl: imageUrl,
-      hostForce: hostForce,
-      visitorForce: visitorForce,
-      globalForce: globalForce,
+      forces: forces,
       matchCode: matchCode,
       competitionCode: competitionCode,
       postponedDate: _postponedDate,
@@ -170,13 +165,12 @@ class Event extends Equatable {
       clubCode: clubCode,
       description: description,
       imageUrl: imageUrl,
-      hostForce: hostForce,
-      visitorForce: visitorForce,
-      globalForce: globalForce,
+      forces: forces,
       matchCode: matchCode,
       postponedDate: _postponedDate,
       postponedGymnasiumCode: _postponedGymnasiumCode,
       hasResult: true,
+      competitionCode: competitionCode,
     );
   }
 

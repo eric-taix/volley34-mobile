@@ -1,6 +1,8 @@
+import 'package:feature_flags/feature_flags.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:v34/commons/force_widget.dart';
+import 'package:v34/features_flag.dart';
 import 'package:v34/models/force.dart';
 
 class ForceTeams extends StatelessWidget {
@@ -8,20 +10,20 @@ class ForceTeams extends StatelessWidget {
   static const double INNER_PADDING = 0;
   static const double ICON_SIZE = 16;
 
-  final Force? hostForce;
-  final Force? visitorForce;
-  final Force? globalForce;
+  final String hostCode;
+  final String visitorCode;
+  final Forces? forces;
   final String receiveText;
   final Color backgroundColor;
   final bool showDivider;
 
   const ForceTeams({
     Key? key,
-    required this.hostForce,
-    required this.visitorForce,
-    required this.globalForce,
+    required this.forces,
     required this.backgroundColor,
     this.receiveText = "reçoit",
+    required this.hostCode,
+    required this.visitorCode,
     required this.showDivider,
   }) : super(key: key);
 
@@ -31,7 +33,7 @@ class ForceTeams extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        (hostForce != null || visitorForce != null) && globalForce != null
+        forces != null
             ? SvgPicture.asset("assets/attack.svg",
                 width: ICON_SIZE + 4, color: Theme.of(context).textTheme.bodyText1!.color)
             : SizedBox(),
@@ -44,21 +46,22 @@ class ForceTeams extends StatelessWidget {
                   child: Row(
                     children: [
                       Expanded(
-                        child: hostForce != null && globalForce != null
-                            ? ForceGraph(
-                                value: hostForce!.totalAttackPerSet / globalForce!.totalAttackPerSet,
-                                forceOrientation: ForceOrientation.rightToLeft,
-                                textPosition: ForceTextPosition.above,
-                              )
-                            : SizedBox(),
-                      ),
-                      Container(width: 40, height: visitorForce != null && globalForce != null ? 20 : 0),
+                          child: forces != null
+                              ? ForceGraph(
+                                  value: forces!.getAttackPercentage(hostCode),
+                                  forceOrientation: ForceOrientation.rightToLeft,
+                                  textPosition: ForceTextPosition.above,
+                                  showValue: Features.isFeatureEnabled(context, display_force_percentage),
+                                )
+                              : SizedBox()),
+                      Container(width: 40, height: forces != null ? 20 : 0),
                       Expanded(
-                        child: hostForce != null && globalForce != null
+                        child: forces != null
                             ? ForceGraph(
-                                value: (25 - hostForce!.totalDefensePerSet) / (25 - globalForce!.totalDefensePerSet),
+                                value: forces!.getDefensePercentage(hostCode),
                                 forceOrientation: ForceOrientation.leftToRight,
                                 textPosition: ForceTextPosition.above,
+                                showValue: Features.isFeatureEnabled(context, display_force_percentage),
                               )
                             : SizedBox(),
                       ),
@@ -89,21 +92,23 @@ class ForceTeams extends StatelessWidget {
                   child: Row(
                     children: [
                       Expanded(
-                        child: visitorForce != null && globalForce != null
+                        child: forces != null
                             ? ForceGraph(
-                                value: visitorForce!.totalAttackPerSet / globalForce!.totalAttackPerSet,
+                                value: forces!.getAttackPercentage(visitorCode),
                                 forceOrientation: ForceOrientation.rightToLeft,
                                 textPosition: ForceTextPosition.below,
+                                showValue: Features.isFeatureEnabled(context, display_force_percentage),
                               )
                             : SizedBox(),
                       ),
-                      Container(width: 40, height: visitorForce != null && globalForce != null ? 20 : 0),
+                      Container(width: 40, height: forces != null ? 20 : 0),
                       Expanded(
-                        child: visitorForce != null && globalForce != null
+                        child: forces != null
                             ? ForceGraph(
-                                value: (25 - visitorForce!.totalDefensePerSet) / (25 - globalForce!.totalDefensePerSet),
+                                value: forces!.getDefensePercentage(visitorCode),
                                 forceOrientation: ForceOrientation.leftToRight,
                                 textPosition: ForceTextPosition.below,
+                                showValue: Features.isFeatureEnabled(context, display_force_percentage),
                               )
                             : SizedBox(),
                       ),
@@ -114,7 +119,7 @@ class ForceTeams extends StatelessWidget {
             ),
           ),
         ),
-        (hostForce != null || visitorForce != null) && globalForce != null
+        forces != null
             ? SvgPicture.asset("assets/defense.svg",
                 width: ICON_SIZE, color: Theme.of(context).textTheme.bodyText1!.color)
             : SizedBox(),

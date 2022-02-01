@@ -1,2 +1,20 @@
-- Suppression du bouton "Voir plus d'événements" quand tous les événement sont chargés
-- Correction problème de pageview dans la liste des équipes d'un club
+Nouvelles fonctionnalités et améliorations :
+- Affichage de la version de build dans le menu "A propos"
+- Stockage des photos des feuilles de match dans la galerie de l'appareil photo
+- Ouverture de l'onglet correspond à la compétition lors du click de la tuile d'une équipe
+- Amélioration de l'affichage dans la page des compétitions : les divisions / poules sont regroupés sous un bandeau persistent
+- Amélioration du libellé des compétitions
+- Affichage des matchs passés et non saisis dans la liste des prochains évènements avec un icon signalant la non saisie
+- Affichage de la compétitions auxquels se rapportent les matchs et les résultats
+- Ajout d'une préférence pour faire afficher la valeur des forces
+- Ajout d'un indicateur (page d'un club et pag d'une équipe) pour indiquer le nombre d'onglet
+
+Corrections :
+- Couleur des boutons de saisie de résultat et de report pour le thème clair
+- Nouveau calcul des forces : le calcul se fait maintenant par compétitions / poule
+- Affichage des résultats de toutes les compétitions quand une équipe a plusieurs compétitions
+- Erreur de calcul entre les stats d'un club et la somme des stats des équipes
+- Ordre des compétitions dans la page des compétitions
+- L'utilisateur peut maintenant cliquer sur une tuile d'équipe avant le chargement complet
+- Sélection par défaut de la compétition en cours pour les équipes
+- Nombre d'équipes par club lors d'une recherche

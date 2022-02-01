@@ -5,6 +5,7 @@ import 'package:v34/commons/loading.dart';
 import 'package:v34/commons/timeline/timeline.dart';
 import 'package:v34/commons/timeline/timeline_items.dart';
 import 'package:v34/models/club.dart';
+import 'package:v34/models/competition.dart';
 import 'package:v34/models/team.dart';
 import 'package:v34/pages/dashboard/blocs/agenda_bloc.dart';
 import 'package:v34/repositories/repository.dart';
@@ -22,12 +23,21 @@ class DashboardAgendaState extends State<DashboardAgenda> with AutomaticKeepAliv
   // AutomaticKeepAliveClientMixin permits to preserve this state when scrolling on the dashboard
 
   late final AgendaBloc _agendaBloc;
+  List<Competition>? _competitions;
 
   @override
   void initState() {
     super.initState();
     _agendaBloc = AgendaBloc(repository: RepositoryProvider.of<Repository>(context));
     _loadTeamsMonthAgenda();
+    Repository repository = RepositoryProvider.of<Repository>(context);
+    repository.loadAllCompetitions().then((competitions) {
+      if (mounted) {
+        setState(() {
+          _competitions = competitions;
+        });
+      }
+    });
   }
 
   void _loadTeamsMonthAgenda() {
@@ -43,7 +53,7 @@ class DashboardAgendaState extends State<DashboardAgenda> with AutomaticKeepAliv
   }
 
   Widget _buildTimeline(AgendaState state) {
-    if (state is AgendaLoaded || state is AgendaLoading) {
+    if (state is AgendaLoaded && _competitions != null) {
       return Padding(
         padding: EdgeInsets.only(right: 18, left: 18),
         child: Column(
@@ -60,7 +70,8 @@ class DashboardAgendaState extends State<DashboardAgenda> with AutomaticKeepAliv
                         events: [
                           ...entry.value.map(
                             (e) {
-                              TimelineItemWidget timelineItemWidget = TimelineItemWidget.from(e, widget.team, false);
+                              TimelineItemWidget timelineItemWidget =
+                                  TimelineItemWidget.from(e, widget.team, false, _competitions!);
                               return TimelineEvent(
                                 child: timelineItemWidget,
                                 color: timelineItemWidget.color(),
@@ -74,20 +85,11 @@ class DashboardAgendaState extends State<DashboardAgenda> with AutomaticKeepAliv
                 ),
               ],
             ),
-            if (state is AgendaLoaded && state.hasMore)
-              Padding(
-                padding: const EdgeInsets.only(left: 68.0),
-                child: TextButton(
-                  child: Text("Voir plus d'événements"),
-                  onPressed: () => _agendaBloc.add(
-                    LoadTeamFullAgenda(teamCode: widget.team.code!, loadPlayedMatches: false),
-                  ),
-                ),
-              ),
-            if (state is AgendaLoading) Container(height: 150, child: Center(child: Loading())),
           ],
         ),
       );
+    } else if (state is AgendaLoading) {
+      return Container(height: 150, child: Center(child: Loading()));
     } else {
       return SizedBox();
     }

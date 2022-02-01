@@ -114,6 +114,9 @@ PODS:
     - GoogleUtilities/Logger
   - image_picker (0.0.1):
     - Flutter
+  - images_picker (0.0.1):
+    - Flutter
+    - ZLPhotoBrowser (= 4.2.0)
   - just_audio (0.0.1):
     - Flutter
   - map_launcher (0.0.1):
@@ -143,6 +146,9 @@ PODS:
     - Flutter
   - webview_flutter_wkwebview (0.0.1):
     - Flutter
+  - ZLPhotoBrowser (4.2.0):
+    - ZLPhotoBrowser/Core (= 4.2.0)
+  - ZLPhotoBrowser/Core (4.2.0)
 
 DEPENDENCIES:
   - add_2_calendar (from `.symlinks/plugins/add_2_calendar/ios`)
@@ -156,6 +162,7 @@ DEPENDENCIES:
   - geolocator_apple (from `.symlinks/plugins/geolocator_apple/ios`)
   - google_maps_flutter (from `.symlinks/plugins/google_maps_flutter/ios`)
   - image_picker (from `.symlinks/plugins/image_picker/ios`)
+  - images_picker (from `.symlinks/plugins/images_picker/ios`)
   - just_audio (from `.symlinks/plugins/just_audio/ios`)
   - map_launcher (from `.symlinks/plugins/map_launcher/ios`)
   - maps_launcher (from `.symlinks/plugins/maps_launcher/ios`)
@@ -182,6 +189,7 @@ SPEC REPOS:
     - GoogleUtilities
     - nanopb
     - PromisesObjC
+    - ZLPhotoBrowser
 
 EXTERNAL SOURCES:
   add_2_calendar:
@@ -206,6 +214,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/google_maps_flutter/ios"
   image_picker:
     :path: ".symlinks/plugins/image_picker/ios"
+  images_picker:
+    :path: ".symlinks/plugins/images_picker/ios"
   just_audio:
     :path: ".symlinks/plugins/just_audio/ios"
   map_launcher:
@@ -251,6 +261,7 @@ SPEC CHECKSUMS:
   GoogleMaps: eb03e327edfd70b06de1e6e321653f73712df7ad
   GoogleUtilities: 684ee790a24f73ebb2d1d966e9711c203f2a4237
   image_picker: 9aa50e1d8cdacdbed739e925b7eea16d014367e6
+  images_picker: 8508f4097cec731ab87d47564ed964aa3fe942c7
   just_audio: baa7252489dbcf47a4c7cc9ca663e9661c99aafa
   map_launcher: e325db1261d029ff33e08e03baccffe09593ffea
   maps_launcher: 2e5b6a2d664ec6c27f82ffa81b74228d770ab203
@@ -264,6 +275,7 @@ SPEC CHECKSUMS:
   video_player: ecd305f42e9044793efd34846e1ce64c31ea6fcb
   wakelock: d0fc7c864128eac40eba1617cb5264d9c940b46f
   webview_flutter_wkwebview: 005fbd90c888a42c5690919a1527ecc6649e1162
+  ZLPhotoBrowser: 602d505d4f2cf7f309ce973c4353d33e85216d58
 
 PODFILE CHECKSUM: 8a8d8e4b3c450db8c4a55cb9d9b957a9ee8b8019
 

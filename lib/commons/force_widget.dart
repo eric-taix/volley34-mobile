@@ -1,14 +1,18 @@
+import 'package:feature_flags/feature_flags.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:v34/features_flag.dart';
 import 'package:v34/models/force.dart';
 
 class ForceWidget extends StatefulWidget {
   static const double centerWidth = 50;
 
-  final Force force;
-  final Force globalForce;
+  final String teamCode;
+  final Forces forces;
+  final Color? backgroundColor;
 
-  ForceWidget({Key? key, required this.force, required this.globalForce}) : super(key: key);
+  ForceWidget({Key? key, required this.forces, required this.teamCode, this.backgroundColor}) : super(key: key);
 
   @override
   State<ForceWidget> createState() => _ForceWidgetState();
@@ -33,17 +37,21 @@ class _ForceWidgetState extends State<ForceWidget> with SingleTickerProviderStat
         _buildRow(
           SvgPicture.asset("assets/attack.svg", width: 24, color: Theme.of(context).textTheme.bodyText1!.color),
           ForceGraph(
-            value: (widget.force.totalAttackPerSet / widget.globalForce.totalAttackPerSet),
+            value: widget.forces.getAttackPercentage(widget.teamCode),
             forceOrientation: ForceOrientation.leftToRight,
             textPosition: ForceTextPosition.above,
+            showValue: Features.isFeatureEnabled(context, display_force_percentage),
+            backgroundColor: widget.backgroundColor,
           ),
         ),
         _buildRow(
           SvgPicture.asset("assets/defense.svg", width: 20, color: Theme.of(context).textTheme.bodyText1!.color),
           ForceGraph(
-            value: (25 - widget.force.totalDefensePerSet) / (25 - widget.globalForce.totalDefensePerSet),
+            value: widget.forces.getDefensePercentage(widget.teamCode),
             forceOrientation: ForceOrientation.leftToRight,
-            textPosition: ForceTextPosition.above,
+            textPosition: ForceTextPosition.below,
+            showValue: Features.isFeatureEnabled(context, display_force_percentage),
+            backgroundColor: widget.backgroundColor,
           ),
         ),
       ],
@@ -80,6 +88,7 @@ class _ForceWidgetState extends State<ForceWidget> with SingleTickerProviderStat
 class ForceGraph extends StatefulWidget {
   final double value;
   final bool showValue;
+  final Color? backgroundColor;
   final ForceOrientation forceOrientation;
   final ForceTextPosition textPosition;
   const ForceGraph({
@@ -88,6 +97,7 @@ class ForceGraph extends StatefulWidget {
     this.showValue = false,
     required this.forceOrientation,
     required this.textPosition,
+    this.backgroundColor,
   }) : super(key: key);
 
   @override
@@ -126,11 +136,11 @@ class _ForceGraphState extends State<ForceGraph> with SingleTickerProviderStateM
     return CustomPaint(
       painter: ForceGraphPainter(
         value: _animation.value * widget.value,
-        backgroundColor: Theme.of(context).cardTheme.color!,
+        backgroundColor: widget.backgroundColor ?? Theme.of(context).cardTheme.color!,
         showValue: widget.showValue,
         orientation: widget.forceOrientation,
         textPosition: widget.textPosition,
-        textStyle: Theme.of(context).textTheme.bodyText1,
+        textStyle: Theme.of(context).textTheme.bodyText1!.copyWith(fontSize: 10),
       ),
     );
   }
@@ -169,8 +179,8 @@ class ForceGraphPainter extends CustomPainter {
     final double barTranslationX = 8;
 
     final double strokeWidth = 6;
-    final colors = [Colors.red, Colors.orange, Colors.yellow, Colors.green];
-    final stops = List.generate(colors.length, (index) => (index * max / (colors.length)));
+    final colors = [Colors.red, Colors.orange, Colors.yellow, Colors.greenAccent, Colors.green];
+    final stops = List.generate(colors.length, (index) => (index * max) / (colors.length));
     final inversedColors = colors.reversed.toList();
 
     final gradient = LinearGradient(colors: colors, stops: stops);
@@ -188,7 +198,7 @@ class ForceGraphPainter extends CustomPainter {
       ..strokeCap = StrokeCap.round
       ..style = PaintingStyle.stroke;
 
-    var val = value;
+    var val = !value.isInfinite ? value : max;
     if (val < min) val = min;
     if (val > max) val = max;
     //val = (max - min) / 2;
@@ -225,17 +235,18 @@ class ForceGraphPainter extends CustomPainter {
     if (!value.isNaN) {
       canvas.drawCircle(point, 10, circleBackgroundPaint);
       canvas.drawCircle(point, circleRadius, circleForegroundPaint);
-    }
 
-    if (showValue) {
-      TextSpan span = new TextSpan(text: "${((value / ref) * 100).toInt()}%", style: textStyle);
-      TextPainter tp = new TextPainter(text: span, textAlign: TextAlign.left, textDirection: TextDirection.ltr);
-      tp.layout();
-      tp.paint(
-        canvas,
-        end.translate(-tp.width / 2,
-            textPosition == ForceTextPosition.above ? -tp.height - circleRadius - 3 : tp.height - circleRadius + 3),
-      );
+      if (showValue) {
+        String text = value.isFinite ? "${((value / ref) * 100).toInt()}%" : "∞";
+        TextSpan span = new TextSpan(text: text, style: textStyle);
+        TextPainter tp = new TextPainter(text: span, textAlign: TextAlign.left, textDirection: TextDirection.ltr);
+        tp.layout();
+        tp.paint(
+          canvas,
+          point.translate(
+              -tp.width / 2, textPosition == ForceTextPosition.above ? -tp.height - circleRadius - 0 : tp.height - 2),
+        );
+      }
     }
   }
 

@@ -74,7 +74,7 @@ class _PodiumWidgetState extends State<PodiumWidget> {
           Podium(
             placeValues,
             active: widget.currentlyDisplayed,
-            title: widget.title ?? widget.classification.label ?? "",
+            title: widget.title ?? extractEnhanceDivisionLabel(widget.classification.fullLabel!),
             highlightedIndex: highlightedIndex,
             promoted: widget.classification.promoted,
             relegated: widget.classification.relegated,
@@ -95,7 +95,7 @@ class _PodiumWidgetState extends State<PodiumWidget> {
                         Padding(
                           padding: const EdgeInsets.only(left: 8.0, top: 8.0, bottom: 8.0),
                           child: Text(
-                            "${getClassificationCategory(widget.classification.division)}",
+                            "${getDivisionLabel(widget.classification.division)}",
                             style: Theme.of(context).textTheme.bodyText1,
                           ),
                         )

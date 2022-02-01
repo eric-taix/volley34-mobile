@@ -77,7 +77,7 @@ class _TeamRankingTableState extends State<TeamRankingTable> {
                   index,
                   InkWell(
                     onTap: rankingSynthesis.teamCode != widget.team?.code && rankingSynthesis.teamCode != null
-                        ? () => _goToTeamDetails(context, rankingSynthesis.teamCode!)
+                        ? () => _goToTeamDetails(context, rankingSynthesis.teamCode!, widget.ranking.competitionCode)
                         : null,
                     child: Padding(
                       padding: const EdgeInsets.only(top: 8, bottom: 8),
@@ -286,12 +286,17 @@ class _TeamRankingTableState extends State<TeamRankingTable> {
     );
   }
 
-  _goToTeamDetails(BuildContext context, String teamCode) {
+  _goToTeamDetails(BuildContext context, String teamCode, String? competitionCode) {
     if (widget.onPushPage != null) widget.onPushPage!();
     Future.wait([_repository.loadTeam(teamCode), _repository.loadTeamClub(teamCode)]).then((results) {
       RouterFacade.push(
           context: context,
-          builder: (_) => TeamDetailPage(team: results[0] as Team, club: results[1] as Club)).then((_) {
+          builder: (_) => TeamDetailPage(
+                team: results[0] as Team,
+                club: results[1] as Club,
+                openedPage: competitionCode != null ? OpenedPage.COMPETITION : null,
+                openedCompetitionCode: competitionCode != null ? competitionCode : null,
+              )).then((_) {
         if (widget.onPopPage != null) widget.onPopPage!();
       });
     });

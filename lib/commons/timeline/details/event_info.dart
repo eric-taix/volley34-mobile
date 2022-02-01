@@ -64,7 +64,7 @@ class _EventInfoState extends State<EventInfo> with SingleTickerProviderStateMix
       _closeMenu();
     });
 
-    _animationController = AnimationController(vsync: this, duration: Duration(milliseconds: 400));
+    _animationController = AnimationController(vsync: this, duration: Duration(milliseconds: 250));
     _animationController.addListener(() => setState(() {}));
     _animationController.forward();
 
@@ -287,8 +287,8 @@ class _EventInfoState extends State<EventInfo> with SingleTickerProviderStateMix
   }
 
   List<Widget> _buildTitle(BuildContext context) {
-    Color color = Colors.white; //Theme.of(context).colorScheme.secondary;
-    if (widget.event.type == EventType.Match) {
+    Color color = Theme.of(context).textTheme.bodyText2!.color!;
+    if (widget.event.type == EventType.Match && _hostTeam != null && _visitorTeam != null) {
       return [
         MatchInfo(
           hostTeam: _hostTeam,
@@ -298,9 +298,7 @@ class _EventInfoState extends State<EventInfo> with SingleTickerProviderStateMix
           date: widget.event.date,
           showMatchDate: false,
           showTeamLink: true,
-          hostForce: widget.event.hostForce,
-          globalForce: widget.event.globalForce,
-          visitorForce: widget.event.visitorForce,
+          forces: widget.event.forces,
         ),
         if (widget.event.type == EventType.Match)
           Padding(
@@ -350,7 +348,7 @@ class _EventInfoState extends State<EventInfo> with SingleTickerProviderStateMix
                     );
                   },
                 ),
-                if (Features.isFeatureEnabled(context, scoreboard_feature) &&
+                if (Features.isFeatureEnabled(context, experimental_scoreboard_feature) &&
                     _hostTeam != null &&
                     _hostClub != null &&
                     _visitorTeam != null &&
@@ -360,7 +358,7 @@ class _EventInfoState extends State<EventInfo> with SingleTickerProviderStateMix
                     tag: "btn-play",
                     icon: Icon(Icons.play_arrow_rounded, size: 30, color: color),
                     label: Text(
-                      "Score",
+                      "Scoreur",
                     ),
                     onPressed: () {
                       _closeMenu();

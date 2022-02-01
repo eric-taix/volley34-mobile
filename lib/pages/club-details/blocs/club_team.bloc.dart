@@ -2,6 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:v34/models/competition.dart';
 import 'package:v34/models/force.dart';
 import 'package:v34/models/match_result.dart';
 import 'package:v34/models/ranking.dart';
@@ -70,9 +71,10 @@ class TeamSlidingStatsLoading extends TeamState {
 }
 
 class TeamSlidingStatsLoaded extends TeamState {
-  final List<TeamCompetitionSynthesis> competitions;
+  final Map<String, TeamCompetitionSynthesis> competitions;
+  final String? firstShownCompetition;
 
-  TeamSlidingStatsLoaded({required this.competitions});
+  TeamSlidingStatsLoaded({required this.competitions, this.firstShownCompetition});
 
   @override
   List<Object?> get props => [competitions];
@@ -90,7 +92,7 @@ class TeamResultsLoaded extends TeamState {
 class TeamDivisionPoolResultsLoaded extends TeamState {
   final List<MatchResult> teamResults;
   final List<MatchResult> allResults;
-  final Map<String, ForceVsGlobal> forceByCompetitionCode;
+  final Map<String, Forces> forceByCompetitionCode;
 
   TeamDivisionPoolResultsLoaded({
     required this.teamResults,
@@ -146,8 +148,26 @@ class TeamBloc extends Bloc<TeamEvent, TeamState> {
     if (event is TeamLoadSlidingResult) {
       yield TeamSlidingStatsLoading();
       var results = await repository.loadTeamLastMatchesResult(event.code, event.last!);
-      var pointDiffs = computePointsDiffs(results, event.code);
-      yield TeamSlidingStatsLoaded(competitions: [TeamCompetitionSynthesis(pointsDiffEvolution: pointDiffs)]);
+      var teamCompetitionSynthesisByCode = results
+          .where((result) => result.competitionCode != null)
+          .groupListsBy((result) => result.competitionCode!)
+          .map(
+            (key, value) => MapEntry(
+              key,
+              TeamCompetitionSynthesis(
+                pointsDiffEvolution: computePointsDiffs(results, event.code),
+              ),
+            ),
+          );
+
+      var competitions = await repository.loadAllCompetitions();
+      var teamCompetitionSynthesisCodes = teamCompetitionSynthesisByCode.keys;
+      var teamCompetitions =
+          competitions.where((competition) => teamCompetitionSynthesisCodes.contains(competition.code)).toList();
+
+      yield TeamSlidingStatsLoaded(
+          competitions: teamCompetitionSynthesisByCode,
+          firstShownCompetition: teamCompetitions.firstShownCompetition()?.code);
     }
 
     if (event is TeamLoadAverageSlidingResult) {
@@ -156,8 +176,9 @@ class TeamBloc extends Bloc<TeamEvent, TeamState> {
         return ranking..ranks?.sort(sortByRank);
       }).toList();
 
-      var competitions = await Future.wait(rankings.map((ranking) async {
-        var matchResults = await repository.loadResults(ranking.competitionCode!, ranking.division, ranking.pool);
+      List<TeamCompetition> competitions = await repository.loadTeamCompetitions(event.team);
+      var teamCompetitionsSynthesis = await Future.wait(competitions.map((competition) async {
+        var matchResults = await repository.loadResults(competition.code, competition.division, competition.pool);
         var pointDiffs = computePointsDiffs(matchResults, event.team.code);
         double sum = 0;
         var sumPointDiffs = List.generate(pointDiffs.length, (index) {
@@ -173,15 +194,22 @@ class TeamBloc extends Bloc<TeamEvent, TeamState> {
             wonMatches++;
           }
         });
-        return TeamCompetitionSynthesis(
-          rankingSynthesis: ranking,
-          pointsDiffEvolution: sumPointDiffs,
-          totalMatches: totalMatches,
-          wonMatches: wonMatches,
-        );
+
+        return MapEntry(
+            competition.code,
+            TeamCompetitionSynthesis(
+              rankingSynthesis: rankings.firstWhere((ranking) => ranking.competitionCode == competition.code),
+              pointsDiffEvolution: sumPointDiffs,
+              totalMatches: totalMatches,
+              wonMatches: wonMatches,
+            ));
       }));
 
-      yield TeamSlidingStatsLoaded(competitions: competitions);
+      var unsorted = Map<String, TeamCompetitionSynthesis>.fromIterable(teamCompetitionsSynthesis,
+          key: (entry) => entry.key, value: (entry) => entry.value);
+
+      yield TeamSlidingStatsLoaded(
+          competitions: unsorted, firstShownCompetition: competitions.firstShownCompetition()?.code);
     }
 
     if (event is TeamLoadResults) {
@@ -201,12 +229,11 @@ class TeamBloc extends Bloc<TeamEvent, TeamState> {
           .toList()
         ..sort((m1, m2) => m1.matchDate!.compareTo(m2.matchDate!));
 
-      Map<String, ForceVsGlobal> forceByCompetition =
+      Map<String, Forces> forceByCompetition =
           matchResults.groupListsBy((matchResult) => matchResult.competitionCode).map((competitionCode, matchResults) {
-        ForceBuilder forceBuilder = matchResults.fold<ForceBuilder>(
-            ForceBuilder(teamCode: event.teamCode), (forceBuilder, matchResult) => forceBuilder..add(matchResult));
-        return MapEntry(
-            competitionCode!, ForceVsGlobal(teamForce: forceBuilder.teamForce, globalForce: forceBuilder.othersForce));
+        Forces forceBuilder =
+            matchResults.fold<Forces>(Forces(), (forceBuilder, matchResult) => forceBuilder..add(matchResult));
+        return MapEntry(competitionCode!, forceBuilder);
       });
 
       yield TeamDivisionPoolResultsLoaded(

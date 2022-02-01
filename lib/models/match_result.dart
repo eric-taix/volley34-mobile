@@ -62,6 +62,24 @@ class MatchResult {
     _postponedDate = postponedDate;
   }
 
+  factory MatchResult.fromSets(String hostCode, String visitorCode, List<MatchSet> sets) {
+    int hostPoints = sets.fold(0, (acc, set) => acc + (set.hostPoint ?? 0));
+    int visitorPoints = sets.fold(0, (acc, set) => acc + (set.visitorpoint ?? 0));
+
+    int hostSets = sets.where((set) => (set.hostPoint ?? 0) > (set.visitorpoint ?? 0)).length;
+
+    return MatchResult(
+      resultType: MatchResultType.VALID,
+      sets: sets,
+      hostTeamCode: hostCode,
+      visitorTeamCode: visitorCode,
+      totalPointsHost: hostPoints,
+      totalPointsVisitor: visitorPoints,
+      totalSetsHost: hostSets,
+      totalSetsVisitor: sets.length - hostSets,
+    );
+  }
+
   factory MatchResult.fromJson(Map<String, dynamic> json) {
     var match = json["matchs"];
 

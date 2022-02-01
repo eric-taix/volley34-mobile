@@ -1,10 +1,12 @@
 import 'package:collection/collection.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:v34/commons/app_bar/app_bar_with_image.dart';
 import 'package:v34/commons/favorite/favorite.dart';
 import 'package:v34/commons/loading.dart';
 import 'package:v34/models/club.dart';
+import 'package:v34/models/competition.dart';
 import 'package:v34/models/force.dart';
 import 'package:v34/models/match_result.dart';
 import 'package:v34/models/ranking.dart';
@@ -16,6 +18,7 @@ import 'package:v34/pages/team-details/agenda/team_agenda.dart';
 import 'package:v34/pages/team-details/ranking/team_ranking.dart';
 import 'package:v34/pages/team-details/results/team_results.dart';
 import 'package:v34/repositories/repository.dart';
+import 'package:v34/utils/competition_text.dart';
 
 enum OpenedPage { COMPETITION, RESULTS, AGENDA }
 
@@ -35,7 +38,8 @@ class _TeamDetailPageState extends State<TeamDetailPage> {
   late final TeamRankingBloc _rankingBloc;
   late final TeamBloc _teamBloc;
   late final CompetitionCubit _competitionCubit;
-  bool _showAllTeams = false;
+  ValueNotifier<bool> _showAllTeams = ValueNotifier(false);
+  List<Competition>? _competitions;
 
   @override
   void initState() {
@@ -46,6 +50,11 @@ class _TeamDetailPageState extends State<TeamDetailPage> {
     _rankingBloc.add(LoadTeamRankingEvent(widget.team));
     _competitionCubit = CompetitionCubit(repository);
     _competitionCubit.loadTeamCompetitions(widget.team);
+    repository.loadAllCompetitions().then((competitions) {
+      setState(() {
+        _competitions = competitions;
+      });
+    });
   }
 
   @override
@@ -98,7 +107,7 @@ class _TeamDetailPageState extends State<TeamDetailPage> {
             tabBuilder: (context, index) {
               if (state is TeamRankingLoadedState) {
                 if (index < state.rankings.length) {
-                  return Text(state.rankings[index].label ?? "?");
+                  return Text(extractEnhanceDivisionLabel(state.rankings[index].fullLabel!));
                 }
                 if (index == state.rankings.length) return Text("Résultats");
                 if (index == state.rankings.length + 1) return Text("Agenda");
@@ -113,27 +122,23 @@ class _TeamDetailPageState extends State<TeamDetailPage> {
                     if (teamState is TeamDivisionPoolResultsLoaded) {
                       if (index < state.rankings.length) {
                         String? competitionCode = state.rankings[index].competitionCode;
-                        ForceVsGlobal? forceVsGlobal = competitionCode != null
-                            ? teamState.forceByCompetitionCode[competitionCode]
-                            : ForceVsGlobal.empty();
-                        return _buildTeamRanking(state.rankings[index], teamState.teamResults,
-                            forceVsGlobal?.teamForce ?? Force(), forceVsGlobal?.globalForce ?? Force());
+                        Forces forces = teamState.forceByCompetitionCode.putIfAbsent(competitionCode, () => Forces());
+                        return _buildTeamRanking(state.rankings[index], teamState.teamResults, forces);
                       }
                       if (index == state.rankings.length)
-                        return TeamResults(
-                          showOnlyTeam: _showAllTeams,
-                          team: widget.team,
-                          results: _showAllTeams ? teamState.allResults : teamState.teamResults,
-                          onChanged: (onlyTeam) {
-                            setState(
-                              () {
-                                _showAllTeams = onlyTeam;
-                              },
-                            );
-                          },
+                        return AnimatedBuilder(
+                          animation: _showAllTeams,
+                          builder: (BuildContext context, Widget? child) => TeamResults(
+                            competitions: _competitions,
+                            showOnlyTeam: _showAllTeams.value,
+                            team: widget.team,
+                            results: _showAllTeams.value ? teamState.allResults : teamState.teamResults,
+                            onChanged: (onlyTeam) {
+                              _showAllTeams.value = onlyTeam;
+                            },
+                          ),
                         );
-                      if (index == state.rankings.length + 1)
-                        return _buildTeamAgenda(state.rankings[0], teamState.teamResults);
+                      if (index == state.rankings.length + 1) return _buildTeamAgenda();
                     }
                     return SliverFillRemaining(child: Center(child: Loading()));
                   },
@@ -147,17 +152,16 @@ class _TeamDetailPageState extends State<TeamDetailPage> {
     );
   }
 
-  Widget _buildTeamAgenda(RankingSynthesis? ranking, List<MatchResult> results) {
-    return TeamAgenda(team: widget.team);
+  Widget _buildTeamAgenda() {
+    return TeamAgenda(team: widget.team, competitions: _competitions);
   }
 
-  Widget _buildTeamRanking(RankingSynthesis? ranking, List<MatchResult> results, Force teamForce, Force globalForce) {
+  Widget _buildTeamRanking(RankingSynthesis ranking, List<MatchResult> results, Forces forces) {
     return TeamRanking(
       team: widget.team,
-      ranking: ranking ?? RankingSynthesis(),
-      results: results.where((result) => result.competitionCode == ranking?.competitionCode).toList(),
-      teamForce: teamForce,
-      globalForce: globalForce,
+      ranking: ranking,
+      results: results.where((result) => result.competitionCode == ranking.competitionCode).toList(),
+      forces: forces,
     );
   }
 }

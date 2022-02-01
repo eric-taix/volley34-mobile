@@ -36,6 +36,7 @@ class _PreferencesPageState extends State<PreferencesPage> with RouteAwareAnalyt
               SizedBox(height: 30),
               _buildThemeOption(context, state),
               _buildForceInDashboard(context, state),
+              _buildForcePercentage(context, state),
               if (Features.isFeatureEnabled(context, experimental_features)) _buildFeaturesFlag(context),
               SizedBox(height: 50),
             ],
@@ -50,27 +51,31 @@ class _PreferencesPageState extends State<PreferencesPage> with RouteAwareAnalyt
   }
 
   Widget _buildFeaturesFlag(BuildContext context) {
-    return Column(children: [
-      Paragraph(
-        title: "Fonctionnalités Expérimentales",
-        bottomPadding: 28,
-      ),
-      ...FEATURES_FLAGS.map((featureFlag) {
-        return ListTile(
-          title: Row(
-            children: [
-              Expanded(child: Text(featureFlag, style: Theme.of(context).textTheme.bodyText2)),
-              Switch(
-                value: Features.isFeatureEnabled(context, featureFlag),
-                onChanged: (value) {
-                  Features.setFeature(context, featureFlag, value);
-                },
+    return Column(
+      children: [
+        Paragraph(
+          title: "Fonctionnalités Expérimentales",
+          bottomPadding: 28,
+        ),
+        ...EXPERIMENTAL_FEATURES_FLAGS.map(
+          (featureFlag) {
+            return ListTile(
+              title: Row(
+                children: [
+                  Expanded(child: Text(featureFlag, style: Theme.of(context).textTheme.bodyText2)),
+                  Switch(
+                    value: Features.isFeatureEnabled(context, featureFlag),
+                    onChanged: (value) {
+                      Features.setFeature(context, featureFlag, value);
+                    },
+                  ),
+                ],
               ),
-            ],
-          ),
-        );
-      }),
-    ]);
+            );
+          },
+        ),
+      ],
+    );
   }
 
   Widget _buildForceInDashboard(BuildContext context, PreferencesUpdatedState state) {
@@ -78,13 +83,29 @@ class _PreferencesPageState extends State<PreferencesPage> with RouteAwareAnalyt
       title: Row(
         children: [
           Expanded(
-              child: Text("Afficher les forces des équipes dans la liste des prochains événements",
+              child: Text("Afficher les forces dans les prochains événements",
                   style: Theme.of(context).textTheme.bodyText2)),
           Switch(
               value: state.showForceOnDashboard ?? false,
               onChanged: (value) {
                 BlocProvider.of<PreferencesBloc>(context).add(PreferencesSaveEvent(showForceOnDashboard: value));
               }),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildForcePercentage(BuildContext context, PreferencesUpdatedState state) {
+    return ListTile(
+      title: Row(
+        children: [
+          Expanded(child: Text("Afficher le pourcentage des forces", style: Theme.of(context).textTheme.bodyText2)),
+          Switch(
+            value: Features.isFeatureEnabled(context, display_force_percentage),
+            onChanged: (value) {
+              Features.setFeature(context, display_force_percentage, value);
+            },
+          ),
         ],
       ),
     );

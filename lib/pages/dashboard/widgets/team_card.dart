@@ -33,7 +33,7 @@ class TeamCard extends StatefulWidget {
 }
 
 class _TeamCardState extends State<TeamCard> {
-  late TeamRankingBloc _classificationBloc;
+  late TeamRankingBloc _rankingBloc;
   final _currentPageNotifier = ValueNotifier<int>(0);
   late final PageController _pageController;
 
@@ -41,9 +41,9 @@ class _TeamCardState extends State<TeamCard> {
   void initState() {
     super.initState();
     _pageController = PageController();
-    _classificationBloc = TeamRankingBloc(repository: RepositoryProvider.of<Repository>(context));
+    _rankingBloc = TeamRankingBloc(repository: RepositoryProvider.of<Repository>(context));
     if (widget.currentlyDisplayed) {
-      _classificationBloc.add(LoadTeamRankingEvent(widget.team));
+      _rankingBloc.add(LoadTeamRankingEvent(widget.team));
     }
   }
 
@@ -54,18 +54,23 @@ class _TeamCardState extends State<TeamCard> {
     // which can create a visual bug
     if (widget.currentlyDisplayed &&
         ((widget.team.clubCode != oldWidget.team.clubCode) || !oldWidget.currentlyDisplayed)) {
-      _classificationBloc.add(LoadTeamRankingEvent(widget.team));
+      _rankingBloc.add(LoadTeamRankingEvent(widget.team));
     }
   }
 
   @override
   void dispose() {
     super.dispose();
-    _classificationBloc.close();
+    _rankingBloc.close();
   }
 
-  Widget _noPodiumData() {
-    return Expanded(child: Text("Aucune donnée", textAlign: TextAlign.center));
+  Widget _noPodiumData(BuildContext context) {
+    return Center(
+        child: Text(
+      "Aucune donnée",
+      textAlign: TextAlign.center,
+      style: Theme.of(context).textTheme.bodyText1,
+    ));
   }
 
   Widget _getPodiumWidgets(state) {
@@ -77,7 +82,7 @@ class _TeamCardState extends State<TeamCard> {
                   currentPageNotifier: _currentPageNotifier,
                   pageController: _pageController,
                   itemCount: state.rankings.length,
-                  iconPadding: EdgeInsets.only(top: 98),
+                  iconPadding: EdgeInsets.only(top: 92),
                   iconColor: Theme.of(context).colorScheme.secondary,
                   isInside: true,
                   child: PageView.builder(
@@ -104,18 +109,19 @@ class _TeamCardState extends State<TeamCard> {
                   child: AnimatedCirclePageIndicator(
                     itemCount: state.rankings.length > 1 ? state.rankings.length : 0,
                     currentPageNotifier: _currentPageNotifier,
-                    radius: 3,
-                    activeRadius: 2,
+                    radius: 4,
+                    activeRadius: 3,
                     fillColor: Colors.transparent,
                     activeColor: Theme.of(context).colorScheme.secondary,
                     spacing: 8,
                     borderColor: Theme.of(context).colorScheme.secondary,
                     borderWidth: 1,
+                    duration: Duration(milliseconds: 100),
                   ),
                 ),
               ],
             )
-          : _noPodiumData();
+          : _noPodiumData(context);
     } else if (state is TeamRankingLoadingState) {
       return Center(child: Loading(loaderType: LoaderType.THREE_BOUNCE));
     } else {
@@ -126,9 +132,16 @@ class _TeamCardState extends State<TeamCard> {
   @override
   Widget build(BuildContext context) {
     var absDistance = widget.distance.abs() > 1 ? 1 : widget.distance.abs();
-    final double cardBodyHeight = widget.cardHeight - 15;
-    return BlocBuilder<TeamRankingBloc, TeamRankingState>(
-      bloc: _classificationBloc,
+    return BlocConsumer<TeamRankingBloc, TeamRankingState>(
+      bloc: _rankingBloc,
+      listener: (context, state) {
+        if (state is TeamRankingLoadedState && state.firstShownCompetition != null) {
+          WidgetsBinding.instance?.addPostFrameCallback((_) {
+            var index = state.rankings.indexWhere((ranking) => ranking.competitionCode == state.firstShownCompetition);
+            if (_pageController.hasClients && index != -1) _pageController.jumpToPage(index);
+          });
+        }
+      },
       builder: (context, state) {
         return Transform.scale(
           scale: 1.0 - (absDistance > 0.15 ? 0.15 : absDistance),
@@ -138,21 +151,22 @@ class _TeamCardState extends State<TeamCard> {
             body: Padding(
               padding: const EdgeInsets.only(top: 8, bottom: 0.0),
               child: Container(
-                height: cardBodyHeight - 80,
+                height: widget.cardHeight,
                 child: _getPodiumWidgets(state),
               ),
             ),
-            onTap: state is TeamRankingLoadedState
-                ? () => RouterFacade.push(
-                      context: context,
-                      builder: (_) => TeamDetailPage(
-                        team: widget.team,
-                        club: widget.club!,
-                        openedPage: OpenedPage.COMPETITION,
-                        openedCompetitionCode: state.rankings[_pageController.page!.toInt()].competitionCode,
-                      ),
-                    )
-                : null,
+            onTap: () => RouterFacade.push(
+              context: context,
+              builder: (_) => TeamDetailPage(
+                team: widget.team,
+                club: widget.club!,
+                openedPage:
+                    state is TeamRankingLoadedState && _pageController.hasClients ? OpenedPage.COMPETITION : null,
+                openedCompetitionCode: state is TeamRankingLoadedState && _pageController.hasClients
+                    ? state.rankings[_pageController.page!.toInt()].competitionCode
+                    : null,
+              ),
+            ),
           ),
         );
       },

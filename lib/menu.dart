@@ -140,13 +140,15 @@ class _AppMenuState extends State<AppMenu> {
                                 if (snapshot.hasData) {
                                   String appName = snapshot.data?.appName ?? "?";
                                   String version = snapshot.data?.version ?? "?";
+                                  String buildNumber = snapshot.data?.buildNumber ?? "?";
                                   return RichText(
                                     text: TextSpan(
                                       text: "$appName ",
                                       style: Theme.of(context).textTheme.headline4,
                                       children: [
                                         TextSpan(
-                                            text: "  - version $version", style: Theme.of(context).textTheme.bodyText2),
+                                            text: "  - version $version (build $buildNumber)",
+                                            style: Theme.of(context).textTheme.bodyText2),
                                       ],
                                     ),
                                   );

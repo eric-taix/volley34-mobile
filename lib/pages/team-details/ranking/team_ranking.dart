@@ -27,17 +27,15 @@ class TeamRanking extends StatefulWidget {
   final Team team;
   final RankingSynthesis ranking;
   final List<MatchResult> results;
-  final Force teamForce;
-  final Force globalForce;
+  final Forces forces;
 
-  const TeamRanking(
-      {Key? key,
-      required this.team,
-      required this.ranking,
-      required this.results,
-      required this.teamForce,
-      required this.globalForce})
-      : super(key: key);
+  const TeamRanking({
+    Key? key,
+    required this.team,
+    required this.ranking,
+    required this.results,
+    required this.forces,
+  }) : super(key: key);
 
   @override
   State<TeamRanking> createState() => _TeamRankingState();
@@ -74,9 +72,9 @@ class _TeamRankingState extends State<TeamRanking> with RouteAwareAnalytics {
           Paragraph(title: "Classement"),
           _buildPodium(context, stats),
           Paragraph(title: "Statistiques générales"),
-          _buildStats(context, stats, widget.teamForce, widget.globalForce),
+          _buildStats(context, stats, widget.forces),
           Paragraph(title: "Statistiques avancées"),
-          _buildAdvancedStats(context, stats, widget.teamForce, widget.globalForce),
+          _buildAdvancedStats(context, stats, widget.forces),
         ],
       ),
     );
@@ -89,7 +87,7 @@ class _TeamRankingState extends State<TeamRanking> with RouteAwareAnalytics {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text("${getClassificationCategory(widget.ranking.division)}${pool != null ? " - $pool" : ""}",
+          Text("${getDivisionLabel(widget.ranking.division)}${pool != null ? " - $pool" : ""}",
               style: Theme.of(context).textTheme.headline4),
           Padding(
             padding: const EdgeInsets.only(left: 18.0),
@@ -165,8 +163,9 @@ class _TeamRankingState extends State<TeamRanking> with RouteAwareAnalytics {
     );
   }
 
-  Widget _buildStats(BuildContext context, RankingTeamSynthesis? teamStats, Force force, Force globalForce) {
+  Widget _buildStats(BuildContext context, RankingTeamSynthesis? teamStats, Forces forces) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: <Widget>[
         FeatureHelp(
           featureId: TEAM_VICTORY_FEATURE,
@@ -200,8 +199,9 @@ class _TeamRankingState extends State<TeamRanking> with RouteAwareAnalytics {
           child: LabeledStat(
             title: "Forces",
             child: ForceWidget(
-              force: force,
-              globalForce: globalForce,
+              teamCode: widget.team.code!,
+              forces: forces,
+              backgroundColor: Theme.of(context).canvasColor,
             ),
           ),
         ),
@@ -209,7 +209,7 @@ class _TeamRankingState extends State<TeamRanking> with RouteAwareAnalytics {
     );
   }
 
-  Widget _buildAdvancedStats(BuildContext context, RankingTeamSynthesis? teamStats, Force force, Force globalForce) {
+  Widget _buildAdvancedStats(BuildContext context, RankingTeamSynthesis? teamStats, Forces forces) {
     List<double> setsDiffEvolution = TeamBloc.computePointsDiffs(widget.results, widget.team.code);
     DateTime? startDate = widget.results.firstOrNull?.matchDate;
     DateTime? endDate = widget.results.lastOrNull?.matchDate;

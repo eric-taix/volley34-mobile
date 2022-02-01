@@ -21,7 +21,7 @@ class RankingCubit extends Cubit<RankingState> {
               filter.competitionDivision == Division.all || filter.competitionDivision.code == ranking.division)
           .where((ranking) =>
               filter.competitionGroup == CompetitionFilter.ALL_COMPETITION ||
-              ranking.competitionCode!.startsWith(filter.competitionGroup))
+              ranking.competitionCode.startsWith(filter.competitionGroup))
           .toList();
     }
     emit(RankingLoadedState(rankings));
