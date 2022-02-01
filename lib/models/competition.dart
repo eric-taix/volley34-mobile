@@ -1,3 +1,5 @@
+import 'package:v34/pages/dashboard/blocs/team_classification_bloc.dart';
+
 enum PlayType { t_6x6, t_4x4, t_unknown, t_all }
 
 enum PlaySex { male, female, mix, unknown, all }
@@ -74,6 +76,20 @@ class Competition {
       groupId: json["CompetitionGroupID"],
     );
   }
+
+  @override
+  String toString() {
+    return 'Competition{code: $code}';
+  }
+}
+
+extension CompetitionExtension on List<Competition> {
+  Competition? firstShownCompetition() {
+    DateTime now = DateTime.now();
+    DateTime today = DateTime(now.year, now.month, now.day);
+    return this
+        .firstWhere((competition) => competition.start <= today && competition.end >= today, orElse: () => this[0]);
+  }
 }
 
 class TeamCompetition {
@@ -111,5 +127,14 @@ class TeamCompetition {
       division: json["division"],
       pool: json["poule"],
     );
+  }
+}
+
+extension TeamCompetitionExtension on List<TeamCompetition> {
+  TeamCompetition? firstShownCompetition() {
+    DateTime now = DateTime.now();
+    DateTime today = DateTime(now.year, now.month, now.day);
+    return this
+        .firstWhere((competition) => competition.start <= today && competition.end >= today, orElse: () => this[0]);
   }
 }

@@ -72,8 +72,9 @@ class TeamSlidingStatsLoading extends TeamState {
 
 class TeamSlidingStatsLoaded extends TeamState {
   final Map<String, TeamCompetitionSynthesis> competitions;
+  final String? firstShownCompetition;
 
-  TeamSlidingStatsLoaded({required this.competitions});
+  TeamSlidingStatsLoaded({required this.competitions, this.firstShownCompetition});
 
   @override
   List<Object?> get props => [competitions];
@@ -147,7 +148,7 @@ class TeamBloc extends Bloc<TeamEvent, TeamState> {
     if (event is TeamLoadSlidingResult) {
       yield TeamSlidingStatsLoading();
       var results = await repository.loadTeamLastMatchesResult(event.code, event.last!);
-      var pointDiffsByCompetitionCode = results
+      var teamCompetitionSynthesisByCode = results
           .where((result) => result.competitionCode != null)
           .groupListsBy((result) => result.competitionCode!)
           .map(
@@ -158,7 +159,15 @@ class TeamBloc extends Bloc<TeamEvent, TeamState> {
               ),
             ),
           );
-      yield TeamSlidingStatsLoaded(competitions: pointDiffsByCompetitionCode);
+
+      var competitions = await repository.loadAllCompetitions();
+      var teamCompetitionSynthesisCodes = teamCompetitionSynthesisByCode.keys;
+      var teamCompetitions =
+          competitions.where((competition) => teamCompetitionSynthesisCodes.contains(competition.code)).toList();
+
+      yield TeamSlidingStatsLoaded(
+          competitions: teamCompetitionSynthesisByCode,
+          firstShownCompetition: teamCompetitions.firstShownCompetition()?.code);
     }
 
     if (event is TeamLoadAverageSlidingResult) {
@@ -168,7 +177,6 @@ class TeamBloc extends Bloc<TeamEvent, TeamState> {
       }).toList();
 
       List<TeamCompetition> competitions = await repository.loadTeamCompetitions(event.team);
-      print(competitions);
       var teamCompetitionsSynthesis = await Future.wait(competitions.map((competition) async {
         var matchResults = await repository.loadResults(competition.code, competition.division, competition.pool);
         var pointDiffs = computePointsDiffs(matchResults, event.team.code);
@@ -197,9 +205,11 @@ class TeamBloc extends Bloc<TeamEvent, TeamState> {
             ));
       }));
 
+      var unsorted = Map<String, TeamCompetitionSynthesis>.fromIterable(teamCompetitionsSynthesis,
+          key: (entry) => entry.key, value: (entry) => entry.value);
+
       yield TeamSlidingStatsLoaded(
-          competitions:
-              Map.fromIterable(teamCompetitionsSynthesis, key: (entry) => entry.key, value: (entry) => entry.value));
+          competitions: unsorted, firstShownCompetition: competitions.firstShownCompetition()?.code);
     }
 
     if (event is TeamLoadResults) {

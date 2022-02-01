@@ -52,8 +52,18 @@ class _ClubTeamState extends State<ClubTeam> {
   @override
   Widget build(BuildContext context) {
     final double miniGraphHeight = 80;
-    return BlocBuilder<TeamBloc, TeamState>(
+    return BlocConsumer<TeamBloc, TeamState>(
       bloc: _teamBloc,
+      listener: (context, state) {
+        if (state is TeamSlidingStatsLoaded && state.firstShownCompetition != null) {
+          WidgetsBinding.instance?.addPostFrameCallback((_) {
+            var index = state.competitions.keys
+                .toList()
+                .indexWhere((competitionCode) => competitionCode == state.firstShownCompetition);
+            if (_pageController.hasClients && index != -1) _pageController.jumpToPage(index);
+          });
+        }
+      },
       builder: (context, state) => TitledCard(
         title: widget.team.name!,
         bodyPadding: EdgeInsets.only(top: 18, bottom: 8, right: 0, left: 0),
