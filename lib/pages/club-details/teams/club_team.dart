@@ -67,17 +67,17 @@ class _ClubTeamState extends State<ClubTeam> {
       builder: (context, state) => TitledCard(
         title: widget.team.name!,
         bodyPadding: EdgeInsets.only(top: 18, bottom: 8, right: 0, left: 0),
-        onTap: state is TeamSlidingStatsLoaded
-            ? () => RouterFacade.push(
-                  context: context,
-                  builder: (_) => TeamDetailPage(
-                    team: widget.team,
-                    club: widget.club,
-                    openedPage: OpenedPage.COMPETITION,
-                    openedCompetitionCode: state.competitions.keys.toList()[_pageController.page!.toInt()],
-                  ),
-                )
-            : null,
+        onTap: () => RouterFacade.push(
+          context: context,
+          builder: (_) => TeamDetailPage(
+            team: widget.team,
+            club: widget.club,
+            openedPage: state is TeamSlidingStatsLoaded && _pageController.hasClients ? OpenedPage.COMPETITION : null,
+            openedCompetitionCode: state is TeamSlidingStatsLoaded && _pageController.hasClients
+                ? state.competitions.keys.toList()[_pageController.page!.toInt()]
+                : null,
+          ),
+        ),
         buttonBar: ButtonBar(
           children: <Widget>[
             Padding(
