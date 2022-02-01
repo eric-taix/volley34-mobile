@@ -75,7 +75,7 @@ class _ClubPageState extends State<ClubPage> with SingleTickerProviderStateMixin
               club.shortName,
               club.code,
             ],
-            builder: (club) => ClubCard(club, 1),
+            builder: (club) => ClubCard(club, 1, key: ValueKey(club.code)),
             barTheme: Theme.of(context).copyWith(
               textTheme: TextTheme(headline6: Theme.of(context).textTheme.headline4),
               inputDecorationTheme: InputDecorationTheme(hintStyle: Theme.of(context).textTheme.headline5),
@@ -101,7 +101,8 @@ class _ClubPageState extends State<ClubPage> with SingleTickerProviderStateMixin
                                   child: SlideAnimation(
                                     horizontalOffset: 50.0,
                                     child: FadeInAnimation(
-                                      child: ClubCard(_clubs[index - 1], index - 1),
+                                      child:
+                                          ClubCard(_clubs[index - 1], index - 1, key: ValueKey(_clubs[index - 1].code)),
                                     ),
                                   ),
                                 ),

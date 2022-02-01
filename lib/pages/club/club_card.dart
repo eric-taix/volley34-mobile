@@ -16,7 +16,7 @@ class ClubCard extends StatefulWidget {
   final Club club;
   final int index;
 
-  ClubCard(this.club, this.index);
+  ClubCard(this.club, this.index, {Key? key}) : super(key: key);
 
   @override
   _ClubCardState createState() => _ClubCardState();
@@ -30,6 +30,14 @@ class _ClubCardState extends State<ClubCard> {
     super.initState();
     _clubInfoCubit = ClubInfoCubit(repository: RepositoryProvider.of<Repository>(context));
     _clubInfoCubit.loadInfo(widget.club.code!);
+  }
+
+  @override
+  void didUpdateWidget(covariant ClubCard oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.club.code != widget.club.code) {
+      _clubInfoCubit.loadInfo(widget.club.code!);
+    }
   }
 
   @override
