@@ -42,6 +42,7 @@ class Event extends Equatable {
   final DateTime? endDate;
   final bool? fullDay;
   final String? contactName, contactPhone, contactEmail;
+  final String? webSite;
   final String? description;
   final String? clubCode;
 
@@ -63,6 +64,7 @@ class Event extends Equatable {
     this.contactName,
     this.contactPhone,
     this.contactEmail,
+    this.webSite,
     this.clubCode,
     this.description,
     this.imageUrl,
@@ -112,6 +114,7 @@ class Event extends Equatable {
         contactName: json["CalendarEventContactName"],
         contactPhone: json["CalendarEventContactPhone"],
         contactEmail: json["CalendarEventContactEmail"],
+        webSite: json["CalendarEventFacebook"],
         imageUrl: json["CalendarEventImageURL"],
         type: _toEnumType(json["CalendarEventType"]),
       );
@@ -135,6 +138,7 @@ class Event extends Equatable {
       contactName: contactName,
       contactPhone: contactPhone,
       contactEmail: contactEmail,
+      webSite: webSite,
       clubCode: clubCode,
       description: description,
       imageUrl: imageUrl,

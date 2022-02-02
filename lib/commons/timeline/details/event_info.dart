@@ -313,6 +313,7 @@ class _EventInfoState extends State<EventInfo> with SingleTickerProviderStateMix
                     label: Text(
                       "Saisir\nle résultat",
                       textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.bodyText1,
                     ), onPressed: () {
                   _closeMenu();
                   RouterFacade.push(
@@ -333,6 +334,7 @@ class _EventInfoState extends State<EventInfo> with SingleTickerProviderStateMix
                   label: Text(
                     "Reporter\nle match",
                     textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.bodyText1,
                   ),
                   onPressed: () {
                     _closeMenu();
@@ -359,6 +361,7 @@ class _EventInfoState extends State<EventInfo> with SingleTickerProviderStateMix
                     icon: Icon(Icons.play_arrow_rounded, size: 30, color: color),
                     label: Text(
                       "Scoreur",
+                      style: Theme.of(context).textTheme.bodyText1,
                     ),
                     onPressed: () {
                       _closeMenu();
@@ -418,6 +421,32 @@ class _EventInfoState extends State<EventInfo> with SingleTickerProviderStateMix
             ),
           ),
         ),
+        if ((widget.event.type == EventType.Tournament || widget.event.type == EventType.Meeting) &&
+            (widget.event.webSite != null && widget.event.webSite!.isNotEmpty))
+          Padding(
+            padding: const EdgeInsets.only(bottom: 0.0),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                _buildBarButton(
+                  context,
+                  tag: "btn-website",
+                  icon: Icon(Icons.public),
+                  label: Text(
+                    "Visitez le site web",
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.bodyText1,
+                  ),
+                  onPressed: () {
+                    _closeMenu();
+                    launchURL(widget.event.webSite!);
+                  },
+                  defaultAction: true,
+                ),
+              ],
+            ),
+          ),
         _divider,
       ];
     }
