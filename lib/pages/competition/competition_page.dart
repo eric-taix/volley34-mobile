@@ -8,6 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:v34/commons/competition_badge.dart';
+import 'package:v34/commons/landscape_helper.dart';
 import 'package:v34/commons/loading.dart';
 import 'package:v34/commons/page/main_page.dart';
 import 'package:v34/models/ranking.dart';
@@ -148,7 +149,12 @@ class _CompetitionPageState extends State<CompetitionPage> with SingleTickerProv
             _filterRankings();
           },
           slivers: [
-            if (rankingsPerCompetition != null)
+            if (rankingsPerCompetition != null) ...[
+              SliverToBoxAdapter(
+                  child: Padding(
+                padding: const EdgeInsets.only(top: 18.0),
+                child: Container(child: LandscapeHelper()),
+              )),
               ...rankingsPerCompetition.entries
                   .map(
                     (entry) => SliverStickyHeader(
@@ -179,52 +185,11 @@ class _CompetitionPageState extends State<CompetitionPage> with SingleTickerProv
                     ),
                   )
                   .toList(),
-
-            /*SliverList(
-                      delegate: SliverChildBuilderDelegate(
-                        (context, index) {
-                          if (index == 0) {
-                            return Paragraph(
-                              titleWidget: _buildCompetitionTitle(
-                                  entry.key, entry.value.length > 0 ? entry.value[0].competitionCode : null),
-                            );
-                          } else {
-                            RankingSynthesis ranking = entry.value[index - 1];
-                            return _buildCompetitionRankingTable(context, ranking,
-                                highlightTeamNames: _query.isNotEmpty ? _query.split(" ") : null);
-                          }
-                        },
-                        childCount: entry.value.length + 1,
-                      ),
-                    ),
-                  )
-                  .toList(),*/
+            ],
             if (rankingsPerCompetition == null)
               SliverFillRemaining(
                 child: Center(child: Loading()),
               ),
-            /*       _filteredRankings != null
-                ? (_filteredRankings!.length != 0
-                    ? SliverList(
-                        delegate: SliverChildBuilderDelegate(
-                          (context, index) {
-                            if (index == 0 && portrait) {
-                              return LandscapeHelper();
-                            }
-                            if (index == _filteredRankings!.length + (portrait ? 1 : 0)) {
-                              return SizedBox(height: FluidNavBar.nominalHeight + 28);
-                            }
-                            RankingSynthesis ranking = _filteredRankings![index + (portrait ? -1 : 0)];
-                            return _buildCompetitionRankingTable(context, ranking,
-                                highlightTeamNames: _query.isNotEmpty ? _query.split(" ") : null);
-                          },
-                          childCount: _filteredRankings!.length + 1 + (portrait ? 1 : 0),
-                        ),
-                      )
-                    : SliverFillRemaining(child: Center(child: Text("Aucun résultat"))))
-                : SliverFillRemaining(
-                    child: Center(child: Loading()),
-                  ),*/
             SliverToBoxAdapter(
               child: SizedBox(height: 80),
             ),
