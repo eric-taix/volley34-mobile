@@ -248,7 +248,7 @@ class _CompetitionPageState extends State<CompetitionPage> with SingleTickerProv
             child: _buildTitle(ranking),
           ),
           Padding(
-            padding: const EdgeInsets.only(top: 18.0, left: 18, right: 8),
+            padding: const EdgeInsets.only(top: 18.0, left: 18),
             child: TeamRankingTable(
               ranking: ranking,
               highlightTeamNames: highlightTeamNames,

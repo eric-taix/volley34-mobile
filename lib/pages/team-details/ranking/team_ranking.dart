@@ -21,7 +21,7 @@ import 'package:v34/utils/competition_text.dart';
 
 import 'evolution_widget.dart';
 
-const double TEAM_RANKING_LEFT_PADDING = 8;
+const double TEAM_RANKING_LEFT_PADDING = 0;
 
 class TeamRanking extends StatefulWidget {
   final Team team;

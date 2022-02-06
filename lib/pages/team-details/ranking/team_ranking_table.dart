@@ -64,16 +64,23 @@ class _TeamRankingTableState extends State<TeamRankingTable> {
                         : Theme.of(context).textTheme.bodyText2!);
                 return MapEntry(
                   index,
-                  InkWell(
-                    onTap: rankingSynthesis.teamCode != widget.team?.code && rankingSynthesis.teamCode != null
-                        ? () => _goToTeamDetails(
-                            context, rankingSynthesis.teamCode!, widget.ranking.competitionCode, rankingSynthesis.name!)
-                        : null,
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: 8, bottom: 8),
-                      child: Container(
-                        alignment: Alignment.centerLeft,
-                        child: _buildRow(rankingSynthesis, index, lineStyle),
+                  Card(
+                    clipBehavior: Clip.hardEdge,
+                    color: rankingSynthesis.teamCode != widget.team?.code && rankingSynthesis.teamCode != null
+                        ? null
+                        : Theme.of(context).canvasColor,
+                    margin: EdgeInsets.only(top: 2, bottom: 2, right: 18),
+                    child: InkWell(
+                      onTap: rankingSynthesis.teamCode != widget.team?.code && rankingSynthesis.teamCode != null
+                          ? () => _goToTeamDetails(context, rankingSynthesis.teamCode!, widget.ranking.competitionCode,
+                              rankingSynthesis.name!)
+                          : null,
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 8, bottom: 8, left: 8),
+                        child: Container(
+                          alignment: Alignment.centerLeft,
+                          child: _buildRow(rankingSynthesis, index, lineStyle),
+                        ),
                       ),
                     ),
                   ),
@@ -267,7 +274,7 @@ class _TeamRankingTableState extends State<TeamRankingTable> {
               width: width,
               child: Text("${rankingSynthesis.pointsDiff}", style: lineStyle, textAlign: TextAlign.center)),
         SizedBox(
-          width: 20,
+          width: 0,
           child: rankingSynthesis.teamCode != widget.team?.code
               ? Icon(Icons.arrow_forward_ios_outlined, size: 14, color: lineStyle.color)
               : SizedBox(),
