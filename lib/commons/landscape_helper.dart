@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
 class LandscapeHelper extends StatefulWidget {
-  String? code;
+  final String? code;
 
   LandscapeHelper({Key? key, this.code}) : super(key: key);
 

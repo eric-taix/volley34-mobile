@@ -40,12 +40,14 @@ class MatchInfo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(top: 28.0, bottom: 18, left: 28, right: 18),
+      padding: const EdgeInsets.only(top: 28.0, bottom: 18),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          _buildLogo(context),
-          _buildOpponent(context, hostTeam, hostClub, showTeamLink),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 18.0),
+            child: _buildOpponent(context, hostTeam, hostClub, showTeamLink),
+          ),
           FractionallySizedBox(
             widthFactor: 0.8,
             child: ForceTeams(
@@ -56,7 +58,10 @@ class MatchInfo extends StatelessWidget {
               backgroundColor: Theme.of(context).primaryColor,
             ),
           ),
-          _buildOpponent(context, visitorTeam, visitorClub, showTeamLink),
+          Padding(
+            padding: const EdgeInsets.only(top: 18.0),
+            child: _buildOpponent(context, visitorTeam, visitorClub, showTeamLink),
+          ),
           if (showMatchDate && date != null)
             Text("${dateFormat.format(date!)}", style: Theme.of(context).textTheme.bodyText1),
         ],
@@ -64,57 +69,51 @@ class MatchInfo extends StatelessWidget {
     );
   }
 
-  Widget _buildLogo(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(right: 18.0),
-          child: hostTeam != null && hostClub != null
-              ? Hero(
-                  tag: "hero-logo-${hostTeam!.code}",
-                  child: RoundedNetworkImage(40, hostClub!.logoUrl ?? ""),
-                )
-              : SizedBox(height: 40),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(left: 18.0),
-          child: visitorTeam != null && visitorClub != null
-              ? Hero(
-                  tag: "hero-logo-${visitorTeam?.code}",
-                  child: RoundedNetworkImage(40, visitorClub?.logoUrl ?? ""),
-                )
-              : SizedBox(height: 40),
-        ),
-      ],
-    );
-  }
-
   Widget _buildOpponent(BuildContext context, Team? team, Club? club, bool linkToTeam) {
-    return ListTile(
-      onTap: linkToTeam && team != null && club != null
-          ? () => RouterFacade.push(
-              context: context, builder: (_) => TeamDetailPage(teamCode: team.code!, teamName: team.name!, club: club))
-          : null,
-      title: team != null
-          ? Row(
-              mainAxisAlignment: MainAxisAlignment.start,
+    return team != null
+        ? Container(
+            child: Stack(
+              clipBehavior: Clip.none,
               children: [
-                Expanded(
-                  child: Text(
-                    team.name ?? "",
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.headline4,
+                Card(
+                  margin: EdgeInsets.symmetric(horizontal: 28),
+                  color: linkToTeam ? null : Theme.of(context).canvasColor,
+                  clipBehavior: Clip.hardEdge,
+                  child: InkWell(
+                    onTap: linkToTeam && club != null
+                        ? () => RouterFacade.push(
+                            context: context,
+                            builder: (_) => TeamDetailPage(teamCode: team.code!, teamName: team.name!, club: club))
+                        : null,
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 38, top: 8, bottom: 8),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: Text(
+                              (team.name ?? ""),
+                              textAlign: TextAlign.center,
+                              style: Theme.of(context).textTheme.headline4,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                 ),
-                if (showTeamLink)
-                  Icon(
-                    Icons.arrow_forward_ios_rounded,
-                    size: 14,
-                  ),
+                Positioned(
+                    top: -8,
+                    left: 8,
+                    child: (club != null)
+                        ? Hero(
+                            tag: "hero-logo-${team.code}",
+                            child: RoundedNetworkImage(40, club.logoUrl ?? ""),
+                          )
+                        : SizedBox())
               ],
-            )
-          : Loading(loaderType: LoaderType.THREE_BOUNCE),
-    );
+            ),
+          )
+        : Loading(loaderType: LoaderType.THREE_BOUNCE);
   }
 }
