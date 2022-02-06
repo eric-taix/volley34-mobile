@@ -157,7 +157,7 @@ class _TeamRankingState extends State<TeamRanking> with RouteAwareAnalytics {
         ),
         Padding(
           padding: const EdgeInsets.only(left: 18 + TEAM_RANKING_LEFT_PADDING, right: 8),
-          child: LandscapeHelper(),
+          child: LandscapeHelper(code: widget.ranking.competitionCode),
         ),
       ],
     );

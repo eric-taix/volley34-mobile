@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
 class LandscapeHelper extends StatefulWidget {
-  const LandscapeHelper({Key? key}) : super(key: key);
+  String? code;
+
+  LandscapeHelper({Key? key, this.code}) : super(key: key);
 
   @override
   State<LandscapeHelper> createState() => _LandscapeHelperState();
@@ -18,13 +20,13 @@ class _LandscapeHelperState extends State<LandscapeHelper> with SingleTickerProv
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(vsync: this, duration: Duration(milliseconds: 2000));
+    _controller = AnimationController(vsync: this, duration: Duration(milliseconds: 3000));
     _controller.addListener(() {
       if (mounted) setState(() {});
     });
     _skakeAnimation = Tween<double>(begin: pi / 2, end: 2.0 * pi).animate(CurvedAnimation(
       parent: _controller,
-      curve: Interval(0.4, 1, curve: Curves.bounceOut),
+      curve: Interval(0.6, 1, curve: Curves.bounceOut),
     ));
     _opacityAnimation = Tween<double>(begin: 0, end: 1)
         .animate(CurvedAnimation(parent: _controller, curve: Interval(0, 0.5, curve: Curves.easeInOut)));
@@ -42,14 +44,14 @@ class _LandscapeHelperState extends State<LandscapeHelper> with SingleTickerProv
         ? Padding(
             padding: EdgeInsets.only(top: 18),
             child: VisibilityDetector(
-              key: Key("landscape-helper"),
+              key: Key("landscape-helper${widget.code ?? ""}"),
               onVisibilityChanged: (VisibilityInfo info) {
-                Future.delayed(Duration(milliseconds: 300), () {
+                Future.delayed(Duration(milliseconds: 600), () {
                   if (mounted) _controller.forward();
                 });
               },
               child: AnimatedOpacity(
-                duration: Duration(milliseconds: 1500),
+                duration: Duration(milliseconds: 300),
                 opacity: _opacityAnimation.value,
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
