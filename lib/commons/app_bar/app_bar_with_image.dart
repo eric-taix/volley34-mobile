@@ -49,6 +49,7 @@ class _AppBarHeaderDelegate extends SliverPersistentHeaderDelegate {
     var compute = computeLinear(shrinkOffset, minExtent, maxExtent);
 
     return Container(
+      color: Theme.of(context).canvasColor,
       child: Stack(
         fit: StackFit.expand,
         children: [
@@ -209,6 +210,7 @@ class _AppBarWithImageState extends State<AppBarWithImage> with TickerProviderSt
   late int _currentCount;
   late int _currentPosition;
   late final ValueNotifier<int> _currentPageNotifier;
+  late final ScrollController _scrollController;
   @override
   void initState() {
     _currentPosition = widget.initPosition ?? 0;
@@ -221,6 +223,7 @@ class _AppBarWithImageState extends State<AppBarWithImage> with TickerProviderSt
     controller.addListener(onPositionChange);
     controller.animation?.addListener(onScroll);
     _currentCount = widget.itemCount;
+    _scrollController = ScrollController();
     super.initState();
   }
 
@@ -265,6 +268,7 @@ class _AppBarWithImageState extends State<AppBarWithImage> with TickerProviderSt
 
   @override
   void dispose() {
+    _scrollController.dispose();
     controller.animation?.removeListener(onScroll);
     controller.removeListener(onPositionChange);
     controller.dispose();
@@ -292,6 +296,7 @@ class _AppBarWithImageState extends State<AppBarWithImage> with TickerProviderSt
     return Material(
       color: Theme.of(context).canvasColor,
       child: NestedScrollView(
+        controller: _scrollController,
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
           return <Widget>[
             SliverOverlapAbsorber(
@@ -304,48 +309,61 @@ class _AppBarWithImageState extends State<AppBarWithImage> with TickerProviderSt
                   subTitle: widget.subTitle,
                   heroTag: widget.heroTag,
                   favorite: widget.favorite,
-                  bottom: Stack(
-                    children: [
-                      Container(
-                        width: double.infinity,
-                        color: Theme.of(context).canvasColor,
-                        child: Container(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: <Widget>[
-                              TabBar(
-                                isScrollable: true,
-                                controller: controller,
-                                //indicatorPadding: EdgeInsets.symmetric(horizontal: 12.0),
-                                tabs: List.generate(
-                                  widget.itemCount,
-                                  (index) {
-                                    return widget.tabBuilder(context, index);
-                                  },
+                  bottom: Container(
+                    decoration: !_scrollController.hasClients ||
+                            _scrollController.offset < _scrollController.position.maxScrollExtent
+                        ? null
+                        : BoxDecoration(
+                            gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [
+                            Theme.of(context).canvasColor,
+                            Colors.transparent,
+                          ], stops: [
+                            0.97,
+                            1,
+                          ])),
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom: 4.0),
+                      child: Stack(
+                        children: [
+                          Container(
+                            width: double.infinity,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: <Widget>[
+                                TabBar(
+                                  isScrollable: true,
+                                  controller: controller,
+                                  //indicatorPadding: EdgeInsets.symmetric(horizontal: 12.0),
+                                  tabs: List.generate(
+                                    widget.itemCount,
+                                    (index) {
+                                      return widget.tabBuilder(context, index);
+                                    },
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                        ),
+                          Positioned(
+                            top: 20,
+                            right: 0,
+                            left: 0,
+                            child: AnimatedCirclePageIndicator(
+                              itemCount: widget.itemCount,
+                              currentPageNotifier: _currentPageNotifier,
+                              radius: 4,
+                              activeRadius: 3,
+                              fillColor: Colors.transparent,
+                              activeColor: Theme.of(context).colorScheme.secondary,
+                              spacing: 8,
+                              borderColor: Theme.of(context).colorScheme.secondary,
+                              borderWidth: 1,
+                              duration: Duration(milliseconds: 100),
+                            ),
+                          ),
+                        ],
                       ),
-                      Positioned(
-                        top: 20,
-                        right: 0,
-                        left: 0,
-                        child: AnimatedCirclePageIndicator(
-                          itemCount: widget.itemCount,
-                          currentPageNotifier: _currentPageNotifier,
-                          radius: 4,
-                          activeRadius: 3,
-                          fillColor: Colors.transparent,
-                          activeColor: Theme.of(context).colorScheme.secondary,
-                          spacing: 8,
-                          borderColor: Theme.of(context).colorScheme.secondary,
-                          borderWidth: 1,
-                          duration: Duration(milliseconds: 100),
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
                 ),
               ),
@@ -353,33 +371,35 @@ class _AppBarWithImageState extends State<AppBarWithImage> with TickerProviderSt
           ];
         },
         body: widget.itemCount > 0
-            ? TabBarView(
-                controller: controller,
-                children: List.generate(
-                  widget.itemCount,
-                  (index) {
-                    return SafeArea(
-                      top: false,
-                      bottom: false,
-                      left: false,
-                      child: Builder(
-                        builder: (BuildContext context) {
-                          return CustomScrollView(
-                            key: PageStorageKey<String>("page$index"),
-                            slivers: <Widget>[
-                              SliverOverlapInjector(
-                                handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
-                              ),
-                              SliverPadding(
-                                padding: const EdgeInsets.only(top: 0.0, right: 0.0, bottom: 48.0, left: 0.0),
-                                sliver: widget.pageBuilder(context, index),
-                              ),
-                            ],
-                          );
-                        },
-                      ),
-                    );
-                  },
+            ? Container(
+                child: TabBarView(
+                  controller: controller,
+                  children: List.generate(
+                    widget.itemCount,
+                    (index) {
+                      return SafeArea(
+                        top: false,
+                        bottom: false,
+                        left: false,
+                        child: Builder(
+                          builder: (BuildContext context) {
+                            return CustomScrollView(
+                              key: PageStorageKey<String>("page$index"),
+                              slivers: <Widget>[
+                                SliverOverlapInjector(
+                                  handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+                                ),
+                                SliverPadding(
+                                  padding: const EdgeInsets.only(top: 0.0, right: 0.0, bottom: 48.0, left: 0.0),
+                                  sliver: widget.pageBuilder(context, index),
+                                ),
+                              ],
+                            );
+                          },
+                        ),
+                      );
+                    },
+                  ),
                 ),
               )
             : Center(child: Loading()),
