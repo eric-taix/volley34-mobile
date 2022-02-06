@@ -10,3 +10,4 @@
 - Correction du rechargement systématique de la page des compétitions
 - Correction d'un bug lors du chargement du détail d'un match qui empéchait de voir les boutons d'action
 - Amélioration du chargement de l'information des clubs
+- Ajout d'un écran de confirmation avant envoi du résultat (toujours par email)
