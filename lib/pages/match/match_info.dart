@@ -93,7 +93,8 @@ class MatchInfo extends StatelessWidget {
   Widget _buildOpponent(BuildContext context, Team? team, Club? club, bool linkToTeam) {
     return ListTile(
       onTap: linkToTeam && team != null && club != null
-          ? () => RouterFacade.push(context: context, builder: (_) => TeamDetailPage(team: team, club: club))
+          ? () => RouterFacade.push(
+              context: context, builder: (_) => TeamDetailPage(teamCode: team.code!, teamName: team.name!, club: club))
           : null,
       title: team != null
           ? Row(

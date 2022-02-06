@@ -1,13 +1,10 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:v34/commons/router.dart';
-import 'package:v34/models/club.dart';
 import 'package:v34/models/ranking.dart';
 import 'package:v34/models/team.dart';
 import 'package:v34/pages/team-details/team_detail_page.dart';
-import 'package:v34/repositories/repository.dart';
 
 class TeamRankingTable extends StatefulWidget {
   final Team? team;
@@ -40,15 +37,7 @@ class TeamRankingTable extends StatefulWidget {
 }
 
 class _TeamRankingTableState extends State<TeamRankingTable> {
-  late Repository _repository;
-
   double extraColumnWidth = 65;
-
-  @override
-  void initState() {
-    super.initState();
-    _repository = RepositoryProvider.of<Repository>(context);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -77,7 +66,8 @@ class _TeamRankingTableState extends State<TeamRankingTable> {
                   index,
                   InkWell(
                     onTap: rankingSynthesis.teamCode != widget.team?.code && rankingSynthesis.teamCode != null
-                        ? () => _goToTeamDetails(context, rankingSynthesis.teamCode!, widget.ranking.competitionCode)
+                        ? () => _goToTeamDetails(
+                            context, rankingSynthesis.teamCode!, widget.ranking.competitionCode, rankingSynthesis.name!)
                         : null,
                     child: Padding(
                       padding: const EdgeInsets.only(top: 8, bottom: 8),
@@ -286,19 +276,17 @@ class _TeamRankingTableState extends State<TeamRankingTable> {
     );
   }
 
-  _goToTeamDetails(BuildContext context, String teamCode, String? competitionCode) {
+  _goToTeamDetails(BuildContext context, String teamCode, String? competitionCode, String teamName) {
     if (widget.onPushPage != null) widget.onPushPage!();
-    Future.wait([_repository.loadTeam(teamCode), _repository.loadTeamClub(teamCode)]).then((results) {
-      RouterFacade.push(
-          context: context,
-          builder: (_) => TeamDetailPage(
-                team: results[0] as Team,
-                club: results[1] as Club,
-                openedPage: competitionCode != null ? OpenedPage.COMPETITION : null,
-                openedCompetitionCode: competitionCode != null ? competitionCode : null,
-              )).then((_) {
-        if (widget.onPopPage != null) widget.onPopPage!();
-      });
+    RouterFacade.push(
+        context: context,
+        builder: (_) => TeamDetailPage(
+              teamCode: teamCode,
+              teamName: teamName,
+              openedPage: competitionCode != null ? OpenedPage.COMPETITION : null,
+              openedCompetitionCode: competitionCode != null ? competitionCode : null,
+            )).then((_) {
+      if (widget.onPopPage != null) widget.onPopPage!();
     });
   }
 }
