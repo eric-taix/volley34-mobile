@@ -32,12 +32,15 @@ void initDio(MessageCubit messageCubit) {
 class DebugCacheInterceptor extends InterceptorsWrapper {
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) {
-    print("Request: ${response.realUri}");
+    DateTime? start = response.requestOptions.extra["start"];
+    print(
+        "${start != null && DateTime.now().difference(start).inMilliseconds > 1000 ? "SLOW [${DateTime.now().difference(start).inMilliseconds} ms]" : ""} Request: ${response.realUri}");
     super.onResponse(response, handler);
   }
 
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
+    options.extra["start"] = DateTime.now();
     super.onRequest(options, handler);
   }
 }
