@@ -4,7 +4,7 @@ import 'package:v34/message_cubit.dart';
 
 late final Dio dio;
 
-final CacheStore _cacheStore = MemCacheStore();
+final CacheStore _cacheStore = MemCacheStore(maxEntrySize: 1600000, maxSize: 14340032);
 
 void initDio(MessageCubit messageCubit) {
   final defaultCacheOptions = CacheOptions(
