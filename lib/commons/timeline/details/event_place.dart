@@ -3,6 +3,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:v34/commons/loading.dart';
 import 'package:v34/commons/marker/map-marker.dart';
@@ -26,6 +27,7 @@ class _EventPlaceState extends State<EventPlace> {
   String? _currentMapStyle;
   GoogleMapController? _mapController;
   BitmapDescriptor? _marker;
+  Position? _myLocation;
 
   @override
   void didChangeDependencies() {
@@ -46,11 +48,35 @@ class _EventPlaceState extends State<EventPlace> {
       borderWidth: 8,
     ).bitmapDescriptor.then(
       (bitmap) {
-        setState(() {
-          _marker = bitmap;
-        });
+        if (mounted)
+          setState(() {
+            _marker = bitmap;
+          });
       },
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _requestLocationPermission();
+  }
+
+  _requestLocationPermission() async {
+    var permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        print("Location permissions are denied");
+        return;
+      }
+    }
+    if (permission == LocationPermission.deniedForever) {
+      print("Location permissions are permanently denied, we cannot request permissions");
+      return;
+    }
+    _myLocation = await Geolocator.getCurrentPosition();
+    setState(() {});
   }
 
   @override
@@ -76,9 +102,35 @@ class _EventPlaceState extends State<EventPlace> {
 
   Widget _buildGymnasiumLocationLoaded(GymnasiumLoadedState state) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
+        Padding(
+          padding: const EdgeInsets.only(right: 36.0, bottom: 4),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(right: 4.0),
+                child: _myLocation != null
+                    ? Icon(Icons.navigation, color: Theme.of(context).textTheme.bodyText1!.color!, size: 16)
+                    : null,
+              ),
+              Text(
+                  _myLocation != null
+                      ? "${(Geolocator.distanceBetween(
+                            _myLocation!.latitude,
+                            _myLocation!.longitude,
+                            state.gymnasium.latitude!,
+                            state.gymnasium.longitude!,
+                          ) / 1000).toStringAsPrecision(3)} km"
+                      : "",
+                  textAlign: TextAlign.end,
+                  style: Theme.of(context).textTheme.bodyText1),
+            ],
+          ),
+        ),
         Container(
-          padding: EdgeInsets.symmetric(vertical: 8.0),
+          padding: EdgeInsets.only(bottom: 8.0),
           margin: EdgeInsets.symmetric(horizontal: 36.0),
           height: 250,
           child: GestureDetector(
@@ -95,8 +147,8 @@ class _EventPlaceState extends State<EventPlace> {
                           icon: _marker ?? BitmapDescriptor.defaultMarkerWithHue(100))
                     ].toSet(),
                     initialCameraPosition:
-                        CameraPosition(target: LatLng(state.gymnasium.latitude!, state.gymnasium.longitude!), zoom: 9),
-                    myLocationEnabled: true,
+                        CameraPosition(target: LatLng(state.gymnasium.latitude!, state.gymnasium.longitude!), zoom: 11),
+                    myLocationEnabled: _myLocation != null,
                     myLocationButtonEnabled: false,
                     mapType: MapType.normal,
                     zoomGesturesEnabled: false,
@@ -153,14 +205,19 @@ class _EventPlaceState extends State<EventPlace> {
   @override
   Widget build(BuildContext context) {
     if (widget.event.type == EventType.Match) {
-      return BlocBuilder<GymnasiumBloc, GymnasiumState>(
-        builder: (context, dynamic state) {
-          if (state is GymnasiumLoadedState) {
-            return Padding(padding: const EdgeInsets.only(top: 8.0), child: _buildGymnasiumLocationLoaded(state));
-          } else {
-            return Loading();
-          }
-        },
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          BlocBuilder<GymnasiumBloc, GymnasiumState>(
+            builder: (context, dynamic state) {
+              if (state is GymnasiumLoadedState) {
+                return Padding(padding: const EdgeInsets.only(top: 8.0), child: _buildGymnasiumLocationLoaded(state));
+              } else {
+                return Loading();
+              }
+            },
+          ),
+        ],
       );
     } else
       return Container();
