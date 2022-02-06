@@ -283,10 +283,114 @@ class _EditMatchState extends State<EditMatch> {
         .toList()
         .asMap()
         .entries
-        .map((entry) => entry.key % 2 == 0 ? " , ${entry.value} " : " - ${entry.value} ")
+        .map((entry) => entry.key % 2 == 0 ? " , ${entry.value}" : "-${entry.value}")
         .join()
         .substring(2);
 
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Row(
+            children: [
+              Icon(
+                Icons.info_outline_rounded,
+                color: Theme.of(context).textTheme.headline5!.color,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 8.0),
+                child: Text("Confirmation", style: Theme.of(context).textTheme.headline5),
+              ),
+            ],
+          ),
+          content: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SizedBox(height: 18),
+              Text("$name, confirmez-vous l'envoi du résultat suivant ?", style: Theme.of(context).textTheme.bodyText1),
+              SizedBox(height: 18),
+              RichText(
+                text: TextSpan(
+                    text: "",
+                    children: [
+                      TextSpan(text: hostTeamName, style: Theme.of(context).textTheme.bodyText2),
+                      TextSpan(text: " a reçu "),
+                      TextSpan(text: visitorTeamName, style: Theme.of(context).textTheme.bodyText2),
+                      TextSpan(text: " sur le score final de ", style: Theme.of(context).textTheme.bodyText1),
+                      TextSpan(text: pointResults, style: Theme.of(context).textTheme.bodyText2),
+                    ],
+                    style: Theme.of(context).textTheme.bodyText1),
+              ),
+              SizedBox(height: 18),
+              RichText(
+                text: TextSpan(
+                    text: "Total des sets : ",
+                    children: [
+                      TextSpan(text: "$_hostSets - $_visitorSets", style: Theme.of(context).textTheme.bodyText2),
+                    ],
+                    style: Theme.of(context).textTheme.bodyText1),
+              ),
+              RichText(
+                text: TextSpan(
+                    text: "Total des points : ",
+                    children: [
+                      TextSpan(
+                          text: "$_hostTotalPoints - $_visitorTotalPoints",
+                          style: Theme.of(context).textTheme.bodyText2),
+                    ],
+                    style: Theme.of(context).textTheme.bodyText1),
+              ),
+              SizedBox(height: 18),
+              Text(
+                  _scoreSheetPhotoPath != null
+                      ? "* Une photo de la feuille de match a été jointe"
+                      : "* Aucune photo de la feuille de match n'a été jointe",
+                  style: Theme.of(context).textTheme.bodyText1!.copyWith(fontStyle: FontStyle.italic)),
+            ],
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text("Annuler"),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+                _sendEmail(
+                  context,
+                  name: name,
+                  senderEmail: senderEmail,
+                  hostTeamName: hostTeamName,
+                  visitorTeamName: visitorTeamName,
+                  scoreSheetPath: scoreSheetPath,
+                  userTeam: userTeam,
+                  comments: comments,
+                  pointResults: pointResults,
+                );
+              },
+              child: Text("Confirmer"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _sendEmail(
+    BuildContext context, {
+    required String name,
+    required String senderEmail,
+    required String hostTeamName,
+    required String visitorTeamName,
+    required String? scoreSheetPath,
+    required Team userTeam,
+    required String comments,
+    required String pointResults,
+  }) async {
     final MailOptions mailOptions = MailOptions(
         body: '''
       <b><u>Envoi de résultat de $name ($senderEmail) pour l'équipe ${userTeam.name}</u></b><br/>
@@ -308,7 +412,7 @@ class _EditMatchState extends State<EditMatch> {
         attachments: scoreSheetPath != null ? [scoreSheetPath] : []);
 
     await FlutterMailer.send(mailOptions);
-    Navigator.of(context).pop();
+    //Navigator.of(context).pop();
     final snackBar =
         SnackBar(content: Text("Une copie de l'e-mail contenant le résultat du match vous a été envoyé. Merci."));
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
@@ -633,7 +737,7 @@ class _EditMatchState extends State<EditMatch> {
             ],
             decoration: InputDecoration(
               labelText: "Votre nom",
-              errorStyle: TextStyle(height: 1.1, fontSize: 14),
+              errorStyle: TextStyle(fontSize: 14),
             ),
             autovalidateMode: AutovalidateMode.always,
             onEditingComplete: () {
@@ -698,13 +802,10 @@ class _EditMatchState extends State<EditMatch> {
       ),
       if (_userTeam == null)
         Padding(
-          padding: const EdgeInsets.only(left: 38.0),
+          padding: const EdgeInsets.only(left: 38.0, top: 8),
           child: Text(
             "La sélection de votre équipe est obligatoire",
-            style: Theme.of(context)
-                .textTheme
-                .bodyText2!
-                .copyWith(color: Theme.of(context).inputDecorationTheme.errorStyle!.color!),
+            style: Theme.of(context).inputDecorationTheme.errorStyle,
           ),
         )
     ];

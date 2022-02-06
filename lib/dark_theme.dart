@@ -167,18 +167,18 @@ ThemeData buildDarkTheme(Color mainColor) {
     inputDecorationTheme: InputDecorationTheme(
       suffixStyle: TextStyle(color: Colors.black54),
       labelStyle: TextStyle(color: Colors.white70, fontSize: 18, fontFamily: "Raleway", fontWeight: FontWeight.normal),
-      errorStyle: TextStyle(color: Color(0xFFC73551), fontSize: 11, height: 0),
+      errorStyle: TextStyle(color: mainColor, fontSize: 14, height: 0),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(CARD_BORDER_RADIUS),
         borderSide: BorderSide(style: BorderStyle.solid, color: Colors.white54, width: 1),
       ),
       focusedErrorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(CARD_BORDER_RADIUS),
-        borderSide: BorderSide(style: BorderStyle.solid, color: Color(0xFFC73551), width: 3),
+        borderSide: BorderSide(style: BorderStyle.solid, color: mainColor, width: 3),
       ),
       errorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(CARD_BORDER_RADIUS),
-        borderSide: BorderSide(style: BorderStyle.solid, color: Color(0xFFC73551), width: 2),
+        borderSide: BorderSide(style: BorderStyle.solid, color: mainColor, width: 2),
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(CARD_BORDER_RADIUS),

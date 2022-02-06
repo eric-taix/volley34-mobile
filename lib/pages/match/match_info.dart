@@ -50,8 +50,8 @@ class MatchInfo extends StatelessWidget {
             widthFactor: 0.8,
             child: ForceTeams(
               forces: forces,
-              hostCode: hostTeam!.code!,
-              visitorCode: visitorTeam!.code!,
+              hostCode: hostTeam?.code ?? "",
+              visitorCode: visitorTeam?.code ?? "",
               showDivider: true,
               backgroundColor: Theme.of(context).primaryColor,
             ),
@@ -75,7 +75,7 @@ class MatchInfo extends StatelessWidget {
                   tag: "hero-logo-${hostTeam!.code}",
                   child: RoundedNetworkImage(40, hostClub!.logoUrl ?? ""),
                 )
-              : SizedBox(),
+              : SizedBox(height: 40),
         ),
         Padding(
           padding: const EdgeInsets.only(left: 18.0),
@@ -84,7 +84,7 @@ class MatchInfo extends StatelessWidget {
                   tag: "hero-logo-${visitorTeam?.code}",
                   child: RoundedNetworkImage(40, visitorClub?.logoUrl ?? ""),
                 )
-              : SizedBox(),
+              : SizedBox(height: 40),
         ),
       ],
     );

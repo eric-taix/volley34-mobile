@@ -1,5 +1,4 @@
 import 'package:add_2_calendar/add_2_calendar.dart' as addToCalendar;
-import 'package:feature_discovery/feature_discovery.dart';
 import 'package:feature_flags/feature_flags.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/foundation.dart';
@@ -75,30 +74,17 @@ class _EventInfoState extends State<EventInfo> with SingleTickerProviderStateMix
 
     if (widget.event.type == EventType.Match) {
       Repository repository = RepositoryProvider.of<Repository>(context);
-      repository.loadTeamClub(widget.event.hostCode).then((hostClub) {
-        _hostClub = hostClub;
-        return repository.loadTeam(widget.event.hostCode!);
-      }).then((hostTeam) {
-        _hostTeam = hostTeam;
-        return repository.loadTeamClub(widget.event.visitorCode);
-      }).then((visitorClub) {
-        _visitorClub = visitorClub;
-        return repository.loadTeam(widget.event.visitorCode!);
-      }).then((visitorTeam) {
-        _visitorTeam = visitorTeam;
-        setState(() {});
-        Future.delayed(Duration(seconds: 1)).then((_) {
-          FeatureDiscovery.discoverFeatures(
-            context,
-            [
-              ...[
-                "match_opponents",
-                "match_date_and_hour",
-                "match_place",
-                "match_actions",
-              ],
-            ],
-          );
+      Future.wait([
+        repository.loadTeamClub(widget.event.hostCode),
+        repository.loadTeam(widget.event.hostCode!),
+        repository.loadTeamClub(widget.event.visitorCode),
+        repository.loadTeam(widget.event.visitorCode!),
+      ]).then((values) {
+        setState(() {
+          _hostClub = values[0] as Club;
+          _hostTeam = values[1] as Team;
+          _visitorClub = values[2] as Club;
+          _visitorTeam = values[3] as Team;
         });
       });
     }
@@ -288,7 +274,7 @@ class _EventInfoState extends State<EventInfo> with SingleTickerProviderStateMix
 
   List<Widget> _buildTitle(BuildContext context) {
     Color color = Theme.of(context).textTheme.bodyText2!.color!;
-    if (widget.event.type == EventType.Match && _hostTeam != null && _visitorTeam != null) {
+    if (widget.event.type == EventType.Match) {
       return [
         MatchInfo(
           hostTeam: _hostTeam,
@@ -300,25 +286,46 @@ class _EventInfoState extends State<EventInfo> with SingleTickerProviderStateMix
           showTeamLink: true,
           forces: widget.event.forces,
         ),
-        if (widget.event.type == EventType.Match)
-          Padding(
-            padding: const EdgeInsets.only(bottom: 0.0),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                _buildBarButton(context,
-                    tag: "btn-edit",
-                    icon: Icon(Icons.edit),
-                    label: Text(
-                      "Saisir\nle résultat",
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.bodyText1,
-                    ), onPressed: () {
+        Padding(
+          padding: const EdgeInsets.only(bottom: 0.0),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              _buildBarButton(context,
+                  tag: "btn-edit",
+                  icon: Icon(Icons.edit),
+                  label: Text(
+                    "Saisir\nle résultat",
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.bodyText1,
+                  ), onPressed: () {
+                _closeMenu();
+                RouterFacade.push(
+                  context: context,
+                  builder: (_) => EditMatch(
+                    hostTeam: _hostTeam!,
+                    visitorTeam: _visitorTeam!,
+                    hostClub: _hostClub!,
+                    visitorClub: _visitorClub!,
+                    matchDate: widget.event.date!,
+                  ),
+                );
+              }, defaultAction: true),
+              _buildBarButton(
+                context,
+                tag: "btn-postpone",
+                icon: SvgPicture.asset("assets/calendar-postpone3.svg", width: 30, color: color),
+                label: Text(
+                  "Reporter\nle match",
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.bodyText1,
+                ),
+                onPressed: () {
                   _closeMenu();
                   RouterFacade.push(
                     context: context,
-                    builder: (_) => EditMatch(
+                    builder: (_) => PostPoneMatch(
                       hostTeam: _hostTeam!,
                       visitorTeam: _visitorTeam!,
                       hostClub: _hostClub!,
@@ -326,61 +333,39 @@ class _EventInfoState extends State<EventInfo> with SingleTickerProviderStateMix
                       matchDate: widget.event.date!,
                     ),
                   );
-                }, defaultAction: true),
+                },
+              ),
+              if (Features.isFeatureEnabled(context, experimental_scoreboard_feature) &&
+                  _hostTeam != null &&
+                  _hostClub != null &&
+                  _visitorTeam != null &&
+                  _visitorClub != null)
                 _buildBarButton(
                   context,
-                  tag: "btn-postpone",
-                  icon: SvgPicture.asset("assets/calendar-postpone3.svg", width: 30, color: color),
+                  tag: "btn-play",
+                  icon: Icon(Icons.play_arrow_rounded, size: 30, color: color),
                   label: Text(
-                    "Reporter\nle match",
-                    textAlign: TextAlign.center,
+                    "Scoreur",
                     style: Theme.of(context).textTheme.bodyText1,
                   ),
                   onPressed: () {
                     _closeMenu();
                     RouterFacade.push(
                       context: context,
-                      builder: (_) => PostPoneMatch(
-                        hostTeam: _hostTeam!,
-                        visitorTeam: _visitorTeam!,
-                        hostClub: _hostClub!,
-                        visitorClub: _visitorClub!,
-                        matchDate: widget.event.date!,
+                      builder: (_) => OrientationHelper(
+                        child: ScoreBoardPage(
+                          hostTeam: _hostTeam!,
+                          hostClub: _hostClub!,
+                          visitorTeam: _visitorTeam!,
+                          visitorClub: _visitorClub!,
+                        ),
                       ),
                     );
                   },
                 ),
-                if (Features.isFeatureEnabled(context, experimental_scoreboard_feature) &&
-                    _hostTeam != null &&
-                    _hostClub != null &&
-                    _visitorTeam != null &&
-                    _visitorClub != null)
-                  _buildBarButton(
-                    context,
-                    tag: "btn-play",
-                    icon: Icon(Icons.play_arrow_rounded, size: 30, color: color),
-                    label: Text(
-                      "Scoreur",
-                      style: Theme.of(context).textTheme.bodyText1,
-                    ),
-                    onPressed: () {
-                      _closeMenu();
-                      RouterFacade.push(
-                        context: context,
-                        builder: (_) => OrientationHelper(
-                          child: ScoreBoardPage(
-                            hostTeam: _hostTeam!,
-                            hostClub: _hostClub!,
-                            visitorTeam: _visitorTeam!,
-                            visitorClub: _visitorClub!,
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-              ],
-            ),
+            ],
           ),
+        ),
         if (widget.event.matchCode != null && widget.event.matchCode!.isNotEmpty)
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
