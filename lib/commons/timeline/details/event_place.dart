@@ -104,31 +104,6 @@ class _EventPlaceState extends State<EventPlace> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Padding(
-          padding: const EdgeInsets.only(right: 36.0, bottom: 4),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(right: 4.0),
-                child: _myLocation != null
-                    ? Icon(Icons.navigation, color: Theme.of(context).textTheme.bodyText1!.color!, size: 16)
-                    : null,
-              ),
-              Text(
-                  _myLocation != null
-                      ? "${(Geolocator.distanceBetween(
-                            _myLocation!.latitude,
-                            _myLocation!.longitude,
-                            state.gymnasium.latitude!,
-                            state.gymnasium.longitude!,
-                          ) / 1000).toStringAsPrecision(3)} km"
-                      : "",
-                  textAlign: TextAlign.end,
-                  style: Theme.of(context).textTheme.bodyText1),
-            ],
-          ),
-        ),
         Container(
           padding: EdgeInsets.only(bottom: 8.0),
           margin: EdgeInsets.symmetric(horizontal: 36.0),
@@ -205,19 +180,43 @@ class _EventPlaceState extends State<EventPlace> {
   @override
   Widget build(BuildContext context) {
     if (widget.event.type == EventType.Match) {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          BlocBuilder<GymnasiumBloc, GymnasiumState>(
-            builder: (context, dynamic state) {
-              if (state is GymnasiumLoadedState) {
-                return Padding(padding: const EdgeInsets.only(top: 8.0), child: _buildGymnasiumLocationLoaded(state));
-              } else {
-                return Loading();
-              }
-            },
-          ),
-        ],
+      return BlocBuilder<GymnasiumBloc, GymnasiumState>(
+        builder: (context, state) => Stack(
+          clipBehavior: Clip.none,
+          children: [
+            state is GymnasiumLoadedState
+                ? Padding(padding: const EdgeInsets.only(top: 28.0), child: _buildGymnasiumLocationLoaded(state))
+                : Loading(),
+            if (state is GymnasiumLoadedState)
+              Positioned(
+                right: 36,
+                top: -12,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(right: 4.0),
+                      child: _myLocation != null
+                          ? Icon(Icons.navigation, color: Theme.of(context).textTheme.bodyText1!.color!, size: 16)
+                          : null,
+                    ),
+                    Text(
+                        _myLocation != null
+                            ? "${(Geolocator.distanceBetween(
+                                  _myLocation!.latitude,
+                                  _myLocation!.longitude,
+                                  state.gymnasium.latitude!,
+                                  state.gymnasium.longitude!,
+                                ) / 1000).toStringAsPrecision(3).replaceAll(".", ",")} km"
+                            : "",
+                        textAlign: TextAlign.end,
+                        style: Theme.of(context).textTheme.bodyText1),
+                  ],
+                ),
+              ),
+          ],
+        ),
       );
     } else
       return Container();
