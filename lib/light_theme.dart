@@ -14,9 +14,9 @@ ThemeData buildLightTheme(Color mainColor) {
     bottomAppBarColor: Color(0xFF313852),
     colorScheme: ColorScheme(
       primary: Color(0xFF262C41),
-      primaryVariant: Color(0xFF313852),
+      primaryContainer: Color(0xFF313852),
       secondary: mainColor,
-      secondaryVariant: Colors.white,
+      secondaryContainer: Colors.white,
       surface: Color(0xFF262C41),
       background: Color(0xFF262C41),
       error: mainColor,

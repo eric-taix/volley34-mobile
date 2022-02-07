@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:simple_gravatar/simple_gravatar.dart';
@@ -37,7 +36,7 @@ class ClubContact extends StatelessWidget {
                     padding: EdgeInsets.only(right: 15),
                     child: CircleAvatar(
                       radius: 30,
-                      backgroundColor: Theme.of(context).colorScheme.primaryVariant,
+                      backgroundColor: Theme.of(context).colorScheme.primaryContainer,
                       backgroundImage:
                           NetworkImage(Gravatar(club!.contact!).imageUrl(size: 208, defaultImage: GravatarImage.blank)),
                       child: initial,

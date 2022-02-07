@@ -1,9 +1,7 @@
-import 'package:bloc/bloc.dart';
 import 'package:feature_discovery/feature_discovery.dart';
 import 'package:feature_flags/feature_flags.dart';
 import 'package:feedback/feedback.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -94,7 +92,7 @@ class _V34State extends State<V34> {
                   textDirection: TextDirection.ltr,
                   child: BetterFeedback(
                     mode: FeedbackMode.navigate,
-                    localizationsDelegates: const [
+                    localizationsDelegates: [
                       GlobalMaterialLocalizations.delegate,
                       GlobalCupertinoLocalizations.delegate,
                       GlobalWidgetsLocalizations.delegate,

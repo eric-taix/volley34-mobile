@@ -1,7 +1,6 @@
 import 'package:add_2_calendar/add_2_calendar.dart' as addToCalendar;
 import 'package:feature_flags/feature_flags.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';

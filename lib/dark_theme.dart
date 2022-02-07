@@ -27,9 +27,9 @@ ThemeData buildDarkTheme(Color mainColor) {
     ),
     colorScheme: ColorScheme(
       primary: Color(0xFF262C41),
-      primaryVariant: Color(0xFF313852),
+      primaryContainer: Color(0xFF313852),
       secondary: mainColor,
-      secondaryVariant: mainColor.withOpacity(0.7),
+      secondaryContainer: mainColor.withOpacity(0.7),
       surface: Color(0xFF262C41),
       background: Color(0xFF262C41),
       error: mainColor,

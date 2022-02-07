@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:page_view_indicators/animated_circle_page_indicator.dart';
 import 'package:v34/commons/app_bar/animated_logo.dart';

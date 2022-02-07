@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:v34/commons/competition_rich_text.dart';
 import 'package:v34/commons/router.dart';

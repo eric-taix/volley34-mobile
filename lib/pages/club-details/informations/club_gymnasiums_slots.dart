@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:v34/commons/loading.dart';
@@ -56,7 +55,7 @@ class _ClubGymnasiumsSlotsState extends State<ClubGymnasiumsSlots> {
                             borderRadius: BorderRadius.all(Radius.circular(8)),
                             child: Container(
                               decoration: BoxDecoration(
-                                color: Theme.of(context).colorScheme.primaryVariant,
+                                color: Theme.of(context).colorScheme.primaryContainer,
                                 border: Border(
                                   left: BorderSide(
                                     width: 5,
