@@ -158,8 +158,9 @@ class _TeamCardState extends State<TeamCard> {
             onTap: () => RouterFacade.push(
               context: context,
               builder: (_) => TeamDetailPage(
-                team: widget.team,
-                club: widget.club!,
+                teamCode: widget.team.code!,
+                teamName: widget.team.name!,
+                club: widget.club,
                 openedPage:
                     state is TeamRankingLoadedState && _pageController.hasClients ? OpenedPage.COMPETITION : null,
                 openedCompetitionCode: state is TeamRankingLoadedState && _pageController.hasClients

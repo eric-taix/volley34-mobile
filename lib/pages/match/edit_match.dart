@@ -1,19 +1,25 @@
+import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_mailer/flutter_mailer.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:images_picker/images_picker.dart';
+import 'package:path/path.dart';
 import 'package:v34/commons/animated_button.dart';
 import 'package:v34/commons/ensure_visible_when_focused.dart';
 import 'package:v34/commons/paragraph.dart';
 import 'package:v34/models/club.dart';
 import 'package:v34/models/team.dart';
 import 'package:v34/pages/match/match_info.dart';
+import 'package:v34/repositories/repository.dart';
 import 'package:validators/validators.dart';
 
 class EditMatch extends StatefulWidget {
+  final String matchCode;
   final Team hostTeam;
   final Team visitorTeam;
   final Club hostClub;
@@ -21,6 +27,7 @@ class EditMatch extends StatefulWidget {
   final DateTime matchDate;
   const EditMatch({
     Key? key,
+    required this.matchCode,
     required this.hostTeam,
     required this.visitorTeam,
     required this.hostClub,
@@ -161,7 +168,7 @@ class _EditMatchState extends State<EditMatch> {
                               child: SizedBox(
                                 width: 78,
                                 height: 40,
-                                child: _createSetField(index, true),
+                                child: _createSetField(context, index, true),
                               ),
                             ),
                             Text("/",
@@ -174,7 +181,7 @@ class _EditMatchState extends State<EditMatch> {
                               child: SizedBox(
                                 width: 78,
                                 height: 40,
-                                child: _createSetField(index, false),
+                                child: _createSetField(context, index, false),
                               ),
                             ),
                           ],
@@ -202,7 +209,7 @@ class _EditMatchState extends State<EditMatch> {
                       padding: const EdgeInsets.only(bottom: 18.0),
                       child: Paragraph(title: "Feuille de match"),
                     ),
-                    _buildScoreSheetPhoto(),
+                    _buildScoreSheetPhoto(context),
                     Padding(
                       padding: const EdgeInsets.only(top: 58.0),
                       child: Row(
@@ -214,15 +221,15 @@ class _EditMatchState extends State<EditMatch> {
                                     _userTeam != null &&
                                     _setControllers[0].text.isNotEmpty &&
                                     _setControllers[1].text.isNotEmpty
-                                ? () => _sendResult(
+                                ? () => _confirmResult(
                                       context,
-                                      name: _nameController.text,
+                                      senderName: _nameController.text,
                                       senderEmail: _emailController.text,
                                       hostTeamName: widget.hostTeam.name!,
                                       visitorTeamName: widget.visitorTeam.name!,
                                       scoreSheetPath: _scoreSheetPhotoPath,
-                                      userTeam: _userTeam!,
-                                      comments: _commentsController.text,
+                                      senderTeam: _userTeam!,
+                                      comment: _commentsController.text,
                                     )
                                 : null,
                             text: "Envoyer",
@@ -267,7 +274,163 @@ class _EditMatchState extends State<EditMatch> {
     );
   }
 
-  _sendResult(
+  _confirmResult(
+    BuildContext context, {
+    required String senderName,
+    required String senderEmail,
+    required String hostTeamName,
+    required String visitorTeamName,
+    required String? scoreSheetPath,
+    required Team senderTeam,
+    required String comment,
+  }) async {
+    var pointResults = _setControllers
+        .where((setController) => setController.text.isNotEmpty)
+        .map((setController) => setController.text)
+        .toList()
+        .asMap()
+        .entries
+        .map((entry) => entry.key % 2 == 0 ? " , ${entry.value}" : "-${entry.value}")
+        .join()
+        .substring(2);
+
+    return showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Row(
+            children: [
+              Icon(
+                Icons.info_outline_rounded,
+                color: Theme.of(context).textTheme.headline5!.color,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 8.0),
+                child: Text("Confirmation", style: Theme.of(context).textTheme.headline5),
+              ),
+            ],
+          ),
+          content: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SizedBox(height: 18),
+              Text("$senderName, confirmez-vous l'envoi du résultat suivant ?",
+                  style: Theme.of(context).textTheme.bodyText1),
+              SizedBox(height: 18),
+              RichText(
+                text: TextSpan(
+                    text: "",
+                    children: [
+                      TextSpan(text: hostTeamName, style: Theme.of(context).textTheme.bodyText2),
+                      TextSpan(text: " a reçu "),
+                      TextSpan(text: visitorTeamName, style: Theme.of(context).textTheme.bodyText2),
+                      TextSpan(text: " sur le score final de ", style: Theme.of(context).textTheme.bodyText1),
+                      TextSpan(text: pointResults, style: Theme.of(context).textTheme.bodyText2),
+                    ],
+                    style: Theme.of(context).textTheme.bodyText1),
+              ),
+              SizedBox(height: 18),
+              RichText(
+                text: TextSpan(
+                    text: "Total des sets : ",
+                    children: [
+                      TextSpan(text: "$_hostSets - $_visitorSets", style: Theme.of(context).textTheme.bodyText2),
+                    ],
+                    style: Theme.of(context).textTheme.bodyText1),
+              ),
+              RichText(
+                text: TextSpan(
+                    text: "Total des points : ",
+                    children: [
+                      TextSpan(
+                          text: "$_hostTotalPoints - $_visitorTotalPoints",
+                          style: Theme.of(context).textTheme.bodyText2),
+                    ],
+                    style: Theme.of(context).textTheme.bodyText1),
+              ),
+              SizedBox(height: 18),
+              Text(
+                  _scoreSheetPhotoPath != null
+                      ? "* Une photo de la feuille de match a été jointe"
+                      : "* Aucune photo de la feuille de match n'a été jointe",
+                  style: Theme.of(context).textTheme.bodyText1!.copyWith(fontStyle: FontStyle.italic)),
+            ],
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text("Annuler"),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+                _sendEmail(
+                  context,
+                  name: senderName,
+                  senderEmail: senderEmail,
+                  hostTeamName: hostTeamName,
+                  visitorTeamName: visitorTeamName,
+                  scoreSheetPath: scoreSheetPath,
+                  userTeam: senderTeam,
+                  comments: comment,
+                  pointResults: pointResults,
+                );
+                /*  _sendResult(
+                  context,
+                  comment: comment,
+                  senderName: senderName,
+                  senderEmail: senderEmail,
+                  senderTeamName: senderTeam.name!,
+                  scoreSheetPath: scoreSheetPath,
+                );*/
+              },
+              child: Text("Confirmer"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _sendResult(
+    BuildContext context, {
+    required String comment,
+    required String senderName,
+    required String senderEmail,
+    required String senderTeamName,
+    required String? scoreSheetPath,
+  }) async {
+    var sets = _setControllers.map((setController) => setController.text).toList();
+
+    Repository repository = RepositoryProvider.of<Repository>(context);
+
+    String? imageBase64Encoded;
+    if (_scoreSheetPhotoPath != null) {
+      final bytes = await File(_scoreSheetPhotoPath!).readAsBytes();
+      imageBase64Encoded = base64.encode(bytes);
+    }
+
+    var sendStatus = await repository.sendResult(
+      matchCode: widget.matchCode,
+      sets: sets,
+      comment: comment,
+      senderName: senderName,
+      senderEmail: senderEmail,
+      senderTeamName: senderTeamName,
+      matchSheetFilename: scoreSheetPath != null ? basename(scoreSheetPath) : null,
+      matchSheetFileBase64: imageBase64Encoded,
+    );
+    Navigator.of(context).pop(sendStatus);
+    final snackBar = SnackBar(content: Text("${sendStatus.status}: ${sendStatus.comment}"));
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    return Future.value();
+  }
+
+  void _sendEmail(
     BuildContext context, {
     required String name,
     required String senderEmail,
@@ -276,17 +439,8 @@ class _EditMatchState extends State<EditMatch> {
     required String? scoreSheetPath,
     required Team userTeam,
     required String comments,
+    required String pointResults,
   }) async {
-    var pointResults = _setControllers
-        .where((setController) => setController.text.isNotEmpty)
-        .map((setController) => setController.text)
-        .toList()
-        .asMap()
-        .entries
-        .map((entry) => entry.key % 2 == 0 ? " , ${entry.value} " : " - ${entry.value} ")
-        .join()
-        .substring(2);
-
     final MailOptions mailOptions = MailOptions(
         body: '''
       <b><u>Envoi de résultat de $name ($senderEmail) pour l'équipe ${userTeam.name}</u></b><br/>
@@ -315,7 +469,7 @@ class _EditMatchState extends State<EditMatch> {
     return Future.value();
   }
 
-  Widget _buildScoreSheetPhoto() {
+  Widget _buildScoreSheetPhoto(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(left: 28.0, right: 28.0, top: 18),
       child: Row(
@@ -378,9 +532,6 @@ class _EditMatchState extends State<EditMatch> {
                   final ImagePicker _picker = ImagePicker();
                   final XFile? photo = await _picker.pickImage(source: ImageSource.camera);
                   if (photo != null) {
-                    //final bytes = await photo.readAsBytes();
-                    //final imageEncoded = base64.encode(bytes);
-                    //log(imageEncoded);
                     await ImagesPicker.saveImageToAlbum(File(photo.path), albumName: "Volley34");
                     setState(
                       () {
@@ -527,7 +678,7 @@ class _EditMatchState extends State<EditMatch> {
     );
   }
 
-  TextFormField _createSetField(int index, bool hostSet) {
+  TextFormField _createSetField(BuildContext context, int index, bool hostSet) {
     int fieldIndex = index * 2 + (hostSet ? 0 : 1);
 
     int hostSetWon = 0;
@@ -633,7 +784,7 @@ class _EditMatchState extends State<EditMatch> {
             ],
             decoration: InputDecoration(
               labelText: "Votre nom",
-              errorStyle: TextStyle(height: 1.1, fontSize: 14),
+              errorStyle: TextStyle(fontSize: 14),
             ),
             autovalidateMode: AutovalidateMode.always,
             onEditingComplete: () {
@@ -698,13 +849,10 @@ class _EditMatchState extends State<EditMatch> {
       ),
       if (_userTeam == null)
         Padding(
-          padding: const EdgeInsets.only(left: 38.0),
+          padding: const EdgeInsets.only(left: 38.0, top: 8),
           child: Text(
             "La sélection de votre équipe est obligatoire",
-            style: Theme.of(context)
-                .textTheme
-                .bodyText2!
-                .copyWith(color: Theme.of(context).inputDecorationTheme.errorStyle!.color!),
+            style: Theme.of(context).inputDecorationTheme.errorStyle,
           ),
         )
     ];

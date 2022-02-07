@@ -1,5 +1,5 @@
 class Score {
-  final List<Set> sets = [Set()];
+  final List<SetPoint> sets = [SetPoint()];
 
   int get hostSets =>
       sets.where((set) => set.hostPoint > set.visitorPoint && (set.hostPoint >= 25 || set.visitorPoint >= 25)).length;
@@ -9,11 +9,12 @@ class Score {
   int get visitorCurrentPoint => sets.last.visitorPoint;
 }
 
-class Set {
+class SetPoint {
   final int hostPoint;
   final int visitorPoint;
 
-  Set({this.hostPoint = 0, this.visitorPoint = 0});
+  SetPoint({this.hostPoint = 0, this.visitorPoint = 0});
 
-  operator +(Set set) => Set(hostPoint: hostPoint + set.hostPoint, visitorPoint: visitorPoint + set.visitorPoint);
+  operator +(SetPoint set) =>
+      SetPoint(hostPoint: hostPoint + set.hostPoint, visitorPoint: visitorPoint + set.visitorPoint);
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:v34/commons/loading.dart';
 import 'package:v34/commons/paragraph.dart';
 import 'package:v34/pages/club-details/blocs/club_slots.bloc.dart';
 import 'package:v34/repositories/repository.dart';
@@ -99,6 +100,7 @@ class _ClubGymnasiumsSlotsState extends State<ClubGymnasiumsSlots> {
                   );
                 },
               ),
+            if (state is ClubSlotsLoading) Container(height: 150, child: Center(child: Loading())),
           ],
         );
       },

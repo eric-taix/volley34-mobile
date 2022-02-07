@@ -70,7 +70,8 @@ class _ClubTeamState extends State<ClubTeam> {
         onTap: () => RouterFacade.push(
           context: context,
           builder: (_) => TeamDetailPage(
-            team: widget.team,
+            teamCode: widget.team.code!,
+            teamName: widget.team.name!,
             club: widget.club,
             openedPage: state is TeamSlidingStatsLoaded && _pageController.hasClients ? OpenedPage.COMPETITION : null,
             openedCompetitionCode: state is TeamSlidingStatsLoaded && _pageController.hasClients

@@ -7,11 +7,14 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:v34/commons/competition_badge.dart';
+import 'package:v34/commons/landscape_helper.dart';
 import 'package:v34/commons/loading.dart';
 import 'package:v34/commons/page/main_page.dart';
+import 'package:v34/models/division.dart';
 import 'package:v34/models/ranking.dart';
-import 'package:v34/pages/competition/bloc/competition_cubit.dart';
+import 'package:v34/pages/competition/bloc/division_cubit.dart';
 import 'package:v34/pages/competition/bloc/ranking_cubit.dart';
 import 'package:v34/pages/competition/competition_filter.dart';
 import 'package:v34/pages/competition/filter_options.dart';
@@ -26,29 +29,43 @@ class CompetitionPage extends StatefulWidget {
 }
 
 class _CompetitionPageState extends State<CompetitionPage> with SingleTickerProviderStateMixin, RouteAwareAnalytics {
-  late final CompetitionCubit _competitionCubit;
+  static const String _COMPETITION_GROUP_KEY = "competitionGroup";
+  static const String _DIVISION_CODE_KEY = "divisionCode";
+
+  late final DivisionCubit _divisionCubit;
   late final RankingCubit _rankingCubit;
   CompetitionFilter _filter = CompetitionFilter.all;
   List<RankingSynthesis>? _rankings;
   String _query = "";
   List<RankingSynthesis>? _filteredRankings;
+  List<Division>? _divisions;
 
   @override
   void initState() {
     super.initState();
-    _competitionCubit = CompetitionCubit(RepositoryProvider.of<Repository>(context));
-    _competitionCubit.loadCompetitions();
+    _divisionCubit = DivisionCubit(RepositoryProvider.of<Repository>(context));
+    _divisionCubit.loadDivisions();
     _rankingCubit = RankingCubit(RepositoryProvider.of<Repository>(context));
-    _loadRanking();
   }
 
   @override
   void dispose() {
     super.dispose();
-    _competitionCubit.close();
+    _divisionCubit.close();
+    _rankingCubit.close();
   }
 
-  void _loadRanking() {
+  void _loadRanking() async {
+    var sharedPreference = await SharedPreferences.getInstance();
+    var competitionGroup = sharedPreference.getString(_COMPETITION_GROUP_KEY);
+    var divisionCode = sharedPreference.get(_DIVISION_CODE_KEY);
+    if (competitionGroup != null && divisionCode != null && _divisions != null) {
+      var divisionFilter =
+          _divisions!.firstWhere((division) => division.code == divisionCode, orElse: () => Division.all);
+      setState(() {
+        _filter = CompetitionFilter(competitionGroup: competitionGroup, competitionDivision: divisionFilter);
+      });
+    }
     _rankingCubit.loadAllRankings(_filter);
   }
 
@@ -75,7 +92,7 @@ class _CompetitionPageState extends State<CompetitionPage> with SingleTickerProv
       showBadge: _filter.count > 0,
       padding: EdgeInsets.all(5),
       animationDuration: Duration(milliseconds: 200),
-      position: BadgePosition(top: 0, end: 0),
+      position: BadgePosition(top: 0, end: 4),
       badgeColor: Theme.of(context).colorScheme.secondary,
       animationType: BadgeAnimationType.scale,
       badgeContent:
@@ -95,16 +112,13 @@ class _CompetitionPageState extends State<CompetitionPage> with SingleTickerProv
           builder: (context) => Container(
             height: 2 * MediaQuery.of(context).size.height / 3,
             child: FilterOptions(
-              filter: _filter,
-              onFilterUpdated: (filter) => setState(
-                () {
-                  setState(() {
-                    _filter = filter;
-                    _loadRanking();
-                  });
-                },
-              ),
-            ),
+                filter: _filter,
+                onFilterUpdated: (filter) async {
+                  var sharedPreferences = await SharedPreferences.getInstance();
+                  await sharedPreferences.setString(_COMPETITION_GROUP_KEY, filter.competitionGroup);
+                  await sharedPreferences.setString(_DIVISION_CODE_KEY, filter.competitionDivision.code);
+                  _loadRanking();
+                }),
           ),
         ),
       ),
@@ -126,9 +140,15 @@ class _CompetitionPageState extends State<CompetitionPage> with SingleTickerProv
       );
     }
 
-    return BlocProvider(
-      create: (context) => _competitionCubit,
-      child: BlocListener<RankingCubit, RankingState>(
+    return BlocConsumer(
+      bloc: _divisionCubit,
+      listener: (context, state) {
+        if (state is DivisionLoadedState) {
+          _divisions = state.divisions;
+          _loadRanking();
+        }
+      },
+      builder: (context, state) => BlocListener<RankingCubit, RankingState>(
         listener: (context, state) {
           if (state is RankingLoadedState) {
             setState(() {
@@ -148,7 +168,12 @@ class _CompetitionPageState extends State<CompetitionPage> with SingleTickerProv
             _filterRankings();
           },
           slivers: [
-            if (rankingsPerCompetition != null)
+            if (rankingsPerCompetition != null) ...[
+              SliverToBoxAdapter(
+                  child: Padding(
+                padding: const EdgeInsets.only(top: 18.0),
+                child: Container(child: LandscapeHelper()),
+              )),
               ...rankingsPerCompetition.entries
                   .map(
                     (entry) => SliverStickyHeader(
@@ -179,52 +204,11 @@ class _CompetitionPageState extends State<CompetitionPage> with SingleTickerProv
                     ),
                   )
                   .toList(),
-
-            /*SliverList(
-                      delegate: SliverChildBuilderDelegate(
-                        (context, index) {
-                          if (index == 0) {
-                            return Paragraph(
-                              titleWidget: _buildCompetitionTitle(
-                                  entry.key, entry.value.length > 0 ? entry.value[0].competitionCode : null),
-                            );
-                          } else {
-                            RankingSynthesis ranking = entry.value[index - 1];
-                            return _buildCompetitionRankingTable(context, ranking,
-                                highlightTeamNames: _query.isNotEmpty ? _query.split(" ") : null);
-                          }
-                        },
-                        childCount: entry.value.length + 1,
-                      ),
-                    ),
-                  )
-                  .toList(),*/
+            ],
             if (rankingsPerCompetition == null)
               SliverFillRemaining(
                 child: Center(child: Loading()),
               ),
-            /*       _filteredRankings != null
-                ? (_filteredRankings!.length != 0
-                    ? SliverList(
-                        delegate: SliverChildBuilderDelegate(
-                          (context, index) {
-                            if (index == 0 && portrait) {
-                              return LandscapeHelper();
-                            }
-                            if (index == _filteredRankings!.length + (portrait ? 1 : 0)) {
-                              return SizedBox(height: FluidNavBar.nominalHeight + 28);
-                            }
-                            RankingSynthesis ranking = _filteredRankings![index + (portrait ? -1 : 0)];
-                            return _buildCompetitionRankingTable(context, ranking,
-                                highlightTeamNames: _query.isNotEmpty ? _query.split(" ") : null);
-                          },
-                          childCount: _filteredRankings!.length + 1 + (portrait ? 1 : 0),
-                        ),
-                      )
-                    : SliverFillRemaining(child: Center(child: Text("Aucun résultat"))))
-                : SliverFillRemaining(
-                    child: Center(child: Loading()),
-                  ),*/
             SliverToBoxAdapter(
               child: SizedBox(height: 80),
             ),
@@ -264,7 +248,7 @@ class _CompetitionPageState extends State<CompetitionPage> with SingleTickerProv
             child: _buildTitle(ranking),
           ),
           Padding(
-            padding: const EdgeInsets.only(top: 18.0, left: 18, right: 8),
+            padding: const EdgeInsets.only(top: 18.0, left: 18),
             child: TeamRankingTable(
               ranking: ranking,
               highlightTeamNames: highlightTeamNames,

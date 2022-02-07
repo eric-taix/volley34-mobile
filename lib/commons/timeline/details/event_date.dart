@@ -30,9 +30,9 @@ class EventDate extends StatelessWidget {
   Widget build(BuildContext context) {
     DateFormat dateFormat = DateFormat('EEE dd/M', "FR");
     DateFormat fullDateFormat = DateFormat("EEEE dd MMMM", "FR");
-    DateFormat hourFormat = DateFormat("À HH' h 'mm", "FR");
-    DateFormat fromHourFormat = DateFormat("'De 'HH' h 'hmm ", "FR");
-    DateFormat toHourFormat = DateFormat("'à 'HH' h 'mm", "FR");
+    DateFormat hourFormat = DateFormat("À HH'h'mm", "FR");
+    DateFormat fromHourFormat = DateFormat("'De 'HH'h'mm ", "FR");
+    DateFormat toHourFormat = DateFormat("'à 'HH'h'mm", "FR");
     String dateStr;
     if (hour) {
       if (fullDay) {
@@ -45,22 +45,19 @@ class EventDate extends StatelessWidget {
       dateStr = fullFormat ? fullDateFormat.format(date!) : dateFormat.format(date!);
     }
     dateStr = _capitalize(dateStr);
-    return Padding(
-      padding: const EdgeInsets.only(top: 18, right: 0.0),
-      child: Container(
-        constraints: BoxConstraints(minWidth: dateColumnWidth, maxWidth: dateColumnWidth),
-        child: Builder(
-          builder: (context) => dateBuilder != null
-              ? dateBuilder!(context, date, endDate)
-              : Text(
-                  dateStr,
-                  textAlign: fullFormat || hour ? TextAlign.left : TextAlign.right,
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyText1!
-                      .copyWith(color: Theme.of(context).textTheme.bodyText2!.color),
-                ),
-        ),
+    return Container(
+      constraints: BoxConstraints(minWidth: dateColumnWidth, maxWidth: dateColumnWidth),
+      child: Builder(
+        builder: (context) => dateBuilder != null
+            ? dateBuilder!(context, date, endDate)
+            : Text(
+                dateStr,
+                textAlign: fullFormat || hour ? TextAlign.left : TextAlign.right,
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyText1!
+                    .copyWith(color: Theme.of(context).textTheme.bodyText2!.color),
+              ),
       ),
     );
   }
@@ -72,7 +69,7 @@ class NoEventDate extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(right: 4.0),
       child: Container(
-        constraints: BoxConstraints(minWidth: 80),
+        constraints: BoxConstraints(minWidth: 51),
         child: SizedBox(),
       ),
     );

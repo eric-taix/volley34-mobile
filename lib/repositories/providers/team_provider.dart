@@ -50,7 +50,7 @@ class TeamProvider {
   }
 
   Future<List<RankingSynthesis>> loadRankingSynthesis(String? teamCode) async {
-    Response response = await dio.get("/Classements/equipes/$teamCode");
+    Response response = await dio.get("/classements/equipes/$teamCode");
     if (response.statusCode == 200 || response.statusCode == 304) {
       return (response.data as List).map((json) => RankingSynthesis.fromJson(json)).toList();
     } else {
@@ -59,7 +59,7 @@ class TeamProvider {
   }
 
   Future<List<RankingSynthesis>> loadAllRankingSynthesis() async {
-    Response response = await dio.get("/Classements");
+    Response response = await dio.get("/classements");
     if (response.statusCode == 200 || response.statusCode == 304) {
       return (response.data as List).map((json) => RankingSynthesis.fromJson(json)).toList();
     } else {

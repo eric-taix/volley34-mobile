@@ -8,6 +8,7 @@ import 'package:v34/models/event.dart';
 import 'package:v34/models/gymnasium.dart';
 import 'package:v34/models/match_result.dart';
 import 'package:v34/models/ranking.dart';
+import 'package:v34/models/sended_match_result.dart';
 import 'package:v34/models/slot.dart';
 import 'package:v34/models/team.dart';
 import 'package:v34/models/team_stats.dart';
@@ -42,6 +43,29 @@ class Repository {
       this._resultProvider,
       this._globalProvider,
       this._competitionProvider);
+
+  /// Send the result
+  Future<SendedMatchResult> sendResult({
+    required String matchCode,
+    required List<String> sets,
+    String? comment,
+    required String senderName,
+    required String senderTeamName,
+    required String senderEmail,
+    String? matchSheetFilename,
+    String? matchSheetFileBase64,
+  }) async {
+    return _resultProvider.sendResult(
+      matchCode: matchCode,
+      sets: sets,
+      comment: comment,
+      senderName: senderName,
+      senderTeamName: senderTeamName,
+      senderEmail: senderEmail,
+      matchSheetFilename: matchSheetFilename,
+      matchSheetFileBase64: matchSheetFileBase64,
+    );
+  }
 
   /// Loads all competitions
   Future<List<Competition>> loadAllCompetitions() async {

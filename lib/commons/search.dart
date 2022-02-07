@@ -13,13 +13,18 @@ class _SearchState extends State<Search> with SingleTickerProviderStateMixin {
   bool _showSearch = false;
   late final TextEditingController _searchController;
   late final AnimationController _animationController;
-
+  final FocusNode _focusNode = FocusNode();
   final _duration = Duration(milliseconds: 250);
 
   @override
   void initState() {
     _searchController = TextEditingController();
     _animationController = AnimationController(vsync: this, duration: _duration);
+    _animationController.addStatusListener((status) {
+      if (status == AnimationStatus.completed) {
+        _focusNode.requestFocus();
+      }
+    });
     super.initState();
   }
 
@@ -50,7 +55,8 @@ class _SearchState extends State<Search> with SingleTickerProviderStateMixin {
                       child: TextFormField(
                         key: ValueKey("help"),
                         controller: _searchController,
-                        autofocus: true,
+                        focusNode: _focusNode,
+                        autofocus: false,
                         style: Theme.of(context).textTheme.bodyText2!.copyWith(fontSize: 18),
                         cursorWidth: 2,
                         onChanged: (query) => widget.onSearch != null ? widget.onSearch!(query) : null,

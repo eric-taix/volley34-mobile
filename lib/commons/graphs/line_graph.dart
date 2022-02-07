@@ -44,9 +44,12 @@ class _LineGraphState extends State<LineGraph> {
     _minY = widget.results.reduce(min);
 
     if (widget.results.length > 1) {
-      Future.delayed(Duration(milliseconds: 400), () {
-        setState(() {
-          _results = widget.results;
+      WidgetsBinding.instance?.addPostFrameCallback((_) {
+        Future.delayed(Duration(milliseconds: 400), () {
+          if (mounted)
+            setState(() {
+              _results = widget.results;
+            });
         });
       });
     }

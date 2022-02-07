@@ -46,13 +46,17 @@ class _FilterOptionsState extends State<FilterOptions> {
     _filter = widget.filter;
   }
 
-  _reinitFilters() {
+  _resetFilters() {
     _updateFilter(
         CompetitionFilter(competitionGroup: CompetitionFilter.ALL_COMPETITION, competitionDivision: Division.all));
   }
 
   @override
   void didUpdateWidget(covariant FilterOptions oldWidget) {
+    print(widget.filter);
+    if (widget.filter != oldWidget.filter) {
+      // _filter = widget.filter;
+    }
     super.didUpdateWidget(oldWidget);
   }
 
@@ -115,7 +119,7 @@ class _FilterOptionsState extends State<FilterOptions> {
                                           ? 10
                                           : 0)),
                               child: TextButton(
-                                onPressed: _filter.count > 0 ? () => _reinitFilters() : null,
+                                onPressed: _filter.count > 0 ? () => _resetFilters() : null,
                                 child: Text("Réinitialiser"),
                               ),
                             )

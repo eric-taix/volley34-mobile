@@ -21,7 +21,7 @@ dependencies:
   equatable: ^2.0.3
   cached_network_image: ^3.1.0+1
   tuple: ^2.0.0
-  dio_cache_interceptor: ^3.0.3
+  dio_cache_interceptor: ^3.2.2
   collection: ^1.15.0
   like_button: ^2.0.3
   smooth_page_indicator: ^1.0.0+2
@@ -59,6 +59,8 @@ dependencies:
   maps_launcher: ^2.0.1
   images_picker: ^1.2.10
   flutter_sticky_header: ^0.6.0
+  visibility_detector: ^0.2.2
+  path: ^1.8.0
 dev_dependencies:
   dependency_validator: ^3.0.0
   flutter_launcher_icons: "^0.9.2"
