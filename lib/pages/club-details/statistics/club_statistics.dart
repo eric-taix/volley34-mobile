@@ -1,5 +1,4 @@
 import 'package:fl_chart/fl_chart.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:v34/commons/graphs/arc.dart';
@@ -141,7 +140,7 @@ class _ClubStatisticsState extends State<ClubStatistics> with RouteAwareAnalytic
             titleStyle: Theme.of(context).textTheme.bodyText1,
             color: loaded && matchesPlayed != null
                 ? _getSectionColor(matchesPlayed.won, matchesPlayed.total)
-                : Theme.of(context).colorScheme.primaryVariant,
+                : Theme.of(context).colorScheme.primaryContainer,
           ),
           PieChartSectionData(
             radius: loaded && matchesPlayed != null ? (matchesPlayed.lost > matchesPlayed.won ? 15 : 8) : 8,
@@ -155,7 +154,7 @@ class _ClubStatisticsState extends State<ClubStatistics> with RouteAwareAnalytic
                 : POSITION_OFFSET - 0.5,
             color: loaded && matchesPlayed != null
                 ? _getSectionColor(matchesPlayed.lost, matchesPlayed.total, invert: true)
-                : Theme.of(context).colorScheme.primaryVariant,
+                : Theme.of(context).colorScheme.primaryContainer,
           ),
         ],
         borderData: FlBorderData(show: false),

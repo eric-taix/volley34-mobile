@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:v34/commons/app_bar/app_bar.dart';
 
 import '../rounded_network_image.dart';

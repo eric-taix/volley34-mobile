@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:v34/commons/cards/titled_card.dart';
 import 'package:v34/commons/rounded_network_image.dart';

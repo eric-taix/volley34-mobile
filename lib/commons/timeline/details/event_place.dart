@@ -91,7 +91,7 @@ class _EventPlaceState extends State<EventPlace> {
       _currentMapStyle = _rawMapStyle!
           .replaceAll("{appBarTheme.color}", themeData.appBarTheme.backgroundColor!.toHexWithoutAlpha())
           .replaceAll("{canvasColor}", themeData.canvasColor.toHexWithoutAlpha())
-          .replaceAll("{colorScheme.primaryVariant}", themeData.colorScheme.primaryVariant.toHexWithoutAlpha())
+          .replaceAll("{colorScheme.primaryVariant}", themeData.colorScheme.primaryContainer.toHexWithoutAlpha())
           .replaceAll("{textTheme.bodyText1}", themeData.textTheme.bodyText1!.color!.toHexWithoutAlpha())
           .replaceAll("{textTheme.bodyText2}", themeData.textTheme.bodyText2!.color!.toHexWithoutAlpha());
       if (_mapController != null) {

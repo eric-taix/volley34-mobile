@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:v34/commons/rounded_outlined_button.dart';
 import 'package:v34/models/gymnasium.dart';
