@@ -8,6 +8,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:intl/intl.dart';
 import 'package:maps_launcher/maps_launcher.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:v34/commons/circular_menu/circular_menu.dart';
 import 'package:v34/commons/feature_tour.dart';
 import 'package:v34/commons/loading.dart';
@@ -215,7 +216,13 @@ class _EventInfoState extends State<EventInfo> with SingleTickerProviderStateMix
           color: Theme.of(context).textTheme.bodyText1!.color!,
           size: _iconSize,
         ),
-        title: HtmlWidget(widget.event.description!, textStyle: Theme.of(context).textTheme.bodyText2!));
+        title: HtmlWidget(
+          widget.event.description!,
+          textStyle: Theme.of(context).textTheme.bodyText2!,
+          onTapUrl: (url) {
+            launch(url);
+          },
+        ));
   }
 
   Widget _buildContact(BuildContext context) {
