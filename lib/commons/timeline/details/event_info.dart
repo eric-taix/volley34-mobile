@@ -299,19 +299,24 @@ class _EventInfoState extends State<EventInfo> with SingleTickerProviderStateMix
                     "Saisir\nle résultat",
                     textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.bodyText1,
-                  ), onPressed: () {
-                _closeMenu();
-                RouterFacade.push(
-                  context: context,
-                  builder: (_) => EditMatch(
-                    hostTeam: _hostTeam!,
-                    visitorTeam: _visitorTeam!,
-                    hostClub: _hostClub!,
-                    visitorClub: _visitorClub!,
-                    matchDate: widget.event.date!,
                   ),
-                );
-              }, defaultAction: true),
+                  onPressed: _hostTeam != null && _visitorTeam != null && _hostClub != null && _visitorClub != null
+                      ? () {
+                          _closeMenu();
+                          RouterFacade.push(
+                            context: context,
+                            builder: (_) => EditMatch(
+                              matchCode: widget.event.matchCode!,
+                              hostTeam: _hostTeam!,
+                              visitorTeam: _visitorTeam!,
+                              hostClub: _hostClub!,
+                              visitorClub: _visitorClub!,
+                              matchDate: widget.event.date!,
+                            ),
+                          );
+                        }
+                      : null,
+                  defaultAction: true),
               _buildBarButton(
                 context,
                 tag: "btn-postpone",
@@ -321,19 +326,21 @@ class _EventInfoState extends State<EventInfo> with SingleTickerProviderStateMix
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.bodyText1,
                 ),
-                onPressed: () {
-                  _closeMenu();
-                  RouterFacade.push(
-                    context: context,
-                    builder: (_) => PostPoneMatch(
-                      hostTeam: _hostTeam!,
-                      visitorTeam: _visitorTeam!,
-                      hostClub: _hostClub!,
-                      visitorClub: _visitorClub!,
-                      matchDate: widget.event.date!,
-                    ),
-                  );
-                },
+                onPressed: _hostTeam != null && _visitorTeam != null && _hostClub != null && _visitorClub != null
+                    ? () {
+                        _closeMenu();
+                        RouterFacade.push(
+                          context: context,
+                          builder: (_) => PostPoneMatch(
+                            hostTeam: _hostTeam!,
+                            visitorTeam: _visitorTeam!,
+                            hostClub: _hostClub!,
+                            visitorClub: _visitorClub!,
+                            matchDate: widget.event.date!,
+                          ),
+                        );
+                      }
+                    : null,
               ),
               if (Features.isFeatureEnabled(context, experimental_scoreboard_feature) &&
                   _hostTeam != null &&
@@ -450,14 +457,18 @@ class _EventInfoState extends State<EventInfo> with SingleTickerProviderStateMix
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           FloatingActionButton(
-            heroTag: tag,
-            onPressed: onPressed,
-            backgroundColor: defaultAction ? null : Theme.of(context).canvasColor,
-            child: icon,
-            shape: defaultAction
-                ? null
-                : CircleBorder(side: BorderSide(color: Theme.of(context).colorScheme.secondary, width: 2)),
-          ),
+              heroTag: tag,
+              onPressed: onPressed,
+              backgroundColor: defaultAction
+                  ? (onPressed != null ? null : Theme.of(context).textTheme.bodyText1!.color!)
+                  : Theme.of(context).canvasColor,
+              child: icon,
+              shape: defaultAction
+                  ? null
+                  : (onPressed != null
+                      ? CircleBorder(side: BorderSide(color: Theme.of(context).colorScheme.secondary, width: 2))
+                      : CircleBorder(
+                          side: BorderSide(color: Theme.of(context).textTheme.bodyText1!.color!, width: 2)))),
           SizedBox(
             height: 50 * _animationController.value,
             child: Padding(
