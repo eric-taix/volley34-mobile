@@ -12,3 +12,4 @@
 - Amélioration du chargement de l'information des clubs
 - Ajout d'un écran de confirmation avant envoi du résultat (toujours par email)
 - Ajout d'une action ouvrant le site web d'un tournoi
+- Correction d'alignement pour les 2 événements à la même date

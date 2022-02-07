@@ -69,7 +69,7 @@ class NoEventDate extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(right: 4.0),
       child: Container(
-        constraints: BoxConstraints(minWidth: 80),
+        constraints: BoxConstraints(minWidth: 51),
         child: SizedBox(),
       ),
     );
