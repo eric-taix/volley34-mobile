@@ -19,8 +19,8 @@ void initDio(MessageCubit messageCubit) {
   );
 
   dio = Dio(BaseOptions(
-    //baseUrl: "http://api.volley34.fr/v1/",
-    baseUrl: "http://apitest.volley34.fr/v1/",
+    baseUrl: "http://api.volley34.fr/v1/",
+    //baseUrl: "http://apitest.volley34.fr/v1/",
   ))
     ..interceptors.add(DioCacheInterceptor(
       options: defaultCacheOptions,

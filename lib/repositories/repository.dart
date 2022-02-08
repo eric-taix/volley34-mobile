@@ -67,6 +67,29 @@ class Repository {
     );
   }
 
+  /// Postpone a match
+  Future<String> postponeMatch({
+    required String matchCode,
+    required String senderName,
+    required String senderTeamName,
+    required String senderEmail,
+    String? comment,
+    required String applicantTeamCode,
+    required DateTime? reportDate,
+    required String? gymnasiumCode,
+  }) async {
+    return _resultProvider.postponeMatch(
+      matchCode: matchCode,
+      comment: comment,
+      senderName: senderName,
+      senderTeamName: senderTeamName,
+      senderEmail: senderEmail,
+      gymnasiumCode: gymnasiumCode,
+      applicantTeamCode: applicantTeamCode,
+      reportDate: reportDate,
+    );
+  }
+
   /// Loads all competitions
   Future<List<Competition>> loadAllCompetitions() async {
     var competitions = await _competitionProvider.loadAllCompetitions();

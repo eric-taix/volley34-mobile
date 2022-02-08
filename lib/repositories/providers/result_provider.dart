@@ -67,4 +67,39 @@ class ResultProvider {
       throw Exception("Impossible d'envoyer les résultats");
     }
   }
+
+  Future<String> postponeMatch({
+    required String matchCode,
+    required String senderName,
+    required String senderTeamName,
+    required String senderEmail,
+    String? comment,
+    required String applicantTeamCode,
+    required DateTime? reportDate,
+    required String? gymnasiumCode,
+  }) async {
+    var data = {
+      "MatchCode": matchCode,
+      "SenderName": senderName,
+      "SenderTeam": senderTeamName,
+      "SenderMail": senderEmail,
+      "Comment": "${kDebugMode ? "TEST_POST_API: " : ""}$comment",
+      "EquipeCode": applicantTeamCode,
+      "DateReport": reportDate,
+      "GymnaseCode": gymnasiumCode,
+    };
+
+    String url = "/reports/post";
+    Response response = await dio.post(url,
+        data: data,
+        options: Options(headers: {
+          "x-api-login": ConfigReader.getXApiLogin(),
+          "x-api-key": ConfigReader.getXApiKey(),
+        }));
+    if (response.statusCode == 200) {
+      return response.data;
+    } else {
+      throw Exception("Impossible de reporter le match");
+    }
+  }
 }

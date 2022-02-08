@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_mailer/flutter_mailer.dart';
-import 'package:intl/intl.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:v34/commons/animated_button.dart';
 import 'package:v34/commons/ensure_visible_when_focused.dart';
 import 'package:v34/commons/paragraph.dart';
-import 'package:v34/commons/show_dialog.dart';
+import 'package:v34/message_cubit.dart';
 import 'package:v34/models/club.dart';
 import 'package:v34/models/team.dart';
 import 'package:v34/pages/match/match_info.dart';
+import 'package:v34/repositories/repository.dart';
 import 'package:validators/validators.dart';
 
 class PostPoneMatch extends StatefulWidget {
@@ -16,9 +16,11 @@ class PostPoneMatch extends StatefulWidget {
   final Club hostClub;
   final Club visitorClub;
   final DateTime matchDate;
+  final String matchCode;
 
   const PostPoneMatch({
     Key? key,
+    required this.matchCode,
     required this.hostTeam,
     required this.visitorTeam,
     required this.hostClub,
@@ -33,8 +35,6 @@ class PostPoneMatch extends StatefulWidget {
 class _PostPoneMatchState extends State<PostPoneMatch> {
   final _formKey = GlobalKey<FormState>();
 
-  static const String BOTH_TEAMS = "both";
-
   late final TextEditingController _nameController;
   late final TextEditingController _emailController;
   late final TextEditingController _commentsController;
@@ -42,8 +42,8 @@ class _PostPoneMatchState extends State<PostPoneMatch> {
   late final FocusNode _emailFocus;
   late final FocusNode _commentsFocus;
 
-  String? _initiatorTeamCode;
-  Team? _userTeam;
+  String? _applicantTeamCode;
+  Team? _senderTeam;
 
   @override
   void initState() {
@@ -108,22 +108,26 @@ class _PostPoneMatchState extends State<PostPoneMatch> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    AnimatedButton(
+                    ElevatedButton(
                       onPressed: ((_formKey.currentState?.validate() ?? false) &&
-                              _userTeam != null &&
-                              _initiatorTeamCode != null)
-                          ? () => _sendReport(
+                              _senderTeam != null &&
+                              _applicantTeamCode != null)
+                          ? () => _confirmPostpone(
                                 context,
-                                name: _nameController.text,
+                                senderName: _nameController.text,
                                 senderEmail: _emailController.text,
+                                senderTeamName: _senderTeam!.name!,
                                 hostTeam: widget.hostTeam,
                                 visitorTeam: widget.visitorTeam,
-                                userTeam: _userTeam!,
-                                plannedDate: widget.matchDate,
-                                comments: _commentsController.text,
+                                comment: _commentsController.text,
+                                applicationTeamCode: _applicantTeamCode!,
+                                matchCode: widget.matchCode,
                               )
                           : null,
-                      text: "Envoyer",
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 38.0),
+                        child: Text("Envoyer"),
+                      ),
                     ),
                   ],
                 ),
@@ -143,9 +147,9 @@ class _PostPoneMatchState extends State<PostPoneMatch> {
         child: EnsureVisibleWhenFocused(
           focusNode: _nameFocus,
           child: TextFormField(
+            autofocus: true,
             focusNode: _nameFocus,
             controller: _nameController,
-            autofocus: true,
             style: Theme.of(context).textTheme.bodyText2!.copyWith(fontSize: 18),
             cursorWidth: 2,
             enableSuggestions: true,
@@ -172,9 +176,9 @@ class _PostPoneMatchState extends State<PostPoneMatch> {
         child: EnsureVisibleWhenFocused(
           focusNode: _emailFocus,
           child: TextFormField(
+            autofocus: true,
             controller: _emailController,
             focusNode: _emailFocus,
-            autofocus: true,
             autovalidateMode: AutovalidateMode.always,
             style: Theme.of(context).textTheme.bodyText2!.copyWith(fontSize: 18),
             cursorWidth: 2,
@@ -201,22 +205,22 @@ class _PostPoneMatchState extends State<PostPoneMatch> {
       Padding(
         padding: const EdgeInsets.only(top: 8.0, left: 28, right: 28),
         child: RadioListTile<Team>(
-          groupValue: _userTeam,
+          groupValue: _senderTeam,
           value: widget.hostTeam,
-          onChanged: (_) => setState(() => _userTeam = widget.hostTeam),
+          onChanged: (_) => setState(() => _senderTeam = widget.hostTeam),
           title: Text(widget.hostTeam.name!, style: Theme.of(context).textTheme.bodyText2),
         ),
       ),
       Padding(
         padding: const EdgeInsets.only(left: 28, right: 28),
         child: RadioListTile<Team>(
-          groupValue: _userTeam,
+          groupValue: _senderTeam,
           value: widget.visitorTeam,
-          onChanged: (_) => setState(() => _userTeam = widget.visitorTeam),
+          onChanged: (_) => setState(() => _senderTeam = widget.visitorTeam),
           title: Text(widget.visitorTeam.name!, style: Theme.of(context).textTheme.bodyText2),
         ),
       ),
-      if (_userTeam == null)
+      if (_senderTeam == null)
         Padding(
           padding: const EdgeInsets.only(left: 38.0),
           child: Text(
@@ -244,27 +248,20 @@ class _PostPoneMatchState extends State<PostPoneMatch> {
               dense: true,
               title: Text(widget.hostTeam.name!, style: Theme.of(context).textTheme.bodyText2),
               value: widget.hostTeam.code!,
-              groupValue: _initiatorTeamCode,
-              onChanged: (_) => setState(() => _initiatorTeamCode = widget.hostTeam.code),
+              groupValue: _applicantTeamCode,
+              onChanged: (_) => setState(() => _applicantTeamCode = widget.hostTeam.code),
             ),
             RadioListTile<String>(
               dense: true,
               title: Text(widget.visitorTeam.name!, style: Theme.of(context).textTheme.bodyText2),
               value: widget.visitorTeam.code!,
-              groupValue: _initiatorTeamCode,
-              onChanged: (_) => setState(() => _initiatorTeamCode = widget.visitorTeam.code),
-            ),
-            RadioListTile<String>(
-              dense: true,
-              title: Text("Les 2 équipes", style: Theme.of(context).textTheme.bodyText2),
-              value: BOTH_TEAMS,
-              groupValue: _initiatorTeamCode,
-              onChanged: (_) => setState(() => _initiatorTeamCode = BOTH_TEAMS),
+              groupValue: _applicantTeamCode,
+              onChanged: (_) => setState(() => _applicantTeamCode = widget.visitorTeam.code),
             ),
           ],
         ),
       ),
-      if (_initiatorTeamCode == null)
+      if (_applicantTeamCode == null)
         Padding(
           padding: const EdgeInsets.only(left: 28.0),
           child: Text(
@@ -302,76 +299,100 @@ class _PostPoneMatchState extends State<PostPoneMatch> {
     ];
   }
 
-  _sendReport(
-    BuildContext context, {
-    required String name,
+  _confirmPostpone(
+    BuildContext parentContext, {
+    required String matchCode,
+    required String senderName,
+    required String senderTeamName,
     required String senderEmail,
     required Team hostTeam,
     required Team visitorTeam,
-    required Team userTeam,
-    required DateTime plannedDate,
-    required String comments,
+    required String comment,
+    required String applicationTeamCode,
   }) async {
-    final DateFormat dateFormat = DateFormat("EEEE dd MMMM à HH:mm", "FR");
+    return showDialog(
+      barrierDismissible: false,
+      context: parentContext,
+      builder: (context) {
+        return AlertDialog(
+          title: Row(
+            children: [
+              Icon(
+                Icons.info_outline_rounded,
+                color: Theme.of(context).textTheme.headline5!.color,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(left: 8.0),
+                child: Text("Confirmation", style: Theme.of(context).textTheme.headline5),
+              ),
+            ],
+          ),
+          content: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SizedBox(height: 18),
+              Text("$senderName, confirmez-vous le report du match suivant ?",
+                  style: Theme.of(context).textTheme.bodyText1),
+              SizedBox(height: 18),
+              RichText(
+                text: TextSpan(
+                    text: "",
+                    children: [
+                      TextSpan(text: hostTeam.name, style: Theme.of(context).textTheme.bodyText2),
+                      TextSpan(text: " reçoit "),
+                      TextSpan(text: visitorTeam.name, style: Theme.of(context).textTheme.bodyText2),
+                    ],
+                    style: Theme.of(context).textTheme.bodyText1),
+              ),
+              SizedBox(height: 18),
+            ],
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text("Annuler"),
+            ),
+            AnimatedButton(
+              text: "Confirmer",
+              width: 100,
+              onPressed: () async {
+                Repository repository = RepositoryProvider.of<Repository>(context);
+                try {
+                  var sendStatus = await repository.postponeMatch(
+                    matchCode: matchCode,
+                    senderName: senderName,
+                    senderTeamName: senderTeamName,
+                    senderEmail: senderEmail,
+                    comment: comment,
+                    applicantTeamCode: applicationTeamCode,
+                    reportDate: null,
+                    gymnasiumCode: null,
+                  );
 
-    final MailOptions mailOptions = MailOptions(
-      body: '''
-      <b><u>Notification de report envoyée par $name ($senderEmail) de l'équipe ${userTeam.name}</u></b><br/>
-      <br/>
-      Initialement prévu le ${dateFormat.format(plannedDate)}, le match ${hostTeam.name} reçoit ${visitorTeam.name} a été reporté.
-      <br/><br/>
-      Report demandé par : ${_initiatorTeamCode == BOTH_TEAMS ? "Les 2 équipes" : _initiatorTeamCode == hostTeam.code ? hostTeam.name : visitorTeam.name}
-      <br><br/>
-      ${comments.isNotEmpty ? "<b>Commentaires :</b><br/> $comments" : ""}
-      ''',
-      subject:
-          "[Volley34 : Résultats et Classements] - Notification de report du Match ${hostTeam.name} reçoit ${visitorTeam.name}",
-      recipients: [
-        senderEmail,
-        "resultat@volley34.fr",
-      ],
-      isHTML: true,
-      ccRecipients: [senderEmail],
+                  Navigator.of(context).pop();
+                  if (sendStatus.startsWith("OK")) {
+                    BlocProvider.of<MessageCubit>(parentContext).showSnack(
+                        text: "Merci ! Le report a été pris en compte",
+                        canClose: true,
+                        duration: Duration(seconds: 20));
+                    Navigator.of(parentContext).pop();
+                  } else {
+                    BlocProvider.of<MessageCubit>(parentContext).showMessage(
+                      message: "Le report n'a pu être pris en compte. Merci d'envoyer un mail à resultats@volley34.fr",
+                    );
+                  }
+                  return sendStatus;
+                } on Exception {
+                  return Future.value();
+                }
+              },
+            ),
+          ],
+        );
+      },
     );
-
-    try {
-      final MailerResponse response = await FlutterMailer.send(mailOptions);
-      String platformResponse;
-      switch (response) {
-        case MailerResponse.saved:
-          platformResponse = "L'e-mail a été sauvegardé en brouillon";
-          break;
-        case MailerResponse.sent:
-          platformResponse = "L'e-mail a été envoyé";
-          break;
-        case MailerResponse.cancelled:
-          platformResponse = "L'e-mail a été annulé. Merci";
-          break;
-        case MailerResponse.android:
-          platformResponse = "L'e-mail a été envoyé. Merci";
-          break;
-        default:
-          platformResponse = "Nous avons reçu une réponse inconnue de votre client d'e-mail !";
-          break;
-      }
-      final snackBar = SnackBar(content: Text(platformResponse));
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-    } catch (e) {
-      final snackBar = SnackBar(
-        content: Text("Désolé mais une erreur s'est produite en essayant d'envoyer le mail. "
-            "Avez-vous une application mail d'installée sur votre téléphone ?"),
-        duration: Duration(minutes: 1),
-        action: SnackBarAction(
-          label: "Fermer",
-          onPressed: () {
-            ScaffoldMessenger.of(context).hideCurrentSnackBar();
-          },
-        ),
-      );
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-      showAlertDialog(context, "Oooops", "Une erreur s'est produite", onPressed: (_) => null);
-    }
-    Navigator.of(context).pop();
-    return Future.value();
   }
 }
