@@ -195,14 +195,14 @@ ThemeData buildDarkTheme(Color mainColor) {
       contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 14),
     ),
     textSelectionTheme: TextSelectionThemeData(
-      cursorColor: Color(0xFFC73551),
-      selectionColor: Color(0xFFC73551),
-      selectionHandleColor: Color(0xFFC73551),
+      cursorColor: mainColor,
+      selectionColor: mainColor,
+      selectionHandleColor: mainColor,
     ),
     snackBarTheme: SnackBarThemeData(
       backgroundColor: Color(0xFF373E5D),
-      contentTextStyle: TextStyle(color: Color(0xFFF7FBFE)),
-      actionTextColor: Color(0xFFC73551),
+      contentTextStyle: TextStyle(color: Color(0xFFF7FBFE), fontSize: 14),
+      actionTextColor: mainColor,
       elevation: 10,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.only(topLeft: Radius.circular(18), topRight: Radius.circular(18)),

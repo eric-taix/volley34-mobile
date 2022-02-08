@@ -1,4 +1,6 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
+import 'package:v34/config_reader.dart';
 import 'package:v34/models/match_result.dart';
 import 'package:v34/models/sended_match_result.dart';
 
@@ -31,7 +33,7 @@ class ResultProvider {
     String? matchSheetFileBase64,
   }) async {
     var data = {
-      "Id": matchCode,
+      "MatchCode": matchCode,
       "LicencesLocaux": [],
       "LicencesVisiteurs": [],
       "Sets": [
@@ -42,7 +44,7 @@ class ResultProvider {
         {"Id": 5, "Locaux": sets[8].isNotEmpty ? sets[8] : null, "Visiteur": sets[9].isNotEmpty ? sets[9] : null}
       ],
       "IsUnfinished": false,
-      "Comments": "TEST_POST_API: $comment",
+      "Comment": "${kDebugMode ? "TEST_POST_API: " : ""}$comment",
       "SignLocaux": "",
       "SignVisiteurs": "",
       "SenderName": senderName,
@@ -51,11 +53,15 @@ class ResultProvider {
       "MatchSheetFileName": matchSheetFilename,
       "MatchSheetFileBase64": matchSheetFileBase64,
     };
-    print(data);
 
-    String url = "XXXXXXXXX/resultats/sendresult";
-    Response response = await dio.post(url, data: data, options: Options(headers: {}));
-    if (response.statusCode == 200 || response.statusCode == 304) {
+    String url = "/resultats/post";
+    Response response = await dio.post(url,
+        data: data,
+        options: Options(headers: {
+          "x-api-login": ConfigReader.getXApiLogin(),
+          "x-api-key": ConfigReader.getXApiKey(),
+        }));
+    if (response.statusCode == 200) {
       return SendedMatchResult.fromJson(response.data);
     } else {
       throw Exception("Impossible d'envoyer les résultats");

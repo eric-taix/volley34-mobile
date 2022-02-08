@@ -4,14 +4,15 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_mailer/flutter_mailer.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:images_picker/images_picker.dart';
 import 'package:path/path.dart';
 import 'package:v34/commons/animated_button.dart';
 import 'package:v34/commons/ensure_visible_when_focused.dart';
 import 'package:v34/commons/paragraph.dart';
+import 'package:v34/message_cubit.dart';
 import 'package:v34/models/club.dart';
+import 'package:v34/models/sended_match_result.dart';
 import 'package:v34/models/team.dart';
 import 'package:v34/pages/match/match_info.dart';
 import 'package:v34/repositories/repository.dart';
@@ -99,6 +100,7 @@ class _EditMatchState extends State<EditMatch> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBody: true,
       backgroundColor: Theme.of(context).canvasColor,
       appBar: AppBar(
         leading: IconButton(
@@ -110,171 +112,180 @@ class _EditMatchState extends State<EditMatch> {
           borderRadius: BorderRadius.only(bottomLeft: Radius.circular(10), bottomRight: Radius.circular(10)),
         ),
       ),
-      body: _showPhotoFullScreen
-          ? _buildFullScreenImage(context)
-          : Form(
-              key: _formKey,
-              autovalidateMode: AutovalidateMode.always,
-              child: FocusScope(
-                child: ListView(
-                  children: [
-                    MatchInfo(
-                      hostTeam: widget.hostTeam,
-                      visitorTeam: widget.visitorTeam,
-                      hostClub: widget.hostClub,
-                      visitorClub: widget.visitorClub,
-                      date: widget.matchDate,
-                      showMatchDate: true,
-                      showTeamLink: false,
-                    ),
-                    Paragraph(title: "Informations"),
-                    ..._buildInformation(context),
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 18.0),
-                      child: Paragraph(title: "Résultat"),
-                    ),
-                    ...List.generate(5, (index) {
-                      return Padding(
-                        padding: const EdgeInsets.only(left: 18.0, right: 18, top: 4, bottom: 4),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(right: 4.0),
-                              child: Text("Set n° ", style: Theme.of(context).textTheme.bodyText1),
-                            ),
-                            SizedBox(
-                              width: 20,
-                              height: 20,
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.all(Radius.circular(4)),
-                                  color: Theme.of(context).textTheme.bodyText1!.color,
-                                ),
-                                child: Center(
-                                  child: Text(
-                                    "${index + 1}",
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyText1!
-                                        .copyWith(color: Theme.of(context).canvasColor, fontWeight: FontWeight.bold),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 18.0, right: 8),
-                              child: SizedBox(
-                                width: 78,
-                                height: 40,
-                                child: _createSetField(context, index, true),
-                              ),
-                            ),
-                            Text("/",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyText2!
-                                    .copyWith(fontSize: 18, fontWeight: FontWeight.bold)),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 8.0),
-                              child: SizedBox(
-                                width: 78,
-                                height: 40,
-                                child: _createSetField(context, index, false),
-                              ),
-                            ),
-                          ],
-                        ),
-                      );
-                    }),
-                    _buildCurrentResult(context),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 32.0, left: 28, right: 28),
-                      child: EnsureVisibleWhenFocused(
-                        focusNode: _commentsFocus,
-                        child: TextFormField(
-                          controller: _commentsController,
-                          focusNode: _commentsFocus,
-                          cursorWidth: 2,
-                          style: Theme.of(context).textTheme.bodyText2!.copyWith(fontSize: 18),
-                          autovalidateMode: AutovalidateMode.always,
-                          keyboardType: TextInputType.multiline,
-                          maxLines: 5,
-                          decoration: InputDecoration(labelText: "Commentaires"),
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 18.0),
-                      child: Paragraph(title: "Feuille de match"),
-                    ),
-                    _buildScoreSheetPhoto(context),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 58.0),
+      body: Stack(
+        children: [
+          Form(
+            key: _formKey,
+            autovalidateMode: AutovalidateMode.always,
+            child: FocusScope(
+              child: ListView(
+                children: [
+                  MatchInfo(
+                    hostTeam: widget.hostTeam,
+                    visitorTeam: widget.visitorTeam,
+                    hostClub: widget.hostClub,
+                    visitorClub: widget.visitorClub,
+                    date: widget.matchDate,
+                    showMatchDate: true,
+                    showTeamLink: false,
+                  ),
+                  Paragraph(title: "Informations"),
+                  ..._buildInformation(context),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 18.0),
+                    child: Paragraph(title: "Résultat"),
+                  ),
+                  ...List.generate(5, (index) {
+                    return Padding(
+                      padding: const EdgeInsets.only(left: 18.0, right: 18, top: 4, bottom: 4),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          AnimatedButton(
-                            onPressed: (_formKey.currentState?.validate() ?? false) &&
-                                    ((PHOTO_REQUIRED && _scoreSheetPhotoPath != null) || !PHOTO_REQUIRED) &&
-                                    _userTeam != null &&
-                                    _setControllers[0].text.isNotEmpty &&
-                                    _setControllers[1].text.isNotEmpty
-                                ? () => _confirmResult(
-                                      context,
-                                      senderName: _nameController.text,
-                                      senderEmail: _emailController.text,
-                                      hostTeamName: widget.hostTeam.name!,
-                                      visitorTeamName: widget.visitorTeam.name!,
-                                      scoreSheetPath: _scoreSheetPhotoPath,
-                                      senderTeam: _userTeam!,
-                                      comment: _commentsController.text,
-                                    )
-                                : null,
-                            text: "Envoyer",
+                          Padding(
+                            padding: const EdgeInsets.only(right: 4.0),
+                            child: Text("Set n° ", style: Theme.of(context).textTheme.bodyText1),
+                          ),
+                          SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.all(Radius.circular(4)),
+                                color: Theme.of(context).textTheme.bodyText1!.color,
+                              ),
+                              child: Center(
+                                child: Text(
+                                  "${index + 1}",
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyText1!
+                                      .copyWith(color: Theme.of(context).canvasColor, fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 18.0, right: 8),
+                            child: SizedBox(
+                              width: 78,
+                              height: 40,
+                              child: _createSetField(context, index, true),
+                            ),
+                          ),
+                          Text("/",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyText2!
+                                  .copyWith(fontSize: 18, fontWeight: FontWeight.bold)),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 8.0),
+                            child: SizedBox(
+                              width: 78,
+                              height: 40,
+                              child: _createSetField(context, index, false),
+                            ),
                           ),
                         ],
                       ),
+                    );
+                  }),
+                  _buildCurrentResult(context),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 32.0, left: 28, right: 28),
+                    child: EnsureVisibleWhenFocused(
+                      focusNode: _commentsFocus,
+                      child: TextFormField(
+                        controller: _commentsController,
+                        focusNode: _commentsFocus,
+                        cursorWidth: 2,
+                        style: Theme.of(context).textTheme.bodyText2!.copyWith(fontSize: 18),
+                        autovalidateMode: AutovalidateMode.always,
+                        keyboardType: TextInputType.multiline,
+                        maxLines: 5,
+                        decoration: InputDecoration(labelText: "Commentaires"),
+                      ),
                     ),
-                    SizedBox(height: 50),
-                  ],
-                ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 18.0),
+                    child: Paragraph(title: "Feuille de match"),
+                  ),
+                  _buildScoreSheetPhoto(context),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 58.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        ElevatedButton(
+                          onPressed: (_formKey.currentState?.validate() ?? false) &&
+                                  ((PHOTO_REQUIRED && _scoreSheetPhotoPath != null) || !PHOTO_REQUIRED) &&
+                                  _userTeam != null &&
+                                  _setControllers[0].text.isNotEmpty &&
+                                  _setControllers[1].text.isNotEmpty
+                              ? () => _confirmResult(
+                                    context,
+                                    senderName: _nameController.text,
+                                    senderEmail: _emailController.text,
+                                    hostTeamName: widget.hostTeam.name!,
+                                    visitorTeamName: widget.visitorTeam.name!,
+                                    scoreSheetPath: _scoreSheetPhotoPath,
+                                    senderTeam: _userTeam!,
+                                    comment: _commentsController.text,
+                                  )
+                              : null,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 38.0),
+                            child: Text("Envoyer"),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: 50),
+                ],
               ),
             ),
+          ),
+          if (_showPhotoFullScreen) _buildFullScreenImage(context),
+        ],
+      ),
     );
   }
 
   _buildFullScreenImage(BuildContext context) {
-    return Stack(
-      children: [
-        Container(
-          child: Center(
-            child: Image.file(
-              File(_scoreSheetPhotoPath!),
-              fit: BoxFit.cover,
-              height: 400,
-              width: 400,
+    return Container(
+      color: Theme.of(context).canvasColor,
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Container(
+              child: Center(
+                child: Image.file(
+                  File(_scoreSheetPhotoPath!),
+                  fit: BoxFit.cover,
+                  height: 400,
+                  width: 400,
+                ),
+              ),
             ),
-          ),
-        ),
-        Positioned(
-          top: 10,
-          right: 0,
-          child: TextButton(
-            child: Text("Fermer"),
-            onPressed: () => setState(
-              () {
-                _showPhotoFullScreen = false;
-              },
+            TextButton(
+              child: Text("Fermer"),
+              onPressed: () => setState(
+                () {
+                  _showPhotoFullScreen = false;
+                },
+              ),
             ),
-          ),
+          ],
         ),
-      ],
+      ),
     );
   }
 
   _confirmResult(
-    BuildContext context, {
+    BuildContext parentContext, {
     required String senderName,
     required String senderEmail,
     required String hostTeamName,
@@ -295,7 +306,7 @@ class _EditMatchState extends State<EditMatch> {
 
     return showDialog(
       barrierDismissible: false,
-      context: context,
+      context: parentContext,
       builder: (context) {
         return AlertDialog(
           title: Row(
@@ -364,30 +375,36 @@ class _EditMatchState extends State<EditMatch> {
               },
               child: Text("Annuler"),
             ),
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-                _sendEmail(
-                  context,
-                  name: senderName,
-                  senderEmail: senderEmail,
-                  hostTeamName: hostTeamName,
-                  visitorTeamName: visitorTeamName,
-                  scoreSheetPath: scoreSheetPath,
-                  userTeam: senderTeam,
-                  comments: comment,
-                  pointResults: pointResults,
-                );
-                /*  _sendResult(
-                  context,
-                  comment: comment,
-                  senderName: senderName,
-                  senderEmail: senderEmail,
-                  senderTeamName: senderTeam.name!,
-                  scoreSheetPath: scoreSheetPath,
-                );*/
+            AnimatedButton(
+              text: "Confirmer",
+              width: 100,
+              onPressed: () async {
+                try {
+                  var sendStatus = await _sendResult(
+                    parentContext,
+                    comment: comment,
+                    senderName: senderName,
+                    senderEmail: senderEmail,
+                    senderTeamName: senderTeam.name!,
+                    scoreSheetPath: scoreSheetPath,
+                  );
+                  Navigator.of(context).pop();
+                  if (sendStatus.status.name.startsWith("OK")) {
+                    BlocProvider.of<MessageCubit>(parentContext).showSnack(
+                        text: "Merci ! Le résultat suivant a été pris en compte : ${sendStatus.comment}",
+                        canClose: true,
+                        duration: Duration(seconds: 20));
+                    Navigator.of(parentContext).pop();
+                  } else {
+                    BlocProvider.of<MessageCubit>(parentContext).showMessage(
+                      message: "Le résultat n'a pu être pris en compte pour la raison suivante: ${sendStatus.comment}",
+                    );
+                  }
+                  return sendStatus;
+                } on Exception {
+                  return Future.value();
+                }
               },
-              child: Text("Confirmer"),
             ),
           ],
         );
@@ -395,7 +412,7 @@ class _EditMatchState extends State<EditMatch> {
     );
   }
 
-  void _sendResult(
+  Future<SendedMatchResult> _sendResult(
     BuildContext context, {
     required String comment,
     required String senderName,
@@ -423,49 +440,7 @@ class _EditMatchState extends State<EditMatch> {
       matchSheetFilename: scoreSheetPath != null ? basename(scoreSheetPath) : null,
       matchSheetFileBase64: imageBase64Encoded,
     );
-    Navigator.of(context).pop(sendStatus);
-    final snackBar = SnackBar(content: Text("${sendStatus.status}: ${sendStatus.comment}"));
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
-    return Future.value();
-  }
-
-  void _sendEmail(
-    BuildContext context, {
-    required String name,
-    required String senderEmail,
-    required String hostTeamName,
-    required String visitorTeamName,
-    required String? scoreSheetPath,
-    required Team userTeam,
-    required String comments,
-    required String pointResults,
-  }) async {
-    final MailOptions mailOptions = MailOptions(
-        body: '''
-      <b><u>Envoi de résultat de $name ($senderEmail) pour l'équipe ${userTeam.name}</u></b><br/>
-      <br/>
-      $hostTeamName reçoit $visitorTeamName :<br/>
-      Détail des points : $pointResults<br/>
-      Total des sets: $_hostSets - $_visitorSets<br/>
-      Total des points: $_hostTotalPoints - $_visitorTotalPoints<br/>
-      <br>
-      ${comments.isNotEmpty ? "<b>Commentaires : </b><br/>$comments" : ""}
-      ''',
-        subject:
-            "[Volley34 : Résultats et Classements] - Envoi du résultat du Match $hostTeamName reçoit $visitorTeamName",
-        recipients: [
-          "resultat@volley34.fr",
-        ],
-        isHTML: true,
-        ccRecipients: [senderEmail],
-        attachments: scoreSheetPath != null ? [scoreSheetPath] : []);
-
-    await FlutterMailer.send(mailOptions);
-    Navigator.of(context).pop();
-    final snackBar =
-        SnackBar(content: Text("Une copie de l'e-mail contenant le résultat du match vous a été envoyé. Merci."));
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
-    return Future.value();
+    return sendStatus;
   }
 
   Widget _buildScoreSheetPhoto(BuildContext context) {

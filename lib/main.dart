@@ -11,6 +11,7 @@ import 'package:v34/app_page.dart';
 import 'package:v34/commons/blocs/logging_bloc.dart';
 import 'package:v34/commons/blocs/preferences_bloc.dart';
 import 'package:v34/commons/env.dart';
+import 'package:v34/config_reader.dart';
 import 'package:v34/message_cubit.dart';
 import 'package:v34/repositories/providers/agenda_provider.dart';
 import 'package:v34/repositories/providers/club_provider.dart';
@@ -29,6 +30,7 @@ import 'package:v34/utils/analytics.dart';
 Future<void> main() async {
   Bloc.observer = LoggingBlocDelegate();
   WidgetsFlutterBinding.ensureInitialized();
+  await ConfigReader.initialize();
   await Firebase.initializeApp();
   var sharedPreferences = await SharedPreferences.getInstance();
   var prefThemeString = sharedPreferences.getString("theme");
