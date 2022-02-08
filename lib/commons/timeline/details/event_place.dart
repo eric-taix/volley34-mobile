@@ -76,7 +76,7 @@ class _EventPlaceState extends State<EventPlace> {
       return;
     }
     _myLocation = await Geolocator.getCurrentPosition();
-    setState(() {});
+    if (mounted) setState(() {});
   }
 
   @override

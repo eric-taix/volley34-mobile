@@ -338,6 +338,7 @@ class _EventInfoState extends State<EventInfo> with SingleTickerProviderStateMix
                         RouterFacade.push(
                           context: context,
                           builder: (_) => PostPoneMatch(
+                            matchCode: widget.event.matchCode!,
                             hostTeam: _hostTeam!,
                             visitorTeam: _visitorTeam!,
                             hostClub: _hostClub!,

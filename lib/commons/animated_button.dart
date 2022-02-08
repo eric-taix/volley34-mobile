@@ -16,7 +16,7 @@ class _AnimatedButtonState extends State<AnimatedButton> with SingleTickerProvid
   Future<dynamic>? _computation;
   late double? _buttonWidth;
 
-  static const double PROGRESS_SIZE = 20;
+  static const double PROGRESS_SIZE = 26;
 
   @override
   void initState() {
@@ -59,8 +59,11 @@ class _AnimatedButtonState extends State<AnimatedButton> with SingleTickerProvid
                 : SizedBox(
                     width: PROGRESS_SIZE,
                     height: PROGRESS_SIZE,
-                    child: CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white70),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 28.0),
+                      child: CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white70),
+                      ),
                     ),
                   ),
           );
@@ -78,7 +81,9 @@ class _AnimatedButtonState extends State<AnimatedButton> with SingleTickerProvid
                 setState(
                   () {
                     _buttonWidth = widget.width;
-                    Future.delayed(Duration(milliseconds: 280), () => setState(() => _computation = null));
+                    Future.delayed(Duration(milliseconds: 280), () {
+                      if (mounted) setState(() => _computation = null);
+                    });
                   },
                 );
             },

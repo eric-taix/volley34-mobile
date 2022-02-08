@@ -1,5 +1,4 @@
 import 'package:bloc/bloc.dart';
-import 'package:equatable/equatable.dart';
 
 part 'message_state.dart';
 
@@ -12,6 +11,10 @@ class MessageCubit extends Cubit<MessageState> {
 
   void showHelp({required String title, required List<String> paragraphs}) {
     emit(NewHelp(title, paragraphs));
+  }
+
+  void showSnack({required String text, bool canClose = false, Duration? duration}) {
+    emit(SnackMessage(text: text, canClose: canClose, duration: duration));
   }
 
   void clearMessage() {

@@ -79,6 +79,7 @@ flutter:
   uses-material-design: true
 
   assets:
+    - config/
     - assets/calendar-postpone3.svg
     - assets/scoreboard.svg
     - assets/filter.svg

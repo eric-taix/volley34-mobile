@@ -64,6 +64,22 @@ class _AppPageState extends State<AppPage> {
                 },
               );
             }
+            if (state is SnackMessage) {
+              print("XXXXXXXXXXXXXXXXXXXXXXXXXX");
+              final snackBar = SnackBar(
+                content: Text(state.text),
+                duration: state.duration ?? Duration(milliseconds: 4000),
+                action: state.canClose
+                    ? SnackBarAction(
+                        label: "Fermer",
+                        onPressed: () {
+                          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                        },
+                      )
+                    : null,
+              );
+              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+            }
           },
           child: _child,
         ),

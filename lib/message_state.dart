@@ -1,12 +1,17 @@
 part of 'message_cubit.dart';
 
-abstract class MessageState extends Equatable {
+abstract class MessageState {
   const MessageState();
 }
 
-class MessageInitial extends MessageState {
-  @override
-  List<Object> get props => [];
+class MessageInitial extends MessageState {}
+
+class SnackMessage extends MessageState {
+  final bool canClose;
+  final String text;
+  final Duration? duration;
+
+  SnackMessage({required this.text, this.canClose = false, this.duration});
 }
 
 class NewMessage extends MessageState {
@@ -14,9 +19,6 @@ class NewMessage extends MessageState {
   final String message;
 
   NewMessage(this.title, this.message);
-
-  @override
-  List<Object?> get props => [];
 }
 
 class NewHelp extends MessageState {
@@ -24,12 +26,6 @@ class NewHelp extends MessageState {
   final List<String> paragraphs;
 
   NewHelp(this.title, this.paragraphs);
-
-  @override
-  List<Object?> get props => [];
 }
 
-class MessageCleared extends MessageState {
-  @override
-  List<Object?> get props => [];
-}
+class MessageCleared extends MessageState {}
