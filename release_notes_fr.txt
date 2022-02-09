@@ -1,1 +1,2 @@
 - Compression de la photo de la feuille de match
+- Correction de l'alignement de l'icone de saisie de résultat
