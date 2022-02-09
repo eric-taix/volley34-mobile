@@ -65,7 +65,6 @@ class _AppPageState extends State<AppPage> {
               );
             }
             if (state is SnackMessage) {
-              print("XXXXXXXXXXXXXXXXXXXXXXXXXX");
               final snackBar = SnackBar(
                 content: Text(state.text),
                 duration: state.duration ?? Duration(milliseconds: 4000),
