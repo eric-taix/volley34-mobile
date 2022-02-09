@@ -1,16 +1,2 @@
-- Utilisation d'une carte pour afficher les opposants d'un match
-- Ajout de la position courante dans la mini-map d'un match et la distance (à vol d'oiseau)
-- Correction du focus quand l'utilisateur clique sur le bouton recherche
-- Utilisation de cartes pour les équipes dans les tableaux de classements
-- Stockage des filtres sélectionnés dans la page des compétitions
-- Ajout d'un effet d'élévation de la barre d'onglet quand l'utilisateur scroll
-- Correction d'un effet d'application bloquée dans l'utilisateur clique sur une équipe dans un tableau de classement
-- Correction d'un effet de chargement, lors du chargement des créneaux d'un club
-- Correction de l'animation du graphe des équipes
-- Correction du rechargement systématique de la page des compétitions
-- Correction d'un bug lors du chargement du détail d'un match qui empéchait de voir les boutons d'action
-- Amélioration du chargement de l'information des clubs
-- Ajout d'un écran de confirmation avant envoi du résultat (toujours par email)
-- Ajout d'une action ouvrant le site web d'un tournoi
-- Correction d'alignement pour les 2 événements à la même date
-- Ajout de la possibilité de cliquer sur un lien dans la description d'un tournoi
+- Compression de la photo de la feuille de match
+- Correction de l'alignement de l'icone de saisie de résultat

@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:images_picker/images_picker.dart';
 import 'package:path/path.dart';
@@ -391,13 +392,14 @@ class _EditMatchState extends State<EditMatch> {
                   Navigator.of(context).pop();
                   if (sendStatus.status.name.startsWith("OK")) {
                     BlocProvider.of<MessageCubit>(parentContext).showSnack(
-                        text: "Merci ! Le résultat suivant a été pris en compte : ${sendStatus.comment}",
+                        text: "Merci ! Le résultat suivant a été pris en compte :\n\n${sendStatus.comment}",
                         canClose: true,
                         duration: Duration(seconds: 20));
                     Navigator.of(parentContext).pop();
                   } else {
                     BlocProvider.of<MessageCubit>(parentContext).showMessage(
-                      message: "Le résultat n'a pu être pris en compte pour la raison suivante: ${sendStatus.comment}",
+                      message:
+                          "Le résultat n'a pu être pris en compte pour la raison suivante:\n\n${sendStatus.comment}",
                     );
                   }
                   return sendStatus;
@@ -427,7 +429,14 @@ class _EditMatchState extends State<EditMatch> {
     String? imageBase64Encoded;
     if (_scoreSheetPhotoPath != null) {
       final bytes = await File(_scoreSheetPhotoPath!).readAsBytes();
-      imageBase64Encoded = base64.encode(bytes);
+
+      var compressedBytes = await FlutterImageCompress.compressWithList(
+        bytes,
+        minHeight: 1920,
+        minWidth: 1080,
+        quality: 75,
+      );
+      imageBase64Encoded = base64.encode(compressedBytes);
     }
 
     var sendStatus = await repository.sendResult(

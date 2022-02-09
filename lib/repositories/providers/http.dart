@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
+import 'package:flutter/foundation.dart';
 import 'package:v34/message_cubit.dart';
 
 late final Dio dio;
@@ -18,9 +19,9 @@ void initDio(MessageCubit messageCubit) {
     allowPostMethod: false,
   );
 
+  var apiTest = false;
   dio = Dio(BaseOptions(
-    baseUrl: "http://api.volley34.fr/v1/",
-    //baseUrl: "http://apitest.volley34.fr/v1/",
+    baseUrl: !kDebugMode || !apiTest ? "http://api.volley34.fr/v1/" : "http://apitest.volley34.fr/v1/",
   ))
     ..interceptors.add(DioCacheInterceptor(
       options: defaultCacheOptions,
