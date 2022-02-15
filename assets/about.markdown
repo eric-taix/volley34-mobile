@@ -1,10 +1,16 @@
 
-Cette application mobile vous est proposé par Eric Taix et le Volley Club de Vailhauquès (VCV).  
+Cette application mobile vous est proposée par Eric Taix et le Volley Club de Vailhauquès (VCV).  
   
 
-Elle a pour but de rendre plus facile l'utilisation quotidienne concernant Volley34. Elle a nécessité du temps et de l'énergie, 
+Elle a pour but de rendre plus facile l'utilisation quotidienne de Volley34. Elle a nécessité du temps et de l'énergie, 
 n'hésitez pas à mettre un commentaire sur les stores, à remercier les différents contributeurs
 et à leur offrir un verre à l'occasion.
+
+Un grand merci à Laurent Sangalli, l'initiateur de Volley34 et qui depuis de nombreuses années
+développe le site [Volley34.fr](http://www.volley34.fr) et qui encore une fois a donné de son
+temps pour mettre en place les adaptations nécessaires afin que cette application mobile puisse voir le jour.
+
+Bon volley à toutes et à tous.
 
 # Contributeurs
 
