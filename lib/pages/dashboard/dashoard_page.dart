@@ -26,14 +26,13 @@ class _DashboardPageState extends State<DashboardPage> with RouteAwareAnalytics 
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<PreferencesBloc, PreferencesState>(
-      listener: (_, state) {
+      listener: (context, state) {
         if (state is PreferencesUpdatedState && (state.favoriteClub == null || state.favoriteTeam == null)) {
-          showGeneralDialog(
+          showDialog(
             barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
             barrierColor: Colors.black45,
             context: context,
-            pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) =>
-                SelectFavoriteTeam(
+            builder: (BuildContext context) => SelectFavoriteTeam(
               canClose: false,
             ),
           );
