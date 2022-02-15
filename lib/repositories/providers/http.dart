@@ -39,9 +39,11 @@ class DebugCacheInterceptor extends InterceptorsWrapper {
     Duration requestDuration = start != null ? DateTime.now().difference(start) : Duration();
     print(
         "${requestDuration.inMilliseconds > 1000 ? "SLOW [${requestDuration.inMilliseconds} ms]" : ""} Request: ${response.realUri}");
-    var durations = slowRequests.putIfAbsent(response.realUri.path, () => <Duration>[])..add(requestDuration);
-    if (durations.length > 10) {
-      durations.removeAt(0);
+    if (requestDuration.inMilliseconds > 1000) {
+      var durations = slowRequests.putIfAbsent(response.realUri.path, () => <Duration>[])..add(requestDuration);
+      if (durations.length > 10) {
+        durations.removeAt(0);
+      }
     }
     super.onResponse(response, handler);
   }
