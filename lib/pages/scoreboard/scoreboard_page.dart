@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:v34/commons/rounded_network_image.dart';
 import 'package:v34/models/club.dart';
@@ -42,6 +43,10 @@ class _ScoreBoardPageState extends State<ScoreBoardPage> with RouteAwareAnalytic
   @override
   void initState() {
     super.initState();
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeRight,
+      DeviceOrientation.landscapeLeft,
+    ]);
     _hostTeam = widget.hostTeam;
     _visitorTeam = widget.visitorTeam;
     _watch = Stopwatch();
@@ -65,6 +70,12 @@ class _ScoreBoardPageState extends State<ScoreBoardPage> with RouteAwareAnalytic
 
   @override
   void dispose() {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeRight,
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
     _timer?.cancel();
     super.dispose();
   }
@@ -111,12 +122,14 @@ class _ScoreBoardPageState extends State<ScoreBoardPage> with RouteAwareAnalytic
                                             child: ScorePanel(
                                               initialValue: _hostSets,
                                               color: Theme.of(context).colorScheme.secondary,
+                                              enabled: _playing,
                                             ),
                                           ),
                                           Expanded(
                                             child: ScorePanel(
                                               initialValue: _visitorSets,
                                               color: Theme.of(context).colorScheme.secondary,
+                                              enabled: _playing,
                                             ),
                                           ),
                                         ],

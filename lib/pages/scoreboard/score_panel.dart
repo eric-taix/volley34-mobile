@@ -141,7 +141,7 @@ class _ScorePanelState extends State<ScorePanel> with SingleTickerProviderStateM
                 children: [
                   ScoreDigit(
                     value: "${_value + 1}",
-                    color: _getColor(1),
+                    color: _getColor(context, 1),
                   ),
                   AnimatedBuilder(
                     animation: _autoAnimation,
@@ -163,7 +163,7 @@ class _ScorePanelState extends State<ScorePanel> with SingleTickerProviderStateM
                           ..rotateX(animation.value <= 3 * pi / 2 ? animation.value : 3 * pi / 2),
                         child: ScoreDigit(
                           value: "${animation.value < pi / 2 ? _value : ""}",
-                          color: _getColor(0),
+                          color: _getColor(context, 0),
                           elevation: _controller.value == 0 ? 0 : 10,
                         ),
                       );
@@ -178,7 +178,9 @@ class _ScorePanelState extends State<ScorePanel> with SingleTickerProviderStateM
     );
   }
 
-  Color _getColor(int inc) {
-    return widget.diffPoints + inc >= 2 && _value + inc >= 25 ? Colors.green : widget.color;
+  Color _getColor(BuildContext context, int inc) {
+    return widget.enabled
+        ? (widget.diffPoints + inc >= 2 && _value + inc >= 25 ? Colors.green : widget.color)
+        : Theme.of(context).textTheme.bodyText1!.color!.withOpacity(0.5);
   }
 }
