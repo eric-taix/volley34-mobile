@@ -30,12 +30,19 @@ void initDio(MessageCubit messageCubit) {
     ..interceptors.add(ServerErrorInterceptor(messageCubit));
 }
 
+Map<String, List<Duration>> slowRequests = Map();
+
 class DebugCacheInterceptor extends InterceptorsWrapper {
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) {
     DateTime? start = response.requestOptions.extra["start"];
+    Duration requestDuration = start != null ? DateTime.now().difference(start) : Duration();
     print(
-        "${start != null && DateTime.now().difference(start).inMilliseconds > 1000 ? "SLOW [${DateTime.now().difference(start).inMilliseconds} ms]" : ""} Request: ${response.realUri}");
+        "${requestDuration.inMilliseconds > 1000 ? "SLOW [${requestDuration.inMilliseconds} ms]" : ""} Request: ${response.realUri}");
+    var durations = slowRequests.putIfAbsent(response.realUri.path, () => <Duration>[])..add(requestDuration);
+    if (durations.length > 10) {
+      durations.removeAt(0);
+    }
     super.onResponse(response, handler);
   }
 
