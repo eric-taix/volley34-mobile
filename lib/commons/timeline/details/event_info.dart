@@ -450,7 +450,7 @@ class _EventInfoState extends State<EventInfo> with SingleTickerProviderStateMix
   }
 
   Widget _buildBarButton(BuildContext context,
-      {String? tag,
+      {required String tag,
       required Widget icon,
       required Widget label,
       required void Function()? onPressed,

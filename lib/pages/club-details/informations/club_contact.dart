@@ -64,6 +64,7 @@ class ClubContact extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 8.0),
                   child: FloatingActionButton(
+                    heroTag: "hero-btn-club-tel",
                     mini: true,
                     onPressed: () => launch("tel:${club!.phone}"),
                     child: Icon(Icons.phone),
@@ -73,6 +74,7 @@ class ClubContact extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 8.0),
                   child: FloatingActionButton(
+                    heroTag: "hero-btn-club-sms",
                     mini: true,
                     onPressed: () => launch("sms:${club!.phone}"),
                     child: Icon(Icons.sms),
@@ -82,6 +84,7 @@ class ClubContact extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 8.0),
                   child: FloatingActionButton(
+                    heroTag: "hero-btn-club-mail",
                     mini: true,
                     onPressed: () => launch("mailto:${club!.email}"),
                     child: Icon(Icons.mail),
