@@ -33,15 +33,18 @@ class _ScorePanelState extends State<ScorePanel> with SingleTickerProviderStateM
   @override
   void initState() {
     _value = widget.initialValue;
-    _value = widget.initialValue;
 
     _controller = AnimationController(vsync: this, duration: Duration(milliseconds: 800));
     _controller.addStatusListener((status) {
       if (status == AnimationStatus.completed || status == AnimationStatus.dismissed) {
-        if ((status == AnimationStatus.completed && _fling.direction == FlingDirection.up) ||
-            (status == AnimationStatus.dismissed && _fling.direction == FlingDirection.down)) {
-          if (widget.onValueChanged != null)
-            widget.onValueChanged!(_fling.direction == FlingDirection.up ? _value + 1 : _value);
+        if (status == AnimationStatus.completed && _fling.direction == FlingDirection.up) {
+          // if (widget.onValueChanged != null) {
+          //   widget.onValueChanged!(_value+1);
+          // }
+        } else if (status == AnimationStatus.dismissed && _fling.direction == FlingDirection.down) {
+          // if (widget.onValueChanged != null) {
+          //   widget.onValueChanged!(_value-1);
+          // }
         }
         setState(() {
           _fling = _fling.end();
@@ -74,6 +77,12 @@ class _ScorePanelState extends State<ScorePanel> with SingleTickerProviderStateM
 
   @override
   Widget build(BuildContext context) {
+    Animation animation = _fling.type == FlingType.auto
+        ? (_fling.direction == FlingDirection.up)
+            ? AnimationMax<double>(_autoAnimation, _manualAnimation)
+            : AnimationMin<double>(_autoAnimation, _manualAnimation)
+        : _manualAnimation;
+
     return Column(
       children: [
         Expanded(
@@ -141,20 +150,11 @@ class _ScorePanelState extends State<ScorePanel> with SingleTickerProviderStateM
                 children: [
                   ScoreDigit(
                     value: "${_value + 1}",
-                    color: _getColor(1),
+                    color: _getColor(context, 1),
                   ),
                   AnimatedBuilder(
-                    animation: _autoAnimation,
+                    animation: animation,
                     builder: (BuildContext context, Widget? child) {
-                      Animation animation = _fling.type == FlingType.auto
-                          ? (_fling.direction == FlingDirection.up
-                              ? _autoAnimation.value > _manualAnimation.value
-                                  ? _autoAnimation
-                                  : _manualAnimation
-                              : _autoAnimation.value < _manualAnimation.value
-                                  ? _autoAnimation
-                                  : _manualAnimation)
-                          : _manualAnimation;
                       return Transform(
                         alignment: Alignment.topCenter,
                         origin: Offset(0, 0),
@@ -163,7 +163,7 @@ class _ScorePanelState extends State<ScorePanel> with SingleTickerProviderStateM
                           ..rotateX(animation.value <= 3 * pi / 2 ? animation.value : 3 * pi / 2),
                         child: ScoreDigit(
                           value: "${animation.value < pi / 2 ? _value : ""}",
-                          color: _getColor(0),
+                          color: _getColor(context, 0),
                           elevation: _controller.value == 0 ? 0 : 10,
                         ),
                       );
@@ -178,7 +178,9 @@ class _ScorePanelState extends State<ScorePanel> with SingleTickerProviderStateM
     );
   }
 
-  Color _getColor(int inc) {
-    return widget.diffPoints + inc >= 2 && _value + inc >= 25 ? Colors.green : widget.color;
+  Color _getColor(BuildContext context, int inc) {
+    return widget.enabled
+        ? (widget.diffPoints + inc >= 2 && _value + inc >= 25 ? Colors.green : widget.color)
+        : Theme.of(context).textTheme.bodyText1!.color!.withOpacity(0.5);
   }
 }

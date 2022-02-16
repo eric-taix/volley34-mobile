@@ -188,6 +188,7 @@ class _GymnasiumMapState extends State<GymnasiumMap> {
                 right: 8,
                 top: 53,
                 child: FloatingActionButton(
+                  heroTag: "hero-btn-my-location",
                   mini: true,
                   child: Icon(Icons.my_location),
                   onPressed: () {

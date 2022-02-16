@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:feature_flags/feature_flags.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -5,6 +7,7 @@ import 'package:v34/commons/blocs/preferences_bloc.dart';
 import 'package:v34/commons/loading.dart';
 import 'package:v34/commons/paragraph.dart';
 import 'package:v34/features_flag.dart';
+import 'package:v34/repositories/providers/http.dart';
 import 'package:v34/utils/analytics.dart';
 
 class PreferencesPage extends StatefulWidget {
@@ -38,6 +41,7 @@ class _PreferencesPageState extends State<PreferencesPage> with RouteAwareAnalyt
               _buildForceInDashboard(context, state),
               _buildForcePercentage(context, state),
               if (Features.isFeatureEnabled(context, experimental_features)) _buildFeaturesFlag(context),
+              if (Features.isFeatureEnabled(context, experimental_features)) _buildDebugTools(context),
               SizedBox(height: 50),
             ],
           );
@@ -74,6 +78,45 @@ class _PreferencesPageState extends State<PreferencesPage> with RouteAwareAnalyt
             );
           },
         ),
+      ],
+    );
+  }
+
+  Widget _buildDebugTools(BuildContext context) {
+    var durationByPath = slowRequests.map((requestPath, durations) {
+      return MapEntry(
+          requestPath,
+          durations.fold<_CountAndAverage>(_CountAndAverage(0, 0),
+              (acc, duration) => _CountAndAverage(acc.sumDuration + duration.inMilliseconds, acc.count + 1)));
+    });
+    SplayTreeMap<String, _CountAndAverage> sortedDurationByPath = SplayTreeMap.from(durationByPath,
+        (path1, path2) => durationByPath[path1]!.sumDuration.compareTo(durationByPath[path2]!.sumDuration) * -1);
+    return Column(
+      children: [
+        Paragraph(
+          title: "Debug",
+          bottomPadding: 28,
+        ),
+        Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(top: 18.0, bottom: 8),
+              child: Text("Slow requests", style: TextStyle(fontSize: 22)),
+            ),
+            ...sortedDurationByPath.entries.map((entry) {
+              return Row(
+                children: [
+                  Text(
+                    "${entry.key} (${entry.value.count})",
+                    //style: TextStyle(fontFamily: "Courrier", fontSize: 15),
+                  ),
+                  Spacer(),
+                  Text("${entry.value.averageDuration.toStringAsFixed(2)} ms"),
+                ],
+              );
+            })
+          ],
+        )
       ],
     );
   }
@@ -168,4 +211,13 @@ class _PreferencesPageState extends State<PreferencesPage> with RouteAwareAnalyt
 
   @override
   AnalyticsRoute get route => AnalyticsRoute.preferences;
+}
+
+class _CountAndAverage {
+  final int sumDuration;
+  final int count;
+
+  double get averageDuration => sumDuration / count;
+
+  _CountAndAverage(this.sumDuration, this.count);
 }

@@ -35,13 +35,13 @@ class _ProfilPageState extends State<ProfilPage> with RouteAwareAnalytics {
                     title: Text("${state.favoriteTeam!.name} - ${state.favoriteClub!.name}",
                         style: Theme.of(context).textTheme.bodyText2),
                     subtitle: Text("Choisissez votre équipe", style: Theme.of(context).textTheme.bodyText1),
-                    onTap: () => showGeneralDialog(
+                    onTap: () => showDialog(
                       barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
                       barrierColor: Colors.black45,
                       context: context,
-                      pageBuilder:
-                          (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) =>
-                              SelectFavoriteTeam(canClose: true),
+                      builder: (BuildContext context) {
+                        return SelectFavoriteTeam(canClose: true);
+                      },
                     ),
                     trailing: Icon(
                       Icons.keyboard_arrow_right,

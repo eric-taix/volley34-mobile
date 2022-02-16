@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:v34/commons/rounded_network_image.dart';
 import 'package:v34/models/club.dart';
@@ -42,6 +43,12 @@ class _ScoreBoardPageState extends State<ScoreBoardPage> with RouteAwareAnalytic
   @override
   void initState() {
     super.initState();
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeRight,
+      DeviceOrientation.landscapeLeft,
+    ]);
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.leanBack);
+
     _hostTeam = widget.hostTeam;
     _visitorTeam = widget.visitorTeam;
     _watch = Stopwatch();
@@ -65,6 +72,13 @@ class _ScoreBoardPageState extends State<ScoreBoardPage> with RouteAwareAnalytic
 
   @override
   void dispose() {
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: SystemUiOverlay.values);
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeRight,
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
     _timer?.cancel();
     super.dispose();
   }
@@ -111,12 +125,14 @@ class _ScoreBoardPageState extends State<ScoreBoardPage> with RouteAwareAnalytic
                                             child: ScorePanel(
                                               initialValue: _hostSets,
                                               color: Theme.of(context).colorScheme.secondary,
+                                              enabled: _playing,
                                             ),
                                           ),
                                           Expanded(
                                             child: ScorePanel(
                                               initialValue: _visitorSets,
                                               color: Theme.of(context).colorScheme.secondary,
+                                              enabled: _playing,
                                             ),
                                           ),
                                         ],
@@ -136,17 +152,20 @@ class _ScoreBoardPageState extends State<ScoreBoardPage> with RouteAwareAnalytic
                                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                             children: [
                                               FloatingActionButton(
+                                                heroTag: "hero-btn-scorer-tm-host",
                                                 mini: true,
                                                 onPressed: _playing ? () => null : null,
                                                 child: Text("TM", style: TextStyle(fontWeight: FontWeight.bold)),
                                                 backgroundColor: _playing ? null : Colors.grey,
                                               ),
                                               FloatingActionButton(
+                                                heroTag: "hero-btn-scorer",
                                                 mini: true,
                                                 onPressed: () => _playing ? _stopPlaying() : _startPlaying(),
                                                 child: Icon(_playing ? Icons.pause : Icons.play_arrow_rounded),
                                               ),
                                               FloatingActionButton(
+                                                heroTag: "hero-btn-scorer-tm-visitor",
                                                 mini: true,
                                                 onPressed: _playing ? () => null : null,
                                                 child: Text("TM", style: TextStyle(fontWeight: FontWeight.bold)),

@@ -349,11 +349,7 @@ class _EventInfoState extends State<EventInfo> with SingleTickerProviderStateMix
                       }
                     : null,
               ),
-              if (Features.isFeatureEnabled(context, experimental_scoreboard_feature) &&
-                  _hostTeam != null &&
-                  _hostClub != null &&
-                  _visitorTeam != null &&
-                  _visitorClub != null)
+              if (Features.isFeatureEnabled(context, experimental_scoreboard_feature))
                 _buildBarButton(
                   context,
                   tag: "btn-play",
@@ -362,20 +358,22 @@ class _EventInfoState extends State<EventInfo> with SingleTickerProviderStateMix
                     "Scoreur",
                     style: Theme.of(context).textTheme.bodyText1,
                   ),
-                  onPressed: () {
-                    _closeMenu();
-                    RouterFacade.push(
-                      context: context,
-                      builder: (_) => OrientationHelper(
-                        child: ScoreBoardPage(
-                          hostTeam: _hostTeam!,
-                          hostClub: _hostClub!,
-                          visitorTeam: _visitorTeam!,
-                          visitorClub: _visitorClub!,
-                        ),
-                      ),
-                    );
-                  },
+                  onPressed: _hostTeam != null && _visitorTeam != null && _hostClub != null && _visitorClub != null
+                      ? () {
+                          _closeMenu();
+                          RouterFacade.push(
+                            context: context,
+                            builder: (_) => OrientationHelper(
+                              child: ScoreBoardPage(
+                                hostTeam: _hostTeam!,
+                                hostClub: _hostClub!,
+                                visitorTeam: _visitorTeam!,
+                                visitorClub: _visitorClub!,
+                              ),
+                            ),
+                          );
+                        }
+                      : null,
                 ),
             ],
           ),
@@ -452,7 +450,7 @@ class _EventInfoState extends State<EventInfo> with SingleTickerProviderStateMix
   }
 
   Widget _buildBarButton(BuildContext context,
-      {String? tag,
+      {required String tag,
       required Widget icon,
       required Widget label,
       required void Function()? onPressed,
