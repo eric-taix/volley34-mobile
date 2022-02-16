@@ -1,2 +1,2 @@
-- Compression de la photo de la feuille de match
-- Correction de l'alignement de l'icone de saisie de résultat
+- Ajout d'un "Special Thanks" to LS dans la page "A propos"
+- Correction du thème dans la sélection du club / équipe
