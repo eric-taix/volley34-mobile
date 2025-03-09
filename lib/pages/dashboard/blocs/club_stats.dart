@@ -48,35 +48,34 @@ class ClubStatsLoadEvent extends ClubStatsEvent {
 class ClubStatsBloc extends Bloc<ClubStatsEvent, ClubStatsState> {
   final Repository _repository;
 
-  ClubStatsBloc(this._repository) : super(ClubStatsUninitializedState());
+  ClubStatsBloc(this._repository) : super(ClubStatsUninitializedState()) {
+    on<ClubStatsEvent>((event, emit) async {
+      if (event is ClubStatsLoadEvent) {
+        emit(ClubStatsLoadingState());
+        List<Team> teams = await _repository.loadClubTeams(event.clubCode);
 
-  @override
-  Stream<ClubStatsState> mapEventToState(ClubStatsEvent event) async* {
-    if (event is ClubStatsLoadEvent) {
-      yield ClubStatsLoadingState();
-      List<Team> teams = await _repository.loadClubTeams(event.clubCode);
+        var to = new DateTime.now();
+        var from = to.subtract(Duration(days: event.days));
 
-      var to = new DateTime.now();
-      var from = to.subtract(Duration(days: event.days));
+        var teamsResults = (await Future.wait(teams.map((team) => _repository.loadTeamMatchResults(team.code))))
+            .expand((element) => element)
+            .where((matchResult) =>
+                matchResult.matchDate!.compareTo(from) >= 0 && matchResult.matchDate!.compareTo(to) <= 0);
 
-      var teamsResults = (await Future.wait(teams.map((team) => _repository.loadTeamMatchResults(team.code))))
-          .expand((element) => element)
-          .where((matchResult) =>
-              matchResult.matchDate!.compareTo(from) >= 0 && matchResult.matchDate!.compareTo(to) <= 0);
-
-      var stats = teamsResults.fold(Tuple2<int, int>(0, 0), (dynamic acc, matchResult) {
-        acc = acc.withItem2(acc.item2 + 1);
-        bool hostedByClubTeam = (teams.firstWhereOrNull((team) => team.code == matchResult.hostTeamCode) != null);
-        if (hostedByClubTeam) {
-          acc = matchResult.totalSetsHost! > matchResult.totalSetsVisitor! ? acc.withItem1(acc.item1 + 1) : acc;
-        } else {
-          acc = (matchResult.totalSetsVisitor ?? 0) > (matchResult.totalSetsHost ?? 0)
-              ? acc.withItem1(acc.item1 + 1)
-              : acc;
-        }
-        return acc;
-      });
-      yield ClubStatsLoadedState(stats.item1, stats.item2);
-    }
+        var stats = teamsResults.fold(Tuple2<int, int>(0, 0), (dynamic acc, matchResult) {
+          acc = acc.withItem2(acc.item2 + 1);
+          bool hostedByClubTeam = (teams.firstWhereOrNull((team) => team.code == matchResult.hostTeamCode) != null);
+          if (hostedByClubTeam) {
+            acc = matchResult.totalSetsHost! > matchResult.totalSetsVisitor! ? acc.withItem1(acc.item1 + 1) : acc;
+          } else {
+            acc = (matchResult.totalSetsVisitor ?? 0) > (matchResult.totalSetsHost ?? 0)
+                ? acc.withItem1(acc.item1 + 1)
+                : acc;
+          }
+          return acc;
+        });
+        emit(ClubStatsLoadedState(stats.item1, stats.item2));
+      }
+    });
   }
 }

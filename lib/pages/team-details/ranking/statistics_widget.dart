@@ -45,19 +45,18 @@ class _StatisticsWidgetState extends State<StatisticsWidget> with SingleTickerPr
 
   Widget _buildRatio(BuildContext context, int point) {
     return RichText(
-      textScaleFactor: 1.2,
       textAlign: TextAlign.center,
       text: new TextSpan(
         text: "$point",
         style: new TextStyle(
           fontSize: 24.0,
           fontWeight: FontWeight.bold,
-          color: Theme.of(context).textTheme.bodyText2!.color,
+          color: Theme.of(context).textTheme.bodyMedium!.color,
         ),
         children: <TextSpan>[
           new TextSpan(text: ' / ${(widget.maxPoints)}', style: TextStyle(fontSize: 12, fontWeight: FontWeight.normal)),
         ],
-      ),
+      ), textScaler: TextScaler.linear(1.2),
     );
   }
 
@@ -89,7 +88,7 @@ class _StatisticsWidgetState extends State<StatisticsWidget> with SingleTickerPr
           Expanded(
               child: Padding(
             padding: const EdgeInsets.only(left: TEAM_RANKING_LEFT_PADDING),
-            child: Text(widget.title, textAlign: TextAlign.start, style: Theme.of(context).textTheme.bodyText1),
+            child: Text(widget.title, textAlign: TextAlign.start, style: Theme.of(context).textTheme.bodyLarge),
           )),
           Expanded(child: _buildRatio(context, (_animation.value * widget.points).toInt())),
           Expanded(child: _buildGraph(context)),

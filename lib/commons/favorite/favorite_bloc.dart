@@ -42,24 +42,20 @@ class FavoriteBloc extends Bloc<FavoriteEvent, FavoriteState> {
   final String? favoriteId;
   final FavoriteType favoriteType;
 
-  FavoriteBloc(this.repository, this.favoriteId, this.favoriteType)
-      : super(FavoriteUninitialized());
-
-  @override
-  Stream<FavoriteState> mapEventToState(FavoriteEvent event) async* {
-    if (event is FavoriteUpdateEvent) {
-      yield FavoriteUpdating();
+  FavoriteBloc(this.repository, this.favoriteId, this.favoriteType) : super(FavoriteUninitialized()) {
+    on<FavoriteUpdateEvent>((event, emit) async {
+      emit(FavoriteUpdating());
       await repository.updateFavorite(favoriteId, favoriteType, event.favorite);
-      yield FavoriteUpdated(event.favorite);
-    }
-    if (event is FavoriteLoadEvent) {
-      yield FavoriteUpdating();
+      emit(FavoriteUpdated(event.favorite));
+    });
+    on<FavoriteLoadEvent>((event, emit) async {
+      emit(FavoriteUpdating());
       var favorite;
       if (favoriteType == FavoriteType.Club)
         favorite = await repository.isClubFavorite(favoriteId);
       else
         favorite = await repository.isTeamFavorite(favoriteId);
-      yield FavoriteLoaded(favorite);
-    }
+      emit(FavoriteLoaded(favorite));
+    });
   }
 }

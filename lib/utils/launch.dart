@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:map_launcher/map_launcher.dart' as mapLauncher;
-import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 import 'package:v34/models/gymnasium.dart';
 
 launchURL(String url) async {
-  if (await canLaunch(url)) {
-    await launch(url);
+  if (await canLaunchUrlString(url)) {
+    await launchUrlString(url);
   } else {
     throw 'Could not launch $url';
   }
@@ -46,7 +46,7 @@ void launchRoute(BuildContext context, Gymnasium gymnasium, {bool route = true})
                           }
                         },
                         title: Text(map.mapName,
-                            style: Theme.of(context).textTheme.bodyText1!.copyWith(color: Colors.black)),
+                            style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: Colors.black)),
                         leading: SvgPicture.asset(
                           map.icon,
                           width: 50,

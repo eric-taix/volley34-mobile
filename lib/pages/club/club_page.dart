@@ -76,8 +76,8 @@ class _ClubPageState extends State<ClubPage> with SingleTickerProviderStateMixin
             ],
             builder: (club) => ClubCard(club, 1, key: ValueKey(club.code)),
             barTheme: Theme.of(context).copyWith(
-              textTheme: TextTheme(headline6: Theme.of(context).textTheme.headline4),
-              inputDecorationTheme: InputDecorationTheme(hintStyle: Theme.of(context).textTheme.headline5),
+              textTheme: TextTheme(titleLarge: Theme.of(context).textTheme.headlineMedium),
+              inputDecorationTheme: InputDecorationTheme(hintStyle: Theme.of(context).textTheme.headlineSmall),
             ),
           ),
         ),

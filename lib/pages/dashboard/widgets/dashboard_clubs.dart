@@ -4,8 +4,6 @@ import 'package:v34/models/club.dart';
 import 'package:v34/pages/club-details/club_detail_page.dart';
 import 'package:v34/pages/dashboard/widgets/fav_club_card.dart';
 
-import '../../../commons/router.dart';
-
 class DashboardClub extends StatelessWidget {
   static final double cardHeight = 210;
   final Club club;
@@ -15,14 +13,11 @@ class DashboardClub extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: <Widget>[
-        Container(
-          height: cardHeight,
-          child: Padding(
-            padding: const EdgeInsets.only(left: 8.0, right: 0),
-            child: FavoriteClubCard(
-              club,
-              () => RouterFacade.push(context: context, builder: (_) => ClubDetailPage(club)),
-            ),
+        Padding(
+          padding: const EdgeInsets.only(left: 8.0, right: 0),
+          child: FavoriteClubCard(
+            club,
+            () => RouterFacade.push(context: context, builder: (_) => ClubDetailPage(club)),
           ),
         ),
       ],

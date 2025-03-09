@@ -1,5 +1,4 @@
 import 'package:add_2_calendar/add_2_calendar.dart' as addToCalendar;
-import 'package:feature_flags/feature_flags.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -7,23 +6,17 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:intl/intl.dart';
 import 'package:maps_launcher/maps_launcher.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 import 'package:v34/commons/circular_menu/circular_menu.dart';
 import 'package:v34/commons/feature_tour.dart';
 import 'package:v34/commons/loading.dart';
-import 'package:v34/commons/orientation_helper.dart';
-import 'package:v34/commons/router.dart';
 import 'package:v34/commons/timeline/details/event_place.dart';
 import 'package:v34/commons/timeline/postponed_badge.dart';
-import 'package:v34/features_flag.dart';
 import 'package:v34/models/club.dart';
 import 'package:v34/models/event.dart';
 import 'package:v34/models/team.dart';
 import 'package:v34/pages/dashboard/blocs/gymnasium_bloc.dart';
-import 'package:v34/pages/match/edit_match.dart';
 import 'package:v34/pages/match/match_info.dart';
-import 'package:v34/pages/match/postpone_match.dart';
-import 'package:v34/pages/scoreboard/scoreboard_page.dart';
 import 'package:v34/repositories/repository.dart';
 import 'package:v34/utils/launch.dart';
 
@@ -102,12 +95,12 @@ class _EventInfoState extends State<EventInfo> with SingleTickerProviderStateMix
       ListTile(
           leading: Icon(
             Icons.date_range,
-            color: Theme.of(context).textTheme.bodyText1!.color,
+            color: Theme.of(context).textTheme.bodyLarge!.color,
             size: _iconSize,
           ),
           title: EventDate(date: widget.event.date, endDate: widget.event.endDate, fullFormat: true)),
       ListTile(
-        leading: Icon(Icons.access_time, color: Theme.of(context).textTheme.bodyText1!.color, size: _iconSize),
+        leading: Icon(Icons.access_time, color: Theme.of(context).textTheme.bodyLarge!.color, size: _iconSize),
         title: FeatureTour(
           title: "Date et heure",
           featureId: "match_date_and_hour",
@@ -136,7 +129,7 @@ class _EventInfoState extends State<EventInfo> with SingleTickerProviderStateMix
                     builder: (context, state) => state is GymnasiumLoadedState
                         ? Text(
                             "Initialement prévu le ${_fullDateFormat.format(widget.event.initialDate!)} à ${widget.event.initialPlace}",
-                            style: Theme.of(context).textTheme.bodyText1!.copyWith(fontStyle: FontStyle.italic))
+                            style: Theme.of(context).textTheme.bodyLarge!.copyWith(fontStyle: FontStyle.italic))
                         : Loading.small(),
                   ),
                 ),
@@ -174,16 +167,16 @@ class _EventInfoState extends State<EventInfo> with SingleTickerProviderStateMix
             ListTile(
               leading: Icon(
                 Icons.location_on,
-                color: Theme.of(context).textTheme.bodyText1!.color,
+                color: Theme.of(context).textTheme.bodyLarge!.color,
                 size: _iconSize,
               ),
               title: widget.event.type == EventType.Match
                   ? BlocBuilder<GymnasiumBloc, GymnasiumState>(
                       builder: (context, state) => (state is GymnasiumLoadedState)
                           ? Text(state.gymnasium.fullname!,
-                              textAlign: TextAlign.left, style: Theme.of(context).textTheme.bodyText2)
+                              textAlign: TextAlign.left, style: Theme.of(context).textTheme.bodyMedium)
                           : Loading.small())
-                  : Text(widget.event.place ?? "", style: Theme.of(context).textTheme.bodyText2),
+                  : Text(widget.event.place ?? "", style: Theme.of(context).textTheme.bodyMedium),
             ),
             if (widget.event.place != null && widget.event.type != EventType.Match)
               TextButton.icon(
@@ -203,7 +196,7 @@ class _EventInfoState extends State<EventInfo> with SingleTickerProviderStateMix
   Widget _buildOrganizerClub(BuildContext context) {
     return ListTile(
       leading: SvgPicture.asset('assets/shield.svg',
-          width: _iconSize, height: _iconSize, color: Theme.of(context).textTheme.bodyText1!.color!),
+          width: _iconSize, height: _iconSize, color: Theme.of(context).textTheme.bodyLarge!.color!),
       title: OrganizerClub(clubCode: widget.event.clubCode),
     );
   }
@@ -212,14 +205,14 @@ class _EventInfoState extends State<EventInfo> with SingleTickerProviderStateMix
     return ListTile(
         leading: Icon(
           Icons.description,
-          color: Theme.of(context).textTheme.bodyText1!.color!,
+          color: Theme.of(context).textTheme.bodyLarge!.color!,
           size: _iconSize,
         ),
         title: HtmlWidget(
           widget.event.description!,
-          textStyle: Theme.of(context).textTheme.bodyText2!,
+          textStyle: Theme.of(context).textTheme.bodyMedium!,
           onTapUrl: (url) {
-            launch(url);
+            return launchUrlString(url);
           },
         ));
   }
@@ -255,11 +248,11 @@ class _EventInfoState extends State<EventInfo> with SingleTickerProviderStateMix
         ListTile(
           leading: Icon(
             Icons.person,
-            color: Theme.of(context).textTheme.bodyText1!.color,
+            color: Theme.of(context).textTheme.bodyLarge!.color,
             size: _iconSize,
           ),
-          title:
-              Text(widget.event.contactName!, textAlign: TextAlign.left, style: Theme.of(context).textTheme.bodyText2!),
+          title: Text(widget.event.contactName!,
+              textAlign: TextAlign.left, style: Theme.of(context).textTheme.bodyMedium!),
         ),
         if (subtitle != null) subtitle,
       ],
@@ -279,7 +272,7 @@ class _EventInfoState extends State<EventInfo> with SingleTickerProviderStateMix
   }
 
   List<Widget> _buildTitle(BuildContext context) {
-    Color color = Theme.of(context).textTheme.bodyText2!.color!;
+    Color color = Theme.of(context).textTheme.bodyMedium!.color!;
     if (widget.event.type == EventType.Match) {
       return [
         MatchInfo(
@@ -292,6 +285,7 @@ class _EventInfoState extends State<EventInfo> with SingleTickerProviderStateMix
           showTeamLink: true,
           forces: widget.event.forces,
         ),
+        /* Suppression des boutons d'actions sur les matchs
         Padding(
           padding: const EdgeInsets.only(bottom: 0.0),
           child: Row(
@@ -304,7 +298,7 @@ class _EventInfoState extends State<EventInfo> with SingleTickerProviderStateMix
                   label: Text(
                     "Saisir\nle résultat",
                     textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.bodyText1,
+                    style: Theme.of(context).textTheme.bodyLarge,
                   ),
                   onPressed: _hostTeam != null && _visitorTeam != null && _hostClub != null && _visitorClub != null
                       ? () {
@@ -330,7 +324,7 @@ class _EventInfoState extends State<EventInfo> with SingleTickerProviderStateMix
                 label: Text(
                   "Reporter\nle match",
                   textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.bodyText1,
+                  style: Theme.of(context).textTheme.bodyLarge,
                 ),
                 onPressed: _hostTeam != null && _visitorTeam != null && _hostClub != null && _visitorClub != null
                     ? () {
@@ -356,7 +350,7 @@ class _EventInfoState extends State<EventInfo> with SingleTickerProviderStateMix
                   icon: Icon(Icons.play_arrow_rounded, size: 30, color: color),
                   label: Text(
                     "Scoreur",
-                    style: Theme.of(context).textTheme.bodyText1,
+                    style: Theme.of(context).textTheme.bodyLarge,
                   ),
                   onPressed: _hostTeam != null && _visitorTeam != null && _hostClub != null && _visitorClub != null
                       ? () {
@@ -377,7 +371,7 @@ class _EventInfoState extends State<EventInfo> with SingleTickerProviderStateMix
                 ),
             ],
           ),
-        ),
+        ),*/
         if (widget.event.matchCode != null && widget.event.matchCode!.isNotEmpty)
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -414,7 +408,7 @@ class _EventInfoState extends State<EventInfo> with SingleTickerProviderStateMix
             title: Text(
               widget.event.name!,
               textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.headline4,
+              style: Theme.of(context).textTheme.headlineMedium,
             ),
           ),
         ),
@@ -433,7 +427,7 @@ class _EventInfoState extends State<EventInfo> with SingleTickerProviderStateMix
                   label: Text(
                     "Visitez le site web",
                     textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.bodyText1,
+                    style: Theme.of(context).textTheme.bodyLarge,
                   ),
                   onPressed: () {
                     _closeMenu();
@@ -465,7 +459,7 @@ class _EventInfoState extends State<EventInfo> with SingleTickerProviderStateMix
               heroTag: tag,
               onPressed: onPressed,
               backgroundColor: defaultAction
-                  ? (onPressed != null ? null : Theme.of(context).textTheme.bodyText1!.color!)
+                  ? (onPressed != null ? null : Theme.of(context).textTheme.bodyLarge!.color!)
                   : Theme.of(context).canvasColor,
               child: icon,
               shape: defaultAction
@@ -473,7 +467,7 @@ class _EventInfoState extends State<EventInfo> with SingleTickerProviderStateMix
                   : (onPressed != null
                       ? CircleBorder(side: BorderSide(color: Theme.of(context).colorScheme.secondary, width: 2))
                       : CircleBorder(
-                          side: BorderSide(color: Theme.of(context).textTheme.bodyText1!.color!, width: 2)))),
+                          side: BorderSide(color: Theme.of(context).textTheme.bodyLarge!.color!, width: 2)))),
           SizedBox(
             height: 50 * _animationController.value,
             child: Padding(

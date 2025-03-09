@@ -27,7 +27,7 @@ class TeamRankingTable extends StatefulWidget {
   }) : super(key: key) {
     _teamRank = ranking.ranks?.firstWhereOrNull((rank) => rank.teamCode == team?.code);
     if (_teamRank != null)
-      _teamMatches = (_teamRank?.wonMatches ?? 0) + (_teamRank?.lostMatches ?? 0);
+      _teamMatches = (_teamRank.wonMatches ?? 0) + (_teamRank.lostMatches ?? 0);
     else
       _teamMatches = null;
   }
@@ -43,7 +43,7 @@ class _TeamRankingTableState extends State<TeamRankingTable> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        if (widget.showDetailed) _buildHeader(Theme.of(context).textTheme.bodyText1),
+        if (widget.showDetailed) _buildHeader(Theme.of(context).textTheme.bodyLarge),
         ...widget.ranking.ranks!.reversed
             .toList()
             .asMap()
@@ -51,17 +51,17 @@ class _TeamRankingTableState extends State<TeamRankingTable> {
               (index, rankingSynthesis) {
                 TextStyle? lineStyle = widget.team != null
                     ? (rankingSynthesis.teamCode == widget.team?.code
-                        ? Theme.of(context).textTheme.bodyText2!.copyWith(fontWeight: FontWeight.bold)
-                        : Theme.of(context).textTheme.bodyText1)
+                        ? Theme.of(context).textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.bold)
+                        : Theme.of(context).textTheme.bodyLarge)
                     : (widget.highlightTeamNames != null && widget.highlightTeamNames!.isNotEmpty
                         ? (widget.highlightTeamNames!.fold(
                                 true,
                                 (bool previousValue, teamName) =>
                                     rankingSynthesis.name!.toLowerCase().contains(teamName.toLowerCase()) &&
                                     previousValue)
-                            ? Theme.of(context).textTheme.bodyText2!.copyWith(fontWeight: FontWeight.bold)
-                            : Theme.of(context).textTheme.bodyText1!)
-                        : Theme.of(context).textTheme.bodyText2!);
+                            ? Theme.of(context).textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.bold)
+                            : Theme.of(context).textTheme.bodyLarge!)
+                        : Theme.of(context).textTheme.bodyMedium!);
                 return MapEntry(
                   index,
                   Card(
@@ -192,7 +192,7 @@ class _TeamRankingTableState extends State<TeamRankingTable> {
                   "${index + 1}",
                   style: Theme.of(context)
                       .textTheme
-                      .bodyText1!
+                      .bodyLarge!
                       .copyWith(color: Theme.of(context).canvasColor, fontWeight: FontWeight.bold),
                 ),
               ),

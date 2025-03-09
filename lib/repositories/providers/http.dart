@@ -61,8 +61,8 @@ class ServerErrorInterceptor extends InterceptorsWrapper {
   ServerErrorInterceptor(this.messageCubit);
 
   @override
-  void onError(DioError err, ErrorInterceptorHandler handler) {
-    if (err.type == DioErrorType.connectTimeout) {
+  void onError(DioException err, ErrorInterceptorHandler handler) {
+    if (err.type == DioExceptionType.connectionTimeout) {
       messageCubit.showMessage(
           message: "Impossible de contacter le serveur. Merci d'essayer à nouveau dans quelques minutes.");
     } else if (err.response != null) {

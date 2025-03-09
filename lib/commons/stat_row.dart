@@ -15,7 +15,7 @@ class StatRow extends StatelessWidget {
         children: [
           Expanded(
             flex: 1,
-            child: Text(title, textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodyText1),
+            child: Text(title, textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodyLarge),
           ),
           Expanded(
             flex: 3,

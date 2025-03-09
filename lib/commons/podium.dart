@@ -186,7 +186,7 @@ class _PodiumState extends State<Podium> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text(widget.title, style: Theme.of(context).textTheme.bodyText1),
+                        Text(widget.title, style: Theme.of(context).textTheme.bodyLarge),
                       ],
                     ),
                   ),
@@ -207,7 +207,21 @@ class _PodiumState extends State<Podium> {
         maxY: max.value,
         alignment: BarChartAlignment.center,
         gridData: FlGridData(show: false),
-        axisTitleData: FlAxisTitleData(show: false),
+        titlesData: FlTitlesData(
+          show: false,
+          topTitles: AxisTitles(
+            sideTitles: SideTitles(showTitles: false),
+          ),
+          rightTitles: AxisTitles(
+            sideTitles: SideTitles(showTitles: false),
+          ),
+          bottomTitles: AxisTitles(
+            sideTitles: SideTitles(showTitles: false),
+          ),
+          leftTitles: AxisTitles(
+            sideTitles: SideTitles(showTitles: false),
+          ),
+        ),
         groupsSpace: 6,
         barGroups: [
           ...places.asMap().entries.map((entry) {
@@ -217,28 +231,28 @@ class _PodiumState extends State<Podium> {
               x: 0,
               barRods: [
                 BarChartRodData(
-                  y: value,
+                  toY: value,
                   width: 9,
-                  colors: [
-                    entry.value.highlight ? _getColor(entry.key, context) : Theme.of(context).cardTheme.color!.tiny(10),
-                  ],
+                  color: entry.value.highlight
+                      ? _getColor(entry.key, context)
+                      : Theme.of(context).cardTheme.color!.tiny(10),
                   backDrawRodData: BackgroundBarChartRodData(
                     show: false,
-                    y: max.value,
-                    colors: [Theme.of(context).primaryColor],
+                    toY: max.value,
+                    color: Theme.of(context).primaryColor,
                   ),
+                  borderRadius: BorderRadius.only(topLeft: Radius.circular(6), topRight: Radius.circular(6)),
                 ),
               ],
               showingTooltipIndicators: widget.showPromotedRelegated ? [0] : [],
             );
           }),
         ],
-        titlesData: FlTitlesData(show: false),
         borderData: FlBorderData(show: false),
         barTouchData: BarTouchData(
           enabled: false,
           touchTooltipData: BarTouchTooltipData(
-            tooltipBgColor: Colors.transparent,
+            getTooltipColor: (_) => Colors.transparent,
             tooltipPadding: const EdgeInsets.all(0),
             tooltipMargin: 0,
             getTooltipItem: (
@@ -250,7 +264,7 @@ class _PodiumState extends State<Podium> {
               return BarTooltipItem(
                 showToolTip ? places[groupIndex].tooltip : "",
                 TextStyle(
-                    color: Theme.of(context).textTheme.bodyText2!.color,
+                    color: Theme.of(context).textTheme.bodyMedium!.color,
                     fontSize: 10,
                     fontFamily: "Raleway",
                     fontWeight: FontWeight.bold),

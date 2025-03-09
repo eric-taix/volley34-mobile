@@ -9,13 +9,13 @@ class PostponedBadge extends StatelessWidget {
       width: 20,
       height: 20,
       decoration:
-          BoxDecoration(color: Theme.of(context).textTheme.bodyText1!.color, borderRadius: BorderRadius.circular(16)),
+          BoxDecoration(color: Theme.of(context).textTheme.bodyLarge!.color, borderRadius: BorderRadius.circular(16)),
       child: Center(
         child: Text(
           "R",
           style: Theme.of(context)
               .textTheme
-              .bodyText2!
+              .bodyMedium!
               .copyWith(fontWeight: FontWeight.w900, color: Theme.of(context).cardTheme.color),
         ),
       ),

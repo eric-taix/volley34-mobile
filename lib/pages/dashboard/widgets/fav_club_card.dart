@@ -5,6 +5,7 @@ import 'package:v34/commons/graphs/arc.dart';
 import 'package:v34/commons/loading.dart';
 import 'package:v34/models/club.dart';
 import 'package:v34/pages/dashboard/blocs/club_stats.dart';
+import 'package:v34/pages/dashboard/widgets/dashboard_clubs.dart';
 import 'package:v34/repositories/repository.dart';
 
 class FavoriteClubCard extends StatefulWidget {
@@ -55,9 +56,9 @@ class _FavoriteClubCardState extends State<FavoriteClubCard> {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Text("Victoires", style: Theme.of(context).textTheme.bodyText1),
+          Text("Victoires", style: Theme.of(context).textTheme.bodyLarge),
           SizedBox(
-            height: 80,
+            height: 90,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
@@ -66,13 +67,13 @@ class _FavoriteClubCardState extends State<FavoriteClubCard> {
                     padding: const EdgeInsets.only(right: 8.0),
                     child: Text(
                       "Les $STAT_DAYS derniers jours",
-                      style: Theme.of(context).textTheme.bodyText2,
+                      style: Theme.of(context).textTheme.bodyMedium,
                       textAlign: TextAlign.center,
                     ),
                   ),
                 ),
                 ConstrainedBox(
-                  constraints: BoxConstraints(maxWidth: 100, maxHeight: 210),
+                  constraints: BoxConstraints(maxWidth: 100, maxHeight: DashboardClub.cardHeight),
                   child: ArcGraph(
                     minValue: 0,
                     maxValue: 1,
@@ -82,14 +83,13 @@ class _FavoriteClubCardState extends State<FavoriteClubCard> {
                         : 0.0,
                     valueBuilder: (value, _, max) => state is ClubStatsLoadedState
                         ? RichText(
-                            textScaleFactor: 1.0,
                             textAlign: TextAlign.center,
                             text: new TextSpan(
                               text: "${(value * state.totalMatches).toInt()}",
                               style: new TextStyle(
                                 fontSize: 24.0,
                                 fontWeight: FontWeight.bold,
-                                color: Theme.of(context).textTheme.bodyText2!.color,
+                                color: Theme.of(context).textTheme.bodyMedium!.color,
                               ),
                               children: <TextSpan>[
                                 new TextSpan(
@@ -97,6 +97,7 @@ class _FavoriteClubCardState extends State<FavoriteClubCard> {
                                     style: TextStyle(fontSize: 12, fontWeight: FontWeight.normal)),
                               ],
                             ),
+                            textScaler: TextScaler.linear(1.0),
                           )
                         : Loading.small(),
                   ),

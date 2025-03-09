@@ -33,7 +33,7 @@ class OrganizerClubState extends State<OrganizerClub> {
           return Text(state.club.name!,
               textAlign: TextAlign.left,
               style:
-                  Theme.of(context).textTheme.bodyText1!.copyWith(color: Theme.of(context).textTheme.bodyText2!.color));
+                  Theme.of(context).textTheme.bodyLarge!.copyWith(color: Theme.of(context).textTheme.bodyMedium!.color));
         } else if (state is ClubLoadingState) {
           return Loading();
         } else {

@@ -94,14 +94,14 @@ class SearchPage<T> extends SearchDelegate<T?> {
     return barTheme ??
         Theme.of(context).copyWith(
           textTheme: Theme.of(context).textTheme.copyWith(
-                headline6: TextStyle(
-                  color: Theme.of(context).primaryTextTheme.headline6!.color,
+                titleLarge: TextStyle(
+                  color: Theme.of(context).primaryTextTheme.titleLarge!.color,
                   fontSize: 20,
                 ),
               ),
           inputDecorationTheme: InputDecorationTheme(
             hintStyle: TextStyle(
-              color: Theme.of(context).primaryTextTheme.caption!.color,
+              color: Theme.of(context).primaryTextTheme.bodySmall!.color,
               fontSize: 20,
             ),
             focusedErrorBorder: InputBorder.none,

@@ -64,7 +64,7 @@ class _FavoriteTeamSelectionState extends State<FavoriteTeamSelection> {
                         Icon(
                           Icons.arrow_forward_ios_outlined,
                           size: 16,
-                          color: Theme.of(context).textTheme.bodyText1!.color,
+                          color: Theme.of(context).textTheme.bodyLarge!.color,
                         ),
                       ],
                     ),

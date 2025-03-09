@@ -14,7 +14,7 @@ class ResultBar extends StatelessWidget {
     return Center(
       child: CustomPaint(
         painter: _BarPainter(
-            color: Theme.of(context).textTheme.bodyText1!.color,
+            color: Theme.of(context).textTheme.bodyLarge!.color,
             widthOffset: diffValue / max,
             height: kHeight,
             isHost: isHost),

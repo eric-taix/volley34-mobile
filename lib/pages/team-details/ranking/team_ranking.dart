@@ -63,7 +63,7 @@ class _TeamRankingState extends State<TeamRanking> with RouteAwareAnalytics {
             padding: const EdgeInsets.only(top: 48),
             child: Text(
               widget.ranking.fullLabel ?? "",
-              style: Theme.of(context).textTheme.bodyText1,
+              style: Theme.of(context).textTheme.bodyLarge,
               textAlign: TextAlign.center,
             ),
           ),
@@ -87,7 +87,7 @@ class _TeamRankingState extends State<TeamRanking> with RouteAwareAnalytics {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text("${getDivisionLabel(widget.ranking.division)}${pool != null ? " - $pool" : ""}",
-              style: Theme.of(context).textTheme.headline4),
+              style: Theme.of(context).textTheme.headlineMedium),
           Padding(
             padding: const EdgeInsets.only(left: 18.0),
             child: CompetitionBadge(

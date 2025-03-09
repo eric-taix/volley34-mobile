@@ -31,10 +31,10 @@ class _ProfilPageState extends State<ProfilPage> with RouteAwareAnalytics {
                             width: 40,
                           )
                         : SvgPicture.asset("assets/shield.svg",
-                            width: 20, color: Theme.of(context).textTheme.bodyText2!.color),
+                            width: 20, color: Theme.of(context).textTheme.bodyMedium!.color),
                     title: Text("${state.favoriteTeam!.name} - ${state.favoriteClub!.name}",
-                        style: Theme.of(context).textTheme.bodyText2),
-                    subtitle: Text("Choisissez votre équipe", style: Theme.of(context).textTheme.bodyText1),
+                        style: Theme.of(context).textTheme.bodyMedium),
+                    subtitle: Text("Choisissez votre équipe", style: Theme.of(context).textTheme.bodyLarge),
                     onTap: () => showDialog(
                       barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
                       barrierColor: Colors.black45,
@@ -45,7 +45,7 @@ class _ProfilPageState extends State<ProfilPage> with RouteAwareAnalytics {
                     ),
                     trailing: Icon(
                       Icons.keyboard_arrow_right,
-                      color: Theme.of(context).textTheme.bodyText2!.color,
+                      color: Theme.of(context).textTheme.bodyMedium!.color,
                     ),
                   )
                 ],

@@ -181,6 +181,6 @@ class _ScorePanelState extends State<ScorePanel> with SingleTickerProviderStateM
   Color _getColor(BuildContext context, int inc) {
     return widget.enabled
         ? (widget.diffPoints + inc >= 2 && _value + inc >= 25 ? Colors.green : widget.color)
-        : Theme.of(context).textTheme.bodyText1!.color!.withOpacity(0.5);
+        : Theme.of(context).textTheme.bodyLarge!.color!.withOpacity(0.5);
   }
 }

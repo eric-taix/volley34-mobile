@@ -7,7 +7,7 @@ class TitledCard extends StatelessWidget {
   final Widget? body;
   final List<CardAction>? actions;
   final VoidCallback? onTap;
-  final ButtonBar? buttonBar;
+  final OverflowBar? buttonBar;
   final EdgeInsetsGeometry? bodyPadding;
   final double elevation;
   final EdgeInsetsGeometry? margin;
@@ -48,7 +48,7 @@ class TitledCard extends StatelessWidget {
                       Expanded(
                         child: Text(
                           title,
-                          style: Theme.of(context).textTheme.caption,
+                          style: Theme.of(context).textTheme.bodySmall,
                           overflow: TextOverflow.ellipsis,
                           textAlign: TextAlign.center,
                         ),
@@ -73,7 +73,7 @@ class TitledCard extends StatelessWidget {
                             Theme.of(context).cardTheme.color, //(Theme.of(context).cardTheme.color).lighten(3).color,
                         border: Border(
                             top: BorderSide(
-                                color: TinyColor(Theme.of(context).textTheme.headline6!.color!).darken(30).color))),
+                                color: TinyColor(Theme.of(context).textTheme.titleLarge!.color!).darken(30).color))),
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 12.0),
                       child: Row(
@@ -83,7 +83,7 @@ class TitledCard extends StatelessWidget {
                                     width: 50,
                                     child: TextButton(
                                       child: Icon(action.icon,
-                                          color: action.iconColor ?? Theme.of(context).textTheme.headline6!.color),
+                                          color: action.iconColor ?? Theme.of(context).textTheme.titleLarge!.color),
                                       onPressed: action.onTap,
                                     ),
                                   ))

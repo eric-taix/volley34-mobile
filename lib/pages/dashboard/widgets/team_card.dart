@@ -12,7 +12,6 @@ import 'package:v34/pages/dashboard/blocs/team_classification_bloc.dart';
 import 'package:v34/pages/team-details/team_detail_page.dart';
 import 'package:v34/repositories/repository.dart';
 
-import '../../../commons/router.dart';
 
 class TeamCard extends StatefulWidget {
   final Team team;
@@ -69,7 +68,7 @@ class _TeamCardState extends State<TeamCard> {
         child: Text(
       "Aucune donnée",
       textAlign: TextAlign.center,
-      style: Theme.of(context).textTheme.bodyText1,
+      style: Theme.of(context).textTheme.bodyLarge,
     ));
   }
 
@@ -136,7 +135,7 @@ class _TeamCardState extends State<TeamCard> {
       bloc: _rankingBloc,
       listener: (context, state) {
         if (state is TeamRankingLoadedState && state.firstShownCompetition != null) {
-          WidgetsBinding.instance?.addPostFrameCallback((_) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
             var index = state.rankings.indexWhere((ranking) => ranking.competitionCode == state.firstShownCompetition);
             if (_pageController.hasClients && index != -1) _pageController.jumpToPage(index);
           });

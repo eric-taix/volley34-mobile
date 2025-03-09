@@ -47,7 +47,7 @@ class FeatureHelp extends StatelessWidget {
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 20.0,
-                        color: Theme.of(context).textTheme.bodyText1!.color)),
+                        color: Theme.of(context).textTheme.bodyLarge!.color)),
                 description: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
@@ -56,7 +56,7 @@ class FeatureHelp extends StatelessWidget {
                         (paragraph) => [
                           Text(
                             paragraph,
-                            style: Theme.of(context).textTheme.bodyText2,
+                            style: Theme.of(context).textTheme.bodyMedium,
                             textScaleFactor: 1.2,
                           ),
                           Container(
@@ -69,7 +69,7 @@ class FeatureHelp extends StatelessWidget {
                 ),
                 backgroundColor: Theme.of(context).cardTheme.color,
                 backgroundOpacity: 0.85,
-                targetColor: Theme.of(context).textTheme.bodyText2!.color!,
+                targetColor: Theme.of(context).textTheme.bodyMedium!.color!,
                 overflowMode: OverflowMode.wrapBackground,
                 child: child,
               ),

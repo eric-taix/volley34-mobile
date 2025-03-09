@@ -25,16 +25,16 @@ class Paragraph extends StatelessWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Expanded(flex: 1, child: Divider(color: Theme.of(context).textTheme.headline6!.color)),
+              Expanded(flex: 1, child: Divider(color: Theme.of(context).textTheme.titleLarge!.color)),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: title != null ? Text(title!, style: Theme.of(context).textTheme.headline6) : titleWidget,
+                child: title != null ? Text(title!, style: Theme.of(context).textTheme.titleLarge) : titleWidget,
               ),
               Expanded(
                   flex: 8,
                   child: Padding(
                     padding: const EdgeInsets.only(right: 8.0),
-                    child: Divider(color: Theme.of(context).textTheme.headline6!.color),
+                    child: Divider(color: Theme.of(context).textTheme.titleLarge!.color),
                   )),
             ],
           ),

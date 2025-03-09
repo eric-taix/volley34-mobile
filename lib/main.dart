@@ -5,8 +5,10 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:localstorage/localstorage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:splash_screen_view/SplashScreenView.dart';
+import 'package:splash_view/source/presentation/pages/splash_view.dart';
+import 'package:splash_view/source/presentation/widgets/done.dart';
 import 'package:v34/app_page.dart';
 import 'package:v34/commons/blocs/logging_bloc.dart';
 import 'package:v34/commons/blocs/preferences_bloc.dart';
@@ -32,6 +34,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await ConfigReader.initialize();
   await Firebase.initializeApp();
+  await initLocalStorage();
   var sharedPreferences = await SharedPreferences.getInstance();
   var prefThemeString = sharedPreferences.getString("theme");
   ThemeMode _themeMode =
@@ -107,14 +110,18 @@ class _V34State extends State<V34> {
                       theme: AppTheme.lightTheme(),
                       darkTheme: AppTheme.darkTheme(),
                       themeMode: _themeMode,
-                      home: SplashScreenView(
-                        navigateRoute: AppPage(), //Scorer(
+                      home: SplashView(
+                        done: Done(AppPage()), //Scorer(
                         //team1: Team(name: "VCV1"), team2: Team(name: "VBSMT / Les bras cassés")), //,
-                        duration: 800,
-                        text: "Volley 34",
-                        textType: TextType.ScaleAnimatedText,
-                        textStyle: TextStyle(
-                            color: Color(0xFFF7FBFE), fontSize: 34, fontFamily: "Raleway", fontWeight: FontWeight.bold),
+                        duration: Duration(milliseconds: 800),
+                        title: Text(
+                          "Volley 34",
+                          style: TextStyle(
+                              color: Color(0xFFF7FBFE),
+                              fontSize: 34,
+                              fontFamily: "Raleway",
+                              fontWeight: FontWeight.bold),
+                        ),
                         backgroundColor: Color(0xFF262C41),
                       ),
                       navigatorObservers: [routeObserver],

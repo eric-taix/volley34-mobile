@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:badges/badges.dart';
+import 'package:badges/badges.dart' as b;
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -95,15 +95,20 @@ class _FilterOptionsState extends State<FilterOptions> {
                             Icon(Icons.tune_rounded),
                             Padding(
                               padding: const EdgeInsets.only(left: 8.0),
-                              child: Badge(
+                              child: b.Badge(
                                 showBadge: _filter.count > 0,
-                                padding: EdgeInsets.all(5),
-                                animationDuration: Duration(milliseconds: 200),
-                                position: BadgePosition(top: -15, end: -20),
-                                badgeColor: Theme.of(context).colorScheme.secondary,
-                                animationType: BadgeAnimationType.scale,
-                                badgeContent: Text("${_filter.count}",
-                                    style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Colors.white)),
+                                badgeAnimation: b.BadgeAnimation.scale(
+                                  animationDuration: Duration(milliseconds: 200),
+                                ),
+                                badgeStyle: b.BadgeStyle(
+                                  badgeColor: Theme.of(context).colorScheme.secondary,
+                                ),
+                                position: b.BadgePosition.custom(top: -15, end: -20),
+                                badgeContent: Padding(
+                                  padding: EdgeInsets.all(5),
+                                  child: Text("${_filter.count}",
+                                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Colors.white)),
+                                ),
                                 child: Text("Filtres", style: Theme.of(context).appBarTheme.titleTextStyle),
                               ),
                             ),
@@ -158,12 +163,12 @@ class _FilterOptionsState extends State<FilterOptions> {
     return [
       Padding(
         padding: const EdgeInsets.only(top: 28.0, left: LEFT_PADDING, bottom: 18),
-        child: Text("Niveaux de jeu", style: Theme.of(context).textTheme.headline6),
+        child: Text("Niveaux de jeu", style: Theme.of(context).textTheme.titleLarge),
       ),
       RadioListTile<Division>(
         contentPadding: const EdgeInsets.symmetric(horizontal: LEFT_PADDING),
         controlAffinity: ListTileControlAffinity.leading,
-        title: Text("Tous les niveaux de jeu", style: Theme.of(context).textTheme.bodyText2),
+        title: Text("Tous les niveaux de jeu", style: Theme.of(context).textTheme.bodyMedium),
         value: Division.all,
         onChanged: (_) => _updateFilter(_filter.copyWith(competitionDivision: Division.all)),
         groupValue: _filter.competitionDivision,
@@ -177,7 +182,7 @@ class _FilterOptionsState extends State<FilterOptions> {
                     ...state.divisions.map(
                       (division) => RadioListTile<Division>(
                         contentPadding: const EdgeInsets.symmetric(horizontal: LEFT_PADDING),
-                        title: Text(division.label, style: Theme.of(context).textTheme.bodyText2),
+                        title: Text(division.label, style: Theme.of(context).textTheme.bodyMedium),
                         groupValue: _filter.competitionDivision,
                         value: division,
                         onChanged: (_) => _updateFilter(_filter.copyWith(competitionDivision: division)),
@@ -195,13 +200,13 @@ class _FilterOptionsState extends State<FilterOptions> {
     return [
       Padding(
         padding: const EdgeInsets.only(top: 8.0, left: LEFT_PADDING, bottom: 18),
-        child: Text("Compétitions", style: Theme.of(context).textTheme.headline6),
+        child: Text("Compétitions", style: Theme.of(context).textTheme.titleLarge),
       ),
       RadioListTile(
         contentPadding: const EdgeInsets.symmetric(horizontal: LEFT_PADDING),
         title: Text(
           "Toutes les compétitions",
-          style: Theme.of(context).textTheme.bodyText2,
+          style: Theme.of(context).textTheme.bodyMedium,
         ),
         value: CompetitionFilter.ALL_COMPETITION,
         groupValue: _filter.competitionGroup,
@@ -230,12 +235,12 @@ class _FilterOptionsState extends State<FilterOptions> {
                       children: [
                         Text(
                           competitions.value[0].competitionLabel,
-                          style: Theme.of(context).textTheme.bodyText2,
+                          style: Theme.of(context).textTheme.bodyMedium,
                           textAlign: TextAlign.start,
                         ),
                         Text(
                           "Du ${_fullDateFormat.format(competitions.value[0].start)} au ${_fullDateFormat.format(competitions.value[0].end)}",
-                          style: Theme.of(context).textTheme.bodyText1,
+                          style: Theme.of(context).textTheme.bodyLarge,
                         )
                       ],
                     ),

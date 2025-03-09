@@ -58,18 +58,18 @@ class _TimelineState extends State<Timeline> {
                               RichText(
                                 text: TextSpan(
                                   text: "${dateStr[0][0].toUpperCase()}${dateStr[0].substring(1)}",
-                                  style: Theme.of(context).textTheme.headline5,
+                                  style: Theme.of(context).textTheme.headlineSmall,
                                 ),
                                 textAlign: TextAlign.start,
                               ),
                               RichText(
                                 text: TextSpan(
                                   text: daysStr[0],
-                                  style: Theme.of(context).textTheme.headline4,
+                                  style: Theme.of(context).textTheme.headlineMedium,
                                   children: [
                                     TextSpan(
                                       text: " / ${daysStr[1]}",
-                                      style: Theme.of(context).textTheme.bodyText1,
+                                      style: Theme.of(context).textTheme.bodyLarge,
                                     ),
                                   ],
                                 ),
@@ -122,7 +122,7 @@ class _TimelineState extends State<Timeline> {
     );
 
     if (true) {
-      SchedulerBinding.instance!.addPostFrameCallback((_) {
+      SchedulerBinding.instance.addPostFrameCallback((_) {
         var ctx = _scrollToWidgetKey.currentContext;
         if (ctx != null) {
           Scrollable.ensureVisible(

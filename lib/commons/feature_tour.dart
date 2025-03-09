@@ -37,7 +37,7 @@ class FeatureTour extends StatelessWidget {
       onComplete: onComplete,
       title: Text(title ?? "",
           style: TextStyle(
-              fontWeight: FontWeight.bold, fontSize: 20.0, color: Theme.of(context).textTheme.bodyText1!.color)),
+              fontWeight: FontWeight.bold, fontSize: 20.0, color: Theme.of(context).textTheme.bodyLarge!.color)),
       description: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
@@ -46,7 +46,7 @@ class FeatureTour extends StatelessWidget {
               (paragrah) => [
                 Text(
                   paragrah,
-                  style: Theme.of(context).textTheme.bodyText2,
+                  style: Theme.of(context).textTheme.bodyMedium,
                   textScaleFactor: 1.2,
                 ),
                 Container(
@@ -59,7 +59,7 @@ class FeatureTour extends StatelessWidget {
       ),
       backgroundColor: Theme.of(context).cardTheme.color,
       backgroundOpacity: 0.85,
-      targetColor: Theme.of(context).textTheme.bodyText2!.color!,
+      targetColor: Theme.of(context).textTheme.bodyMedium!.color!,
       overflowMode: OverflowMode.wrapBackground,
       child: child,
     );

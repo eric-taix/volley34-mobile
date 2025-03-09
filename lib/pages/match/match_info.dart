@@ -63,7 +63,7 @@ class MatchInfo extends StatelessWidget {
             child: _buildOpponent(context, visitorTeam, visitorClub, showTeamLink),
           ),
           if (showMatchDate && date != null)
-            Text("${dateFormat.format(date!)}", style: Theme.of(context).textTheme.bodyText1),
+            Text("${dateFormat.format(date!)}", style: Theme.of(context).textTheme.bodyLarge),
         ],
       ),
     );
@@ -94,7 +94,7 @@ class MatchInfo extends StatelessWidget {
                             child: Text(
                               (team.name ?? ""),
                               textAlign: TextAlign.center,
-                              style: Theme.of(context).textTheme.headline4,
+                              style: Theme.of(context).textTheme.headlineMedium,
                             ),
                           ),
                         ],

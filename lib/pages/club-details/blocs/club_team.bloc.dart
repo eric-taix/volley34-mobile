@@ -141,12 +141,9 @@ class TeamLoadDivisionPoolResults extends TeamEvent {
 class TeamBloc extends Bloc<TeamEvent, TeamState> {
   final Repository repository;
 
-  TeamBloc({required this.repository}) : super(TeamStateUninitialized());
-
-  @override
-  Stream<TeamState> mapEventToState(TeamEvent event) async* {
-    if (event is TeamLoadSlidingResult) {
-      yield TeamSlidingStatsLoading();
+  TeamBloc({required this.repository}) : super(TeamStateUninitialized()) {
+    on<TeamLoadSlidingResult>((event, emit) async {
+      emit(TeamSlidingStatsLoading());
       var results = await repository.loadTeamLastMatchesResult(event.code, event.last!);
       var teamCompetitionSynthesisByCode = results
           .where((result) => result.competitionCode != null)
@@ -165,19 +162,19 @@ class TeamBloc extends Bloc<TeamEvent, TeamState> {
       var teamCompetitions =
           competitions.where((competition) => teamCompetitionSynthesisCodes.contains(competition.code)).toList();
 
-      yield TeamSlidingStatsLoaded(
+      emit(TeamSlidingStatsLoaded(
           competitions: teamCompetitionSynthesisByCode,
-          firstShownCompetition: teamCompetitions.firstShownCompetition()?.code);
-    }
+          firstShownCompetition: teamCompetitions.firstShownCompetition()?.code));
+    });
 
-    if (event is TeamLoadAverageSlidingResult) {
-      yield TeamSlidingStatsLoading();
+    on<TeamLoadAverageSlidingResult>((event, emit) async {
+      emit(TeamSlidingStatsLoading());
       List<RankingSynthesis> rankings = (await repository.loadTeamRankingSynthesis(event.team.code)).map((ranking) {
         return ranking..ranks?.sort(sortByRank);
       }).toList();
 
       List<TeamCompetition> competitions = await repository.loadTeamCompetitions(event.team);
-      var teamCompetitionsSynthesis = await Future.wait(competitions.map((competition) async {
+      var teamCompetitionSynthesis = await Future.wait(competitions.map((competition) async {
         var matchResults = await repository.loadResults(competition.code, competition.division, competition.pool);
         var pointDiffs = computePointsDiffs(matchResults, event.team.code);
         double sum = 0;
@@ -204,22 +201,23 @@ class TeamBloc extends Bloc<TeamEvent, TeamState> {
               wonMatches: wonMatches,
             ));
       }));
-
-      var unsorted = Map<String, TeamCompetitionSynthesis>.fromIterable(teamCompetitionsSynthesis,
+      var unsorted = Map<String, TeamCompetitionSynthesis>.fromIterable(teamCompetitionSynthesis,
           key: (entry) => entry.key, value: (entry) => entry.value);
 
-      yield TeamSlidingStatsLoaded(
-          competitions: unsorted, firstShownCompetition: competitions.firstShownCompetition()?.code);
-    }
+      emit(
+        TeamSlidingStatsLoaded(
+            competitions: unsorted, firstShownCompetition: competitions.firstShownCompetition()?.code),
+      );
+    });
 
-    if (event is TeamLoadResults) {
-      yield TeamSlidingStatsLoading();
+    on<TeamLoadResults>((event, emit) async {
+      emit(TeamSlidingStatsLoading());
       var results = await repository.loadTeamLastMatchesResult(event.code, event.last);
-      yield TeamResultsLoaded(results: results);
-    }
+      emit(TeamResultsLoaded(results: results));
+    });
 
-    if (event is TeamLoadDivisionPoolResults) {
-      yield TeamSlidingStatsLoading();
+    on<TeamLoadDivisionPoolResults>((event, emit) async {
+      emit(TeamSlidingStatsLoading());
       var matchResults = (await Future.wait(event.competitionsFullPath.map((competitionFullPath) async {
         var results = await repository.loadResults(
             competitionFullPath.competitionCode, competitionFullPath.division, competitionFullPath.pool);
@@ -236,15 +234,15 @@ class TeamBloc extends Bloc<TeamEvent, TeamState> {
         return MapEntry(competitionCode!, forceBuilder);
       });
 
-      yield TeamDivisionPoolResultsLoaded(
+      emit(TeamDivisionPoolResultsLoaded(
         teamResults: matchResults
             .where((matchResult) =>
                 matchResult.hostTeamCode == event.teamCode || matchResult.visitorTeamCode == event.teamCode)
             .toList(),
         allResults: matchResults.toList(),
         forceByCompetitionCode: forceByCompetition,
-      );
-    }
+      ));
+    });
   }
 
   int sortByRank(RankingTeamSynthesis team1, RankingTeamSynthesis team2) {

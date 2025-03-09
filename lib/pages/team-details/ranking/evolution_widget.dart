@@ -30,7 +30,7 @@ class EvolutionWidget extends StatelessWidget {
               showTitle: false,
               startDate: startDate,
               endDate: endDate,
-              thumbnail: true,
+              thumbnail: false,
             ),
           ),
         ),
@@ -52,7 +52,7 @@ class EvolutionWidget extends StatelessWidget {
               flex: 1,
               child: Padding(
                 padding: const EdgeInsets.only(left: TEAM_RANKING_LEFT_PADDING),
-                child: Text(title, textAlign: TextAlign.start, style: Theme.of(context).textTheme.bodyText1),
+                child: Text(title, textAlign: TextAlign.start, style: Theme.of(context).textTheme.bodyLarge),
               )),
           Expanded(flex: 2, child: _buildGraph(context)),
         ],

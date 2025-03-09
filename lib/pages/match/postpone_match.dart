@@ -150,7 +150,7 @@ class _PostPoneMatchState extends State<PostPoneMatch> {
             autofocus: true,
             focusNode: _nameFocus,
             controller: _nameController,
-            style: Theme.of(context).textTheme.bodyText2!.copyWith(fontSize: 18),
+            style: Theme.of(context).textTheme.bodyMedium!.copyWith(fontSize: 18),
             cursorWidth: 2,
             enableSuggestions: true,
             autofillHints: [
@@ -180,7 +180,7 @@ class _PostPoneMatchState extends State<PostPoneMatch> {
             controller: _emailController,
             focusNode: _emailFocus,
             autovalidateMode: AutovalidateMode.always,
-            style: Theme.of(context).textTheme.bodyText2!.copyWith(fontSize: 18),
+            style: Theme.of(context).textTheme.bodyMedium!.copyWith(fontSize: 18),
             cursorWidth: 2,
             enableSuggestions: true,
             autofillHints: [AutofillHints.email],
@@ -200,7 +200,7 @@ class _PostPoneMatchState extends State<PostPoneMatch> {
       ),
       Padding(
         padding: const EdgeInsets.only(top: 32.0, left: 38, right: 28),
-        child: Text("Votre équipe", style: Theme.of(context).textTheme.bodyText1),
+        child: Text("Votre équipe", style: Theme.of(context).textTheme.bodyLarge),
       ),
       Padding(
         padding: const EdgeInsets.only(top: 8.0, left: 28, right: 28),
@@ -208,7 +208,7 @@ class _PostPoneMatchState extends State<PostPoneMatch> {
           groupValue: _senderTeam,
           value: widget.hostTeam,
           onChanged: (_) => setState(() => _senderTeam = widget.hostTeam),
-          title: Text(widget.hostTeam.name!, style: Theme.of(context).textTheme.bodyText2),
+          title: Text(widget.hostTeam.name!, style: Theme.of(context).textTheme.bodyMedium),
         ),
       ),
       Padding(
@@ -217,7 +217,7 @@ class _PostPoneMatchState extends State<PostPoneMatch> {
           groupValue: _senderTeam,
           value: widget.visitorTeam,
           onChanged: (_) => setState(() => _senderTeam = widget.visitorTeam),
-          title: Text(widget.visitorTeam.name!, style: Theme.of(context).textTheme.bodyText2),
+          title: Text(widget.visitorTeam.name!, style: Theme.of(context).textTheme.bodyMedium),
         ),
       ),
       if (_senderTeam == null)
@@ -227,7 +227,7 @@ class _PostPoneMatchState extends State<PostPoneMatch> {
             "La sélection de votre équipe est obligatoire",
             style: Theme.of(context)
                 .textTheme
-                .bodyText2!
+                .bodyMedium!
                 .copyWith(color: Theme.of(context).inputDecorationTheme.errorStyle!.color!),
           ),
         )
@@ -238,7 +238,7 @@ class _PostPoneMatchState extends State<PostPoneMatch> {
     return [
       Padding(
         padding: const EdgeInsets.only(left: 28.0, top: 18.0),
-        child: Text("Le report a été demandé par", style: Theme.of(context).textTheme.bodyText1),
+        child: Text("Le report a été demandé par", style: Theme.of(context).textTheme.bodyLarge),
       ),
       Padding(
         padding: const EdgeInsets.only(left: 18.0),
@@ -246,14 +246,14 @@ class _PostPoneMatchState extends State<PostPoneMatch> {
           children: [
             RadioListTile<String>(
               dense: true,
-              title: Text(widget.hostTeam.name!, style: Theme.of(context).textTheme.bodyText2),
+              title: Text(widget.hostTeam.name!, style: Theme.of(context).textTheme.bodyMedium),
               value: widget.hostTeam.code!,
               groupValue: _applicantTeamCode,
               onChanged: (_) => setState(() => _applicantTeamCode = widget.hostTeam.code),
             ),
             RadioListTile<String>(
               dense: true,
-              title: Text(widget.visitorTeam.name!, style: Theme.of(context).textTheme.bodyText2),
+              title: Text(widget.visitorTeam.name!, style: Theme.of(context).textTheme.bodyMedium),
               value: widget.visitorTeam.code!,
               groupValue: _applicantTeamCode,
               onChanged: (_) => setState(() => _applicantTeamCode = widget.visitorTeam.code),
@@ -268,7 +268,7 @@ class _PostPoneMatchState extends State<PostPoneMatch> {
             "L'équipe qui a fait la demande est obligatoire",
             style: Theme.of(context)
                 .textTheme
-                .bodyText2!
+                .bodyMedium!
                 .copyWith(color: Theme.of(context).inputDecorationTheme.errorStyle!.color!),
           ),
         ),
@@ -281,7 +281,7 @@ class _PostPoneMatchState extends State<PostPoneMatch> {
             focusNode: _commentsFocus,
             autofocus: true,
             cursorWidth: 2,
-            style: Theme.of(context).textTheme.bodyText2!.copyWith(fontSize: 18),
+            style: Theme.of(context).textTheme.bodyMedium!.copyWith(fontSize: 18),
             autovalidateMode: AutovalidateMode.always,
             keyboardType: TextInputType.multiline,
             maxLines: 5,
@@ -293,7 +293,7 @@ class _PostPoneMatchState extends State<PostPoneMatch> {
         padding: const EdgeInsets.only(left: 28.0, top: 8, right: 28),
         child: Text(
           "Merci d'indiquer la nouvelle date ainsi que le gymnase où se déroulera le match.",
-          style: Theme.of(context).textTheme.bodyText1!.copyWith(fontStyle: FontStyle.italic),
+          style: Theme.of(context).textTheme.bodyLarge!.copyWith(fontStyle: FontStyle.italic),
         ),
       )
     ];
@@ -319,11 +319,11 @@ class _PostPoneMatchState extends State<PostPoneMatch> {
             children: [
               Icon(
                 Icons.info_outline_rounded,
-                color: Theme.of(context).textTheme.headline5!.color,
+                color: Theme.of(context).textTheme.headlineSmall!.color,
               ),
               Padding(
                 padding: const EdgeInsets.only(left: 8.0),
-                child: Text("Confirmation", style: Theme.of(context).textTheme.headline5),
+                child: Text("Confirmation", style: Theme.of(context).textTheme.headlineSmall),
               ),
             ],
           ),
@@ -333,17 +333,17 @@ class _PostPoneMatchState extends State<PostPoneMatch> {
             children: [
               SizedBox(height: 18),
               Text("$senderName, confirmez-vous le report du match suivant ?",
-                  style: Theme.of(context).textTheme.bodyText1),
+                  style: Theme.of(context).textTheme.bodyLarge),
               SizedBox(height: 18),
               RichText(
                 text: TextSpan(
                     text: "",
                     children: [
-                      TextSpan(text: hostTeam.name, style: Theme.of(context).textTheme.bodyText2),
+                      TextSpan(text: hostTeam.name, style: Theme.of(context).textTheme.bodyMedium),
                       TextSpan(text: " reçoit "),
-                      TextSpan(text: visitorTeam.name, style: Theme.of(context).textTheme.bodyText2),
+                      TextSpan(text: visitorTeam.name, style: Theme.of(context).textTheme.bodyMedium),
                     ],
-                    style: Theme.of(context).textTheme.bodyText1),
+                    style: Theme.of(context).textTheme.bodyLarge),
               ),
               SizedBox(height: 18),
             ],

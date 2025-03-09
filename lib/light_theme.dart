@@ -11,19 +11,16 @@ ThemeData buildLightTheme(Color mainColor) {
     scaffoldBackgroundColor: Color(0xfff6f6f6),
     highlightColor: Colors.transparent,
     primarySwatch: Colors.blue,
-    bottomAppBarColor: Color(0xFF313852),
     colorScheme: ColorScheme(
       primary: Color(0xFF262C41),
       primaryContainer: Color(0xFF313852),
       secondary: mainColor,
       secondaryContainer: Colors.white,
       surface: Color(0xFF262C41),
-      background: Color(0xFF262C41),
       error: mainColor,
       onPrimary: Colors.white,
       onSecondary: Colors.white,
       onSurface: Colors.white,
-      onBackground: Colors.white,
       onError: Colors.white,
       brightness: Brightness.light,
     ),
@@ -65,23 +62,32 @@ ThemeData buildLightTheme(Color mainColor) {
     radioTheme: RadioThemeData(
       fillColor: MultiStateColor(defaultColor: Colors.black45, selectedColor: mainColor, disabledColor: Colors.white30),
     ),
+    drawerTheme: DrawerThemeData(
+      backgroundColor: Color(0xfff6f6f6),
+    ),
+    dialogTheme: DialogTheme(
+      backgroundColor: Colors.white,
+    ),
     checkboxTheme: CheckboxThemeData(
       checkColor: MultiStateColor(defaultColor: Colors.white, selectedColor: Colors.white, disabledColor: Colors.grey),
       fillColor: MultiStateColor(defaultColor: Colors.white, selectedColor: mainColor, disabledColor: Colors.white),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
     ),
     textTheme: TextTheme(
-      button: TextStyle(color: Color(0xff020202), fontSize: 14.0, fontFamily: "Raleway", fontWeight: FontWeight.normal),
-      headline1:
+      labelLarge:
+          TextStyle(color: Color(0xff020202), fontSize: 14.0, fontFamily: "Raleway", fontWeight: FontWeight.normal),
+      displayLarge:
           TextStyle(color: Color(0xff020202), fontSize: 16.0, fontFamily: "Raleway", fontWeight: FontWeight.normal),
-      headline4: TextStyle(color: Colors.black, fontSize: 20.0, fontFamily: "Raleway", fontWeight: FontWeight.normal),
-      headline5: TextStyle(color: Color(0xff8c8f99), fontSize: 20, fontFamily: "Raleway", fontWeight: FontWeight.w300),
-      headline6: TextStyle(color: Color(0xff5c5e65), fontSize: 20, fontFamily: "Raleway", fontWeight: FontWeight.w300),
-      subtitle1: TextStyle(color: Colors.white, fontSize: 20, fontFamily: "Raleway", fontWeight: FontWeight.bold),
-      subtitle2: TextStyle(color: Color(0xff020202), fontSize: 14, fontFamily: "Raleway", fontWeight: FontWeight.bold),
-      bodyText2: TextStyle(color: Colors.black, fontSize: 14, fontFamily: "Raleway", fontWeight: FontWeight.w500),
-      bodyText1: TextStyle(color: Color(0xff5e5e5e), fontSize: 14, fontFamily: "Raleway", fontWeight: FontWeight.w400),
-      caption: TextStyle(color: Colors.black, fontSize: 16, fontFamily: "Raleway", fontWeight: FontWeight.bold),
+      headlineMedium:
+          TextStyle(color: Colors.black, fontSize: 20.0, fontFamily: "Raleway", fontWeight: FontWeight.normal),
+      headlineSmall:
+          TextStyle(color: Color(0xff8c8f99), fontSize: 20, fontFamily: "Raleway", fontWeight: FontWeight.w300),
+      titleLarge: TextStyle(color: Color(0xff5c5e65), fontSize: 20, fontFamily: "Raleway", fontWeight: FontWeight.w300),
+      titleMedium: TextStyle(color: Colors.white, fontSize: 20, fontFamily: "Raleway", fontWeight: FontWeight.bold),
+      titleSmall: TextStyle(color: Color(0xff020202), fontSize: 14, fontFamily: "Raleway", fontWeight: FontWeight.bold),
+      bodyMedium: TextStyle(color: Colors.black, fontSize: 14, fontFamily: "Raleway", fontWeight: FontWeight.w500),
+      bodyLarge: TextStyle(color: Color(0xff5e5e5e), fontSize: 14, fontFamily: "Raleway", fontWeight: FontWeight.w400),
+      bodySmall: TextStyle(color: Colors.black, fontSize: 16, fontFamily: "Raleway", fontWeight: FontWeight.bold),
     ),
     tabBarTheme: TabBarTheme(
       labelColor: Colors.black,
@@ -99,9 +105,6 @@ ThemeData buildLightTheme(Color mainColor) {
           right: 30,
         ),
       ),
-    ),
-    buttonBarTheme: ButtonBarThemeData(
-      buttonPadding: EdgeInsets.all(0.0),
     ),
     buttonTheme: ButtonThemeData(
         buttonColor: Color(0xffe2e5f3),
@@ -187,5 +190,6 @@ ThemeData buildLightTheme(Color mainColor) {
         borderRadius: BorderRadius.only(topLeft: Radius.circular(18), topRight: Radius.circular(18)),
       ),
     ),
+    bottomAppBarTheme: BottomAppBarTheme(color: Color(0xFF313852)),
   );
 }

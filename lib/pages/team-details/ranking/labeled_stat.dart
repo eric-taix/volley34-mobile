@@ -17,7 +17,7 @@ class LabeledStat extends StatelessWidget {
               flex: 1,
               child: Padding(
                 padding: const EdgeInsets.only(left: TEAM_RANKING_LEFT_PADDING),
-                child: Text(title, textAlign: TextAlign.start, style: Theme.of(context).textTheme.bodyText1),
+                child: Text(title, textAlign: TextAlign.start, style: Theme.of(context).textTheme.bodyLarge),
               )),
           Expanded(
               flex: 2,

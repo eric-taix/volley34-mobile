@@ -43,7 +43,7 @@ class _LineGraphState extends State<LineGraph> {
     _minY = widget.results.reduce(min);
 
     if (widget.results.length > 1) {
-      WidgetsBinding.instance?.addPostFrameCallback((_) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
         Future.delayed(Duration(milliseconds: 400), () {
           if (mounted)
             setState(() {
@@ -56,9 +56,25 @@ class _LineGraphState extends State<LineGraph> {
 
   @override
   Widget build(BuildContext context) {
-    return LineChart(
-      mainData(context, _results),
-      swapAnimationDuration: Duration(milliseconds: 600),
+    return Stack(
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(left: 18.0, top: 8),
+          child: LineChart(
+            mainData(context, _results),
+            duration: Duration(milliseconds: 600),
+          ),
+        ),
+        if (widget.thumbnail)
+          Positioned(
+            bottom: 0,
+            child: Transform.rotate(
+              angle: -pi / 2,
+              alignment: Alignment.bottomLeft,
+              child: Text('Diff. Sets', style: Theme.of(context).textTheme.bodyLarge),
+            ),
+          ),
+      ],
     );
   }
 
@@ -71,52 +87,70 @@ class _LineGraphState extends State<LineGraph> {
       gridData: FlGridData(
         show: false,
       ),
-      axisTitleData: FlAxisTitleData(
-        leftTitle: AxisTitle(
-          showTitle: widget.showTitle,
-          titleText: widget.title,
-          margin: 10,
-          textStyle: Theme.of(context).textTheme.bodyText1,
-          reservedSize: 0,
-        ),
-      ),
       titlesData: FlTitlesData(
         show: true,
-        bottomTitles: SideTitles(
-          showTitles: widget.startDate != null && widget.endDate != null,
-          reservedSize: 0,
-          getTextStyles: (_, __) => TextStyle(color: Theme.of(context).textTheme.bodyText1!.color, fontSize: 10),
-          getTitles: (value) {
-            if (value.toInt() == 0) return _dateFormat.format(widget.startDate!).toUpperCase();
-            if (value.toInt() == results.length - 1) return _dateFormat.format(widget.endDate!).toUpperCase();
-            if (value.toInt() == results.length / 2)
-              return _dateFormat
-                  .format(widget.startDate!
-                      .add(Duration(seconds: widget.endDate!.difference(widget.startDate!).inSeconds ~/ 2)))
-                  .toUpperCase();
-            return '';
-          },
-          margin: 8,
+        bottomTitles: AxisTitles(
+          sideTitles: SideTitles(
+            showTitles: widget.startDate != null && widget.endDate != null,
+            reservedSize: 22, // Augmenté pour plus d'espace
+            getTitlesWidget: (value, meta) {
+              final style = TextStyle(color: Theme.of(context).textTheme.bodyLarge!.color, fontSize: 10);
+              if (value.toInt() == 0) {
+                return Text(_dateFormat.format(widget.startDate!).toUpperCase(), style: style);
+              }
+              if (value.toInt() == results.length - 1) {
+                return Text(_dateFormat.format(widget.endDate!).toUpperCase(), style: style);
+              }
+              if (value.toInt() == results.length ~/ 2) {
+                return Text(
+                    _dateFormat
+                        .format(widget.startDate!
+                            .add(Duration(seconds: widget.endDate!.difference(widget.startDate!).inSeconds ~/ 2)))
+                        .toUpperCase(),
+                    style: style);
+              }
+              return const SizedBox.shrink();
+            },
+            interval: 1,
+          ),
         ),
-        leftTitles: SideTitles(
-          showTitles: !widget.thumbnail,
-          getTextStyles: (_, __) =>
-              TextStyle(color: Theme.of(context).textTheme.bodyText2!.color, fontSize: 10, fontWeight: FontWeight.bold),
-          getTitles: (value) {
-            if (value.floor().toDouble() == value)
-              return "${value.toInt()}";
-            else
-              return "";
-          },
-          checkToShowTitle:
-              (double minValue, double maxValue, SideTitles sideTitles, double appliedInterval, double value) {
-            return (value == minValue || value == maxValue || value == 0);
-          },
-          reservedSize: 10,
-          margin: 12,
+        leftTitles: AxisTitles(
+          sideTitles: SideTitles(
+            showTitles: false,
+            reservedSize: 30,
+            getTitlesWidget: (value, meta) {
+              // Afficher uniquement les valeurs entières, min, max et zéro
+              if (value == _minY || value == _maxY || value == 0 || value.floor() == value) {
+                return Text(
+                  "${value.toInt()}",
+                  style: TextStyle(
+                      color: Theme.of(context).textTheme.bodyMedium!.color, fontSize: 10, fontWeight: FontWeight.bold),
+                );
+              }
+              return const SizedBox.shrink();
+            },
+            interval: 1,
+          ),
         ),
-        topTitles: SideTitles(showTitles: false),
-        rightTitles: SideTitles(showTitles: true, getTextStyles: (_, __) => Theme.of(context).textTheme.bodyText1),
+        topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+        rightTitles: AxisTitles(
+            sideTitles: SideTitles(
+                showTitles: true,
+                reservedSize: 30,
+                interval: 5,
+                getTitlesWidget: (value, meta) {
+                  if (value.toInt() % 5 == 0) {
+                    return Padding(
+                      padding: const EdgeInsets.only(left: 8.0),
+                      child: Text("${value.toInt()}",
+                          style: TextStyle(
+                              color: Theme.of(context).textTheme.bodyMedium!.color,
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold)),
+                    );
+                  }
+                  return const SizedBox.shrink();
+                })),
       ),
       borderData: FlBorderData(show: false, border: Border.all(color: const Color(0xff37434d), width: 1)),
       minX: 0,
@@ -129,7 +163,11 @@ class _LineGraphState extends State<LineGraph> {
             })
           ],
           isCurved: true,
-          colors: gradientColorsAboveCutOff,
+          gradient: LinearGradient(
+            colors: gradientColorsAboveCutOff,
+            begin: Alignment.centerLeft,
+            end: Alignment.centerRight,
+          ),
           barWidth: 5,
           isStrokeCapRound: true,
           dotData: FlDotData(
@@ -137,13 +175,21 @@ class _LineGraphState extends State<LineGraph> {
           ),
           belowBarData: BarAreaData(
             show: true,
-            colors: gradientColorsAboveCutOff.map((color) => color.withOpacity(0.3)).toList(),
+            gradient: LinearGradient(
+              colors: gradientColorsAboveCutOff.map((color) => color.withOpacity(0.3)).toList(),
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+            ),
             cutOffY: 0,
             applyCutOffY: true,
           ),
           aboveBarData: BarAreaData(
             show: true,
-            colors: gradientColorsBelowCutOff.map((color) => color.withOpacity(0.3)).toList(),
+            gradient: LinearGradient(
+              colors: gradientColorsBelowCutOff.map((color) => color.withOpacity(0.3)).toList(),
+              begin: Alignment.bottomCenter,
+              end: Alignment.topCenter,
+            ),
             cutOffY: 0,
             applyCutOffY: true,
           ),

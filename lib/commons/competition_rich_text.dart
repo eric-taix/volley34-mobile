@@ -56,7 +56,7 @@ class CompetitionRichText extends StatelessWidget {
                         padding: const EdgeInsets.only(left: 18.0, right: 18.0, top: 8.0, bottom: 8.0),
                         child: Text(
                           extractEnhanceDivisionLabel(competition.competitionLabel),
-                          style: Theme.of(context).textTheme.bodyText1!.copyWith(fontSize: 12),
+                          style: Theme.of(context).textTheme.bodyLarge!.copyWith(fontSize: 12),
                         ),
                       ),
                     )

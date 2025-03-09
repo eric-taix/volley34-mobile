@@ -32,8 +32,8 @@ class EnsureVisibleWhenFocused extends StatefulWidget {
     Key? key,
     required this.child,
     required this.focusNode,
-    this.curve: Curves.ease,
-    this.duration: const Duration(milliseconds: 100),
+    this.curve = Curves.ease,
+    this.duration = const Duration(milliseconds: 100),
   }) : super(key: key);
 
   /// The node we will monitor to determine if the child is focused
@@ -64,12 +64,12 @@ class _EnsureVisibleWhenFocusedState extends State<EnsureVisibleWhenFocused> wit
   void initState() {
     super.initState();
     widget.focusNode.addListener(_ensureVisible);
-    WidgetsBinding.instance?.addObserver(this);
+    WidgetsBinding.instance.addObserver(this);
   }
 
   @override
   void dispose() {
-    WidgetsBinding.instance?.removeObserver(this);
+    WidgetsBinding.instance.removeObserver(this);
     widget.focusNode.removeListener(_ensureVisible);
     super.dispose();
   }
@@ -126,13 +126,12 @@ class _EnsureVisibleWhenFocusedState extends State<EnsureVisibleWhenFocused> wit
 
     // Get the Scrollable state (in order to retrieve its offset)
     ScrollableState? scrollableState = Scrollable.of(context);
-    assert(scrollableState != null);
 
     // Get its offset
-    ScrollPosition? position = scrollableState?.position;
+    ScrollPosition? position = scrollableState.position;
     double alignment;
 
-    if (position != null && object != null) {
+    if (object != null) {
       if (position.pixels > viewport.getOffsetToReveal(object, 0.0).offset) {
         // Move down to the top of the viewport
         alignment = 0.0;

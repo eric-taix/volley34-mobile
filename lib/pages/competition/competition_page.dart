@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:badges/badges.dart';
+import 'package:badges/badges.dart' as b;
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -87,15 +87,19 @@ class _CompetitionPageState extends State<CompetitionPage> with SingleTickerProv
 
   @override
   Widget build(BuildContext context) {
-    var filterButton = Badge(
+    var filterButton = b.Badge(
       showBadge: _filter.count > 0,
-      padding: EdgeInsets.all(5),
-      animationDuration: Duration(milliseconds: 200),
-      position: BadgePosition(top: 0, end: 4),
-      badgeColor: Theme.of(context).colorScheme.secondary,
-      animationType: BadgeAnimationType.scale,
-      badgeContent:
-          Text("${_filter.count}", style: Theme.of(context).textTheme.bodyText2!.copyWith(color: Colors.white)),
+      badgeAnimation: b.BadgeAnimation.scale(
+        animationDuration: Duration(milliseconds: 200),
+      ),
+      badgeStyle: b.BadgeStyle(
+        badgeColor: Theme.of(context).colorScheme.secondary,
+      ),
+      position: b.BadgePosition.custom(top: 0, end: 4),
+      badgeContent: Padding(
+        padding: EdgeInsets.all(5),
+        child: Text("${_filter.count}", style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Colors.white)),
+      ),
       child: IconButton(
         icon: Icon(Icons.tune_rounded),
         onPressed: () => showMaterialModalBottomSheet(
@@ -222,7 +226,7 @@ class _CompetitionPageState extends State<CompetitionPage> with SingleTickerProv
       children: [
         Padding(
           padding: const EdgeInsets.only(right: 8.0),
-          child: Text(extractEnhanceDivisionLabel(fullLabel), style: Theme.of(context).textTheme.headline6),
+          child: Text(extractEnhanceDivisionLabel(fullLabel), style: Theme.of(context).textTheme.titleLarge),
         ),
         if (competitionCode != null)
           CompetitionBadge(
@@ -269,7 +273,7 @@ class _CompetitionPageState extends State<CompetitionPage> with SingleTickerProv
       child: Column(
         children: [
           Text("${getDivisionLabel(ranking.division)} $poolLabel",
-              style: Theme.of(context).textTheme.headline5!.copyWith(fontSize: 15)),
+              style: Theme.of(context).textTheme.headlineSmall!.copyWith(fontSize: 15)),
         ],
       ),
     );

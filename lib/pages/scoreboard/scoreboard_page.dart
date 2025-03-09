@@ -85,8 +85,8 @@ class _ScoreBoardPageState extends State<ScoreBoardPage> with RouteAwareAnalytic
 
   @override
   void didChangeDependencies() {
-    _hostColor = Theme.of(context).textTheme.headline1!.color!;
-    _visitorColor = Theme.of(context).textTheme.headline1!.color!;
+    _hostColor = Theme.of(context).textTheme.displayLarge!.color!;
+    _visitorColor = Theme.of(context).textTheme.displayLarge!.color!;
     super.didChangeDependencies();
   }
 
@@ -142,7 +142,7 @@ class _ScoreBoardPageState extends State<ScoreBoardPage> with RouteAwareAnalytic
                                       padding: const EdgeInsets.all(4.0),
                                       child: Text(_watch.elapsed.toString().split(".").first.padLeft(8, "0"),
                                           style:
-                                              Theme.of(context).textTheme.headline6!.copyWith(fontFamily: "OpenSans")),
+                                              Theme.of(context).textTheme.titleLarge!.copyWith(fontFamily: "OpenSans")),
                                     ),
                                     Expanded(
                                       child: Column(
@@ -203,7 +203,7 @@ class _ScoreBoardPageState extends State<ScoreBoardPage> with RouteAwareAnalytic
                                       Expanded(
                                         child: Padding(
                                           padding: EdgeInsets.only(left: 8, right: 8),
-                                          child: Text(_hostTeam.name!, style: Theme.of(context).textTheme.bodyText1),
+                                          child: Text(_hostTeam.name!, style: Theme.of(context).textTheme.bodyLarge),
                                         ),
                                       ),
                                     ],
@@ -215,8 +215,8 @@ class _ScoreBoardPageState extends State<ScoreBoardPage> with RouteAwareAnalytic
                                 icon: SvgPicture.asset(
                                   "assets/double-arrow.svg",
                                   color: _playing
-                                      ? Theme.of(context).textTheme.bodyText1!.color
-                                      : Theme.of(context).textTheme.bodyText2!.color,
+                                      ? Theme.of(context).textTheme.bodyLarge!.color
+                                      : Theme.of(context).textTheme.bodyMedium!.color,
                                 ),
                               ),
                               Expanded(
@@ -229,7 +229,7 @@ class _ScoreBoardPageState extends State<ScoreBoardPage> with RouteAwareAnalytic
                                           child: Padding(
                                         padding: const EdgeInsets.only(left: 8.0, right: 8.0),
                                         child: Text(_visitorTeam.name!,
-                                            textAlign: TextAlign.end, style: Theme.of(context).textTheme.bodyText1),
+                                            textAlign: TextAlign.end, style: Theme.of(context).textTheme.bodyLarge),
                                       )),
                                       RoundedNetworkImage(
                                         40,
