@@ -66,7 +66,7 @@ class _PreferencesPageState extends State<PreferencesPage> with RouteAwareAnalyt
             return ListTile(
               title: Row(
                 children: [
-                  Expanded(child: Text(featureFlag, style: Theme.of(context).textTheme.bodyText2)),
+                  Expanded(child: Text(featureFlag, style: Theme.of(context).textTheme.bodyMedium)),
                   Switch(
                     value: Features.isFeatureEnabled(context, featureFlag),
                     onChanged: (value) {
@@ -127,7 +127,7 @@ class _PreferencesPageState extends State<PreferencesPage> with RouteAwareAnalyt
         children: [
           Expanded(
               child: Text("Afficher les forces dans les prochains événements",
-                  style: Theme.of(context).textTheme.bodyText2)),
+                  style: Theme.of(context).textTheme.bodyMedium)),
           Switch(
               value: state.showForceOnDashboard ?? false,
               onChanged: (value) {
@@ -142,7 +142,7 @@ class _PreferencesPageState extends State<PreferencesPage> with RouteAwareAnalyt
     return ListTile(
       title: Row(
         children: [
-          Expanded(child: Text("Afficher le pourcentage des forces", style: Theme.of(context).textTheme.bodyText2)),
+          Expanded(child: Text("Afficher le pourcentage des forces", style: Theme.of(context).textTheme.bodyMedium)),
           Switch(
             value: Features.isFeatureEnabled(context, display_force_percentage),
             onChanged: (value) {
@@ -167,8 +167,8 @@ class _PreferencesPageState extends State<PreferencesPage> with RouteAwareAnalyt
     }
 
     return ListTile(
-      title: Text("Thème", style: Theme.of(context).textTheme.bodyText2),
-      subtitle: Text(getThemeUserString(state.themeMode), style: Theme.of(context).textTheme.bodyText1),
+      title: Text("Thème", style: Theme.of(context).textTheme.bodyMedium),
+      subtitle: Text(getThemeUserString(state.themeMode), style: Theme.of(context).textTheme.bodyLarge),
       onTap: () {
         void updateTheme(ThemeMode? themeMode) async {
           Navigator.of(context, rootNavigator: true).pop(themeMode);
@@ -182,7 +182,7 @@ class _PreferencesPageState extends State<PreferencesPage> with RouteAwareAnalyt
               value: value,
               groupValue: state.themeMode,
               onChanged: updateTheme,
-              title: Text(label, style: Theme.of(context).textTheme.bodyText2),
+              title: Text(label, style: Theme.of(context).textTheme.bodyMedium),
             );
 
         showDialog<ThemeMode>(

@@ -7,7 +7,7 @@ void showAlertDialog(BuildContext context, String title, String message, {Functi
     builder: (context) {
       return AlertDialog(
         title: Text(title),
-        content: Text(message, style: Theme.of(context).textTheme.bodyText2),
+        content: Text(message, style: Theme.of(context).textTheme.bodyMedium),
         actions: <Widget>[
           TextButton(
             onPressed: () {
@@ -32,11 +32,11 @@ void showHelpDialog(BuildContext context, String title, List<String> paragraphs,
           children: [
             Icon(
               Icons.info_outline_rounded,
-              color: Theme.of(context).textTheme.headline5!.color,
+              color: Theme.of(context).textTheme.headlineSmall!.color,
             ),
             Padding(
               padding: const EdgeInsets.only(left: 8.0),
-              child: Text(title, style: Theme.of(context).textTheme.headline5),
+              child: Text(title, style: Theme.of(context).textTheme.headlineSmall),
             ),
           ],
         ),
@@ -44,7 +44,7 @@ void showHelpDialog(BuildContext context, String title, List<String> paragraphs,
           mainAxisSize: MainAxisSize.min,
           children: [
             SizedBox(height: 18),
-            ...paragraphs.map((paragraph) => Text(paragraph, style: Theme.of(context).textTheme.bodyText2))
+            ...paragraphs.map((paragraph) => Text(paragraph, style: Theme.of(context).textTheme.bodyMedium))
           ],
         ),
         actions: <Widget>[

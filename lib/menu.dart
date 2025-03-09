@@ -48,9 +48,10 @@ class _AppMenuState extends State<AppMenu> {
 
   @override
   Widget build(BuildContext context) {
-    Color textStyleColor = Theme.of(context).textTheme.bodyText2!.color!;
+    Color textStyleColor = Theme.of(context).textTheme.bodyMedium!.color!;
     NavigatorState navigator = Navigator.of(context);
     return Drawer(
+      backgroundColor: Theme.of(context).drawerTheme.backgroundColor,
       child: ListView(
         padding: EdgeInsets.zero,
         children: <Widget>[
@@ -83,14 +84,14 @@ class _AppMenuState extends State<AppMenu> {
                                 state is PreferencesUpdatedState && state.favoriteTeam != null
                                     ? state.favoriteTeam!.name!
                                     : "VOLLEY 34",
-                                style: Theme.of(context).textTheme.headline4,
+                                style: Theme.of(context).textTheme.headlineMedium,
                                 maxLines: 1,
                               ),
                             ),
                             state is PreferencesUpdatedState && state.favoriteClub != null
                                 ? Text(
                                     state.favoriteClub!.name!,
-                                    style: Theme.of(context).textTheme.bodyText1,
+                                    style: Theme.of(context).textTheme.bodyLarge,
                                     maxLines: 1,
                                   )
                                 : SizedBox(),
@@ -143,11 +144,11 @@ class _AppMenuState extends State<AppMenu> {
                                   return RichText(
                                     text: TextSpan(
                                       text: "$appName ",
-                                      style: Theme.of(context).textTheme.headline4,
+                                      style: Theme.of(context).textTheme.headlineMedium,
                                       children: [
                                         TextSpan(
                                             text: "  - version $version (build $buildNumber)",
-                                            style: Theme.of(context).textTheme.bodyText2),
+                                            style: Theme.of(context).textTheme.bodyMedium),
                                       ],
                                     ),
                                   );
@@ -225,7 +226,7 @@ class _MenuItemWithLeading extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    TextStyle textStyle = Theme.of(context).textTheme.headline1!;
+    TextStyle textStyle = Theme.of(context).textTheme.displayLarge!;
     return ListTile(
       leading: leadingIcon,
       title: Text(title, style: textStyle),

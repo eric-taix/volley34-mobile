@@ -65,13 +65,13 @@ class _LandscapeHelperState extends State<LandscapeHelper> with SingleTickerProv
                           return Transform.rotate(angle: _skakeAnimation.value, child: child);
                         },
                         child: Icon(Icons.stay_primary_landscape_rounded,
-                            color: Theme.of(context).textTheme.bodyText1!.color!),
+                            color: Theme.of(context).textTheme.bodyLarge!.color!),
                       ),
                     ),
                     Text(
                       "Tournez pour plus de détails",
                       style:
-                          TextStyle(fontStyle: FontStyle.italic, color: Theme.of(context).textTheme.bodyText1!.color!),
+                          TextStyle(fontStyle: FontStyle.italic, color: Theme.of(context).textTheme.bodyLarge!.color!),
                     ),
                   ],
                 ),

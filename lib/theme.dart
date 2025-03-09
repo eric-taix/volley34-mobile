@@ -11,7 +11,7 @@ class AppTheme {
   static ThemeData lightTheme() => buildLightTheme(mainColor);
 }
 
-class OverlayStateColor extends MaterialStateColor {
+class OverlayStateColor extends WidgetStateColor {
   static const int _defaultColor = 0x50FFFFFF;
 
   final Color? color;
@@ -19,11 +19,11 @@ class OverlayStateColor extends MaterialStateColor {
   OverlayStateColor(this.color) : super(_defaultColor);
 
   @override
-  Color resolve(Set<MaterialState> states) =>
-      states.contains(MaterialState.disabled) ? Colors.transparent : color ?? Color(_defaultColor);
+  Color resolve(Set<WidgetState> states) =>
+      states.contains(WidgetState.disabled) ? Colors.transparent : color ?? Color(_defaultColor);
 }
 
-class ButtonForegroundStateColor extends MaterialStateColor {
+class ButtonForegroundStateColor extends WidgetStateColor {
   static const int _defaultColor = 0xFFFFFFFF;
 
   final Color? color;
@@ -31,11 +31,11 @@ class ButtonForegroundStateColor extends MaterialStateColor {
   const ButtonForegroundStateColor({this.color}) : super(_defaultColor);
 
   @override
-  Color resolve(Set<MaterialState> states) =>
-      states.contains(MaterialState.disabled) ? Colors.white30 : color ?? Color(_defaultColor);
+  Color resolve(Set<WidgetState> states) =>
+      states.contains(WidgetState.disabled) ? Colors.white30 : color ?? Color(_defaultColor);
 }
 
-class MultiStateColor extends MaterialStateColor {
+class MultiStateColor extends WidgetStateColor {
   static const int _defaultColor = 0xFFFFFFFF;
 
   final Color disabledColor;
@@ -49,46 +49,46 @@ class MultiStateColor extends MaterialStateColor {
   }) : super(_defaultColor);
 
   @override
-  Color resolve(Set<MaterialState> states) {
-    if (states.contains(MaterialState.disabled)) {
+  Color resolve(Set<WidgetState> states) {
+    if (states.contains(WidgetState.disabled)) {
       return disabledColor;
     }
-    if (states.contains(MaterialState.selected)) {
+    if (states.contains(WidgetState.selected)) {
       return selectedColor;
     }
     return defaultColor;
   }
 }
 
-class ButtonTextStyleState extends MaterialStateProperty<TextStyle> {
+class ButtonTextStyleState extends WidgetStateProperty<TextStyle> {
   final TextStyle disabledStyle;
   final TextStyle enabledStyle;
   ButtonTextStyleState({required this.enabledStyle, required this.disabledStyle});
 
   @override
-  TextStyle resolve(Set<MaterialState> states) =>
-      states.contains(MaterialState.disabled) ? disabledStyle : enabledStyle;
+  TextStyle resolve(Set<WidgetState> states) =>
+      states.contains(WidgetState.disabled) ? disabledStyle : enabledStyle;
 }
 
-class ButtonBackgroundStateColor extends MaterialStateColor {
+class ButtonBackgroundStateColor extends WidgetStateColor {
   final Color? color;
   static const int _defaultColor = 0xFFC9334F;
 
   const ButtonBackgroundStateColor({this.color}) : super(_defaultColor);
 
   @override
-  Color resolve(Set<MaterialState> states) =>
-      states.contains(MaterialState.disabled) ? Colors.grey : color ?? Color(_defaultColor);
+  Color resolve(Set<WidgetState> states) =>
+      states.contains(WidgetState.disabled) ? Colors.grey : color ?? Color(_defaultColor);
 }
 
-class ButtonStateProperty extends MaterialStateProperty<OutlinedBorder> {
+class ButtonStateProperty extends WidgetStateProperty<OutlinedBorder> {
   final Color? color;
   final Color? disableColor;
 
   ButtonStateProperty({this.color, this.disableColor});
 
   @override
-  OutlinedBorder resolve(Set<MaterialState> states) => states.contains(MaterialState.disabled)
+  OutlinedBorder resolve(Set<WidgetState> states) => states.contains(WidgetState.disabled)
       ? RoundedRectangleBorder(
           side: BorderSide(color: disableColor ?? Color(0xff3c404d), width: 2),
           borderRadius: BorderRadius.circular(80.0),
@@ -99,9 +99,9 @@ class ButtonStateProperty extends MaterialStateProperty<OutlinedBorder> {
         );
 }
 
-class ButtonPaddingProperty extends MaterialStateProperty<EdgeInsetsGeometry> {
+class ButtonPaddingProperty extends WidgetStateProperty<EdgeInsetsGeometry> {
   @override
-  EdgeInsetsGeometry resolve(Set<MaterialState> states) {
+  EdgeInsetsGeometry resolve(Set<WidgetState> states) {
     return EdgeInsets.symmetric(horizontal: 18);
   }
 }

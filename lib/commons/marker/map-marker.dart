@@ -1,9 +1,9 @@
 import 'dart:math';
+import 'dart:ui' as ui;
 import 'dart:ui';
 
 import 'package:flutter/material.dart' as material;
 import 'package:flutter/services.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class MapMarker {
@@ -31,23 +31,6 @@ class MapMarker {
     center = Point((size / 2) + shadowPadding, (size / 2) + shadowPadding);
     borderRadius = size / 2;
     backgroundRadius = borderRadius - borderWidth * 2;
-  }
-
-  Future<BitmapDescriptor> get bitmapDescriptor async {
-    final PictureRecorder pictureRecorder = PictureRecorder();
-    final Canvas canvas = Canvas(pictureRecorder);
-
-    _paintElevation(canvas);
-    _paintBorder(canvas);
-    _paintBackground(canvas);
-    await _paintImage(canvas);
-
-    final recordedImage = await pictureRecorder.endRecording().toImage(
-          size.toInt() + shadowPadding * 2,
-          size.toInt() + pinLength.toInt() + shadowPadding * 2,
-        );
-    final data = await recordedImage.toByteData(format: ImageByteFormat.png);
-    return BitmapDescriptor.fromBytes(data!.buffer.asUint8List());
   }
 
   _paintElevation(Canvas canvas) {
@@ -119,7 +102,94 @@ class MapMarker {
     );
   }
 
-  _paintImage(Canvas canvas) async {
+// Dans votre classe MapMarker, remplacez l'ancienne méthode utilisant DrawableRoot par:
+  Future<BitmapDescriptor> get bitmapDescriptor async {
+    // Créer un PictureRecorder pour dessiner dans un canvas
+    final ui.PictureRecorder pictureRecorder = ui.PictureRecorder();
+    final Canvas canvas = Canvas(pictureRecorder);
+
+    // Dimensions du canvas
+    final double width = size;
+    final double height = size + pinLength;
+
+    // Dessiner le cercle de fond
+    final Paint backgroundPaint = Paint()..color = backgroundColor;
+    final Paint borderPaint = Paint()
+      ..color = borderColor
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = borderWidth;
+
+    final double circleRadius = size / 2 - borderWidth / 2;
+    final Offset center = Offset(width / 2, size / 2);
+
+    // Dessiner le cercle
+    canvas.drawCircle(center, circleRadius, backgroundPaint);
+    canvas.drawCircle(center, circleRadius, borderPaint);
+
+    // Dessiner la pointe du marqueur
+    final Path pinPath = Path()
+      ..moveTo(width / 2 - pinLength / 2, size - borderWidth / 2)
+      ..lineTo(width / 2, height - borderWidth / 2)
+      ..lineTo(width / 2 + pinLength / 2, size - borderWidth / 2)
+      ..close();
+
+    canvas.drawPath(pinPath, backgroundPaint);
+    canvas.drawPath(
+      pinPath,
+      borderPaint..style = PaintingStyle.stroke,
+    );
+
+    // Si vous avez une icône SVG à l'intérieur
+    /*if (iconPath != null) {
+    final ByteData data = await rootBundle.load(iconPath!);
+    final PictureInfo pictureInfo = await vg.loadPicture(
+      SvgBytesLoader(data.buffer.asUint8List()),
+      null
+    );
+
+    // Calculer les dimensions de l'icône
+    final double iconSize = size * 0.5;
+    final Rect iconRect = Rect.fromCenter(
+      center: center,
+      width: iconSize,
+      height: iconSize,
+    );
+
+    // Dessiner l'icône
+    canvas.save();
+    canvas.clipRect(iconRect);
+    canvas.translate(
+      iconRect.left + iconRect.width / 2 - pictureInfo.size.width / 2,
+      iconRect.top + iconRect.height / 2 - pictureInfo.size.height / 2,
+    );
+    canvas.scale(
+      iconRect.width / pictureInfo.size.width,
+      iconRect.height / pictureInfo.size.height,
+    );
+
+    pictureInfo.picture.toImage(
+      pictureInfo.size.width.toInt(),
+      pictureInfo.size.height.toInt(),
+    ).then((ui.Image image) {
+      canvas.drawImage(image, Offset.zero, Paint());
+    });
+
+    canvas.restore();
+  }*/
+
+    // Convertir en image
+    final ui.Image image = await pictureRecorder.endRecording().toImage(
+          width.toInt(),
+          height.toInt(),
+        );
+
+    // Convertir l'image en bytes
+    final ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+    final Uint8List uint8List = byteData!.buffer.asUint8List();
+
+    return BitmapDescriptor.fromBytes(uint8List);
+  }
+  /*_paintImage(Canvas canvas) async {
     if (imageAsset != null) {
       ByteData byteData = await rootBundle.load(imageAsset!);
       DrawableRoot drawableRoot = await svg.fromSvgBytes(byteData.buffer.asUint8List(), "");
@@ -136,7 +206,7 @@ class MapMarker {
         Paint()..color = borderColor,
       );
     }
-  }
+  }*/
 }
 
 class ImageMarkerProxy extends material.StatelessWidget {

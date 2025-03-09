@@ -60,7 +60,7 @@ abstract class _OtherTimelineItem extends TimelineItemWidget {
       Text(
         event.name!,
         textAlign: TextAlign.center,
-        style: Theme.of(context).textTheme.bodyText2!,
+        style: Theme.of(context).textTheme.bodyMedium!,
       ),
       _Place(event.place, event.date, event.fullDay),
     ], onTap: () => showEventDetails(context, event));
@@ -188,7 +188,7 @@ class _PlaceState extends State<_Place> {
           Expanded(
             child: Text(
               "${widget.fullDay ?? false ? "Toute la journée" : _dateFormat.format(widget.date!)} - ${widget.place}",
-              style: Theme.of(context).textTheme.bodyText1,
+              style: Theme.of(context).textTheme.bodyLarge,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               textAlign: TextAlign.left,

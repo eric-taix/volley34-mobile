@@ -34,10 +34,10 @@ class _MarkdownPageState extends State<MarkdownPage> with RouteAwareAnalytics {
                   Expanded(
                     child: Markdown(
                       styleSheet: MarkdownStyleSheet(
-                          h1: Theme.of(context).textTheme.headline5!.copyWith(height: 4),
+                          h1: Theme.of(context).textTheme.headlineSmall!.copyWith(height: 4),
                           h2: Theme.of(context)
                               .textTheme
-                              .headline4!
+                              .headlineMedium!
                               .copyWith(height: 3, fontSize: 18, fontWeight: FontWeight.bold)),
                       data: snapshot.data!,
                     ),

@@ -57,12 +57,9 @@ class ClubSlotsLoadEvent extends ClubSlotsEvent {
 class ClubSlotsBloc extends Bloc<ClubSlotsEvent, ClubSlotsState> {
   final Repository? repository;
 
-  ClubSlotsBloc({this.repository}) : super(ClubSlotUninitialized());
-
-  @override
-  Stream<ClubSlotsState> mapEventToState(ClubSlotsEvent event) async* {
-    if (event is ClubSlotsLoadEvent) {
-      yield ClubSlotsLoading();
+  ClubSlotsBloc({this.repository}) : super(ClubSlotUninitialized()) {
+    on<ClubSlotsLoadEvent>((event, emit) async {
+      emit(ClubSlotsLoading());
       var slots = await repository!.loadClubSlots(event.clubCode);
       var gymnasiums = await repository!.loadAllGymnasiums();
       final seen = Set<String>();
@@ -100,7 +97,7 @@ class ClubSlotsBloc extends Bloc<ClubSlotsEvent, ClubSlotsState> {
           gymnasium: gymnasium,
         );
       }).toList();
-      yield ClubSlotsLoaded(slots: gyms);
-    }
+      emit(ClubSlotsLoaded(slots: gyms));
+    });
   }
 }

@@ -79,14 +79,13 @@ class _ClubStatisticsState extends State<ClubStatistics> with RouteAwareAnalytic
                               ? clubState.matchesPlayed.won.toDouble() / clubState.matchesPlayed.total
                               : 0.0,
                           valueBuilder: (value, _, max) => RichText(
-                            textScaleFactor: 1.0,
                             textAlign: TextAlign.center,
                             text: new TextSpan(
                               text: "${(value * clubState.matchesPlayed.total).toInt()}",
                               style: new TextStyle(
                                 fontSize: 24.0,
                                 fontWeight: FontWeight.bold,
-                                color: Theme.of(context).textTheme.bodyText2!.color,
+                                color: Theme.of(context).textTheme.bodyMedium!.color,
                               ),
                               children: <TextSpan>[
                                 new TextSpan(
@@ -94,6 +93,7 @@ class _ClubStatisticsState extends State<ClubStatistics> with RouteAwareAnalytic
                                     style: TextStyle(fontSize: 12, fontWeight: FontWeight.normal)),
                               ],
                             ),
+                            textScaler: TextScaler.linear(1.0),
                           ),
                         ),
                       ),
@@ -137,7 +137,7 @@ class _ClubStatisticsState extends State<ClubStatistics> with RouteAwareAnalytic
             titlePositionPercentageOffset: loaded && matchesPlayed != null
                 ? (matchesPlayed.won > matchesPlayed.lost ? POSITION_OFFSET - 1.3 : POSITION_OFFSET - 0.5)
                 : POSITION_OFFSET - 0.5,
-            titleStyle: Theme.of(context).textTheme.bodyText1,
+            titleStyle: Theme.of(context).textTheme.bodyLarge,
             color: loaded && matchesPlayed != null
                 ? _getSectionColor(matchesPlayed.won, matchesPlayed.total)
                 : Theme.of(context).colorScheme.primaryContainer,
@@ -148,7 +148,7 @@ class _ClubStatisticsState extends State<ClubStatistics> with RouteAwareAnalytic
                 ? (matchesPlayed.lost != 0 ? matchesPlayed.lost.toDouble() : 0.000001)
                 : 1,
             title: "${loaded && matchesPlayed != null ? "${matchesPlayed.lost} Déf." : 0}",
-            titleStyle: Theme.of(context).textTheme.bodyText1,
+            titleStyle: Theme.of(context).textTheme.bodyLarge,
             titlePositionPercentageOffset: loaded && matchesPlayed != null
                 ? (matchesPlayed.lost > matchesPlayed.won ? POSITION_OFFSET - 1.3 : POSITION_OFFSET - 0.5)
                 : POSITION_OFFSET - 0.5,
@@ -195,59 +195,79 @@ class _ClubStatisticsState extends State<ClubStatistics> with RouteAwareAnalytic
       barTouchData: BarTouchData(
         enabled: true,
         touchTooltipData: BarTouchTooltipData(
-            fitInsideVertically: false,
-            tooltipMargin: 0,
-            tooltipBgColor: Colors.transparent,
-            getTooltipItem: (barChartGroupData, index, barChartRodData, rodIndex) {
-              return BarTooltipItem("${barChartRodData.y.toInt()}", Theme.of(context).textTheme.bodyText2!);
-            }),
+          fitInsideVertically: false,
+          tooltipMargin: 0,
+          getTooltipColor: (_) => Colors.transparent,
+          getTooltipItem: (barChartGroupData, index, barChartRodData, rodIndex) {
+            return BarTooltipItem("${barChartRodData.toY.toInt()}", Theme.of(context).textTheme.bodyMedium!);
+          },
+        ),
       ),
       alignment: BarChartAlignment.center,
       gridData: FlGridData(show: false),
-      axisTitleData: FlAxisTitleData(show: false),
       titlesData: FlTitlesData(
         show: true,
-        bottomTitles: SideTitles(
-          showTitles: true,
-          getTextStyles: (_, __) => Theme.of(context).textTheme.bodyText1,
-          margin: 12,
-          getTitles: (double value) {
-            switch (value.toInt()) {
-              case 0:
-                return '3-0';
-              case 1:
-                return '3-1';
-              case 2:
-                return '3-2';
-              case 3:
-                return '2-3';
-              case 4:
-                return '1-3';
-              case 5:
-                return '0-3';
-              case 6:
-                return 'NT';
-              default:
-                return '';
-            }
-          },
+        bottomTitles: AxisTitles(
+          axisNameWidget: null,
+          sideTitles: SideTitles(
+            showTitles: true,
+            reservedSize: 22,
+            getTitlesWidget: (double value, TitleMeta meta) {
+              final TextStyle style = Theme.of(context).textTheme.bodyLarge!;
+              String text;
+              switch (value.toInt()) {
+                case 0:
+                  text = '3-0';
+                  break;
+                case 1:
+                  text = '3-1';
+                  break;
+                case 2:
+                  text = '3-2';
+                  break;
+                case 3:
+                  text = '2-3';
+                  break;
+                case 4:
+                  text = '1-3';
+                  break;
+                case 5:
+                  text = '0-3';
+                  break;
+                case 6:
+                  text = 'NT';
+                  break;
+                default:
+                  text = '';
+                  break;
+              }
+              return Padding(
+                padding: const EdgeInsets.only(top: 4.0),
+                child: Text(text, style: style),
+              );
+            },
+          ),
         ),
-        leftTitles: SideTitles(
-          showTitles: false,
+        leftTitles: AxisTitles(
+          axisNameWidget: null, // Pas de titre pour l'axe Y
+          sideTitles: SideTitles(
+            showTitles: false,
+          ),
         ),
-        rightTitles: SideTitles(
-          showTitles: false,
+        rightTitles: AxisTitles(
+          axisNameWidget: null,
+          sideTitles: SideTitles(
+            showTitles: false,
+          ),
         ),
-        topTitles: SideTitles(
-          margin: 2,
-          reservedSize: 0,
-          showTitles: false,
-          getTitles: (value) => "${value.toInt()}",
+        topTitles: AxisTitles(
+          axisNameWidget: null,
+          sideTitles: SideTitles(
+            showTitles: false,
+          ),
         ),
       ),
-      borderData: FlBorderData(
-        show: false,
-      ),
+      borderData: FlBorderData(show: false),
       barGroups: showingGroups(setsDistribution),
     );
   }
@@ -277,16 +297,17 @@ class _ClubStatisticsState extends State<ClubStatistics> with RouteAwareAnalytic
   }) {
     return BarChartGroupData(
       x: x,
-      showingTooltipIndicators: y != 0 ? [0] : null,
+      showingTooltipIndicators: y != 0 ? [0] : [],
       barRods: [
         BarChartRodData(
-          y: y,
-          colors: [barColor],
+          toY: y,
+          color: barColor,
           width: width,
+          borderRadius: BorderRadius.all(Radius.circular(8)),
           backDrawRodData: BackgroundBarChartRodData(
             show: true,
-            y: maxRodY == 0 ? 10 : maxRodY,
-            colors: [Colors.black12],
+            toY: maxRodY == 0 ? 10 : maxRodY,
+            color: Colors.black12,
           ),
         ),
       ],

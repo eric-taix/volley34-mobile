@@ -53,7 +53,7 @@ class _SelectFavoriteTeamState extends State<SelectFavoriteTeam> {
             leading: widget.canClose
                 ? IconButton(icon: Icon(Icons.close), onPressed: () => Navigator.of(context).pop())
                 : SizedBox(),
-            title: Text("Sélectionnez votre $selectionType", style: Theme.of(context).textTheme.headline4),
+            title: Text("Sélectionnez votre $selectionType", style: Theme.of(context).textTheme.headlineMedium),
           ),
           body: Container(
             color: Theme.of(context).canvasColor,

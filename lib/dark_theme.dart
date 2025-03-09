@@ -31,16 +31,13 @@ ThemeData buildDarkTheme(Color mainColor) {
       secondary: mainColor,
       secondaryContainer: mainColor.withOpacity(0.7),
       surface: Color(0xFF262C41),
-      background: Color(0xFF262C41),
       error: mainColor,
       onPrimary: Colors.white,
       onSecondary: Colors.white,
       onSurface: Colors.white,
-      onBackground: Colors.white,
       onError: Colors.white,
       brightness: Brightness.dark,
     ),
-    bottomAppBarColor: Color(0xFFF7FBFE),
     cardTheme: CardTheme(
       color: Color(0xFF313852),
       margin: EdgeInsets.only(top: 30, left: 20, right: 20, bottom: 0),
@@ -63,24 +60,31 @@ ThemeData buildDarkTheme(Color mainColor) {
         fontFamily: "Raleway",
       ),
     ),
+    drawerTheme: DrawerThemeData(
+      elevation: 0.0,
+      backgroundColor: Color(0xFF262C41),
+    ),
     checkboxTheme: CheckboxThemeData(
       checkColor: MultiStateColor(defaultColor: Colors.white, selectedColor: Colors.white, disabledColor: Colors.grey),
       fillColor: MultiStateColor(defaultColor: Colors.white, selectedColor: mainColor, disabledColor: Colors.white),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
     ),
     textTheme: TextTheme(
-      button: TextStyle(color: Color(0xFFF7FBFE), fontSize: 14.0, fontFamily: "Raleway", fontWeight: FontWeight.normal),
-      headline1:
+      labelLarge:
+          TextStyle(color: Color(0xFFF7FBFE), fontSize: 14.0, fontFamily: "Raleway", fontWeight: FontWeight.normal),
+      displayLarge:
           TextStyle(color: Color(0xFFF7FBFE), fontSize: 16.0, fontFamily: "Raleway", fontWeight: FontWeight.normal),
-      headline4:
+      headlineMedium:
           TextStyle(color: Color(0xFFF7FBFE), fontSize: 20.0, fontFamily: "Raleway", fontWeight: FontWeight.normal),
-      headline5: TextStyle(color: Color(0xFF979DB2), fontSize: 20, fontFamily: "Raleway", fontWeight: FontWeight.w300),
-      headline6: TextStyle(color: Color(0xFF979DB2), fontSize: 20, fontFamily: "Raleway", fontWeight: FontWeight.w300),
-      subtitle1: TextStyle(color: Color(0xFFF7FBFE), fontSize: 20, fontFamily: "Raleway", fontWeight: FontWeight.bold),
-      subtitle2: TextStyle(color: Color(0xFFF7FBFE), fontSize: 14, fontFamily: "Raleway", fontWeight: FontWeight.bold),
-      bodyText2: TextStyle(color: Color(0xFFF7FBFE), fontSize: 14, fontFamily: "Raleway", fontWeight: FontWeight.w400),
-      bodyText1: TextStyle(color: Color(0xFF979DB2), fontSize: 14, fontFamily: "Raleway", fontWeight: FontWeight.w400),
-      caption: TextStyle(color: Colors.white, fontSize: 18, fontFamily: "Raleway", fontWeight: FontWeight.w500),
+      headlineSmall:
+          TextStyle(color: Color(0xFF979DB2), fontSize: 20, fontFamily: "Raleway", fontWeight: FontWeight.w300),
+      titleLarge: TextStyle(color: Color(0xFF979DB2), fontSize: 20, fontFamily: "Raleway", fontWeight: FontWeight.w300),
+      titleMedium:
+          TextStyle(color: Color(0xFFF7FBFE), fontSize: 20, fontFamily: "Raleway", fontWeight: FontWeight.bold),
+      titleSmall: TextStyle(color: Color(0xFFF7FBFE), fontSize: 14, fontFamily: "Raleway", fontWeight: FontWeight.bold),
+      bodyMedium: TextStyle(color: Color(0xFFF7FBFE), fontSize: 14, fontFamily: "Raleway", fontWeight: FontWeight.w400),
+      bodyLarge: TextStyle(color: Color(0xFF979DB2), fontSize: 14, fontFamily: "Raleway", fontWeight: FontWeight.w400),
+      bodySmall: TextStyle(color: Colors.white, fontSize: 18, fontFamily: "Raleway", fontWeight: FontWeight.w500),
     ),
     tabBarTheme: TabBarTheme(
       labelColor: Color(0xFFF7FBFE),
@@ -98,9 +102,6 @@ ThemeData buildDarkTheme(Color mainColor) {
           right: 30,
         ),
       ),
-    ),
-    buttonBarTheme: ButtonBarThemeData(
-      buttonPadding: EdgeInsets.all(0.0),
     ),
     buttonTheme: ButtonThemeData(
         buttonColor: Color(0xFF373E5D),
@@ -208,5 +209,6 @@ ThemeData buildDarkTheme(Color mainColor) {
         borderRadius: BorderRadius.only(topLeft: Radius.circular(18), topRight: Radius.circular(18)),
       ),
     ),
+    bottomAppBarTheme: BottomAppBarTheme(color: Color(0xFFF7FBFE)),
   );
 }

@@ -16,12 +16,12 @@ class _AppBarHeaderDelegate extends SliverPersistentHeaderDelegate {
   final Widget? bottom;
 
   _AppBarHeaderDelegate({
-    this.expandedHeight = 120,
     required this.imageUrl,
     required this.title,
     required this.subTitle,
     required this.heroTag,
     required this.favorite,
+    this.expandedHeight = kToolbarHeight + 70.0,
     this.bottom,
   });
 
@@ -240,7 +240,7 @@ class _AppBarWithImageState extends State<AppBarWithImage> with TickerProviderSt
         _currentPosition = _currentPosition < 0 ? 0 : _currentPosition;
         _currentPageNotifier.value = _currentPosition;
         if (widget.onPositionChange is ValueChanged<int>) {
-          WidgetsBinding.instance?.addPostFrameCallback((_) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
             if (mounted) {
               if (widget.onPositionChange != null) widget.onPositionChange!(_currentPosition);
             }
@@ -332,6 +332,7 @@ class _AppBarWithImageState extends State<AppBarWithImage> with TickerProviderSt
                                 TabBar(
                                   isScrollable: true,
                                   controller: controller,
+                                  dividerHeight: 0,
                                   //indicatorPadding: EdgeInsets.symmetric(horizontal: 12.0),
                                   tabs: List.generate(
                                     widget.itemCount,

@@ -14,13 +14,13 @@ class Loading extends StatelessWidget {
     switch (loaderType) {
       case LoaderType.THREE_BOUNCE:
         return new SpinKitThreeBounce(
-          color: Theme.of(context).textTheme.headline6!.color,
+          color: Theme.of(context).textTheme.titleLarge!.color,
           size: size,
         );
       case LoaderType.CHASING_DOTS:
       default:
         return new SpinKitChasingDots(
-          color: Theme.of(context).textTheme.headline6!.color,
+          color: Theme.of(context).textTheme.titleLarge!.color,
           size: size,
         );
     }

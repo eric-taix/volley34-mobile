@@ -46,9 +46,9 @@ mixin RouteAwareAnalytics<T extends StatefulWidget> on State<T> implements Route
 
   Future<void> _setCurrentScreen(AnalyticsRoute analyticsRoute) {
     print("Setting current screen to ${screenName(analyticsRoute, extra: extraRoute?.snakeCase())}");
-    return FirebaseAnalytics.instance.setCurrentScreen(
+    return FirebaseAnalytics.instance.logScreenView(
       screenName: screenName(analyticsRoute, extra: extraRoute?.snakeCase()),
-      screenClassOverride: screenClass(analyticsRoute, extra: extraRoute.capitalize()),
+      screenClass: screenClass(analyticsRoute, extra: extraRoute.capitalize()),
     );
   }
 }

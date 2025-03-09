@@ -34,7 +34,7 @@ class ResultCard extends StatelessWidget {
         clipBehavior: Clip.none,
         children: [
           FluidExpansionCard(
-            topCardHeight: 120,
+            topCardHeight: 140, // BAR
             topCardWidget: _buildResult(context),
             bottomCardHeight: (countSet + 1) * 41.0 + 18,
             bottomCardWidget: Padding(
@@ -91,9 +91,9 @@ class ResultCard extends StatelessWidget {
                         children: <Widget>[
                           Text(
                             "Set n°",
-                            style: Theme.of(context).textTheme.bodyText1,
+                            style: Theme.of(context).textTheme.bodyLarge,
                           ),
-                          Icon(ResultCard._setIcons[index], color: Theme.of(context).textTheme.bodyText1!.color!),
+                          Icon(ResultCard._setIcons[index], color: Theme.of(context).textTheme.bodyLarge!.color!),
                         ],
                       ),
                     ),
@@ -132,7 +132,7 @@ class ResultCard extends StatelessWidget {
                 children: <Widget>[
                   Text(
                     "Total",
-                    style: Theme.of(context).textTheme.bodyText1,
+                    style: Theme.of(context).textTheme.bodyLarge,
                   ),
                 ])),
         Expanded(
@@ -163,7 +163,7 @@ class ResultCard extends StatelessWidget {
     if ((diffSets > 0) || (diffSets == 0 && result.totalPointsHost! > result.totalPointsVisitor!)) {
       scoreColor = team.code == result.hostTeamCode
           ? Colors.green
-          : (team.code == result.visitorTeamCode ? Colors.red : Theme.of(context).textTheme.bodyText2!.color!);
+          : (team.code == result.visitorTeamCode ? Colors.red : Theme.of(context).textTheme.bodyMedium!.color!);
       resultString = "gagne contre";
     } else {
       scoreColor = team.code == result.hostTeamCode ? Colors.red : Colors.green;
@@ -175,11 +175,11 @@ class ResultCard extends StatelessWidget {
         clipBehavior: Clip.none,
         children: [
           SizedBox(
-            height: 70,
+            height: 120, //FOO
             child: Row(children: [
               Container(
                 decoration: BoxDecoration(
-                    border: Border(right: BorderSide(color: Theme.of(context).textTheme.bodyText1!.color!, width: 0))),
+                    border: Border(right: BorderSide(color: Theme.of(context).textTheme.bodyLarge!.color!, width: 0))),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 18.0),
                   child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
@@ -193,14 +193,14 @@ class ResultCard extends StatelessWidget {
                                 fontWeight: FontWeight.bold,
                                 color: (team.code == result.hostTeamCode)
                                     ? scoreColor
-                                    : Theme.of(context).textTheme.bodyText2!.color,
+                                    : Theme.of(context).textTheme.bodyMedium!.color,
                               ),
                               children: [
                                 TextSpan(
                                     text: " - ",
                                     style: TextStyle(
                                       fontSize: 28.0,
-                                      color: Theme.of(context).textTheme.bodyText1!.color,
+                                      color: Theme.of(context).textTheme.bodyLarge!.color,
                                     )),
                                 TextSpan(
                                     text: "${result.totalSetsVisitor}",
@@ -208,13 +208,13 @@ class ResultCard extends StatelessWidget {
                                       fontSize: 28.0,
                                       color: (team.code == result.visitorTeamCode)
                                           ? scoreColor
-                                          : Theme.of(context).textTheme.bodyText2!.color,
+                                          : Theme.of(context).textTheme.bodyMedium!.color,
                                     )),
                               ]),
                         ),
                       ),
                     ),
-                    Text("${_dateFormat.format(result.matchDate!)}", style: Theme.of(context).textTheme.bodyText1),
+                    Text("${_dateFormat.format(result.matchDate!)}", style: Theme.of(context).textTheme.bodyLarge),
                   ]),
                 ),
               ),
@@ -227,21 +227,21 @@ class ResultCard extends StatelessWidget {
                       "${result.hostName}",
                       textAlign: TextAlign.center,
                       overflow: TextOverflow.ellipsis,
-                      style: Theme.of(context).textTheme.bodyText2!.copyWith(
+                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                           fontWeight: FontWeight.bold, color: result.hostTeamCode == team.code ? scoreColor : null),
                     ),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Text(
                         resultString,
-                        style: Theme.of(context).textTheme.bodyText1,
+                        style: Theme.of(context).textTheme.bodyLarge,
                       ),
                     ),
                     Text(
                       "${result.visitorName}",
                       textAlign: TextAlign.center,
                       overflow: TextOverflow.ellipsis,
-                      style: Theme.of(context).textTheme.bodyText2!.copyWith(
+                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                           fontWeight: FontWeight.bold, color: result.visitorTeamCode == team.code ? scoreColor : null),
                     ),
                   ],
@@ -270,13 +270,13 @@ class ResultCard extends StatelessWidget {
                   fontSize: fontSize,
                   color: (team.code == result.hostTeamCode && colored)
                       ? (matchSet.hostPoint! > matchSet.visitorpoint! ? Colors.green : Colors.red)
-                      : Theme.of(context).textTheme.bodyText2!.color,
+                      : Theme.of(context).textTheme.bodyMedium!.color,
                 ),
                 children: [
                   TextSpan(
                       text: " - ",
                       style: TextStyle(
-                        color: Theme.of(context).textTheme.bodyText1!.color,
+                        color: Theme.of(context).textTheme.bodyLarge!.color,
                       )),
                   TextSpan(
                       text: "${matchSet.visitorpoint}",
@@ -284,7 +284,7 @@ class ResultCard extends StatelessWidget {
                         fontSize: fontSize,
                         color: (team.code == result.visitorTeamCode && colored)
                             ? (matchSet.visitorpoint! > matchSet.hostPoint! ? Colors.green : Colors.red)
-                            : Theme.of(context).textTheme.bodyText2!.color,
+                            : Theme.of(context).textTheme.bodyMedium!.color,
                       )),
                 ]),
           ),

@@ -17,8 +17,6 @@ import 'package:v34/pages/club-details/blocs/club_team.bloc.dart';
 import 'package:v34/pages/team-details/team_detail_page.dart';
 import 'package:v34/repositories/repository.dart';
 
-import '../../../commons/router.dart';
-
 class ClubTeam extends StatefulWidget {
   final Team team;
   final Club club;
@@ -55,7 +53,7 @@ class _ClubTeamState extends State<ClubTeam> {
       bloc: _teamBloc,
       listener: (context, state) {
         if (state is TeamSlidingStatsLoaded && state.firstShownCompetition != null) {
-          WidgetsBinding.instance?.addPostFrameCallback((_) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
             var index = state.competitions.keys
                 .toList()
                 .indexWhere((competitionCode) => competitionCode == state.firstShownCompetition);
@@ -78,7 +76,7 @@ class _ClubTeamState extends State<ClubTeam> {
                 : null,
           ),
         ),
-        buttonBar: ButtonBar(
+        buttonBar: OverflowBar(
           children: <Widget>[
             Padding(
               padding: const EdgeInsets.only(right: 12.0),
@@ -169,9 +167,8 @@ class _ClubTeamState extends State<ClubTeam> {
                                                                         : 0,
                                                                     leftTitle: LeftTitle(
                                                                         text: "Victoires",
-                                                                        style: Theme.of(context).textTheme.bodyText1),
+                                                                        style: Theme.of(context).textTheme.bodyLarge),
                                                                     valueBuilder: (value, min, max) => RichText(
-                                                                      textScaleFactor: 1.0,
                                                                       textAlign: TextAlign.center,
                                                                       text: new TextSpan(
                                                                         text:
@@ -181,7 +178,7 @@ class _ClubTeamState extends State<ClubTeam> {
                                                                           fontWeight: FontWeight.bold,
                                                                           color: Theme.of(context)
                                                                               .textTheme
-                                                                              .bodyText2!
+                                                                              .bodyMedium!
                                                                               .color,
                                                                         ),
                                                                         children: <TextSpan>[
@@ -193,6 +190,7 @@ class _ClubTeamState extends State<ClubTeam> {
                                                                                   fontWeight: FontWeight.normal)),
                                                                         ],
                                                                       ),
+                                                                      textScaler: TextScaler.linear(1.0),
                                                                     ),
                                                                   ),
                                                                 ),

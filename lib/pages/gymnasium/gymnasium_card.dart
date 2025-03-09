@@ -27,18 +27,18 @@ class GymnasiumCard extends StatelessWidget {
                     gymnasium.name!,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: Theme.of(context).textTheme.caption,
+                    style: Theme.of(context).textTheme.bodySmall,
                   ),
                 )),
                 Text(
                   "${gymnasium.address}",
-                  style: Theme.of(context).textTheme.bodyText1,
+                  style: Theme.of(context).textTheme.bodyLarge,
                   overflow: TextOverflow.ellipsis,
                   maxLines: 1,
                 ),
                 Text(
                   "${gymnasium.postalCode} ${gymnasium.town}",
-                  style: Theme.of(context).textTheme.bodyText2,
+                  style: Theme.of(context).textTheme.bodyMedium,
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: 12.0),

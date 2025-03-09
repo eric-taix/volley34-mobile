@@ -1,14 +1,13 @@
+import 'dart:math';
+
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:v34/models/ranking.dart';
 import 'package:v34/pages/team-details/ranking/team_ranking.dart';
-import 'package:v34/utils/extensions.dart';
 
 class SummaryWidget extends StatelessWidget {
   final String title;
   final RankingTeamSynthesis teamStats;
-
-  static final double miniGraphHeight = 100;
 
   const SummaryWidget({Key? key, required this.title, required this.teamStats}) : super(key: key);
 
@@ -36,6 +35,105 @@ class SummaryWidget extends StatelessWidget {
     });
   }
 
+  Widget _buildGraph(BuildContext context) {
+    final maxValue = [
+      teamStats.nbSets30,
+      teamStats.nbSets31,
+      teamStats.nbSets32,
+      teamStats.nbSets23,
+      teamStats.nbSets13,
+      teamStats.nbSets03,
+      teamStats.nbSetsMI
+    ].whereType<int>().reduce(max);
+    return SizedBox(
+      height: 80,
+      child: FractionallySizedBox(
+        widthFactor: 0.8,
+        child: BarChart(
+          BarChartData(
+            barTouchData: BarTouchData(
+              enabled: false,
+              touchTooltipData: BarTouchTooltipData(
+                getTooltipColor: (_) => Colors.transparent,
+                tooltipPadding: const EdgeInsets.only(bottom: 2),
+                tooltipMargin: 0,
+                getTooltipItem: (
+                  BarChartGroupData group,
+                  int groupIndex,
+                  BarChartRodData rod,
+                  int rodIndex,
+                ) {
+                  return rod.toY.toInt() == 0
+                      ? null
+                      : BarTooltipItem(
+                          "${rod.toY.toInt()}",
+                          TextStyle(
+                              color: Theme.of(context).textTheme.bodyMedium!.color,
+                              fontSize: 10,
+                              fontFamily: "Raleway",
+                              fontWeight: FontWeight.bold),
+                        );
+                },
+              ),
+            ),
+            maxY: maxValue.toDouble(),
+            borderData: FlBorderData(show: false),
+            gridData: const FlGridData(show: false),
+            titlesData: FlTitlesData(
+              show: true,
+              bottomTitles: AxisTitles(
+                sideTitles: SideTitles(
+                  showTitles: true,
+                  getTitlesWidget: (double value, TitleMeta meta) {
+                    String text;
+                    switch (value.toInt()) {
+                      case 0:
+                        text = '3-0';
+                        break;
+                      case 1:
+                        text = '3-1';
+                        break;
+                      case 2:
+                        text = '3-2';
+                        break;
+                      case 3:
+                        text = '2-3';
+                        break;
+                      case 4:
+                        text = '1-3';
+                        break;
+                      case 5:
+                        text = '0-3';
+                        break;
+                      default:
+                        text = 'NT';
+                        break;
+                    }
+                    return Text(
+                      text,
+                      style: Theme.of(context).textTheme.bodyLarge!.copyWith(fontSize: 12),
+                    );
+                  },
+                  reservedSize: 18,
+                ),
+              ),
+              leftTitles: const AxisTitles(
+                sideTitles: SideTitles(showTitles: false),
+              ),
+              topTitles: const AxisTitles(
+                sideTitles: SideTitles(showTitles: false),
+              ),
+              rightTitles: const AxisTitles(
+                sideTitles: SideTitles(showTitles: false),
+              ),
+            ),
+            barGroups: showingGroups(context, teamStats),
+          ),
+        ),
+      ),
+    );
+  }
+
   BarChartGroupData makeGroupData(
       BuildContext context, int x, double y, Color barColor, RankingTeamSynthesis teamStats) {
     int countMatches = ((teamStats.wonMatches ?? 0) + (teamStats.lostMatches ?? 0));
@@ -44,89 +142,19 @@ class SummaryWidget extends StatelessWidget {
     }
     return BarChartGroupData(
       x: x,
-      showingTooltipIndicators: [0],
+      showingTooltipIndicators: const [0],
       barRods: [
         BarChartRodData(
-          y: y,
-          colors: [barColor],
+          toY: y,
+          color: barColor,
           width: 12,
           backDrawRodData: BackgroundBarChartRodData(
             show: true,
-            y: countMatches.toDouble(),
-            colors: [Theme.of(context).cardTheme.color!.tiny(10)],
+            toY: countMatches.toDouble(),
+            color: Theme.of(context).cardTheme.color!.withOpacity(0.1),
           ),
         ),
       ],
-    );
-  }
-
-  Widget _buildGraph(BuildContext context) {
-    return SizedBox(
-      height: miniGraphHeight,
-      child: FractionallySizedBox(
-        widthFactor: 0.8,
-        child: BarChart(BarChartData(
-          barTouchData: BarTouchData(
-            enabled: false,
-            touchTooltipData: BarTouchTooltipData(
-              tooltipBgColor: Colors.transparent,
-              tooltipPadding: const EdgeInsets.only(bottom: 2),
-              tooltipMargin: 0,
-              getTooltipItem: (
-                BarChartGroupData group,
-                int groupIndex,
-                BarChartRodData rod,
-                int rodIndex,
-              ) {
-                return rod.y.toInt() == 0
-                    ? null
-                    : BarTooltipItem(
-                        "${rod.y.toInt()}",
-                        TextStyle(
-                            color: Theme.of(context).textTheme.bodyText2!.color,
-                            fontSize: 10,
-                            fontFamily: "Raleway",
-                            fontWeight: FontWeight.bold),
-                      );
-              },
-            ),
-          ),
-          borderData: FlBorderData(show: false),
-          gridData: FlGridData(show: false),
-          titlesData: FlTitlesData(
-            show: true,
-            bottomTitles: SideTitles(
-              showTitles: true,
-              getTextStyles: (_, __) => Theme.of(context).textTheme.bodyText1!.copyWith(fontSize: 12),
-              margin: 2,
-              getTitles: (double value) {
-                switch (value.toInt()) {
-                  case 0:
-                    return '3-0';
-                  case 1:
-                    return '3-1';
-                  case 2:
-                    return '3-2';
-                  case 3:
-                    return '2-3';
-                  case 4:
-                    return '1-3';
-                  case 5:
-                    return '0-3';
-                  case 6:
-                    return 'NT';
-                  default:
-                    return '';
-                }
-              },
-            ),
-            leftTitles: SideTitles(showTitles: false),
-            topTitles: SideTitles(showTitles: false),
-            rightTitles: SideTitles(showTitles: false),
-          ),
-          barGroups: showingGroups(context, teamStats),
-        )),
-      ),
     );
   }
 
@@ -140,7 +168,7 @@ class SummaryWidget extends StatelessWidget {
               flex: 1,
               child: Padding(
                 padding: const EdgeInsets.only(left: TEAM_RANKING_LEFT_PADDING),
-                child: Text(title, textAlign: TextAlign.start, style: Theme.of(context).textTheme.bodyText1),
+                child: Text(title, textAlign: TextAlign.start, style: Theme.of(context).textTheme.bodyLarge),
               )),
           Expanded(flex: 2, child: _buildGraph(context)),
         ],

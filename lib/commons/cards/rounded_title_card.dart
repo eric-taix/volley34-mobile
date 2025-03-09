@@ -9,7 +9,7 @@ class RoundedTitledCard extends StatelessWidget {
   final Widget? body;
   final String? heroTag;
   final String? logoUrl;
-  final ButtonBar? buttonBar;
+  final OverflowBar? buttonBar;
 
   RoundedTitledCard({this.title, this.onTap, this.body, this.heroTag, this.logoUrl, this.buttonBar});
 

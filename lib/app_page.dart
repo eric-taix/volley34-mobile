@@ -40,7 +40,6 @@ class _AppPageState extends State<AppPage> {
       backgroundColor: Theme.of(context).canvasColor,
       extendBody: true,
       body: UpgradeAlert(
-        debugLogging: true,
         showIgnore: false,
         child: BlocListener<MessageCubit, MessageState>(
           listener: (BuildContext context, state) {
@@ -117,7 +116,7 @@ class _AppPageState extends State<AppPage> {
           }),
         ],
         style: FluidNavBarStyle(
-          barBackgroundColor: Theme.of(context).bottomAppBarColor,
+          barBackgroundColor: Theme.of(context).bottomAppBarTheme.color,
           iconSelectedForegroundColor: Theme.of(context).canvasColor,
           iconUnselectedForegroundColor: Theme.of(context).tabBarTheme.unselectedLabelColor,
         ),

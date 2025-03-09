@@ -41,14 +41,11 @@ class ClubLoadedState extends ClubState {
 class ClubBloc extends Bloc<ClubEvent, ClubState> {
   final Repository repository;
 
-  ClubBloc(ClubState initialState, {required this.repository}) : super(initialState);
-
-  @override
-  Stream<ClubState> mapEventToState(ClubEvent event) async* {
-    if (event is LoadClubEvent) {
-      yield ClubLoadingState();
+  ClubBloc(ClubState initialState, {required this.repository}) : super(initialState) {
+    on<LoadClubEvent>((event, emit) async {
+      emit(ClubLoadingState());
       Club club = await repository.loadClub(event.clubCode);
-      yield ClubLoadedState(club: club);
-    }
+      emit(ClubLoadedState(club: club));
+    });
   }
 }

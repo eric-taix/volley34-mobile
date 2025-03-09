@@ -44,17 +44,27 @@ class _TeamResultsState extends State<TeamResults> with RouteAwareAnalytics {
       delegate: SliverChildListDelegate(widget.competitions != null
           ? [
               SizedBox(height: 28),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Text("Voir tous les résultats", style: Theme.of(context).textTheme.bodyText1),
-                  Switch(
-                    value: widget.showOnlyTeam,
-                    onChanged: (newValue) {
-                      if (widget.onChanged != null) widget.onChanged!(newValue);
-                    },
-                  ),
-                ],
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 18.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Text("Voir tous les résultats", style: Theme.of(context).textTheme.bodyLarge),
+                    SizedBox(width: 18),
+                    SizedBox(
+                      height: 36,
+                      child: FittedBox(
+                        fit: BoxFit.fill,
+                        child: Switch(
+                          value: widget.showOnlyTeam,
+                          onChanged: (newValue) {
+                            if (widget.onChanged != null) widget.onChanged!(newValue);
+                          },
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
               SizedBox(height: 28),
               ...widget._sortedResults.map(

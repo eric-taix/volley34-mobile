@@ -55,8 +55,8 @@ class EventDate extends StatelessWidget {
                 textAlign: fullFormat || hour ? TextAlign.left : TextAlign.right,
                 style: Theme.of(context)
                     .textTheme
-                    .bodyText1!
-                    .copyWith(color: Theme.of(context).textTheme.bodyText2!.color),
+                    .bodyLarge!
+                    .copyWith(color: Theme.of(context).textTheme.bodyMedium!.color),
               ),
       ),
     );

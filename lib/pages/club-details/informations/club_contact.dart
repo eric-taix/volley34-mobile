@@ -16,7 +16,7 @@ class ClubContact extends StatelessWidget {
     var initial = (club!.contact.isNotNullAndNotEmpty())
         ? Text(
             club!.contact!.split(" ").take(2).map((word) => word[0].toUpperCase()).join(),
-            style: Theme.of(context).textTheme.subtitle1,
+            style: Theme.of(context).textTheme.titleMedium,
           )
         : Text("");
     return Column(
@@ -105,7 +105,7 @@ class ClubContact extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  Icon(icon, color: Theme.of(context).textTheme.bodyText1!.color),
+                  Icon(icon, color: Theme.of(context).textTheme.bodyLarge!.color),
                   Expanded(
                     child: Padding(
                       padding: const EdgeInsets.only(left: 18.0),

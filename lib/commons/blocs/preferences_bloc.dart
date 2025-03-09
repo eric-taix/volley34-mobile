@@ -63,31 +63,32 @@ class PreferencesUpdatedState extends PreferencesState {
 class PreferencesBloc extends Bloc<PreferencesEvent, PreferencesState> {
   final Repository repository;
 
-  PreferencesBloc(this.repository) : super(PreferencesUninitializedState());
-
-  @override
-  Stream<PreferencesState> mapEventToState(PreferencesEvent event) async* {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    if (event is PreferencesLoadEvent) {
+  PreferencesBloc(this.repository) : super(PreferencesUninitializedState()) {
+    on<PreferencesLoadEvent>((event, emit) async {
+      SharedPreferences preferences = await SharedPreferences.getInstance();
       try {
-        yield PreferencesLoadingState();
+        emit(PreferencesLoadingState());
         Club? club = await repository.loadFavoriteClub();
         Team? team = await repository.loadFavoriteTeam();
         String themeString = preferences.getString("theme") ?? "";
         bool showForceOnDashboard = preferences.getBool("showForceOnDashboard") ?? false;
-        yield PreferencesUpdatedState(
-          themeMode:
-              ThemeMode.values.firstWhere((theme) => theme.toString() == themeString, orElse: () => ThemeMode.system),
-          favoriteClub: club,
-          favoriteTeam: team,
-          showForceOnDashboard: showForceOnDashboard,
+        emit(
+          PreferencesUpdatedState(
+            themeMode:
+                ThemeMode.values.firstWhere((theme) => theme.toString() == themeString, orElse: () => ThemeMode.system),
+            favoriteClub: club,
+            favoriteTeam: team,
+            showForceOnDashboard: showForceOnDashboard,
+          ),
         );
       } catch (e) {
-        yield PreferencesErrorState();
+        emit(PreferencesErrorState());
       }
-    } else if (event is PreferencesSaveEvent) {
+    });
+    on<PreferencesSaveEvent>((event, emit) async {
+      final SharedPreferences preferences = await SharedPreferences.getInstance();
       try {
-        yield PreferencesSavingState();
+        emit(PreferencesSavingState());
         //await Future.delayed(Duration(milliseconds: 500), () => null);
         if (event.themeMode != null) preferences.setString("theme", event.themeMode.toString());
         if (event.favoriteClub?.code != null) {
@@ -100,16 +101,18 @@ class PreferencesBloc extends Bloc<PreferencesEvent, PreferencesState> {
           await preferences.setBool("showForceOnDashboard", event.showForceOnDashboard!);
         }
         String themeString = preferences.getString("theme") ?? "";
-        yield PreferencesUpdatedState(
-          themeMode:
-              ThemeMode.values.firstWhere((theme) => theme.toString() == themeString, orElse: () => ThemeMode.system),
-          favoriteClub: event.favoriteClub ?? await repository.loadFavoriteClub(),
-          favoriteTeam: event.favoriteTeam ?? await repository.loadFavoriteTeam(),
-          showForceOnDashboard: event.showForceOnDashboard ?? preferences.getBool("showForceOnDashboard") ?? false,
+        emit(
+          PreferencesUpdatedState(
+            themeMode:
+                ThemeMode.values.firstWhere((theme) => theme.toString() == themeString, orElse: () => ThemeMode.system),
+            favoriteClub: event.favoriteClub ?? await repository.loadFavoriteClub(),
+            favoriteTeam: event.favoriteTeam ?? await repository.loadFavoriteTeam(),
+            showForceOnDashboard: event.showForceOnDashboard ?? preferences.getBool("showForceOnDashboard") ?? false,
+          ),
         );
       } catch (e) {
-        yield PreferencesErrorState();
+        emit(PreferencesErrorState());
       }
-    }
+    });
   }
 }

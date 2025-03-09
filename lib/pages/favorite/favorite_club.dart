@@ -60,11 +60,11 @@ class _FavoriteClubSelectionState extends State<FavoriteClubSelection> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(clubs[index].shortName!, style: Theme.of(context).textTheme.bodyText2),
+                                Text(clubs[index].shortName!, style: Theme.of(context).textTheme.bodyMedium),
                                 Text(
                                   clubs[index].name!,
                                   overflow: TextOverflow.ellipsis,
-                                  style: Theme.of(context).textTheme.bodyText1,
+                                  style: Theme.of(context).textTheme.bodyLarge,
                                 )
                               ],
                             ),
@@ -73,7 +73,7 @@ class _FavoriteClubSelectionState extends State<FavoriteClubSelection> {
                         Icon(
                           Icons.arrow_forward_ios_outlined,
                           size: 16,
-                          color: Theme.of(context).textTheme.bodyText1!.color,
+                          color: Theme.of(context).textTheme.bodyLarge!.color,
                         ),
                       ],
                     ),

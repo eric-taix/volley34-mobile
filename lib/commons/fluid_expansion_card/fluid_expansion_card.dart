@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter/material.dart';
 
 /// Global variable to access the status of the card.
@@ -200,14 +199,7 @@ class _FluidExpansionCardState extends State<FluidExpansionCard> with TickerProv
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: <Widget>[
                           Container(
-                            child: FlareActor(
-                              'assets/flare/bottomSlime.flr',
-                              color: widget.color!.withOpacity((widget.slimeEnabled) ? 1 : 0),
-                              animation: activeAnimation,
-                              sizeFromArtboard: true,
-                              alignment: Alignment.bottomCenter,
-                              fit: BoxFit.fill,
-                            ),
+                            child: SizedBox.shrink(),
                             height: slimeHeight,
                             width: slimeWidth,
                           ),
@@ -249,14 +241,7 @@ class _FluidExpansionCardState extends State<FluidExpansionCard> with TickerProv
                       Container(
                         height: slimeHeight,
                         width: slimeWidth,
-                        child: FlareActor(
-                          'assets/flare/topSlime.flr',
-                          color: widget.color!.withOpacity((widget.slimeEnabled) ? 1 : 0),
-                          animation: activeAnimation,
-                          sizeFromArtboard: true,
-                          alignment: Alignment.topCenter,
-                          fit: BoxFit.fill,
-                        ),
+                        child: SizedBox.shrink(),
                       )
                     ],
                   ),
@@ -278,7 +263,7 @@ class _FluidExpansionCardState extends State<FluidExpansionCard> with TickerProv
                         height: switchRadius - switchPadding,
                         width: switchRadius - switchPadding,
                         alignment: Alignment.center,
-                        child: Icon(Icons.keyboard_arrow_down, color: Theme.of(context).textTheme.bodyText2!.color!),
+                        child: Icon(Icons.keyboard_arrow_down, color: Theme.of(context).textTheme.bodyMedium!.color!),
                         decoration: BoxDecoration(
                           color: Theme.of(context).cardTheme.color,
                           borderRadius: BorderRadius.circular(switchRadius / 2),

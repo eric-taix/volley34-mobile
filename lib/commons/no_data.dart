@@ -15,12 +15,15 @@ class NoData extends StatelessWidget {
         SvgPicture.asset(
           "assets/volleyball-filled.svg",
           height: 80,
-          color: Theme.of(context).bottomAppBarColor,
+          colorFilter: ColorFilter.mode(
+            Theme.of(context).bottomAppBarTheme.color ?? Colors.white,
+            BlendMode.srcIn,
+          ),
           semanticsLabel: title,
         ),
         Padding(
           padding: const EdgeInsets.only(top: 18.0),
-          child: Text(title, style: Theme.of(context).textTheme.bodyText1),
+          child: Text(title, style: Theme.of(context).textTheme.bodyLarge),
         ),
       ],
     );

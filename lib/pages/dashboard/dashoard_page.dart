@@ -142,7 +142,7 @@ class _DashboardPageState extends State<DashboardPage> with RouteAwareAnalytics 
               padding: const EdgeInsets.only(top: 8.0, left: 28, right: 28),
               child: Text(
                 message,
-                style: Theme.of(context).textTheme.bodyText1,
+                style: Theme.of(context).textTheme.bodyLarge,
                 textAlign: TextAlign.center,
               ),
             ),

@@ -44,14 +44,11 @@ class LoadGymnasiumEvent extends GymnasiumEvent {
 class GymnasiumBloc extends Bloc<GymnasiumEvent, GymnasiumState> {
   final Repository repository;
 
-  GymnasiumBloc(this.repository, GymnasiumState initialState) : super(initialState);
-
-  @override
-  Stream<GymnasiumState> mapEventToState(GymnasiumEvent event) async* {
-    if (event is LoadGymnasiumEvent) {
-      yield GymnasiumLoadingState();
+  GymnasiumBloc(this.repository, GymnasiumState initialState) : super(initialState) {
+    on<LoadGymnasiumEvent>((event, emit) async {
+      emit(GymnasiumLoadingState());
       Gymnasium gymnasium = await repository.loadGymnasium(event.gymnasiumCode);
-      yield GymnasiumLoadedState(gymnasium: gymnasium);
-    }
+      emit(GymnasiumLoadedState(gymnasium: gymnasium));
+    });
   }
 }

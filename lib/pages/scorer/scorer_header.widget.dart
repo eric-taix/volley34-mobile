@@ -23,11 +23,11 @@ class ScorerHeader extends StatelessWidget {
                   mainAxisSize: MainAxisSize.max,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    Text(team1.name!, textAlign: TextAlign.start, style: Theme.of(context).textTheme.bodyText2),
+                    Text(team1.name!, textAlign: TextAlign.start, style: Theme.of(context).textTheme.bodyMedium),
                     Padding(
                       padding: const EdgeInsets.only(top: 8.0),
                       child:
-                          Text(team2.name!, textAlign: TextAlign.start, style: Theme.of(context).textTheme.bodyText2),
+                          Text(team2.name!, textAlign: TextAlign.start, style: Theme.of(context).textTheme.bodyMedium),
                     ),
                   ],
                 ),
@@ -38,10 +38,10 @@ class ScorerHeader extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text("${score.hostSets}", style: Theme.of(context).textTheme.bodyText2),
+                  Text("${score.hostSets}", style: Theme.of(context).textTheme.bodyMedium),
                   Padding(
                     padding: const EdgeInsets.only(top: 8.0),
-                    child: Text("${score.visitorSets}", style: Theme.of(context).textTheme.bodyText2),
+                    child: Text("${score.visitorSets}", style: Theme.of(context).textTheme.bodyMedium),
                   ),
                 ],
               ),
@@ -54,11 +54,11 @@ class ScorerHeader extends StatelessWidget {
                   mainAxisSize: MainAxisSize.max,
                   children: [
                     Text("${score.hostCurrentPoint}",
-                        style: Theme.of(context).textTheme.bodyText2!.copyWith(fontWeight: FontWeight.bold)),
+                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.bold)),
                     Padding(
                       padding: const EdgeInsets.only(top: 8.0),
                       child: Text("${score.visitorCurrentPoint}",
-                          style: Theme.of(context).textTheme.bodyText2!.copyWith(fontWeight: FontWeight.bold)),
+                          style: Theme.of(context).textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.bold)),
                     ),
                   ],
                 ),

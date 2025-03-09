@@ -55,7 +55,7 @@ class _ClubCardState extends State<ClubCard> {
               Text(
                 widget.club.name!,
                 textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.bodyText1,
+                style: Theme.of(context).textTheme.bodyLarge,
               ),
               BlocBuilder(
                   bloc: _clubInfoCubit,
@@ -80,7 +80,7 @@ class _ClubCardState extends State<ClubCard> {
             ],
           ),
         ),
-        buttonBar: ButtonBar(
+        buttonBar: OverflowBar(
           children: <Widget>[
             Padding(
               padding: const EdgeInsets.only(right: 12.0),

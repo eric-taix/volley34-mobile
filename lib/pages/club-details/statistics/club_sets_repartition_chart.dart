@@ -14,58 +14,72 @@ class ClubSetsReparitionData extends StatelessWidget {
     return BarChartData(
       titlesData: FlTitlesData(
         show: true,
-        bottomTitles: SideTitles(
-          showTitles: true,
-          getTextStyles: (_, __) => TextStyle(color: Colors.white, fontSize: 14),
-          margin: 16,
-          getTitles: (double value) {
-            switch (value.toInt()) {
-              case 0:
-                return '3-0';
-              case 1:
-                return '3-1';
-              case 2:
-                return '3-2';
-              case 3:
-                return '2-3';
-              case 4:
-                return '1-3';
-              case 5:
-                return '0-3';
-              default:
-                return '';
-            }
-          },
+        bottomTitles: AxisTitles(
+          sideTitles: SideTitles(
+            showTitles: true,
+            getTitlesWidget: (double value, TitleMeta meta) {
+              TextStyle style = TextStyle(color: Colors.white, fontSize: 14);
+              String text;
+              switch (value.toInt()) {
+                case 0:
+                  text = '3-0';
+                  break;
+                case 1:
+                  text = '3-1';
+                  break;
+                case 2:
+                  text = '3-2';
+                  break;
+                case 3:
+                  text = '2-3';
+                  break;
+                case 4:
+                  text = '1-3';
+                  break;
+                case 5:
+                  text = '0-3';
+                  break;
+                default:
+                  text = '';
+                  break;
+              }
+              return Text(text, style: style);
+            },
+            reservedSize: 16,
+          ),
         ),
-        leftTitles: SideTitles(
-          showTitles: false,
+        leftTitles: AxisTitles(
+          sideTitles: SideTitles(
+            showTitles: false,
+          ),
+        ),
+        topTitles: AxisTitles(
+          sideTitles: SideTitles(
+            showTitles: false,
+          ),
+        ),
+        rightTitles: AxisTitles(
+          sideTitles: SideTitles(
+            showTitles: false,
+          ),
         ),
       ),
       borderData: FlBorderData(
         show: false,
       ),
-      barGroups: showingGroups(context) as List<BarChartGroupData>?,
+      barGroups: showingGroups(context),
+      gridData: FlGridData(show: false),
     );
   }
 
-  List<BarChartGroupData?> showingGroups(BuildContext context) => List.generate(6, (i) {
-        switch (i) {
-          case 0:
-            return makeGroupData(context, 0, 10, barColor: Colors.green);
-          case 1:
-            return makeGroupData(context, 1, 16, barColor: Colors.greenAccent);
-          case 2:
-            return makeGroupData(context, 2, 5, barColor: Colors.yellowAccent);
-          case 3:
-            return makeGroupData(context, 3, 7.5, barColor: Colors.orangeAccent);
-          case 4:
-            return makeGroupData(context, 4, 9, barColor: Colors.deepOrangeAccent);
-          case 5:
-            return makeGroupData(context, 5, 1, barColor: Colors.redAccent);
-          default:
-            return null;
-        }
-      });
+  List<BarChartGroupData>? showingGroups(BuildContext context) => [
+        makeGroupData(context, 0, 10, barColor: Colors.green),
+        makeGroupData(context, 1, 16, barColor: Colors.greenAccent),
+        makeGroupData(context, 2, 5, barColor: Colors.yellowAccent),
+        makeGroupData(context, 3, 7.5, barColor: Colors.orangeAccent),
+        makeGroupData(context, 4, 9, barColor: Colors.deepOrangeAccent),
+        makeGroupData(context, 5, 1, barColor: Colors.redAccent)
+      ];
 
   BarChartGroupData makeGroupData(
     BuildContext context,
@@ -80,13 +94,13 @@ class ClubSetsReparitionData extends StatelessWidget {
       x: x,
       barRods: [
         BarChartRodData(
-          y: y,
-          colors: [barColor],
+          toY: y,
+          color: barColor,
           width: width,
           backDrawRodData: BackgroundBarChartRodData(
             show: true,
-            y: 30,
-            colors: [Theme.of(context).primaryColor], //barBackgroundColor,
+            toY: 30,
+            color: Theme.of(context).primaryColor, //barBackgroundColor,
           ),
         ),
       ],

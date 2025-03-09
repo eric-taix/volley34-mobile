@@ -23,10 +23,10 @@ class ScorerAction extends StatelessWidget {
             child: Text(
               action.title,
               textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.bodyText2!.copyWith(
+              style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                     color: enabled
-                        ? Theme.of(context).textTheme.bodyText2!.color
-                        : Theme.of(context).textTheme.bodyText2!.color!.withOpacity(0.3),
+                        ? Theme.of(context).textTheme.bodyMedium!.color
+                        : Theme.of(context).textTheme.bodyMedium!.color!.withOpacity(0.3),
                   ),
             ),
           ),

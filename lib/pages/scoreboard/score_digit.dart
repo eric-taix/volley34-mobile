@@ -36,7 +36,7 @@ class ScoreDigit extends StatelessWidget {
                                 letterSpacing: 0.5,
                                 fontFamily: "OpenSans",
                                 fontWeight: FontWeight.bold,
-                                color: color ?? Theme.of(context).textTheme.headline1?.color ?? Colors.white,
+                                color: color ?? Theme.of(context).textTheme.displayLarge?.color ?? Colors.white,
                               ),
                             ),
                           ),

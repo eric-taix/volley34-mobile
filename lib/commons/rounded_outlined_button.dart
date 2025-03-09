@@ -14,7 +14,7 @@ class RoundedOutlinedButton extends StatelessWidget {
     return OutlinedButton(
       onPressed: onPressed,
       style: ButtonStyle(
-        foregroundColor: _ForegroundColorStateProperty(Theme.of(context).textTheme.headline1!.color!),
+        foregroundColor: _ForegroundColorStateProperty(Theme.of(context).textTheme.displayLarge!.color!),
         side: _BorderStateProperty(),
       ),
       child: Row(
@@ -37,19 +37,19 @@ class RoundedOutlinedButton extends StatelessWidget {
   }
 }
 
-class _BorderStateProperty extends MaterialStateProperty<BorderSide> {
+class _BorderStateProperty extends WidgetStateProperty<BorderSide> {
   _BorderStateProperty();
 
   @override
-  BorderSide resolve(Set<MaterialState> states) => states.contains(MaterialState.disabled)
+  BorderSide resolve(Set<WidgetState> states) => states.contains(WidgetState.disabled)
       ? BorderSide(color: Color(0xff3c403e), width: 2)
       : BorderSide(color: Color(0xFFC9334F), width: 2);
 }
 
-class _ForegroundColorStateProperty extends MaterialStateProperty<Color> {
+class _ForegroundColorStateProperty extends WidgetStateProperty<Color> {
   final Color color;
   _ForegroundColorStateProperty(this.color);
 
   @override
-  Color resolve(Set<MaterialState> states) => states.contains(MaterialState.disabled) ? Color(0xFF686B75) : color;
+  Color resolve(Set<WidgetState> states) => states.contains(WidgetState.disabled) ? Color(0xFF686B75) : color;
 }

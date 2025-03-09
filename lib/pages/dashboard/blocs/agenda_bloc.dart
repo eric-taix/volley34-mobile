@@ -85,95 +85,94 @@ class LoadTeamsMonthAgenda extends AgendaEvent {
 class AgendaBloc extends Bloc<AgendaEvent, AgendaState> {
   final Repository repository;
 
-  AgendaBloc({required this.repository}) : super(AgendaUninitialized());
+  AgendaBloc({required this.repository}) : super(AgendaUninitialized()) {
+    on<AgendaEvent>((event, emit) async {
+      emit(AgendaLoading(state.events));
+      if (event is LoadTeamMonthAgenda) {
+        var now = DateTime.now();
+        var today = DateTime(now.year, now.month, now.day);
 
-  @override
-  Stream<AgendaState> mapEventToState(AgendaEvent event) async* {
-    yield AgendaLoading(state.events);
-    if (event is LoadTeamMonthAgenda) {
-      var now = DateTime.now();
-      var today = DateTime(now.year, now.month, now.day);
+        List<Event> events = await repository.loadTeamFullAgenda(event.teamCode);
 
-      List<Event> events = await repository.loadTeamFullAgenda(event.teamCode);
+        List<TeamCompetition> competitions = await repository.loadTeamCompetitionsFromCode(event.teamCode!);
+        print(competitions);
+        List<CompetitionFullPath> competitionsFullPath = competitions
+            .map((competition) => CompetitionFullPath(competition.code, competition.division, competition.pool))
+            .toList();
 
-      List<TeamCompetition> competitions = await repository.loadTeamCompetitionsFromCode(event.teamCode!);
-      print(competitions);
-      List<CompetitionFullPath> competitionsFullPath = competitions
-          .map((competition) => CompetitionFullPath(competition.code, competition.division, competition.pool))
-          .toList();
+        var allResults = (await Future.wait(competitionsFullPath.map((competitionFullPath) => repository.loadResults(
+                competitionFullPath.competitionCode, competitionFullPath.division, competitionFullPath.pool))))
+            .expand((e) => e)
+            .toList();
 
-      var allResults = (await Future.wait(competitionsFullPath.map((competitionFullPath) => repository.loadResults(
-              competitionFullPath.competitionCode, competitionFullPath.division, competitionFullPath.pool))))
-          .expand((e) => e)
-          .toList();
+        Map<String, Forces> forceByCompetition =
+            allResults.groupListsBy((matchResult) => matchResult.competitionCode).map((competitionCode, matchResults) {
+          Forces forceBuilder =
+              matchResults.fold<Forces>(Forces(), (forceBuilder, matchResult) => forceBuilder..add(matchResult));
+          return MapEntry(competitionCode!, forceBuilder);
+        });
 
-      Map<String, Forces> forceByCompetition =
-          allResults.groupListsBy((matchResult) => matchResult.competitionCode).map((competitionCode, matchResults) {
-        Forces forceBuilder =
-            matchResults.fold<Forces>(Forces(), (forceBuilder, matchResult) => forceBuilder..add(matchResult));
-        return MapEntry(competitionCode!, forceBuilder);
-      });
+        List<Event> eventsWithForce = events.map((event) {
+          if (event.type == EventType.Match) {
+            Forces competitionForces = forceByCompetition.putIfAbsent(event.competitionCode ?? "", () => Forces());
+            return event.withForce(competitionForces);
+          } else {
+            return event;
+          }
+        }).toList();
 
-      List<Event> eventsWithForce = events.map((event) {
-        if (event.type == EventType.Match) {
-          Forces competitionForces = forceByCompetition.putIfAbsent(event.competitionCode ?? "", () => Forces());
-          return event.withForce(competitionForces);
-        } else {
-          return event;
-        }
-      }).toList();
+        var resultByMatchCode =
+            Map.fromIterable(allResults, key: (result) => (result as MatchResult).matchCode, value: (result) => result);
+        var allEvents = eventsWithForce
+            .map((evt) => resultByMatchCode[evt.matchCode] != null ? evt.withResult() : evt)
+            .where((evt) => (evt.type == EventType.Match && !evt.hasResult) || evt.date!.compareTo(today) >= 0)
+            .toList();
 
-      var resultByMatchCode =
-          Map.fromIterable(allResults, key: (result) => (result as MatchResult).matchCode, value: (result) => result);
-      var allEvents = eventsWithForce
-          .map((evt) => resultByMatchCode[evt.matchCode] != null ? evt.withResult() : evt)
-          .where((evt) => (evt.type == EventType.Match && !evt.hasResult) || evt.date!.compareTo(today) >= 0)
-          .toList();
+        allEvents.sort((event1, event2) => event1.date!.compareTo(event2.date!));
+        emit(AgendaLoaded(allEvents, true));
+      } else if (event is LoadTeamFullAgenda) {
+        DateTime now = DateTime.now();
+        var today = DateTime(now.year, now.month, now.day);
+        List<Event> events = (await repository.loadTeamFullAgenda(event.teamCode))
+            .where((evt) => event.loadPlayedMatches || evt.type != EventType.Match || evt.date!.compareTo(today) >= 0)
+            .toList();
+        List<TeamCompetition> competitions = await repository.loadTeamCompetitionsFromCode(event.teamCode);
+        print(competitions);
+        List<CompetitionFullPath> competitionsFullPath = competitions
+            .map((competition) => CompetitionFullPath(competition.code, competition.division, competition.pool))
+            .toList();
 
-      allEvents.sort((event1, event2) => event1.date!.compareTo(event2.date!));
-      yield AgendaLoaded(allEvents, true);
-    } else if (event is LoadTeamFullAgenda) {
-      DateTime now = DateTime.now();
-      var today = DateTime(now.year, now.month, now.day);
-      List<Event> events = (await repository.loadTeamFullAgenda(event.teamCode))
-          .where((evt) => event.loadPlayedMatches || evt.type != EventType.Match || evt.date!.compareTo(today) >= 0)
-          .toList();
-      List<TeamCompetition> competitions = await repository.loadTeamCompetitionsFromCode(event.teamCode);
-      print(competitions);
-      List<CompetitionFullPath> competitionsFullPath = competitions
-          .map((competition) => CompetitionFullPath(competition.code, competition.division, competition.pool))
-          .toList();
+        Iterable<MatchResult> allResults = (await Future.wait(competitionsFullPath.map((competitionFullPath) =>
+                repository.loadResults(
+                    competitionFullPath.competitionCode, competitionFullPath.division, competitionFullPath.pool))))
+            .expand((e) => e);
 
-      Iterable<MatchResult> allResults = (await Future.wait(competitionsFullPath.map((competitionFullPath) =>
-              repository.loadResults(
-                  competitionFullPath.competitionCode, competitionFullPath.division, competitionFullPath.pool))))
-          .expand((e) => e);
+        Map<String, Forces> forceByCompetition =
+            allResults.groupListsBy((matchResult) => matchResult.competitionCode).map((competitionCode, matchResults) {
+          Forces forceBuilder =
+              matchResults.fold<Forces>(Forces(), (forceBuilder, matchResult) => forceBuilder..add(matchResult));
+          return MapEntry(competitionCode!, forceBuilder);
+        });
 
-      Map<String, Forces> forceByCompetition =
-          allResults.groupListsBy((matchResult) => matchResult.competitionCode).map((competitionCode, matchResults) {
-        Forces forceBuilder =
-            matchResults.fold<Forces>(Forces(), (forceBuilder, matchResult) => forceBuilder..add(matchResult));
-        return MapEntry(competitionCode!, forceBuilder);
-      });
+        List<Event> eventsWithForce = events.map((event) {
+          if (event.type == EventType.Match) {
+            Forces competitionForces = forceByCompetition.putIfAbsent(event.competitionCode ?? "", () => Forces());
+            return event.withForce(competitionForces);
+          } else {
+            return event;
+          }
+        }).toList();
 
-      List<Event> eventsWithForce = events.map((event) {
-        if (event.type == EventType.Match) {
-          Forces competitionForces = forceByCompetition.putIfAbsent(event.competitionCode ?? "", () => Forces());
-          return event.withForce(competitionForces);
-        } else {
-          return event;
-        }
-      }).toList();
+        var resultByMatchCode =
+            Map.fromIterable(allResults, key: (result) => (result as MatchResult).matchCode, value: (result) => result);
+        var allEvents = eventsWithForce
+            .map((event) => resultByMatchCode[event.matchCode] != null ? event.withResult() : event)
+            .toList();
 
-      var resultByMatchCode =
-          Map.fromIterable(allResults, key: (result) => (result as MatchResult).matchCode, value: (result) => result);
-      var allEvents = eventsWithForce
-          .map((event) => resultByMatchCode[event.matchCode] != null ? event.withResult() : event)
-          .toList();
+        allEvents.sort((event1, event2) => event1.date!.compareTo(event2.date!));
 
-      allEvents.sort((event1, event2) => event1.date!.compareTo(event2.date!));
-
-      yield AgendaLoaded(allEvents, false);
-    }
+        emit(AgendaLoaded(allEvents, false));
+      }
+    });
   }
 }

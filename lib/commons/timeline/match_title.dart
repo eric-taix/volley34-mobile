@@ -20,8 +20,8 @@ class MatchTitle extends StatelessWidget {
     var today = DateTime(now.year, now.month, now.day);
 
     TextStyle textStyle =
-        allowDetails ? Theme.of(context).textTheme.bodyText2! : Theme.of(context).textTheme.bodyText1!;
-    allowDetails ? Theme.of(context).textTheme.bodyText2! : Theme.of(context).textTheme.bodyText1!;
+        allowDetails ? Theme.of(context).textTheme.bodyMedium! : Theme.of(context).textTheme.bodyLarge!;
+    allowDetails ? Theme.of(context).textTheme.bodyMedium! : Theme.of(context).textTheme.bodyLarge!;
     return Stack(
       clipBehavior: Clip.none,
       children: [
@@ -50,7 +50,7 @@ class MatchTitle extends StatelessWidget {
                           )
                         : Padding(
                             padding: const EdgeInsets.only(top: 18.0, bottom: 18),
-                            child: Text("reçoit", style: Theme.of(context).textTheme.bodyText1),
+                            child: Text("reçoit", style: Theme.of(context).textTheme.bodyLarge),
                           ),
               ),
               Text(

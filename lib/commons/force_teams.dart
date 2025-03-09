@@ -35,7 +35,7 @@ class ForceTeams extends StatelessWidget {
       children: [
         forces != null
             ? SvgPicture.asset("assets/attack.svg",
-                width: ICON_SIZE + 4, color: Theme.of(context).textTheme.bodyText1!.color)
+                width: ICON_SIZE + 4, color: Theme.of(context).textTheme.bodyLarge!.color)
             : SizedBox(),
         Expanded(
           child: Container(
@@ -79,7 +79,7 @@ class ForceTeams extends StatelessWidget {
                             color: backgroundColor,
                             child: Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                              child: Text(receiveText, style: Theme.of(context).textTheme.bodyText1),
+                              child: Text(receiveText, style: Theme.of(context).textTheme.bodyLarge),
                             ),
                           ),
                         ),
@@ -121,7 +121,7 @@ class ForceTeams extends StatelessWidget {
         ),
         forces != null
             ? SvgPicture.asset("assets/defense.svg",
-                width: ICON_SIZE, color: Theme.of(context).textTheme.bodyText1!.color)
+                width: ICON_SIZE, color: Theme.of(context).textTheme.bodyLarge!.color)
             : SizedBox(),
       ],
     );

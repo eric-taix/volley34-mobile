@@ -57,17 +57,17 @@ class _SearchState extends State<Search> with SingleTickerProviderStateMixin {
                         controller: _searchController,
                         focusNode: _focusNode,
                         autofocus: false,
-                        style: Theme.of(context).textTheme.bodyText2!.copyWith(fontSize: 18),
+                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(fontSize: 18),
                         cursorWidth: 2,
                         onChanged: (query) => widget.onSearch != null ? widget.onSearch!(query) : null,
                         decoration: InputDecoration(
                           isDense: true,
                           border: UnderlineInputBorder(
-                              borderSide: BorderSide(color: Theme.of(context).textTheme.bodyText1!.color!)),
+                              borderSide: BorderSide(color: Theme.of(context).textTheme.bodyLarge!.color!)),
                           enabledBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(color: Theme.of(context).textTheme.bodyText1!.color!)),
+                              borderSide: BorderSide(color: Theme.of(context).textTheme.bodyLarge!.color!)),
                           focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(color: Theme.of(context).textTheme.bodyText1!.color!)),
+                              borderSide: BorderSide(color: Theme.of(context).textTheme.bodyLarge!.color!)),
                           contentPadding: EdgeInsets.symmetric(vertical: 4, horizontal: 4),
                         ),
                       ),

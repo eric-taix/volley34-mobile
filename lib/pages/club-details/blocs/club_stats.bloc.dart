@@ -65,12 +65,9 @@ class ClubStatsBloc extends Bloc<ClubStatsEvent, ClubStatsState> {
 
   final Repository? repository;
 
-  ClubStatsBloc({this.repository}) : super(ClubStatsUninitializedState());
-
-  @override
-  Stream<ClubStatsState> mapEventToState(ClubStatsEvent event) async* {
-    if (event is ClubStatsLoadEvent) {
-      yield ClubStatsLoadingState();
+  ClubStatsBloc({this.repository}) : super(ClubStatsUninitializedState()) {
+    on<ClubStatsLoadEvent>((event, emit) async {
+      emit(ClubStatsLoadingState());
       var stats = await repository!.loadClubStats(event.clubCode);
       var setsDistribution = stats.fold<SetsDistribution>(SetsDistribution(), (acc, stat) {
         return acc + (stat.setsDistribution ?? SetsDistribution());
@@ -84,12 +81,12 @@ class ClubStatsBloc extends Bloc<ClubStatsEvent, ClubStatsState> {
       var outsideMatches = stats.fold<MatchesPlayed>(MatchesPlayed.empty(), (acc, stat) {
         return acc + MatchesPlayed(won: stat.victoriesOutside ?? 0, total: stat.matchsPlayedOutside ?? 0);
       });
-      yield ClubStatsLoadedState(
+      emit(ClubStatsLoadedState(
         setsDistribution: setsDistribution,
         matchesPlayed: matchesPlayed,
         homeMatches: homeMatches,
         outsideMatches: outsideMatches,
-      );
-    }
+      ));
+    });
   }
 }

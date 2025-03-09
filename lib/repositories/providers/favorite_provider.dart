@@ -4,26 +4,23 @@ class FavoriteProvider {
   static const FavoriteClubKey = "favorite_clubs";
   static const FavoriteTeamKey = "favorite_teams";
 
-  final LocalStorage _localeStorage = LocalStorage("v34");
+  final LocalStorage _localeStorage = localStorage;
 
   Future<List<String?>> loadFavoriteClubs() async {
-    await _localeStorage.ready;
-    var clubs = (_localeStorage.getItem(FavoriteClubKey) as List?)?.cast<String>() ?? [];
-    return clubs;
+    final clubs = _localeStorage.getItem(FavoriteClubKey)?.split(',') ?? [];
+    return Future.value(clubs);
   }
 
   Future<List<String?>> loadFavoriteTeams() async {
-    await _localeStorage.ready;
-    return (_localeStorage.getItem(FavoriteTeamKey) as List?)?.cast<String>() ?? [];
+    final teams = _localeStorage.getItem(FavoriteTeamKey)?.split(',') ?? [];
+    return Future.value(teams);
   }
 
   Future<void> saveFavoriteClubs(List<String?> favoriteClubs) async {
-    await _localeStorage.ready;
-    await _localeStorage.setItem(FavoriteClubKey, favoriteClubs);
+    _localeStorage.setItem(FavoriteClubKey, favoriteClubs.whereType<String>().join(','));
   }
 
   Future<void> saveFavoriteTeams(List<String?> favoriteTeams) async {
-    await _localeStorage.ready;
-    await _localeStorage.setItem(FavoriteTeamKey, favoriteTeams);
+    _localeStorage.setItem(FavoriteTeamKey, favoriteTeams.whereType<String?>().join(','));
   }
 }

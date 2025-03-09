@@ -84,7 +84,7 @@ class _OrientationHelperState extends State<OrientationHelper> with SingleTicker
             child: Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(18),
-                color: Theme.of(context).bottomAppBarColor,
+                color: Theme.of(context).bottomAppBarTheme.color,
               ),
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -105,7 +105,7 @@ class _OrientationHelperState extends State<OrientationHelper> with SingleTicker
                       child: Text(widget.title,
                           maxLines: 1,
                           overflow: TextOverflow.clip,
-                          style: Theme.of(context).textTheme.bodyText1!.copyWith(color: Theme.of(context).canvasColor)),
+                          style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: Theme.of(context).canvasColor)),
                     ),
                   ],
                 ),

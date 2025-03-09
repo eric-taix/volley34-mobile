@@ -47,12 +47,9 @@ class TeamRankingLoadedState extends TeamRankingState {
 class TeamRankingBloc extends Bloc<TeamRankingEvent, TeamRankingState> {
   final Repository repository;
 
-  TeamRankingBloc({required this.repository}) : super(TeamRankingUninitializedState());
-
-  @override
-  Stream<TeamRankingState> mapEventToState(TeamRankingEvent event) async* {
-    if (event is LoadTeamRankingEvent) {
-      yield TeamRankingLoadingState();
+  TeamRankingBloc({required this.repository}) : super(TeamRankingUninitializedState()) {
+    on<LoadTeamRankingEvent>((event, emit) async {
+      emit(TeamRankingLoadingState());
       List<RankingSynthesis> rankings = await repository.loadTeamRankingSynthesis(event.team.code);
       rankings = rankings.map((classification) {
         classification.ranks?.sort((tc1, tc2) {
@@ -64,8 +61,8 @@ class TeamRankingBloc extends Bloc<TeamRankingEvent, TeamRankingState> {
       var competitions = await repository.loadAllCompetitions();
       var teamRankingsCode = rankings.map((ranking) => ranking.competitionCode);
       var teamCompetitions = competitions.where((competition) => teamRankingsCode.contains(competition.code)).toList();
-      yield TeamRankingLoadedState(event.team.code, rankings, teamCompetitions.firstShownCompetition()?.code);
-    }
+      emit(TeamRankingLoadedState(event.team.code, rankings, teamCompetitions.firstShownCompetition()?.code));
+    });
   }
 }
 

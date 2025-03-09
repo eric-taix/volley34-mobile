@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class TextTabBar extends StatelessWidget with PreferredSizeWidget {
+class TextTabBar extends StatelessWidget implements PreferredSizeWidget {
   final List<TextTab> tabs;
   final double height;
 
