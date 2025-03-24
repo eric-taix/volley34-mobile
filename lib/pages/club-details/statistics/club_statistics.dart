@@ -102,7 +102,7 @@ class _ClubStatisticsState extends State<ClubStatistics> with RouteAwareAnalytic
                       title: "Scores",
                       child: BarChart(
                         computeSetsRepartitionChartData(context, clubState.setsDistribution),
-                        swapAnimationDuration: Duration(milliseconds: 600),
+                        duration: Duration(milliseconds: 600),
                       ),
                     ),
                     StatRow(
@@ -159,7 +159,7 @@ class _ClubStatisticsState extends State<ClubStatistics> with RouteAwareAnalytic
         ],
         borderData: FlBorderData(show: false),
       ),
-      swapAnimationDuration: Duration(milliseconds: 800),
+      duration: Duration(milliseconds: 800),
     );
   }
 

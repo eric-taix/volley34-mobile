@@ -214,9 +214,12 @@ class _ScoreBoardPageState extends State<ScoreBoardPage> with RouteAwareAnalytic
                                 onPressed: _playing ? null : () => _rotateTeam(),
                                 icon: SvgPicture.asset(
                                   "assets/double-arrow.svg",
-                                  color: _playing
-                                      ? Theme.of(context).textTheme.bodyLarge!.color
-                                      : Theme.of(context).textTheme.bodyMedium!.color,
+                                  colorFilter: ColorFilter.mode(
+                                    _playing
+                                        ? Theme.of(context).textTheme.bodyLarge!.color!
+                                        : Theme.of(context).textTheme.bodyMedium!.color!,
+                                    BlendMode.srcIn,
+                                  ),
                                 ),
                               ),
                               Expanded(

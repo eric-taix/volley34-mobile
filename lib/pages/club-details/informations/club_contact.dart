@@ -66,7 +66,7 @@ class ClubContact extends StatelessWidget {
                   child: FloatingActionButton(
                     heroTag: "hero-btn-club-tel",
                     mini: true,
-                    onPressed: () => launch("tel:${club!.phone}"),
+                    onPressed: () => launchUrl(Uri.parse("tel:${club!.phone}")),
                     child: Icon(Icons.phone),
                   ),
                 ),
@@ -76,7 +76,7 @@ class ClubContact extends StatelessWidget {
                   child: FloatingActionButton(
                     heroTag: "hero-btn-club-sms",
                     mini: true,
-                    onPressed: () => launch("sms:${club!.phone}"),
+                    onPressed: () => launchUrl(Uri.parse("sms:${club!.phone}")),
                     child: Icon(Icons.sms),
                   ),
                 ),
@@ -86,7 +86,7 @@ class ClubContact extends StatelessWidget {
                   child: FloatingActionButton(
                     heroTag: "hero-btn-club-mail",
                     mini: true,
-                    onPressed: () => launch("mailto:${club!.email}"),
+                    onPressed: () => launchUrl(Uri.parse("mailto:${club!.email}")),
                     child: Icon(Icons.mail),
                   ),
                 ),
@@ -114,7 +114,7 @@ class ClubContact extends StatelessWidget {
                   ),
                   Padding(
                     padding: const EdgeInsets.only(left: 18.0),
-                    child: TextButton(child: Text("Visitez"), onPressed: () => launch(value!)),
+                    child: TextButton(child: Text("Visitez"), onPressed: () => launchUrl(Uri.parse(value!))),
                   ),
                 ],
               ),

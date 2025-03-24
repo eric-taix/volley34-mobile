@@ -131,7 +131,7 @@ class _AppPageState extends State<AppPage> {
             target: SvgPicture.asset(
               icon.svgPath!,
               height: 30,
-              color: Theme.of(context).appBarTheme.backgroundColor,
+              colorFilter: ColorFilter.mode(Theme.of(context).appBarTheme.backgroundColor!, BlendMode.srcIn),
             ),
           );
         },

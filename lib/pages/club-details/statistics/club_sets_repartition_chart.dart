@@ -6,7 +6,7 @@ class ClubSetsReparitionData extends StatelessWidget {
   Widget build(BuildContext context) {
     return BarChart(
       buildData(context),
-      swapAnimationDuration: Duration(milliseconds: 2000),
+      duration: Duration(milliseconds: 2000),
     );
   }
 

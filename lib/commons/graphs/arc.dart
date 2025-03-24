@@ -177,7 +177,7 @@ class _ArcPainter extends CustomPainter {
       text: leftSpan,
       textAlign: TextAlign.center,
       textDirection: TextDirection.ltr,
-      textScaleFactor: 1.1,
+      textScaler: TextScaler.linear(1.1),
     )..layout();
 
     canvas.save();

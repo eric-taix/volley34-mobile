@@ -218,11 +218,10 @@ class _AppMenuState extends State<AppMenu> {
 
 class _MenuItemWithLeading extends StatelessWidget {
   final String title;
-  final String? subTitle;
   final Widget leadingIcon;
   final Function()? onTap;
 
-  _MenuItemWithLeading(this.title, this.leadingIcon, this.onTap, {this.subTitle});
+  _MenuItemWithLeading(this.title, this.leadingIcon, this.onTap);
 
   @override
   Widget build(BuildContext context) {
@@ -230,7 +229,6 @@ class _MenuItemWithLeading extends StatelessWidget {
     return ListTile(
       leading: leadingIcon,
       title: Text(title, style: textStyle),
-      subtitle: subTitle != null ? Text(subTitle!) : null,
       onTap: onTap,
       trailing: Icon(
         Icons.keyboard_arrow_right,

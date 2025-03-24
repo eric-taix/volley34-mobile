@@ -1,8 +1,6 @@
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:localstorage/localstorage.dart';
 
 class MapProvider {
-  final LocalStorage _localeStorage = localStorage;
 
   Future<CameraPosition?> loadCameraPosition(String mapName) async {
     return null;

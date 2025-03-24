@@ -18,8 +18,12 @@ class GymnasiumMap extends StatefulWidget {
   final GymnasiumSelectedCallback onGymnasiumSelected;
 
   GymnasiumMap(
-      {Key? key, required this.gymnasiums, required String? currentGymnasiumCode, required this.onGymnasiumSelected})
-      : this.currentGymnasiumCode = currentGymnasiumCode ?? gymnasiums![0].gymnasiumCode,
+      {Key? key,
+      required this.gymnasiums,
+      required String? currentGymnasiumCode,
+      required this.onGymnasiumSelected})
+      : this.currentGymnasiumCode =
+            currentGymnasiumCode ?? gymnasiums![0].gymnasiumCode,
         super(key: key);
 
   @override
@@ -30,7 +34,8 @@ class _GymnasiumMapState extends State<GymnasiumMap> {
   late Repository _repository;
   GoogleMapController? _mapController;
 
-  CameraPosition _initialLocation = CameraPosition(target: LatLng(43.6101248, 3.8039496), zoom: 11);
+  CameraPosition _initialLocation =
+      CameraPosition(target: LatLng(43.6101248, 3.8039496), zoom: 11);
 
   BitmapDescriptor? _selectedMarker;
   BitmapDescriptor? _otherMarker;
@@ -76,14 +81,19 @@ class _GymnasiumMapState extends State<GymnasiumMap> {
     if (_rawMapStyle != null) {
       ThemeData themeData = Theme.of(buildContext);
       _currentMapStyle = _rawMapStyle!
-          .replaceAll("{appBarTheme.color}", themeData.appBarTheme.backgroundColor!.toHexWithoutAlpha())
-          .replaceAll("{canvasColor}", themeData.canvasColor.toHexWithoutAlpha())
-          .replaceAll("{colorScheme.primaryVariant}", themeData.colorScheme.primaryContainer.toHexWithoutAlpha())
-          .replaceAll("{textTheme.bodyText1}", themeData.textTheme.bodyLarge!.color!.toHexWithoutAlpha())
-          .replaceAll("{textTheme.bodyText2}", themeData.textTheme.bodyMedium!.color!.toHexWithoutAlpha());
-      if (_mapController != null) {
-        _mapController!.setMapStyle(_currentMapStyle);
-      }
+          .replaceAll("{appBarTheme.color}",
+              themeData.appBarTheme.backgroundColor!.toHexWithoutAlpha())
+          .replaceAll(
+              "{canvasColor}", themeData.canvasColor.toHexWithoutAlpha())
+          .replaceAll("{colorScheme.primaryVariant}",
+              themeData.colorScheme.primaryContainer.toHexWithoutAlpha())
+          .replaceAll("{textTheme.bodyText1}",
+              themeData.textTheme.bodyLarge!.color!.toHexWithoutAlpha())
+          .replaceAll("{textTheme.bodyText2}",
+              themeData.textTheme.bodyMedium!.color!.toHexWithoutAlpha());
+      setState(() {
+        _currentMapStyle = _currentMapStyle;
+      });
     }
   }
 
@@ -96,7 +106,8 @@ class _GymnasiumMapState extends State<GymnasiumMap> {
   @override
   void didUpdateWidget(GymnasiumMap oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.currentGymnasiumCode != widget.currentGymnasiumCode || oldWidget.gymnasiums != widget.gymnasiums) {
+    if (oldWidget.currentGymnasiumCode != widget.currentGymnasiumCode ||
+        oldWidget.gymnasiums != widget.gymnasiums) {
       _showCurrentGymnasium();
     }
   }
@@ -106,8 +117,8 @@ class _GymnasiumMapState extends State<GymnasiumMap> {
       Gymnasium currentGymnasium = widget.gymnasiums!.firstWhere(
           (gymnasium) => gymnasium.gymnasiumCode == widget.currentGymnasiumCode,
           orElse: () => widget.gymnasiums![0]);
-      _mapController!
-          .animateCamera(CameraUpdate.newLatLng(LatLng(currentGymnasium.latitude!, currentGymnasium.longitude!)));
+      _mapController!.animateCamera(CameraUpdate.newLatLng(
+          LatLng(currentGymnasium.latitude!, currentGymnasium.longitude!)));
     }
   }
 
@@ -116,7 +127,9 @@ class _GymnasiumMapState extends State<GymnasiumMap> {
   }
 
   _gotoCurrentLocation() async {
-    await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high).then((Position position) async {
+    await Geolocator.getCurrentPosition(
+            locationSettings: LocationSettings(accuracy: LocationAccuracy.high))
+        .then((Position position) async {
       double currentZoomLevel = await _mapController!.getZoomLevel();
       setState(() {
         _mapController!.animateCamera(
@@ -132,10 +145,11 @@ class _GymnasiumMapState extends State<GymnasiumMap> {
   }
 
   _onMapCreated(GoogleMapController controller) {
-    _mapController = controller..setMapStyle(_currentMapStyle);
     _repository.loadCameraPosition("gymnasiums").then((savedCameraPosition) {
       if (savedCameraPosition != null) {
-        _mapController!.moveCamera(CameraUpdate.zoomTo(savedCameraPosition.zoom)).then((_) => _showCurrentGymnasium());
+        _mapController!
+            .moveCamera(CameraUpdate.zoomTo(savedCameraPosition.zoom))
+            .then((_) => _showCurrentGymnasium());
       }
     });
     _showCurrentGymnasium();
@@ -153,6 +167,7 @@ class _GymnasiumMapState extends State<GymnasiumMap> {
         child: Stack(
           children: <Widget>[
             GoogleMap(
+                style: _currentMapStyle,
                 markers: widget.gymnasiums!
                     .map(
                       (gymnasium) => Marker(
@@ -161,10 +176,17 @@ class _GymnasiumMapState extends State<GymnasiumMap> {
                           gymnasium.latitude!,
                           gymnasium.longitude!,
                         ),
-                        alpha: gymnasium.gymnasiumCode == widget.currentGymnasiumCode ? 1.0 : 1,
+                        alpha: gymnasium.gymnasiumCode ==
+                                widget.currentGymnasiumCode
+                            ? 1.0
+                            : 1,
                         onTap: () => _onMarkerTap(gymnasium),
-                        zIndex: gymnasium.gymnasiumCode == widget.currentGymnasiumCode ? 1.0 : 0.0,
-                        icon: gymnasium.gymnasiumCode == widget.currentGymnasiumCode
+                        zIndex: gymnasium.gymnasiumCode ==
+                                widget.currentGymnasiumCode
+                            ? 1.0
+                            : 0.0,
+                        icon: gymnasium.gymnasiumCode ==
+                                widget.currentGymnasiumCode
                             ? _selectedMarker ?? BitmapDescriptor.defaultMarker
                             : _otherMarker ?? BitmapDescriptor.defaultMarker,
                       ),

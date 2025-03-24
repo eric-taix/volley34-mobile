@@ -273,7 +273,7 @@ class _PodiumState extends State<Podium> {
           ),
         ),
       ),
-      swapAnimationDuration: Duration(milliseconds: animationDuration),
+      duration: Duration(milliseconds: animationDuration),
     );
   }
 

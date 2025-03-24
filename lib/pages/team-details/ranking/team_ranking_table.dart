@@ -241,7 +241,7 @@ class _TeamRankingTableState extends State<TeamRankingTable> {
                           child: SvgPicture.asset(
                             "assets/volleyball-filled.svg",
                             width: 16,
-                            color: lineStyle.color,
+                            colorFilter: ColorFilter.mode(lineStyle.color!, BlendMode.srcIn),
                           ),
                         )
                       ],

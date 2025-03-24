@@ -73,7 +73,7 @@ class TitledCard extends StatelessWidget {
                             Theme.of(context).cardTheme.color, //(Theme.of(context).cardTheme.color).lighten(3).color,
                         border: Border(
                             top: BorderSide(
-                                color: TinyColor(Theme.of(context).textTheme.titleLarge!.color!).darken(30).color))),
+                                color: TinyColor.fromColor(Theme.of(context).textTheme.titleLarge!.color!).darken(30).color))),
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 12.0),
                       child: Row(

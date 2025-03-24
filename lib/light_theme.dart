@@ -5,7 +5,7 @@ import 'package:v34/theme.dart';
 ThemeData buildLightTheme(Color mainColor) {
   return ThemeData(
     brightness: Brightness.light,
-    splashColor: mainColor.withOpacity(0.2),
+    splashColor: mainColor.withValues(alpha: 0.2),
     primaryColor: Color(0xfff6f6f6),
     canvasColor: Color(0xfff6f6f6),
     scaffoldBackgroundColor: Color(0xfff6f6f6),
@@ -117,7 +117,7 @@ ThemeData buildLightTheme(Color mainColor) {
         textTheme: ButtonTextTheme.accent),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ButtonStyle(
-        overlayColor: OverlayStateColor(Colors.white.withOpacity(0.2)),
+        overlayColor: OverlayStateColor(Colors.white.withValues(alpha: 0.2)),
         shape: ButtonStateProperty(color: Colors.transparent, disableColor: Colors.transparent),
         foregroundColor: ButtonForegroundStateColor(),
         backgroundColor: ButtonBackgroundStateColor(color: mainColor),
@@ -125,7 +125,7 @@ ThemeData buildLightTheme(Color mainColor) {
       ),
     ),
     floatingActionButtonTheme: FloatingActionButtonThemeData(
-      splashColor: Colors.white.withOpacity(0.2),
+      splashColor: Colors.white.withValues(alpha: 0.2),
     ),
     textButtonTheme: TextButtonThemeData(
       style: ButtonStyle(
@@ -133,7 +133,7 @@ ThemeData buildLightTheme(Color mainColor) {
           enabledStyle: TextStyle(fontSize: 16),
           disabledStyle: TextStyle(fontSize: 16),
         ),
-        overlayColor: OverlayStateColor(mainColor.withOpacity(0.2)),
+        overlayColor: OverlayStateColor(mainColor.withValues(alpha: 0.2)),
         shape: ButtonStateProperty(color: Colors.transparent, disableColor: Colors.transparent),
         foregroundColor: ButtonForegroundStateColor(color: mainColor),
         padding: ButtonPaddingProperty(),
@@ -141,7 +141,7 @@ ThemeData buildLightTheme(Color mainColor) {
     ),
     outlinedButtonTheme: OutlinedButtonThemeData(
       style: ButtonStyle(
-        overlayColor: OverlayStateColor(mainColor.withOpacity(0.2)),
+        overlayColor: OverlayStateColor(mainColor.withValues(alpha: 0.2)),
         shape: ButtonStateProperty(),
         padding: ButtonPaddingProperty(),
       ),

@@ -47,7 +47,7 @@ class FeatureTour extends StatelessWidget {
                 Text(
                   paragrah,
                   style: Theme.of(context).textTheme.bodyMedium,
-                  textScaleFactor: 1.2,
+                  textScaler: TextScaler.linear(1.2),
                 ),
                 Container(
                   height: 10,

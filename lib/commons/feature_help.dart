@@ -57,7 +57,7 @@ class FeatureHelp extends StatelessWidget {
                           Text(
                             paragraph,
                             style: Theme.of(context).textTheme.bodyMedium,
-                            textScaleFactor: 1.2,
+                            textScaler: TextScaler.linear(1.2),
                           ),
                           Container(
                             height: 10,

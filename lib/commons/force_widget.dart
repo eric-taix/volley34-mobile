@@ -34,7 +34,7 @@ class _ForceWidgetState extends State<ForceWidget> with SingleTickerProviderStat
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         _buildRow(
-          SvgPicture.asset("assets/attack.svg", width: 24, color: Theme.of(context).textTheme.bodyLarge!.color),
+          SvgPicture.asset("assets/attack.svg", width: 24, colorFilter: ColorFilter.mode(Theme.of(context).textTheme.bodyLarge!.color!, BlendMode.srcIn)),
           ForceGraph(
             value: widget.forces.getAttackPercentage(widget.teamCode),
             forceOrientation: ForceOrientation.leftToRight,
@@ -44,7 +44,7 @@ class _ForceWidgetState extends State<ForceWidget> with SingleTickerProviderStat
           ),
         ),
         _buildRow(
-          SvgPicture.asset("assets/defense.svg", width: 20, color: Theme.of(context).textTheme.bodyLarge!.color),
+          SvgPicture.asset("assets/defense.svg", width: 20, colorFilter: ColorFilter.mode(Theme.of(context).textTheme.bodyLarge!.color!, BlendMode.srcIn)),
           ForceGraph(
             value: widget.forces.getDefensePercentage(widget.teamCode),
             forceOrientation: ForceOrientation.leftToRight,

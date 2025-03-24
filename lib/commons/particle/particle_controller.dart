@@ -44,7 +44,7 @@ class ParticleController with ChangeNotifier {
           vx: Random().nextDouble() * 5.0 - 5.0,
           vy: Random().nextDouble() * 3.0 - 2.5,
           life: Random().nextDouble() * 0.5 + 0.5,
-          color: color.withOpacity(i.isEven ? 0.8 : 0.3)
+          color: color.withValues(alpha: i.isEven ? 0.8 : 0.3)
           ));
     }
   }
@@ -65,7 +65,7 @@ class ParticleController with ChangeNotifier {
           vx: cos(rot) * vel,
           vy: sin(rot) * vel,
           life: Random().nextDouble() * 0.5 + 0.5,
-          color: color.withOpacity(i.isEven ? 0.8 : 0.3)
+          color: color.withValues(alpha: i.isEven ? 0.8 : 0.3)
           ));
     }
   }
