@@ -120,9 +120,6 @@ PODS:
     - GoogleUtilities/Privacy
   - image_picker_ios (0.0.1):
     - Flutter
-  - images_picker (0.0.1):
-    - Flutter
-    - ZLPhotoBrowser (= 4.2.5)
   - just_audio (0.0.1):
     - Flutter
     - FlutterMacOS
@@ -178,9 +175,6 @@ PODS:
   - webview_flutter_wkwebview (0.0.1):
     - Flutter
     - FlutterMacOS
-  - ZLPhotoBrowser (4.2.5):
-    - ZLPhotoBrowser/Core (= 4.2.5)
-  - ZLPhotoBrowser/Core (4.2.5)
 
 DEPENDENCIES:
   - add_2_calendar (from `.symlinks/plugins/add_2_calendar/ios`)
@@ -195,7 +189,6 @@ DEPENDENCIES:
   - geolocator_apple (from `.symlinks/plugins/geolocator_apple/ios`)
   - google_maps_flutter_ios (from `.symlinks/plugins/google_maps_flutter_ios/ios`)
   - image_picker_ios (from `.symlinks/plugins/image_picker_ios/ios`)
-  - images_picker (from `.symlinks/plugins/images_picker/ios`)
   - just_audio (from `.symlinks/plugins/just_audio/darwin`)
   - map_launcher (from `.symlinks/plugins/map_launcher/ios`)
   - maps_launcher (from `.symlinks/plugins/maps_launcher/ios`)
@@ -225,7 +218,6 @@ SPEC REPOS:
     - PromisesObjC
     - SDWebImage
     - SDWebImageWebPCoder
-    - ZLPhotoBrowser
 
 EXTERNAL SOURCES:
   add_2_calendar:
@@ -252,8 +244,6 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/google_maps_flutter_ios/ios"
   image_picker_ios:
     :path: ".symlinks/plugins/image_picker_ios/ios"
-  images_picker:
-    :path: ".symlinks/plugins/images_picker/ios"
   just_audio:
     :path: ".symlinks/plugins/just_audio/darwin"
   map_launcher:
@@ -299,7 +289,6 @@ SPEC CHECKSUMS:
   GoogleMaps: 8939898920281c649150e0af74aa291c60f2e77d
   GoogleUtilities: 26a3abef001b6533cf678d3eb38fd3f614b7872d
   image_picker_ios: c560581cceedb403a6ff17f2f816d7fea1421fc1
-  images_picker: fa9364e3a7d3083c49f865fcfb2b9e7cdc574d3a
   just_audio: a42c63806f16995daf5b219ae1d679deb76e6a79
   libwebp: 02b23773aedb6ff1fd38cec7a77b81414c6842a8
   Mantle: c5aa8794a29a022dfbbfc9799af95f477a69b62d
@@ -317,7 +306,6 @@ SPEC CHECKSUMS:
   video_player_avfoundation: 7c6c11d8470e1675df7397027218274b6d2360b3
   wakelock_plus: 373cfe59b235a6dd5837d0fb88791d2f13a90d56
   webview_flutter_wkwebview: a4af96a051138e28e29f60101d094683b9f82188
-  ZLPhotoBrowser: 4bfab86b851042e18d7f413284472aa68759626a
 
 PODFILE CHECKSUM: 7a353171304a3a8275c58b8df8203b7b12ccec91
 

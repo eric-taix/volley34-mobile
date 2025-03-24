@@ -6,7 +6,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:images_picker/images_picker.dart';
 import 'package:path/path.dart';
 import 'package:v34/commons/animated_button.dart';
 import 'package:v34/commons/ensure_visible_when_focused.dart';
@@ -110,7 +109,9 @@ class _EditMatchState extends State<EditMatch> {
         ),
         title: Text("Saisie d'un résultat"),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(bottomLeft: Radius.circular(10), bottomRight: Radius.circular(10)),
+          borderRadius: BorderRadius.only(
+              bottomLeft: Radius.circular(10),
+              bottomRight: Radius.circular(10)),
         ),
       ),
       body: Stack(
@@ -138,21 +139,27 @@ class _EditMatchState extends State<EditMatch> {
                   ),
                   ...List.generate(5, (index) {
                     return Padding(
-                      padding: const EdgeInsets.only(left: 18.0, right: 18, top: 4, bottom: 4),
+                      padding: const EdgeInsets.only(
+                          left: 18.0, right: 18, top: 4, bottom: 4),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Padding(
                             padding: const EdgeInsets.only(right: 4.0),
-                            child: Text("Set n° ", style: Theme.of(context).textTheme.bodyLarge),
+                            child: Text("Set n° ",
+                                style: Theme.of(context).textTheme.bodyLarge),
                           ),
                           SizedBox(
                             width: 20,
                             height: 20,
                             child: Container(
                               decoration: BoxDecoration(
-                                borderRadius: BorderRadius.all(Radius.circular(4)),
-                                color: Theme.of(context).textTheme.bodyLarge!.color,
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(4)),
+                                color: Theme.of(context)
+                                    .textTheme
+                                    .bodyLarge!
+                                    .color,
                               ),
                               child: Center(
                                 child: Text(
@@ -160,13 +167,16 @@ class _EditMatchState extends State<EditMatch> {
                                   style: Theme.of(context)
                                       .textTheme
                                       .bodyLarge!
-                                      .copyWith(color: Theme.of(context).canvasColor, fontWeight: FontWeight.bold),
+                                      .copyWith(
+                                          color: Theme.of(context).canvasColor,
+                                          fontWeight: FontWeight.bold),
                                 ),
                               ),
                             ),
                           ),
                           Padding(
-                            padding: const EdgeInsets.only(left: 18.0, right: 8),
+                            padding:
+                                const EdgeInsets.only(left: 18.0, right: 8),
                             child: SizedBox(
                               width: 78,
                               height: 40,
@@ -177,7 +187,9 @@ class _EditMatchState extends State<EditMatch> {
                               style: Theme.of(context)
                                   .textTheme
                                   .bodyMedium!
-                                  .copyWith(fontSize: 18, fontWeight: FontWeight.bold)),
+                                  .copyWith(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold)),
                           Padding(
                             padding: const EdgeInsets.only(left: 8.0),
                             child: SizedBox(
@@ -192,14 +204,18 @@ class _EditMatchState extends State<EditMatch> {
                   }),
                   _buildCurrentResult(context),
                   Padding(
-                    padding: const EdgeInsets.only(top: 32.0, left: 28, right: 28),
+                    padding:
+                        const EdgeInsets.only(top: 32.0, left: 28, right: 28),
                     child: EnsureVisibleWhenFocused(
                       focusNode: _commentsFocus,
                       child: TextFormField(
                         controller: _commentsController,
                         focusNode: _commentsFocus,
                         cursorWidth: 2,
-                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(fontSize: 18),
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyMedium!
+                            .copyWith(fontSize: 18),
                         autovalidateMode: AutovalidateMode.always,
                         keyboardType: TextInputType.multiline,
                         maxLines: 5,
@@ -218,8 +234,11 @@ class _EditMatchState extends State<EditMatch> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         ElevatedButton(
-                          onPressed: (_formKey.currentState?.validate() ?? false) &&
-                                  ((PHOTO_REQUIRED && _scoreSheetPhotoPath != null) || !PHOTO_REQUIRED) &&
+                          onPressed: (_formKey.currentState?.validate() ??
+                                      false) &&
+                                  ((PHOTO_REQUIRED &&
+                                          _scoreSheetPhotoPath != null) ||
+                                      !PHOTO_REQUIRED) &&
                                   _userTeam != null &&
                                   _setControllers[0].text.isNotEmpty &&
                                   _setControllers[1].text.isNotEmpty
@@ -235,7 +254,8 @@ class _EditMatchState extends State<EditMatch> {
                                   )
                               : null,
                           child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 38.0),
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 38.0),
                             child: Text("Envoyer"),
                           ),
                         ),
@@ -301,7 +321,8 @@ class _EditMatchState extends State<EditMatch> {
         .toList()
         .asMap()
         .entries
-        .map((entry) => entry.key % 2 == 0 ? " , ${entry.value}" : "-${entry.value}")
+        .map((entry) =>
+            entry.key % 2 == 0 ? " , ${entry.value}" : "-${entry.value}")
         .join()
         .substring(2);
 
@@ -318,7 +339,8 @@ class _EditMatchState extends State<EditMatch> {
               ),
               Padding(
                 padding: const EdgeInsets.only(left: 8.0),
-                child: Text("Confirmation", style: Theme.of(context).textTheme.headlineSmall),
+                child: Text("Confirmation",
+                    style: Theme.of(context).textTheme.headlineSmall),
               ),
             ],
           ),
@@ -334,11 +356,19 @@ class _EditMatchState extends State<EditMatch> {
                 text: TextSpan(
                     text: "",
                     children: [
-                      TextSpan(text: hostTeamName, style: Theme.of(context).textTheme.bodyMedium),
+                      TextSpan(
+                          text: hostTeamName,
+                          style: Theme.of(context).textTheme.bodyMedium),
                       TextSpan(text: " a reçu "),
-                      TextSpan(text: visitorTeamName, style: Theme.of(context).textTheme.bodyMedium),
-                      TextSpan(text: " sur le score final de ", style: Theme.of(context).textTheme.bodyLarge),
-                      TextSpan(text: pointResults, style: Theme.of(context).textTheme.bodyMedium),
+                      TextSpan(
+                          text: visitorTeamName,
+                          style: Theme.of(context).textTheme.bodyMedium),
+                      TextSpan(
+                          text: " sur le score final de ",
+                          style: Theme.of(context).textTheme.bodyLarge),
+                      TextSpan(
+                          text: pointResults,
+                          style: Theme.of(context).textTheme.bodyMedium),
                     ],
                     style: Theme.of(context).textTheme.bodyLarge),
               ),
@@ -347,7 +377,9 @@ class _EditMatchState extends State<EditMatch> {
                 text: TextSpan(
                     text: "Total des sets : ",
                     children: [
-                      TextSpan(text: "$_hostSets - $_visitorSets", style: Theme.of(context).textTheme.bodyMedium),
+                      TextSpan(
+                          text: "$_hostSets - $_visitorSets",
+                          style: Theme.of(context).textTheme.bodyMedium),
                     ],
                     style: Theme.of(context).textTheme.bodyLarge),
               ),
@@ -366,7 +398,10 @@ class _EditMatchState extends State<EditMatch> {
                   _scoreSheetPhotoPath != null
                       ? "* Une photo de la feuille de match a été jointe"
                       : "* Aucune photo de la feuille de match n'a été jointe",
-                  style: Theme.of(context).textTheme.bodyLarge!.copyWith(fontStyle: FontStyle.italic)),
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyLarge!
+                      .copyWith(fontStyle: FontStyle.italic)),
             ],
           ),
           actions: <Widget>[
@@ -392,7 +427,8 @@ class _EditMatchState extends State<EditMatch> {
                   Navigator.of(context).pop();
                   if (sendStatus.status.name.startsWith("OK")) {
                     BlocProvider.of<MessageCubit>(parentContext).showSnack(
-                        text: "Merci ! Le résultat suivant a été pris en compte :\n\n${sendStatus.comment}",
+                        text:
+                            "Merci ! Le résultat suivant a été pris en compte :\n\n${sendStatus.comment}",
                         canClose: true,
                         duration: Duration(seconds: 20));
                     Navigator.of(parentContext).pop();
@@ -422,7 +458,8 @@ class _EditMatchState extends State<EditMatch> {
     required String senderTeamName,
     required String? scoreSheetPath,
   }) async {
-    var sets = _setControllers.map((setController) => setController.text).toList();
+    var sets =
+        _setControllers.map((setController) => setController.text).toList();
 
     Repository repository = RepositoryProvider.of<Repository>(context);
 
@@ -446,7 +483,8 @@ class _EditMatchState extends State<EditMatch> {
       senderName: senderName,
       senderEmail: senderEmail,
       senderTeamName: senderTeamName,
-      matchSheetFilename: scoreSheetPath != null ? basename(scoreSheetPath) : null,
+      matchSheetFilename:
+          scoreSheetPath != null ? basename(scoreSheetPath) : null,
       matchSheetFileBase64: imageBase64Encoded,
     );
     return sendStatus;
@@ -465,11 +503,27 @@ class _EditMatchState extends State<EditMatch> {
               decoration: BoxDecoration(
                   border: Border.all(
                     color: PHOTO_REQUIRED && _scoreSheetPhotoPath == null
-                        ? Theme.of(context).inputDecorationTheme.errorBorder!.borderSide.color
-                        : Theme.of(context).inputDecorationTheme.enabledBorder!.borderSide.color,
+                        ? Theme.of(context)
+                            .inputDecorationTheme
+                            .errorBorder!
+                            .borderSide
+                            .color
+                        : Theme.of(context)
+                            .inputDecorationTheme
+                            .enabledBorder!
+                            .borderSide
+                            .color,
                     width: _scoreSheetPhotoPath == null
-                        ? Theme.of(context).inputDecorationTheme.errorBorder!.borderSide.width
-                        : Theme.of(context).inputDecorationTheme.enabledBorder!.borderSide.width,
+                        ? Theme.of(context)
+                            .inputDecorationTheme
+                            .errorBorder!
+                            .borderSide
+                            .width
+                        : Theme.of(context)
+                            .inputDecorationTheme
+                            .enabledBorder!
+                            .borderSide
+                            .width,
                   ),
                   borderRadius: BorderRadius.circular(20)),
               child: Padding(
@@ -501,7 +555,9 @@ class _EditMatchState extends State<EditMatch> {
                             )
                         ],
                       )
-                    : Center(child: Text("Aucune photo", style: Theme.of(context).textTheme.bodyLarge)),
+                    : Center(
+                        child: Text("Aucune photo",
+                            style: Theme.of(context).textTheme.bodyLarge)),
               ),
             ),
           ),
@@ -513,9 +569,9 @@ class _EditMatchState extends State<EditMatch> {
                 icon: Icon(Icons.photo_camera_outlined),
                 onPressed: () async {
                   final ImagePicker _picker = ImagePicker();
-                  final XFile? photo = await _picker.pickImage(source: ImageSource.camera);
+                  final XFile? photo =
+                      await _picker.pickImage(source: ImageSource.camera);
                   if (photo != null) {
-                    await ImagesPicker.saveImageToAlbum(File(photo.path), albumName: "Volley34");
                     setState(
                       () {
                         _scoreSheetPhotoPath = photo.path;
@@ -530,7 +586,8 @@ class _EditMatchState extends State<EditMatch> {
                 icon: Icon(Icons.photo_library_outlined),
                 onPressed: () async {
                   final ImagePicker _picker = ImagePicker();
-                  final XFile? photo = await _picker.pickImage(source: ImageSource.gallery);
+                  final XFile? photo =
+                      await _picker.pickImage(source: ImageSource.gallery);
                   if (photo != null) {
                     setState(() {
                       _scoreSheetPhotoPath = photo.path;
@@ -561,10 +618,12 @@ class _EditMatchState extends State<EditMatch> {
     Color? scoreColor = Theme.of(context).textTheme.bodyMedium!.color;
     String resultString = "est à égalité avec";
 
-    if (_hostSets > _visitorSets || (_hostSets == _visitorSets && _hostTotalPoints > _visitorTotalPoints)) {
+    if (_hostSets > _visitorSets ||
+        (_hostSets == _visitorSets && _hostTotalPoints > _visitorTotalPoints)) {
       scoreColor = Colors.green;
       resultString = "gagne contre";
-    } else if (_hostSets < _visitorSets || (_hostSets == _visitorSets && _hostTotalPoints < _visitorTotalPoints)) {
+    } else if (_hostSets < _visitorSets ||
+        (_hostSets == _visitorSets && _hostTotalPoints < _visitorTotalPoints)) {
       scoreColor = Colors.red;
       resultString = "perd contre";
     }
@@ -584,8 +643,10 @@ class _EditMatchState extends State<EditMatch> {
                   "${widget.hostTeam.name}",
                   textAlign: TextAlign.center,
                   overflow: TextOverflow.ellipsis,
-                  style:
-                      Theme.of(context).textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.bold, color: scoreColor),
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyMedium!
+                      .copyWith(fontWeight: FontWeight.bold, color: scoreColor),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -598,7 +659,10 @@ class _EditMatchState extends State<EditMatch> {
                   "${widget.visitorTeam.name}",
                   textAlign: TextAlign.center,
                   overflow: TextOverflow.ellipsis,
-                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(fontWeight: FontWeight.bold, color: null),
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyMedium!
+                      .copyWith(fontWeight: FontWeight.bold, color: null),
                 ),
               ],
             ),
@@ -713,7 +777,10 @@ class _EditMatchState extends State<EditMatch> {
           return "";
         }
       },
-      inputFormatters: [FilteringTextInputFormatter.digitsOnly, LengthLimitingTextInputFormatter(2)],
+      inputFormatters: [
+        FilteringTextInputFormatter.digitsOnly,
+        LengthLimitingTextInputFormatter(2)
+      ],
     );
   }
 
@@ -747,7 +814,9 @@ class _EditMatchState extends State<EditMatch> {
 
   bool _isSetWon(int setIndex, int points, int otherPoints) {
     return ((points - otherPoints).abs() >= 2) &&
-        (points >= 25 || otherPoints >= 25 || (setIndex == 4 && (points >= 15 || otherPoints >= 15)));
+        (points >= 25 ||
+            otherPoints >= 25 ||
+            (setIndex == 4 && (points >= 15 || otherPoints >= 15)));
   }
 
   List<Widget> _buildInformation(BuildContext context) {
@@ -759,7 +828,8 @@ class _EditMatchState extends State<EditMatch> {
           child: TextFormField(
             focusNode: _nameFocus,
             controller: _nameController,
-            style: Theme.of(context).textTheme.bodyMedium!.copyWith(fontSize: 18),
+            style:
+                Theme.of(context).textTheme.bodyMedium!.copyWith(fontSize: 18),
             cursorWidth: 2,
             enableSuggestions: true,
             autofillHints: [
@@ -775,7 +845,9 @@ class _EditMatchState extends State<EditMatch> {
               _emailFocus.requestFocus();
             },
             validator: (value) {
-              return value != null && value.isNotEmpty ? null : "Le nom est obligatoire";
+              return value != null && value.isNotEmpty
+                  ? null
+                  : "Le nom est obligatoire";
             },
           ),
         ),
@@ -788,7 +860,8 @@ class _EditMatchState extends State<EditMatch> {
             controller: _emailController,
             focusNode: _emailFocus,
             autovalidateMode: AutovalidateMode.always,
-            style: Theme.of(context).textTheme.bodyMedium!.copyWith(fontSize: 18),
+            style:
+                Theme.of(context).textTheme.bodyMedium!.copyWith(fontSize: 18),
             cursorWidth: 2,
             enableSuggestions: true,
             autofillHints: [AutofillHints.email],
@@ -801,14 +874,17 @@ class _EditMatchState extends State<EditMatch> {
               _emailFocus.unfocus();
             },
             validator: (value) {
-              return value != null && isEmail(value) ? null : "L'adresse email n'est pas valide";
+              return value != null && isEmail(value)
+                  ? null
+                  : "L'adresse email n'est pas valide";
             },
           ),
         ),
       ),
       Padding(
         padding: const EdgeInsets.only(top: 32.0, left: 38, right: 28),
-        child: Text("Votre équipe", style: Theme.of(context).textTheme.bodyLarge),
+        child:
+            Text("Votre équipe", style: Theme.of(context).textTheme.bodyLarge),
       ),
       Padding(
         padding: const EdgeInsets.only(top: 8.0, left: 28, right: 28),
@@ -817,7 +893,8 @@ class _EditMatchState extends State<EditMatch> {
           groupValue: _userTeam,
           value: widget.hostTeam,
           onChanged: (_) => setState(() => _userTeam = widget.hostTeam),
-          title: Text(widget.hostTeam.name!, style: Theme.of(context).textTheme.bodyMedium),
+          title: Text(widget.hostTeam.name!,
+              style: Theme.of(context).textTheme.bodyMedium),
         ),
       ),
       Padding(
@@ -827,7 +904,8 @@ class _EditMatchState extends State<EditMatch> {
           groupValue: _userTeam,
           value: widget.visitorTeam,
           onChanged: (_) => setState(() => _userTeam = widget.visitorTeam),
-          title: Text(widget.visitorTeam.name!, style: Theme.of(context).textTheme.bodyMedium),
+          title: Text(widget.visitorTeam.name!,
+              style: Theme.of(context).textTheme.bodyMedium),
         ),
       ),
       if (_userTeam == null)
