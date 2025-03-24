@@ -54,8 +54,7 @@ class __AnimatedLogoState extends State<AnimatedLogo>
   @override
   Widget build(BuildContext context) {
     return Positioned(
-      top: widget.compute!(kSystemBarHeight + 10,
-              (widget.expandedHeight ?? 0) - widget.compute!(0, 12)) -
+      top: widget.compute!(kSystemBarHeight + 10, kToolbarHeight + 70.0 - widget.compute!(0, 12)) -
           _logoAnimation.value,
       left: widget.compute!(50, 25),
       child: Container(

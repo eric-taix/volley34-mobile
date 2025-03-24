@@ -157,7 +157,7 @@ class _AppBarHeaderDelegate extends SliverPersistentHeaderDelegate {
   }
 
   @override
-  double get maxExtent => kToolbarMargin + kSystemBarHeight;
+  double get maxExtent => kToolbarHeight + 70.0 + kToolbarMargin + kSystemBarHeight;
 
   @override
   double get minExtent => kToolbarHeight + kToolbarMargin + kSystemBarHeight;

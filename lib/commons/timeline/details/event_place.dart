@@ -24,38 +24,8 @@ class EventPlace extends StatefulWidget {
 }
 
 class _EventPlaceState extends State<EventPlace> {
-  String? _rawMapStyle;
-  String? _currentMapStyle;
   GoogleMapController? _mapController;
-  BitmapDescriptor? _marker;
   Position? _myLocation;
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    rootBundle.loadString('assets/maps/map_style.txt').then((mapStyle) {
-      _rawMapStyle = mapStyle;
-      _applyMapStyle(context);
-    });
-    _loadMarker();
-  }
-
-  void _loadMarker() {
-    MapMarker(
-      size: 120,
-      borderColor: Theme.of(context).colorScheme.secondary,
-      backgroundColor: Colors.white,
-      pinLength: 16,
-      borderWidth: 8,
-    ).bitmapDescriptor.then(
-      (bitmap) {
-        if (mounted)
-          setState(() {
-            _marker = bitmap;
-          });
-      },
-    );
-  }
 
   @override
   void initState() {
@@ -87,33 +57,13 @@ class _EventPlaceState extends State<EventPlace> {
     super.dispose();
   }
 
-  void _applyMapStyle(BuildContext buildContext) {
-    if (_rawMapStyle != null) {
-      ThemeData themeData = Theme.of(buildContext);
-      _currentMapStyle = _rawMapStyle!
-          .replaceAll("{appBarTheme.color}",
-              themeData.appBarTheme.backgroundColor!.toHexWithoutAlpha())
-          .replaceAll(
-              "{canvasColor}", themeData.canvasColor.toHexWithoutAlpha())
-          .replaceAll("{colorScheme.primaryVariant}",
-              themeData.colorScheme.primaryContainer.toHexWithoutAlpha())
-          .replaceAll("{textTheme.bodyText1}",
-              themeData.textTheme.bodyLarge!.color!.toHexWithoutAlpha())
-          .replaceAll("{textTheme.bodyText2}",
-              themeData.textTheme.bodyMedium!.color!.toHexWithoutAlpha());
-      setState(() {
-        _currentMapStyle = _currentMapStyle;
-      });
-    }
-  }
-
   Widget _buildGymnasiumLocationLoaded(GymnasiumLoadedState state) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Container(
           padding: EdgeInsets.only(bottom: 8.0),
-          margin: EdgeInsets.symmetric(horizontal: 36.0),
+          margin: EdgeInsets.symmetric(horizontal: 24.0),
           height: 250,
           child: GestureDetector(
             onTap: () => launchRoute(context, state.gymnasium, route: false),
@@ -122,14 +72,13 @@ class _EventPlaceState extends State<EventPlace> {
               child: AbsorbPointer(
                 absorbing: true,
                 child: GoogleMap(
-                    style: _currentMapStyle,
                     markers: [
                       Marker(
                           markerId: MarkerId(state.gymnasium.gymnasiumCode!),
                           position: LatLng(state.gymnasium.latitude!,
                               state.gymnasium.longitude!),
-                          icon: _marker ??
-                              BitmapDescriptor.defaultMarkerWithHue(100))
+                          icon: BitmapDescriptor.defaultMarkerWithHue(
+                              BitmapDescriptor.hueAzure))
                     ].toSet(),
                     initialCameraPosition: CameraPosition(
                         target: LatLng(state.gymnasium.latitude!,
@@ -189,9 +138,7 @@ class _EventPlaceState extends State<EventPlace> {
     );
   }
 
-  _onMapCreated(GoogleMapController controller) {
-
-  }
+  _onMapCreated(GoogleMapController controller) {}
 
   @override
   Widget build(BuildContext context) {

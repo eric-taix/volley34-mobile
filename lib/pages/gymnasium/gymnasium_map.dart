@@ -37,64 +37,10 @@ class _GymnasiumMapState extends State<GymnasiumMap> {
   CameraPosition _initialLocation =
       CameraPosition(target: LatLng(43.6101248, 3.8039496), zoom: 11);
 
-  BitmapDescriptor? _selectedMarker;
-  BitmapDescriptor? _otherMarker;
-
-  String? _rawMapStyle;
-  String? _currentMapStyle;
-
   @override
   void initState() {
     super.initState();
     _repository = RepositoryProvider.of<Repository>(context);
-    rootBundle.loadString('assets/maps/map_style.txt').then((mapStyle) {
-      _rawMapStyle = mapStyle;
-      _applyMapStyle(context);
-    });
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    _loadMarkers(context);
-  }
-
-  void _loadMarkers(BuildContext context) async {
-    _selectedMarker = await MapMarker(
-      size: 120,
-      borderColor: Theme.of(context).colorScheme.secondary,
-      backgroundColor: Colors.white,
-      pinLength: 16,
-      borderWidth: 8,
-    ).bitmapDescriptor;
-    _otherMarker = await MapMarker(
-      size: 80,
-      borderColor: Theme.of(context).colorScheme.secondaryContainer,
-      backgroundColor: Theme.of(context).colorScheme.primary,
-      pinLength: 16,
-      borderWidth: 6,
-    ).bitmapDescriptor;
-    setState(() {});
-  }
-
-  void _applyMapStyle(BuildContext buildContext) {
-    if (_rawMapStyle != null) {
-      ThemeData themeData = Theme.of(buildContext);
-      _currentMapStyle = _rawMapStyle!
-          .replaceAll("{appBarTheme.color}",
-              themeData.appBarTheme.backgroundColor!.toHexWithoutAlpha())
-          .replaceAll(
-              "{canvasColor}", themeData.canvasColor.toHexWithoutAlpha())
-          .replaceAll("{colorScheme.primaryVariant}",
-              themeData.colorScheme.primaryContainer.toHexWithoutAlpha())
-          .replaceAll("{textTheme.bodyText1}",
-              themeData.textTheme.bodyLarge!.color!.toHexWithoutAlpha())
-          .replaceAll("{textTheme.bodyText2}",
-              themeData.textTheme.bodyMedium!.color!.toHexWithoutAlpha());
-      setState(() {
-        _currentMapStyle = _currentMapStyle;
-      });
-    }
   }
 
   @override
@@ -117,7 +63,7 @@ class _GymnasiumMapState extends State<GymnasiumMap> {
       Gymnasium currentGymnasium = widget.gymnasiums!.firstWhere(
           (gymnasium) => gymnasium.gymnasiumCode == widget.currentGymnasiumCode,
           orElse: () => widget.gymnasiums![0]);
-      _mapController!.animateCamera(CameraUpdate.newLatLng(
+      _mapController?.animateCamera(CameraUpdate.newLatLng(
           LatLng(currentGymnasium.latitude!, currentGymnasium.longitude!)));
     }
   }
@@ -145,6 +91,7 @@ class _GymnasiumMapState extends State<GymnasiumMap> {
   }
 
   _onMapCreated(GoogleMapController controller) {
+    _mapController = controller;
     _repository.loadCameraPosition("gymnasiums").then((savedCameraPosition) {
       if (savedCameraPosition != null) {
         _mapController!
@@ -161,13 +108,11 @@ class _GymnasiumMapState extends State<GymnasiumMap> {
 
   @override
   Widget build(BuildContext context) {
-    _applyMapStyle(context);
     return Center(
       child: Container(
         child: Stack(
           children: <Widget>[
             GoogleMap(
-                style: _currentMapStyle,
                 markers: widget.gymnasiums!
                     .map(
                       (gymnasium) => Marker(
@@ -187,8 +132,9 @@ class _GymnasiumMapState extends State<GymnasiumMap> {
                             : 0.0,
                         icon: gymnasium.gymnasiumCode ==
                                 widget.currentGymnasiumCode
-                            ? _selectedMarker ?? BitmapDescriptor.defaultMarker
-                            : _otherMarker ?? BitmapDescriptor.defaultMarker,
+                            ? BitmapDescriptor.defaultMarkerWithHue(
+                                BitmapDescriptor.hueAzure)
+                            : BitmapDescriptor.defaultMarker,
                       ),
                     )
                     .toSet(),
