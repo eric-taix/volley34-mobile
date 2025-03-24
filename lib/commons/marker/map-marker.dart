@@ -33,75 +33,6 @@ class MapMarker {
     backgroundRadius = borderRadius - borderWidth * 2;
   }
 
-  _paintElevation(Canvas canvas) {
-    Path shadowPath = Path()
-      ..fillType = PathFillType.nonZero
-      ..addArc(
-        Rect.fromCenter(
-          center: Offset(center.x + elevation * 2, center.y + elevation * 2),
-          width: size,
-          height: size,
-        ),
-        pi / 2 + pi / 10,
-        pi * 2 - 2 * pi / 10,
-      )
-      ..lineTo(center.x + elevation * 2, center.y + (size / 2) + pinLength + elevation * 2)
-      ..close();
-
-    canvas.drawPath(
-      shadowPath,
-      Paint()
-        ..shader = material.LinearGradient(
-          begin: material.Alignment.topLeft,
-          end: material.Alignment.bottomRight,
-          colors: [
-            material.Colors.black26,
-            material.Colors.transparent,
-          ],
-          stops: [0.7, 1.0],
-        ).createShader(Rect.fromCircle(
-          center: Offset(center.x + elevation, center.y + elevation),
-          radius: borderRadius,
-        )),
-    );
-    //..color = material.Colors.black
-    //..strokeWidth = 1
-    //..style = PaintingStyle.fill
-  }
-
-  _paintBorder(Canvas canvas) {
-    final Paint borderPaint = Paint()
-      ..color = borderColor
-      ..strokeWidth = 1
-      ..style = PaintingStyle.fill
-      ..strokeCap = StrokeCap.round;
-
-    Path path = Path()
-      ..fillType = PathFillType.nonZero
-      ..addArc(
-        Rect.fromCenter(
-          center: Offset(center.x.toDouble(), center.y.toDouble()),
-          width: size,
-          height: size,
-        ),
-        pi / 2 + pi / 10,
-        pi * 2 - 2 * pi / 10,
-      )
-      ..lineTo(center.x.toDouble(), center.y + (size / 2) + pinLength)
-      ..close();
-
-    canvas.drawPath(path, borderPaint);
-  }
-
-  _paintBackground(Canvas canvas) {
-    final Paint backgroundPaint = Paint()..color = backgroundColor;
-    canvas.drawCircle(
-      Offset(center.x.toDouble(), center.y.toDouble()),
-      backgroundRadius,
-      backgroundPaint,
-    );
-  }
-
 // Dans votre classe MapMarker, remplacez l'ancienne méthode utilisant DrawableRoot par:
   Future<BitmapDescriptor> get bitmapDescriptor async {
     // Créer un PictureRecorder pour dessiner dans un canvas
@@ -184,10 +115,11 @@ class MapMarker {
         );
 
     // Convertir l'image en bytes
-    final ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+    final ByteData? byteData =
+        await image.toByteData(format: ui.ImageByteFormat.png);
     final Uint8List uint8List = byteData!.buffer.asUint8List();
 
-    return BitmapDescriptor.fromBytes(uint8List);
+    return BitmapDescriptor.bytes(uint8List);
   }
   /*_paintImage(Canvas canvas) async {
     if (imageAsset != null) {

@@ -11,6 +11,7 @@ class TeamProvider {
   Future<Team?> loadTeam(String teamCode) async {
     Response response = await dio.get("/equipes/$teamCode").catchError((error) {
       print("Error while getting team $teamCode");
+      throw error;
     });
     if (response.statusCode == 200 || response.statusCode == 304) {
       return Team.fromJson(response.data);
@@ -22,6 +23,7 @@ class TeamProvider {
   Future<List<Team>> loadClubTeams(String? clubCode) async {
     Response response = await dio.get("/clubs/$clubCode/equipes").catchError((error) {
       print("Error while getting teams for club $clubCode");
+      throw error;
     });
     if (response.statusCode == 200 || response.statusCode == 304) {
       return (response.data as List).map((json) => Team.fromJson(json)).toSet().toList()

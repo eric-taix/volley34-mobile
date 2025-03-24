@@ -68,7 +68,7 @@ class CircularMenuItem extends StatelessWidget {
         child: Material(
           color: onTap != null ? color ?? Theme.of(context).colorScheme.secondary : disableColor ?? Colors.grey,
           child: InkWell(
-            splashColor: (iconColor ?? Colors.white).withOpacity(0.3),
+            splashColor: (iconColor ?? Colors.white).withValues(alpha: 0.3),
             child: Padding(
               padding: EdgeInsets.all(padding),
               child: animatedIcon == null ? icon : animatedIcon,

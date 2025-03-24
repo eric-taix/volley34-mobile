@@ -35,7 +35,7 @@ class ForceTeams extends StatelessWidget {
       children: [
         forces != null
             ? SvgPicture.asset("assets/attack.svg",
-                width: ICON_SIZE + 4, color: Theme.of(context).textTheme.bodyLarge!.color)
+                width: ICON_SIZE + 4, colorFilter: ColorFilter.mode(Theme.of(context).textTheme.bodyLarge!.color!, BlendMode.srcIn))
             : SizedBox(),
         Expanded(
           child: Container(
@@ -121,7 +121,7 @@ class ForceTeams extends StatelessWidget {
         ),
         forces != null
             ? SvgPicture.asset("assets/defense.svg",
-                width: ICON_SIZE, color: Theme.of(context).textTheme.bodyLarge!.color)
+                width: ICON_SIZE, colorFilter: ColorFilter.mode(Theme.of(context).textTheme.bodyLarge!.color!, BlendMode.srcIn))
             : SizedBox(),
       ],
     );

@@ -5,13 +5,13 @@ import 'package:v34/theme.dart';
 ThemeData buildDarkTheme(Color mainColor) {
   return ThemeData(
     brightness: Brightness.dark,
-    splashColor: mainColor.withOpacity(0.2),
+    splashColor: mainColor.withValues(alpha: 0.2),
     primaryColor: Color(0xFF262C41),
     canvasColor: Color(0xFF262C41),
     scaffoldBackgroundColor: Color(0xFF262C41),
     highlightColor: Colors.transparent,
     primarySwatch: MaterialColor(
-      mainColor.value,
+      mainColor.r.toInt()* 256 * 256 + mainColor.g.toInt() * 256 + mainColor.b.toInt(),
       <int, Color>{
         50: Color(0xFFE3F2FD),
         100: Color(0xFFBBDEFB),
@@ -29,7 +29,7 @@ ThemeData buildDarkTheme(Color mainColor) {
       primary: Color(0xFF262C41),
       primaryContainer: Color(0xFF313852),
       secondary: mainColor,
-      secondaryContainer: mainColor.withOpacity(0.7),
+      secondaryContainer: mainColor.withValues(alpha: 0.7),
       surface: Color(0xFF262C41),
       error: mainColor,
       onPrimary: Colors.white,
@@ -120,7 +120,7 @@ ThemeData buildDarkTheme(Color mainColor) {
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ButtonStyle(
-        overlayColor: OverlayStateColor(Colors.white.withOpacity(0.2)),
+        overlayColor: OverlayStateColor(Colors.white.withValues(alpha: 0.2)),
         shape: ButtonStateProperty(color: Colors.transparent),
         foregroundColor: ButtonForegroundStateColor(),
         backgroundColor: ButtonBackgroundStateColor(color: mainColor),
@@ -128,7 +128,7 @@ ThemeData buildDarkTheme(Color mainColor) {
       ),
     ),
     floatingActionButtonTheme: FloatingActionButtonThemeData(
-      splashColor: Colors.white.withOpacity(0.2),
+      splashColor: Colors.white.withValues(alpha: 0.2),
     ),
     textButtonTheme: TextButtonThemeData(
       style: ButtonStyle(
@@ -136,7 +136,7 @@ ThemeData buildDarkTheme(Color mainColor) {
           enabledStyle: TextStyle(fontSize: 16),
           disabledStyle: TextStyle(fontSize: 16),
         ),
-        overlayColor: OverlayStateColor(mainColor.withOpacity(0.2)),
+        overlayColor: OverlayStateColor(mainColor.withValues(alpha: 0.2)),
         shape: ButtonStateProperty(color: Colors.transparent, disableColor: Colors.transparent),
         foregroundColor: ButtonForegroundStateColor(color: mainColor),
         padding: ButtonPaddingProperty(),
@@ -144,7 +144,7 @@ ThemeData buildDarkTheme(Color mainColor) {
     ),
     outlinedButtonTheme: OutlinedButtonThemeData(
       style: ButtonStyle(
-        overlayColor: OverlayStateColor(mainColor.withOpacity(0.2)),
+        overlayColor: OverlayStateColor(mainColor.withValues(alpha: 0.2)),
         shape: ButtonStateProperty(),
         padding: ButtonPaddingProperty(),
       ),

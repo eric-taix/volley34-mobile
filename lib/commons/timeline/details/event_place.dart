@@ -16,7 +16,8 @@ class EventPlace extends StatefulWidget {
   final Event event;
   final VoidCallback? onCameraMoveStarted;
 
-  const EventPlace({Key? key, required this.event, this.onCameraMoveStarted}) : super(key: key);
+  const EventPlace({Key? key, required this.event, this.onCameraMoveStarted})
+      : super(key: key);
 
   @override
   _EventPlaceState createState() => _EventPlaceState();
@@ -72,7 +73,8 @@ class _EventPlaceState extends State<EventPlace> {
       }
     }
     if (permission == LocationPermission.deniedForever) {
-      print("Location permissions are permanently denied, we cannot request permissions");
+      print(
+          "Location permissions are permanently denied, we cannot request permissions");
       return;
     }
     _myLocation = await Geolocator.getCurrentPosition();
@@ -89,14 +91,19 @@ class _EventPlaceState extends State<EventPlace> {
     if (_rawMapStyle != null) {
       ThemeData themeData = Theme.of(buildContext);
       _currentMapStyle = _rawMapStyle!
-          .replaceAll("{appBarTheme.color}", themeData.appBarTheme.backgroundColor!.toHexWithoutAlpha())
-          .replaceAll("{canvasColor}", themeData.canvasColor.toHexWithoutAlpha())
-          .replaceAll("{colorScheme.primaryVariant}", themeData.colorScheme.primaryContainer.toHexWithoutAlpha())
-          .replaceAll("{textTheme.bodyText1}", themeData.textTheme.bodyLarge!.color!.toHexWithoutAlpha())
-          .replaceAll("{textTheme.bodyText2}", themeData.textTheme.bodyMedium!.color!.toHexWithoutAlpha());
-      if (_mapController != null) {
-        _mapController!.setMapStyle(_currentMapStyle);
-      }
+          .replaceAll("{appBarTheme.color}",
+              themeData.appBarTheme.backgroundColor!.toHexWithoutAlpha())
+          .replaceAll(
+              "{canvasColor}", themeData.canvasColor.toHexWithoutAlpha())
+          .replaceAll("{colorScheme.primaryVariant}",
+              themeData.colorScheme.primaryContainer.toHexWithoutAlpha())
+          .replaceAll("{textTheme.bodyText1}",
+              themeData.textTheme.bodyLarge!.color!.toHexWithoutAlpha())
+          .replaceAll("{textTheme.bodyText2}",
+              themeData.textTheme.bodyMedium!.color!.toHexWithoutAlpha());
+      setState(() {
+        _currentMapStyle = _currentMapStyle;
+      });
     }
   }
 
@@ -115,14 +122,19 @@ class _EventPlaceState extends State<EventPlace> {
               child: AbsorbPointer(
                 absorbing: true,
                 child: GoogleMap(
+                    style: _currentMapStyle,
                     markers: [
                       Marker(
                           markerId: MarkerId(state.gymnasium.gymnasiumCode!),
-                          position: LatLng(state.gymnasium.latitude!, state.gymnasium.longitude!),
-                          icon: _marker ?? BitmapDescriptor.defaultMarkerWithHue(100))
+                          position: LatLng(state.gymnasium.latitude!,
+                              state.gymnasium.longitude!),
+                          icon: _marker ??
+                              BitmapDescriptor.defaultMarkerWithHue(100))
                     ].toSet(),
-                    initialCameraPosition:
-                        CameraPosition(target: LatLng(state.gymnasium.latitude!, state.gymnasium.longitude!), zoom: 11),
+                    initialCameraPosition: CameraPosition(
+                        target: LatLng(state.gymnasium.latitude!,
+                            state.gymnasium.longitude!),
+                        zoom: 11),
                     myLocationEnabled: _myLocation != null,
                     myLocationButtonEnabled: false,
                     mapType: MapType.normal,
@@ -131,7 +143,9 @@ class _EventPlaceState extends State<EventPlace> {
                     mapToolbarEnabled: false,
                     onMapCreated: _onMapCreated,
                     onCameraMoveStarted: () =>
-                        widget.onCameraMoveStarted != null ? widget.onCameraMoveStarted!() : null,
+                        widget.onCameraMoveStarted != null
+                            ? widget.onCameraMoveStarted!()
+                            : null,
                     gestureRecognizers: [
                       Factory<OneSequenceGestureRecognizer>(
                         () => new EagerGestureRecognizer(),
@@ -149,7 +163,8 @@ class _EventPlaceState extends State<EventPlace> {
               Padding(
                 padding: const EdgeInsets.only(right: 8.0),
                 child: TextButton.icon(
-                  onPressed: () => launchRoute(context, state.gymnasium, route: true),
+                  onPressed: () =>
+                      launchRoute(context, state.gymnasium, route: true),
                   icon: Icon(
                     Icons.directions,
                     size: 28,
@@ -157,7 +172,8 @@ class _EventPlaceState extends State<EventPlace> {
                   label: Text("Itinéraire"),
                 ),
               ),
-              if (state.gymnasium.phone != null && state.gymnasium.phone!.isNotEmpty)
+              if (state.gymnasium.phone != null &&
+                  state.gymnasium.phone!.isNotEmpty)
                 Padding(
                   padding: const EdgeInsets.only(left: 8.0),
                   child: TextButton.icon(
@@ -174,7 +190,7 @@ class _EventPlaceState extends State<EventPlace> {
   }
 
   _onMapCreated(GoogleMapController controller) {
-    _mapController = controller..setMapStyle(_currentMapStyle);
+
   }
 
   @override
@@ -185,7 +201,9 @@ class _EventPlaceState extends State<EventPlace> {
           clipBehavior: Clip.none,
           children: [
             state is GymnasiumLoadedState
-                ? Padding(padding: const EdgeInsets.only(top: 28.0), child: _buildGymnasiumLocationLoaded(state))
+                ? Padding(
+                    padding: const EdgeInsets.only(top: 28.0),
+                    child: _buildGymnasiumLocationLoaded(state))
                 : Loading(),
             if (state is GymnasiumLoadedState)
               Positioned(
@@ -198,7 +216,10 @@ class _EventPlaceState extends State<EventPlace> {
                     Padding(
                       padding: const EdgeInsets.only(right: 4.0),
                       child: _myLocation != null
-                          ? Icon(Icons.navigation, color: Theme.of(context).textTheme.bodyLarge!.color!, size: 16)
+                          ? Icon(Icons.navigation,
+                              color:
+                                  Theme.of(context).textTheme.bodyLarge!.color!,
+                              size: 16)
                           : null,
                     ),
                     Text(

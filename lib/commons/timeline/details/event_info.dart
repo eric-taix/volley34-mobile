@@ -196,7 +196,7 @@ class _EventInfoState extends State<EventInfo> with SingleTickerProviderStateMix
   Widget _buildOrganizerClub(BuildContext context) {
     return ListTile(
       leading: SvgPicture.asset('assets/shield.svg',
-          width: _iconSize, height: _iconSize, color: Theme.of(context).textTheme.bodyLarge!.color!),
+          width: _iconSize, height: _iconSize, colorFilter: ColorFilter.mode(Theme.of(context).textTheme.bodyLarge!.color!, BlendMode.srcIn)),
       title: OrganizerClub(clubCode: widget.event.clubCode),
     );
   }
@@ -272,7 +272,6 @@ class _EventInfoState extends State<EventInfo> with SingleTickerProviderStateMix
   }
 
   List<Widget> _buildTitle(BuildContext context) {
-    Color color = Theme.of(context).textTheme.bodyMedium!.color!;
     if (widget.event.type == EventType.Match) {
       return [
         MatchInfo(
@@ -380,10 +379,10 @@ class _EventInfoState extends State<EventInfo> with SingleTickerProviderStateMix
                 onPressed: () {
                   FirebaseAnalytics.instance.logEvent(
                     name: "file_download",
-                    parameters: filterOutNulls(<String, String?>{
+                    parameters: {
                       "file_name": "FDM_${widget.event.matchCode!}",
                       "file_extension": "pdf",
-                    }),
+                    },
                   );
                   _closeMenu();
                   launchURL("https://www.volley34.fr/Data/FDM/FDM_${widget.event.matchCode!}.pdf");

@@ -15,7 +15,7 @@ class ScorerAction extends StatelessWidget {
             child: Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       margin: EdgeInsets.all(6),
-      color: enabled ? actionColor : actionColor.withOpacity(0.2),
+      color: enabled ? actionColor : actionColor.withValues(alpha: 0.2),
       child: InkWell(
         child: Center(
           child: Padding(
@@ -26,7 +26,7 @@ class ScorerAction extends StatelessWidget {
               style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                     color: enabled
                         ? Theme.of(context).textTheme.bodyMedium!.color
-                        : Theme.of(context).textTheme.bodyMedium!.color!.withOpacity(0.3),
+                        : Theme.of(context).textTheme.bodyMedium!.color!.withValues(alpha: 0.3),
                   ),
             ),
           ),

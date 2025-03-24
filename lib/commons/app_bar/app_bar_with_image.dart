@@ -7,7 +7,6 @@ import 'package:v34/commons/favorite/favorite_icon.dart';
 import 'package:v34/commons/loading.dart';
 
 class _AppBarHeaderDelegate extends SliverPersistentHeaderDelegate {
-  final double expandedHeight;
   final String? imageUrl;
   final String? title;
   final String? subTitle;
@@ -21,7 +20,6 @@ class _AppBarHeaderDelegate extends SliverPersistentHeaderDelegate {
     required this.subTitle,
     required this.heroTag,
     required this.favorite,
-    this.expandedHeight = kToolbarHeight + 70.0,
     this.bottom,
   });
 
@@ -96,7 +94,7 @@ class _AppBarHeaderDelegate extends SliverPersistentHeaderDelegate {
             ),
           ),
           Positioned(
-            top: compute(kSystemBarHeight + 2, expandedHeight - compute(38.0, 60.0) / 2),
+            top: compute(kSystemBarHeight + 2, - compute(38.0, 60.0) / 2),
             left: compute(75.0, 80.0),
             width: MediaQuery.of(context).size.width - 75,
             child: Padding(
@@ -128,7 +126,6 @@ class _AppBarHeaderDelegate extends SliverPersistentHeaderDelegate {
             ),
           ),
           AnimatedLogo(
-            expandedHeight: expandedHeight,
             imageUrl: imageUrl,
             heroTag: heroTag,
             compute: computeLinear(shrinkOffset, minExtent, maxExtent),
@@ -160,7 +157,7 @@ class _AppBarHeaderDelegate extends SliverPersistentHeaderDelegate {
   }
 
   @override
-  double get maxExtent => expandedHeight + kToolbarMargin + kSystemBarHeight;
+  double get maxExtent => kToolbarMargin + kSystemBarHeight;
 
   @override
   double get minExtent => kToolbarHeight + kToolbarMargin + kSystemBarHeight;

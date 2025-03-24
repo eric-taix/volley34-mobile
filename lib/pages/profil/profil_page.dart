@@ -31,7 +31,7 @@ class _ProfilPageState extends State<ProfilPage> with RouteAwareAnalytics {
                             width: 40,
                           )
                         : SvgPicture.asset("assets/shield.svg",
-                            width: 20, color: Theme.of(context).textTheme.bodyMedium!.color),
+                            width: 20, colorFilter: ColorFilter.mode(Theme.of(context).textTheme.bodyMedium!.color!, BlendMode.srcIn)),
                     title: Text("${state.favoriteTeam!.name} - ${state.favoriteClub!.name}",
                         style: Theme.of(context).textTheme.bodyMedium),
                     subtitle: Text("Choisissez votre équipe", style: Theme.of(context).textTheme.bodyLarge),

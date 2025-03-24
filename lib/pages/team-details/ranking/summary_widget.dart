@@ -151,7 +151,7 @@ class SummaryWidget extends StatelessWidget {
           backDrawRodData: BackgroundBarChartRodData(
             show: true,
             toY: countMatches.toDouble(),
-            color: Theme.of(context).cardTheme.color!.withOpacity(0.1),
+            color: Theme.of(context).cardTheme.color!.withValues(alpha: 0.1),
           ),
         ),
       ],

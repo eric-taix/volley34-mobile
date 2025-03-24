@@ -176,7 +176,7 @@ class _LineGraphState extends State<LineGraph> {
           belowBarData: BarAreaData(
             show: true,
             gradient: LinearGradient(
-              colors: gradientColorsAboveCutOff.map((color) => color.withOpacity(0.3)).toList(),
+              colors: gradientColorsAboveCutOff.map((color) => color.withValues(alpha: 0.3)).toList(),
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
             ),
@@ -186,7 +186,7 @@ class _LineGraphState extends State<LineGraph> {
           aboveBarData: BarAreaData(
             show: true,
             gradient: LinearGradient(
-              colors: gradientColorsBelowCutOff.map((color) => color.withOpacity(0.3)).toList(),
+              colors: gradientColorsBelowCutOff.map((color) => color.withValues(alpha: 0.3)).toList(),
               begin: Alignment.bottomCenter,
               end: Alignment.topCenter,
             ),
