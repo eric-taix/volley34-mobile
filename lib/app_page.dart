@@ -35,106 +35,114 @@ class _AppPageState extends State<AppPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      drawer: AppMenu(),
-      backgroundColor: Theme.of(context).canvasColor,
-      extendBody: true,
-      body: UpgradeAlert(
-        showIgnore: false,
-        child: BlocListener<MessageCubit, MessageState>(
-          listener: (BuildContext context, state) {
-            if (state is NewMessage) {
-              showAlertDialog(
-                context,
-                state.title,
-                state.message,
-                onPressed: (context) {
-                  BlocProvider.of<MessageCubit>(context).clearMessage();
-                },
-              );
-            }
-            if (state is NewHelp) {
-              showHelpDialog(
-                context,
-                state.title,
-                state.paragraphs,
-                onPressed: () {
-                  BlocProvider.of<MessageCubit>(context).clearMessage();
-                },
-              );
-            }
-            if (state is SnackMessage) {
-              final snackBar = SnackBar(
-                content: Text(state.text),
-                duration: state.duration ?? Duration(milliseconds: 4000),
-                action: state.canClose
-                    ? SnackBarAction(
-                        label: "Fermer",
-                        onPressed: () {
-                          ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                        },
-                      )
-                    : null,
-              );
-              ScaffoldMessenger.of(context).showSnackBar(snackBar);
-            }
-          },
-          child: _child,
-        ),
-      ),
-      bottomNavigationBar: FluidNavBar(
-        icons: [
-          FluidNavBarIcon(svgPath: "assets/dashboard.svg", extras: {
-            "featureId": "dashboard_feature_id",
-            "title": "Tableau de bord",
-            "paragraphs": [
-              "Votre club et votre équipe favorite toujours à portée.",
-              "Retrouvez votre agenda, des statistiques et l'ensemble des informations utiles au jour le jour."
-            ],
-          }),
-          FluidNavBarIcon(svgPath: "assets/competition-filled.svg", extras: {
-            "featureId": "competition_feature_id",
-            "title": "Compétitions",
-            "paragraphs": [
-              "Championnats, Challenges et Coupe de printemps.",
-              "L'ensemble des résultats, classements par catégorie, poule et type de compétition."
-            ],
-          }),
-          FluidNavBarIcon(svgPath: "assets/shield.svg", extras: {
-            "featureId": "clubs_feature_id",
-            "title": "Liste des clubs",
-            "paragraphs": [
-              "Accédez à l'ensemble des clubs inscrits aux compétitions.",
-            ],
-          }),
-          FluidNavBarIcon(svgPath: "assets/gymnasium.svg", extras: {
-            "featureId": "gymnasiums_feature_id",
-            "title": "Liste des gymnases",
-            "paragraphs": [
-              "Trouvez les Horaires, téléphone ou itinéraire pour aller à un gymnase ou celui le plus près de chez vous."
-            ],
-          }),
-        ],
-        style: FluidNavBarStyle(
-          barBackgroundColor: Theme.of(context).bottomAppBarTheme.color,
-          iconSelectedForegroundColor: Theme.of(context).canvasColor,
-          iconUnselectedForegroundColor: Theme.of(context).tabBarTheme.unselectedLabelColor,
-        ),
-        scaleFactor: 1.4,
-        onChange: _handleNavigationChange,
-        itemBuilder: (icon, item) {
-          return FeatureTour(
-            child: item,
-            featureId: icon.extras!["featureId"],
-            title: icon.extras!["title"],
-            paragraphs: icon.extras!["paragraphs"] ?? [],
-            target: SvgPicture.asset(
-              icon.svgPath!,
-              height: 30,
-              colorFilter: ColorFilter.mode(Theme.of(context).appBarTheme.backgroundColor!, BlendMode.srcIn),
+    return Container(
+      color: Theme.of(context).bottomAppBarTheme.color,
+      child: SafeArea(
+        top: false,
+        bottom: true,
+        child: Scaffold(
+          extendBodyBehindAppBar: true,
+          drawer: AppMenu(),
+          backgroundColor: Theme.of(context).canvasColor,
+          extendBody: true,
+          body: UpgradeAlert(
+            showIgnore: false,
+            child: BlocListener<MessageCubit, MessageState>(
+              listener: (BuildContext context, state) {
+                if (state is NewMessage) {
+                  showAlertDialog(
+                    context,
+                    state.title,
+                    state.message,
+                    onPressed: (context) {
+                      BlocProvider.of<MessageCubit>(context).clearMessage();
+                    },
+                  );
+                }
+                if (state is NewHelp) {
+                  showHelpDialog(
+                    context,
+                    state.title,
+                    state.paragraphs,
+                    onPressed: () {
+                      BlocProvider.of<MessageCubit>(context).clearMessage();
+                    },
+                  );
+                }
+                if (state is SnackMessage) {
+                  final snackBar = SnackBar(
+                    content: Text(state.text),
+                    duration: state.duration ?? Duration(milliseconds: 4000),
+                    action: state.canClose
+                        ? SnackBarAction(
+                            label: "Fermer",
+                            onPressed: () {
+                              ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                            },
+                          )
+                        : null,
+                  );
+                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                }
+              },
+              child: _child,
             ),
-          );
-        },
+          ),
+          bottomNavigationBar: FluidNavBar(
+            icons: [
+              FluidNavBarIcon(svgPath: "assets/dashboard.svg", extras: {
+                "featureId": "dashboard_feature_id",
+                "title": "Tableau de bord",
+                "paragraphs": [
+                  "Votre club et votre équipe favorite toujours à portée.",
+                  "Retrouvez votre agenda, des statistiques et l'ensemble des informations utiles au jour le jour."
+                ],
+              }),
+              FluidNavBarIcon(svgPath: "assets/competition-filled.svg", extras: {
+                "featureId": "competition_feature_id",
+                "title": "Compétitions",
+                "paragraphs": [
+                  "Championnats, Challenges et Coupe de printemps.",
+                  "L'ensemble des résultats, classements par catégorie, poule et type de compétition."
+                ],
+              }),
+              FluidNavBarIcon(svgPath: "assets/shield.svg", extras: {
+                "featureId": "clubs_feature_id",
+                "title": "Liste des clubs",
+                "paragraphs": [
+                  "Accédez à l'ensemble des clubs inscrits aux compétitions.",
+                ],
+              }),
+              FluidNavBarIcon(svgPath: "assets/gymnasium.svg", extras: {
+                "featureId": "gymnasiums_feature_id",
+                "title": "Liste des gymnases",
+                "paragraphs": [
+                  "Trouvez les Horaires, téléphone ou itinéraire pour aller à un gymnase ou celui le plus près de chez vous."
+                ],
+              }),
+            ],
+            style: FluidNavBarStyle(
+              barBackgroundColor: Theme.of(context).bottomAppBarTheme.color,
+              iconSelectedForegroundColor: Theme.of(context).canvasColor,
+              iconUnselectedForegroundColor: Theme.of(context).tabBarTheme.unselectedLabelColor,
+            ),
+            scaleFactor: 1.4,
+            onChange: _handleNavigationChange,
+            itemBuilder: (icon, item) {
+              return FeatureTour(
+                child: item,
+                featureId: icon.extras!["featureId"],
+                title: icon.extras!["title"],
+                paragraphs: icon.extras!["paragraphs"] ?? [],
+                target: SvgPicture.asset(
+                  icon.svgPath!,
+                  height: 30,
+                  colorFilter: ColorFilter.mode(Theme.of(context).appBarTheme.backgroundColor!, BlendMode.srcIn),
+                ),
+              );
+            },
+          ),
+        ),
       ),
     );
   }
