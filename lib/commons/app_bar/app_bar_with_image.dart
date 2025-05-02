@@ -94,7 +94,7 @@ class _AppBarHeaderDelegate extends SliverPersistentHeaderDelegate {
             ),
           ),
           Positioned(
-            top: compute(kSystemBarHeight + 2, - compute(38.0, 60.0) / 2),
+            top: compute(kSystemBarHeight + 2, -compute(38.0, 60.0) / 2),
             left: compute(75.0, 80.0),
             width: MediaQuery.of(context).size.width - 75,
             child: Padding(
@@ -289,117 +289,122 @@ class _AppBarWithImageState extends State<AppBarWithImage> with TickerProviderSt
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: Theme.of(context).canvasColor,
-      child: NestedScrollView(
-        controller: _scrollController,
-        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-          return <Widget>[
-            SliverOverlapAbsorber(
-              handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
-              sliver: SliverPersistentHeader(
-                pinned: true,
-                delegate: _AppBarHeaderDelegate(
-                  imageUrl: widget.logoUrl,
-                  title: widget.title,
-                  subTitle: widget.subTitle,
-                  heroTag: widget.heroTag,
-                  favorite: widget.favorite,
-                  bottom: Container(
-                    decoration: !_scrollController.hasClients ||
-                            _scrollController.offset < _scrollController.position.maxScrollExtent
-                        ? null
-                        : BoxDecoration(
-                            gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [
-                            Theme.of(context).canvasColor,
-                            Colors.transparent,
-                          ], stops: [
-                            0.97,
-                            1,
-                          ])),
-                    child: Padding(
-                      padding: const EdgeInsets.only(bottom: 4.0),
-                      child: Stack(
-                        children: [
-                          Container(
-                            width: double.infinity,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: <Widget>[
-                                TabBar(
-                                  isScrollable: true,
-                                  controller: controller,
-                                  dividerHeight: 0,
-                                  //indicatorPadding: EdgeInsets.symmetric(horizontal: 12.0),
-                                  tabs: List.generate(
-                                    widget.itemCount,
-                                    (index) {
-                                      return widget.tabBuilder(context, index);
-                                    },
-                                  ),
+    return SafeArea(
+      child: Scaffold(
+        body: Material(
+          color: Theme.of(context).canvasColor,
+          child: NestedScrollView(
+            controller: _scrollController,
+            headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+              return <Widget>[
+                SliverOverlapAbsorber(
+                  handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+                  sliver: SliverPersistentHeader(
+                    pinned: true,
+                    delegate: _AppBarHeaderDelegate(
+                      imageUrl: widget.logoUrl,
+                      title: widget.title,
+                      subTitle: widget.subTitle,
+                      heroTag: widget.heroTag,
+                      favorite: widget.favorite,
+                      bottom: Container(
+                        decoration: !_scrollController.hasClients ||
+                                _scrollController.offset < _scrollController.position.maxScrollExtent
+                            ? null
+                            : BoxDecoration(
+                                gradient:
+                                    LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: [
+                                Theme.of(context).canvasColor,
+                                Colors.transparent,
+                              ], stops: [
+                                0.97,
+                                1,
+                              ])),
+                        child: Padding(
+                          padding: const EdgeInsets.only(bottom: 4.0),
+                          child: Stack(
+                            children: [
+                              Container(
+                                width: double.infinity,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: <Widget>[
+                                    TabBar(
+                                      isScrollable: true,
+                                      controller: controller,
+                                      dividerHeight: 0,
+                                      //indicatorPadding: EdgeInsets.symmetric(horizontal: 12.0),
+                                      tabs: List.generate(
+                                        widget.itemCount,
+                                        (index) {
+                                          return widget.tabBuilder(context, index);
+                                        },
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              ],
-                            ),
+                              ),
+                              Positioned(
+                                top: 20,
+                                right: 0,
+                                left: 0,
+                                child: AnimatedCirclePageIndicator(
+                                  itemCount: widget.itemCount,
+                                  currentPageNotifier: _currentPageNotifier,
+                                  radius: 4,
+                                  activeRadius: 3,
+                                  fillColor: Colors.transparent,
+                                  activeColor: Theme.of(context).colorScheme.secondary,
+                                  spacing: 8,
+                                  borderColor: Theme.of(context).colorScheme.secondary,
+                                  borderWidth: 1,
+                                  duration: Duration(milliseconds: 100),
+                                ),
+                              ),
+                            ],
                           ),
-                          Positioned(
-                            top: 20,
-                            right: 0,
-                            left: 0,
-                            child: AnimatedCirclePageIndicator(
-                              itemCount: widget.itemCount,
-                              currentPageNotifier: _currentPageNotifier,
-                              radius: 4,
-                              activeRadius: 3,
-                              fillColor: Colors.transparent,
-                              activeColor: Theme.of(context).colorScheme.secondary,
-                              spacing: 8,
-                              borderColor: Theme.of(context).colorScheme.secondary,
-                              borderWidth: 1,
-                              duration: Duration(milliseconds: 100),
-                            ),
-                          ),
-                        ],
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
-            ),
-          ];
-        },
-        body: widget.itemCount > 0
-            ? Container(
-                child: TabBarView(
-                  controller: controller,
-                  children: List.generate(
-                    widget.itemCount,
-                    (index) {
-                      return SafeArea(
-                        top: false,
-                        bottom: false,
-                        left: false,
-                        child: Builder(
-                          builder: (BuildContext context) {
-                            return CustomScrollView(
-                              key: PageStorageKey<String>("page$index"),
-                              slivers: <Widget>[
-                                SliverOverlapInjector(
-                                  handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
-                                ),
-                                SliverPadding(
-                                  padding: const EdgeInsets.only(top: 0.0, right: 0.0, bottom: 48.0, left: 0.0),
-                                  sliver: widget.pageBuilder(context, index),
-                                ),
-                              ],
-                            );
-                          },
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              )
-            : Center(child: Loading()),
+              ];
+            },
+            body: widget.itemCount > 0
+                ? Container(
+                    child: TabBarView(
+                      controller: controller,
+                      children: List.generate(
+                        widget.itemCount,
+                        (index) {
+                          return SafeArea(
+                            top: false,
+                            bottom: false,
+                            left: false,
+                            child: Builder(
+                              builder: (BuildContext context) {
+                                return CustomScrollView(
+                                  key: PageStorageKey<String>("page$index"),
+                                  slivers: <Widget>[
+                                    SliverOverlapInjector(
+                                      handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+                                    ),
+                                    SliverPadding(
+                                      padding: const EdgeInsets.only(top: 0.0, right: 0.0, bottom: 48.0, left: 0.0),
+                                      sliver: widget.pageBuilder(context, index),
+                                    ),
+                                  ],
+                                );
+                              },
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  )
+                : Center(child: Loading()),
+          ),
+        ),
       ),
     );
   }

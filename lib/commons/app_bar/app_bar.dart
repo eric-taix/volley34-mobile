@@ -1,5 +1,3 @@
-
-
 const double kToolbarMargin = 76.0;
 const double kSystemBarHeight = 28;
 

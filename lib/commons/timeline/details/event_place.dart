@@ -1,23 +1,19 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:v34/commons/loading.dart';
-import 'package:v34/commons/marker/map-marker.dart';
 import 'package:v34/models/event.dart';
 import 'package:v34/pages/dashboard/blocs/gymnasium_bloc.dart';
-import 'package:v34/utils/extensions.dart';
 import 'package:v34/utils/launch.dart';
 
 class EventPlace extends StatefulWidget {
   final Event event;
   final VoidCallback? onCameraMoveStarted;
 
-  const EventPlace({Key? key, required this.event, this.onCameraMoveStarted})
-      : super(key: key);
+  const EventPlace({Key? key, required this.event, this.onCameraMoveStarted}) : super(key: key);
 
   @override
   _EventPlaceState createState() => _EventPlaceState();
@@ -43,8 +39,7 @@ class _EventPlaceState extends State<EventPlace> {
       }
     }
     if (permission == LocationPermission.deniedForever) {
-      print(
-          "Location permissions are permanently denied, we cannot request permissions");
+      print("Location permissions are permanently denied, we cannot request permissions");
       return;
     }
     _myLocation = await Geolocator.getCurrentPosition();
@@ -75,15 +70,11 @@ class _EventPlaceState extends State<EventPlace> {
                     markers: [
                       Marker(
                           markerId: MarkerId(state.gymnasium.gymnasiumCode!),
-                          position: LatLng(state.gymnasium.latitude!,
-                              state.gymnasium.longitude!),
-                          icon: BitmapDescriptor.defaultMarkerWithHue(
-                              BitmapDescriptor.hueAzure))
+                          position: LatLng(state.gymnasium.latitude!, state.gymnasium.longitude!),
+                          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueAzure))
                     ].toSet(),
-                    initialCameraPosition: CameraPosition(
-                        target: LatLng(state.gymnasium.latitude!,
-                            state.gymnasium.longitude!),
-                        zoom: 11),
+                    initialCameraPosition:
+                        CameraPosition(target: LatLng(state.gymnasium.latitude!, state.gymnasium.longitude!), zoom: 11),
                     myLocationEnabled: _myLocation != null,
                     myLocationButtonEnabled: false,
                     mapType: MapType.normal,
@@ -92,9 +83,7 @@ class _EventPlaceState extends State<EventPlace> {
                     mapToolbarEnabled: false,
                     onMapCreated: _onMapCreated,
                     onCameraMoveStarted: () =>
-                        widget.onCameraMoveStarted != null
-                            ? widget.onCameraMoveStarted!()
-                            : null,
+                        widget.onCameraMoveStarted != null ? widget.onCameraMoveStarted!() : null,
                     gestureRecognizers: [
                       Factory<OneSequenceGestureRecognizer>(
                         () => new EagerGestureRecognizer(),
@@ -112,8 +101,7 @@ class _EventPlaceState extends State<EventPlace> {
               Padding(
                 padding: const EdgeInsets.only(right: 8.0),
                 child: TextButton.icon(
-                  onPressed: () =>
-                      launchRoute(context, state.gymnasium, route: true),
+                  onPressed: () => launchRoute(context, state.gymnasium, route: true),
                   icon: Icon(
                     Icons.directions,
                     size: 28,
@@ -121,8 +109,7 @@ class _EventPlaceState extends State<EventPlace> {
                   label: Text("Itinéraire"),
                 ),
               ),
-              if (state.gymnasium.phone != null &&
-                  state.gymnasium.phone!.isNotEmpty)
+              if (state.gymnasium.phone != null && state.gymnasium.phone!.isNotEmpty)
                 Padding(
                   padding: const EdgeInsets.only(left: 8.0),
                   child: TextButton.icon(
@@ -148,9 +135,7 @@ class _EventPlaceState extends State<EventPlace> {
           clipBehavior: Clip.none,
           children: [
             state is GymnasiumLoadedState
-                ? Padding(
-                    padding: const EdgeInsets.only(top: 28.0),
-                    child: _buildGymnasiumLocationLoaded(state))
+                ? Padding(padding: const EdgeInsets.only(top: 28.0), child: _buildGymnasiumLocationLoaded(state))
                 : Loading(),
             if (state is GymnasiumLoadedState)
               Positioned(
@@ -163,10 +148,7 @@ class _EventPlaceState extends State<EventPlace> {
                     Padding(
                       padding: const EdgeInsets.only(right: 4.0),
                       child: _myLocation != null
-                          ? Icon(Icons.navigation,
-                              color:
-                                  Theme.of(context).textTheme.bodyLarge!.color!,
-                              size: 16)
+                          ? Icon(Icons.navigation, color: Theme.of(context).textTheme.bodyLarge!.color!, size: 16)
                           : null,
                     ),
                     Text(

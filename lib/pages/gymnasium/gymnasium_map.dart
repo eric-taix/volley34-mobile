@@ -1,14 +1,11 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:v34/commons/marker/map-marker.dart';
 import 'package:v34/models/gymnasium.dart';
 import 'package:v34/repositories/repository.dart';
-import 'package:v34/utils/extensions.dart';
 
 typedef GymnasiumSelectedCallback = void Function(Gymnasium gymnasiumCode);
 
@@ -18,12 +15,8 @@ class GymnasiumMap extends StatefulWidget {
   final GymnasiumSelectedCallback onGymnasiumSelected;
 
   GymnasiumMap(
-      {Key? key,
-      required this.gymnasiums,
-      required String? currentGymnasiumCode,
-      required this.onGymnasiumSelected})
-      : this.currentGymnasiumCode =
-            currentGymnasiumCode ?? gymnasiums![0].gymnasiumCode,
+      {Key? key, required this.gymnasiums, required String? currentGymnasiumCode, required this.onGymnasiumSelected})
+      : this.currentGymnasiumCode = currentGymnasiumCode ?? gymnasiums![0].gymnasiumCode,
         super(key: key);
 
   @override
@@ -34,8 +27,7 @@ class _GymnasiumMapState extends State<GymnasiumMap> {
   late Repository _repository;
   GoogleMapController? _mapController;
 
-  CameraPosition _initialLocation =
-      CameraPosition(target: LatLng(43.6101248, 3.8039496), zoom: 11);
+  CameraPosition _initialLocation = CameraPosition(target: LatLng(43.6101248, 3.8039496), zoom: 11);
 
   @override
   void initState() {
@@ -52,8 +44,7 @@ class _GymnasiumMapState extends State<GymnasiumMap> {
   @override
   void didUpdateWidget(GymnasiumMap oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.currentGymnasiumCode != widget.currentGymnasiumCode ||
-        oldWidget.gymnasiums != widget.gymnasiums) {
+    if (oldWidget.currentGymnasiumCode != widget.currentGymnasiumCode || oldWidget.gymnasiums != widget.gymnasiums) {
       _showCurrentGymnasium();
     }
   }
@@ -63,8 +54,8 @@ class _GymnasiumMapState extends State<GymnasiumMap> {
       Gymnasium currentGymnasium = widget.gymnasiums!.firstWhere(
           (gymnasium) => gymnasium.gymnasiumCode == widget.currentGymnasiumCode,
           orElse: () => widget.gymnasiums![0]);
-      _mapController?.animateCamera(CameraUpdate.newLatLng(
-          LatLng(currentGymnasium.latitude!, currentGymnasium.longitude!)));
+      _mapController
+          ?.animateCamera(CameraUpdate.newLatLng(LatLng(currentGymnasium.latitude!, currentGymnasium.longitude!)));
     }
   }
 
@@ -73,8 +64,7 @@ class _GymnasiumMapState extends State<GymnasiumMap> {
   }
 
   _gotoCurrentLocation() async {
-    await Geolocator.getCurrentPosition(
-            locationSettings: LocationSettings(accuracy: LocationAccuracy.high))
+    await Geolocator.getCurrentPosition(locationSettings: LocationSettings(accuracy: LocationAccuracy.high))
         .then((Position position) async {
       double currentZoomLevel = await _mapController!.getZoomLevel();
       setState(() {
@@ -94,9 +84,7 @@ class _GymnasiumMapState extends State<GymnasiumMap> {
     _mapController = controller;
     _repository.loadCameraPosition("gymnasiums").then((savedCameraPosition) {
       if (savedCameraPosition != null) {
-        _mapController!
-            .moveCamera(CameraUpdate.zoomTo(savedCameraPosition.zoom))
-            .then((_) => _showCurrentGymnasium());
+        _mapController!.moveCamera(CameraUpdate.zoomTo(savedCameraPosition.zoom)).then((_) => _showCurrentGymnasium());
       }
     });
     _showCurrentGymnasium();
@@ -121,19 +109,11 @@ class _GymnasiumMapState extends State<GymnasiumMap> {
                           gymnasium.latitude!,
                           gymnasium.longitude!,
                         ),
-                        alpha: gymnasium.gymnasiumCode ==
-                                widget.currentGymnasiumCode
-                            ? 1.0
-                            : 1,
+                        alpha: gymnasium.gymnasiumCode == widget.currentGymnasiumCode ? 1.0 : 1,
                         onTap: () => _onMarkerTap(gymnasium),
-                        zIndex: gymnasium.gymnasiumCode ==
-                                widget.currentGymnasiumCode
-                            ? 1.0
-                            : 0.0,
-                        icon: gymnasium.gymnasiumCode ==
-                                widget.currentGymnasiumCode
-                            ? BitmapDescriptor.defaultMarkerWithHue(
-                                BitmapDescriptor.hueAzure)
+                        zIndex: gymnasium.gymnasiumCode == widget.currentGymnasiumCode ? 1.0 : 0.0,
+                        icon: gymnasium.gymnasiumCode == widget.currentGymnasiumCode
+                            ? BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueAzure)
                             : BitmapDescriptor.defaultMarker,
                       ),
                     )
