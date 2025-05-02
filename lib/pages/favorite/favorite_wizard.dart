@@ -8,8 +8,13 @@ import 'package:v34/pages/favorite/favorite_team.dart';
 
 class SelectFavoriteTeam extends StatefulWidget {
   final bool canClose;
+  final VoidCallback onClose;
 
-  const SelectFavoriteTeam({Key? key, required this.canClose}) : super(key: key);
+  const SelectFavoriteTeam({
+    Key? key,
+    required this.canClose,
+    required this.onClose,
+  }) : super(key: key);
 
   @override
   State<SelectFavoriteTeam> createState() => _SelectFavoriteTeamState();
@@ -42,7 +47,7 @@ class _SelectFavoriteTeamState extends State<SelectFavoriteTeam> {
       listener: (context, state) {
         if (state is PreferencesUpdatedState) {
           if (state.favoriteTeam != null && state.favoriteClub != null) {
-            Future.delayed(Duration(milliseconds: 100), () => _close(context));
+            Future.delayed(Duration(milliseconds: 100), () => widget.onClose());
           }
         }
       },
@@ -50,9 +55,8 @@ class _SelectFavoriteTeamState extends State<SelectFavoriteTeam> {
         child: Scaffold(
           backgroundColor: Theme.of(context).canvasColor,
           appBar: AppBar(
-            leading: widget.canClose
-                ? IconButton(icon: Icon(Icons.close), onPressed: () => Navigator.of(context).pop())
-                : SizedBox(),
+            leading:
+                widget.canClose ? IconButton(icon: Icon(Icons.close), onPressed: () => widget.onClose()) : SizedBox(),
             title: Text("Sélectionnez votre $selectionType", style: Theme.of(context).textTheme.headlineMedium),
           ),
           body: Container(
@@ -96,10 +100,6 @@ class _SelectFavoriteTeamState extends State<SelectFavoriteTeam> {
 
   _save(BuildContext context) async {
     _preferencesBloc.add(PreferencesSaveEvent(favoriteClub: _selectedClub, favoriteTeam: _selectedTeam));
-//    _close(context);
-  }
-
-  _close(BuildContext context) {
-    Navigator.of(context).pop();
+    //widget.onClose();
   }
 }

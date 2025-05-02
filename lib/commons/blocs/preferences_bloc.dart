@@ -42,6 +42,8 @@ class PreferencesLoadingState extends PreferencesState {}
 
 class PreferencesSavingState extends PreferencesState {}
 
+class PreferencesFavoriteNotInitializedState extends PreferencesState {}
+
 class PreferencesUpdatedState extends PreferencesState {
   final ThemeMode themeMode;
   final Color? dominantColor;
@@ -70,17 +72,21 @@ class PreferencesBloc extends Bloc<PreferencesEvent, PreferencesState> {
         emit(PreferencesLoadingState());
         Club? club = await repository.loadFavoriteClub();
         Team? team = await repository.loadFavoriteTeam();
-        String themeString = preferences.getString("theme") ?? "";
-        bool showForceOnDashboard = preferences.getBool("showForceOnDashboard") ?? false;
-        emit(
-          PreferencesUpdatedState(
-            themeMode:
-                ThemeMode.values.firstWhere((theme) => theme.toString() == themeString, orElse: () => ThemeMode.system),
-            favoriteClub: club,
-            favoriteTeam: team,
-            showForceOnDashboard: showForceOnDashboard,
-          ),
-        );
+        if (club == null || team == null) {
+          emit(PreferencesFavoriteNotInitializedState());
+        } else {
+          String themeString = preferences.getString("theme") ?? "";
+          bool showForceOnDashboard = preferences.getBool("showForceOnDashboard") ?? false;
+          emit(
+            PreferencesUpdatedState(
+              themeMode: ThemeMode.values
+                  .firstWhere((theme) => theme.toString() == themeString, orElse: () => ThemeMode.system),
+              favoriteClub: club,
+              favoriteTeam: team,
+              showForceOnDashboard: showForceOnDashboard,
+            ),
+          );
+        }
       } catch (e) {
         emit(PreferencesErrorState());
       }
